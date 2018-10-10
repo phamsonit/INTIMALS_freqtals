@@ -1,0 +1,4182 @@
+﻿<SourceFile xmlns:xsi="http://www.w3.org/2001/XMLSchema" ID="283585">
+
+ <CobolProgram LineNr="1" EndLineNr="367" ID="283564">
+  <IdentificationDivision LineNr="1" EndLineNr="3" ID="280178">
+   <ProgramIdClause LineNr="2" EndLineNr="3" ID="280177">
+    <AnonIdent LineNr="3" EndLineNr="3" ID="280176">
+     IF142A
+    </AnonIdent>
+   </ProgramIdClause>
+  </IdentificationDivision>
+  <EnvironmentDivision LineNr="12" EndLineNr="21" ID="280193">
+   <ConfigurationSection LineNr="13" EndLineNr="17" ID="280185">
+    <SrcComputerClause LineNr="14" EndLineNr="15" ID="280181">
+    </SrcComputerClause>
+    <ObjComputerClause LineNr="16" EndLineNr="17" ID="280184">
+     <AnonIdent LineNr="17" EndLineNr="17" ID="280183">
+      Linux
+     </AnonIdent>
+    </ObjComputerClause>
+    <ObjComputerClause LineNr="16" EndLineNr="17" ID="280184">
+     <AnonIdent LineNr="17" EndLineNr="17" ID="280183">
+      Linux
+     </AnonIdent>
+    </ObjComputerClause>
+   </ConfigurationSection>
+   <IOSection LineNr="18" EndLineNr="21" ID="280192">
+    <FileControlClause LineNr="19" EndLineNr="21" ID="280191">
+     <SelectClause LineNr="20" EndLineNr="21" ID="280190">
+      <FileIdent LineNr="20" EndLineNr="20" ID="280186" XRef="280203">
+       PRINT-FILE
+      </FileIdent>
+      <AssignSubClause LineNr="20" EndLineNr="21" ID="280189">
+       <StringLiteral LineNr="21" EndLineNr="21" ID="280188">
+        "report.log"
+       </StringLiteral>
+      </AssignSubClause>
+     </SelectClause>
+    </FileControlClause>
+   </IOSection>
+  </EnvironmentDivision>
+  <DataDivision LineNr="22" EndLineNr="194" ID="280817">
+   <FileSection LineNr="23" EndLineNr="26" ID="280204">
+    <FDEntry LineNr="24" EndLineNr="26" ID="280203">
+     <TheMode ID="283591">FdKeyword</TheMode>
+     <DataDecl LineNr="25" EndLineNr="26" ID="280202">
+      <DataField LineNr="25" EndLineNr="25" ID="280198" Level="1">
+       <DataIdent LineNr="25" EndLineNr="25" ID="280196" XRef="280198">
+        PRINT-REC
+       </DataIdent>
+       <PicClause LineNr="25" EndLineNr="25" ID="280197">
+        X(120)
+       </PicClause>
+       <TheDot ID="283594">TRUE</TheDot>
+      </DataField>
+      <DataField LineNr="26" EndLineNr="26" ID="280201" Level="1">
+       <DataIdent LineNr="26" EndLineNr="26" ID="280199" XRef="280201">
+        DUMMY-RECORD
+       </DataIdent>
+       <PicClause LineNr="26" EndLineNr="26" ID="280200">
+        X(120)
+       </PicClause>
+       <TheDot ID="283597">TRUE</TheDot>
+      </DataField>
+     </DataDecl>
+     <FileIdent LineNr="24" EndLineNr="24" ID="280195" XRef="280203">
+      PRINT-FILE
+     </FileIdent>
+    </FDEntry>
+   </FileSection>
+   <WorkingStorageSection LineNr="27" EndLineNr="194" ID="280816">
+    <DataDecl LineNr="31" EndLineNr="194" ID="280815">
+     <DataField LineNr="1" EndLineNr="1" ID="283565" Level="1">
+      <TheSpecialCode ID="283599">ExternalKeyword</TheSpecialCode>
+      <DataIdent LineNr="1" EndLineNr="1" ID="283566" XRef="283565">
+       RETURN-CODE
+      </DataIdent>
+      <PicClause LineNr="1" EndLineNr="1" ID="283567">
+       S9(4)
+      </PicClause>
+      <UsageClause LineNr="1" EndLineNr="1" ID="283568">
+       <TheCode ID="283602">BinaryKeyword</TheCode>
+      </UsageClause>
+     </DataField>
+     <DataField LineNr="1" EndLineNr="1" ID="283569" Level="1">
+      <TheSpecialCode ID="283603">ExternalKeyword</TheSpecialCode>
+      <DataIdent LineNr="1" EndLineNr="1" ID="283570" XRef="283569">
+       SORT-RETURN
+      </DataIdent>
+      <PicClause LineNr="1" EndLineNr="1" ID="283571">
+       S9(4)
+      </PicClause>
+      <UsageClause LineNr="1" EndLineNr="1" ID="283572">
+       <TheCode ID="283606">BinaryKeyword</TheCode>
+      </UsageClause>
+     </DataField>
+     <DataField LineNr="1" EndLineNr="1" ID="283573" Level="1">
+      <TheSpecialCode ID="283607">ExternalKeyword</TheSpecialCode>
+      <DataIdent LineNr="1" EndLineNr="1" ID="283574" XRef="283573">
+       SORT-CORE-SIZE
+      </DataIdent>
+      <PicClause LineNr="1" EndLineNr="1" ID="283575">
+       S9(8)
+      </PicClause>
+      <UsageClause LineNr="1" EndLineNr="1" ID="283576">
+       <TheCode ID="283610">BinaryKeyword</TheCode>
+      </UsageClause>
+     </DataField>
+     <DataField LineNr="1" EndLineNr="1" ID="283577" Level="1">
+      <TheSpecialCode ID="283611">ExternalKeyword</TheSpecialCode>
+      <DataIdent LineNr="1" EndLineNr="1" ID="283578" XRef="283577">
+       TALLY
+      </DataIdent>
+      <PicClause LineNr="1" EndLineNr="1" ID="283579">
+       9(5)
+      </PicClause>
+      <UsageClause LineNr="1" EndLineNr="1" ID="283580">
+       <TheCode ID="283614">BinaryKeyword</TheCode>
+      </UsageClause>
+     </DataField>
+     <DataField LineNr="1" EndLineNr="1" ID="283581" Level="1">
+      <TheSpecialCode ID="283615">ExternalKeyword</TheSpecialCode>
+      <DataIdent LineNr="1" EndLineNr="1" ID="283582" XRef="283581">
+       XML-CODE
+      </DataIdent>
+      <PicClause LineNr="1" EndLineNr="1" ID="283583">
+       S9(9)
+      </PicClause>
+      <UsageClause LineNr="1" EndLineNr="1" ID="283584">
+       <TheCode ID="283618">BinaryKeyword</TheCode>
+      </UsageClause>
+     </DataField>
+     <DataField LineNr="31" EndLineNr="31" ID="280207" Level="1">
+      <DataIdent LineNr="31" EndLineNr="31" ID="280205" XRef="280207">
+       TEMP1
+      </DataIdent>
+      <PicClause LineNr="31" EndLineNr="31" ID="280206">
+       X(21)
+      </PicClause>
+      <TheDot ID="283621">TRUE</TheDot>
+     </DataField>
+     <DataField LineNr="32" EndLineNr="50" ID="280209" Level="1">
+      <DataIdent LineNr="32" EndLineNr="32" ID="280208" XRef="280209">
+       WS-DATE
+      </DataIdent>
+      <TheDot ID="283623">TRUE</TheDot>
+     <DataField LineNr="33" EndLineNr="34" ID="280212" Level="2" ParentLevel="280209">
+      <DataIdent LineNr="33" EndLineNr="33" ID="280210" XRef="280212">
+       WS-YEAR
+      </DataIdent>
+      <PicClause LineNr="33" EndLineNr="33" ID="280211">
+       9999
+      </PicClause>
+      <TheDot ID="283626">TRUE</TheDot>
+     <DataField LineNr="34" EndLineNr="34" ID="280218" Level="88" ParentLevel="280212">
+      <DataIdent LineNr="34" EndLineNr="34" ID="280213" XRef="280218">
+       CON-YEAR
+      </DataIdent>
+      <L88ValueClause LineNr="34" EndLineNr="34" ID="280217">
+       <ValueEntry LineNr="34" EndLineNr="34" ID="280216">
+        <IntegerLiteral LineNr="34" EndLineNr="34" ID="280214">
+         1990
+        </IntegerLiteral>
+        <IntegerLiteral LineNr="34" EndLineNr="34" ID="280215">
+         9999
+        </IntegerLiteral>
+       </ValueEntry>
+      </L88ValueClause>
+      <TheDot ID="283630">TRUE</TheDot>
+     </DataField></DataField><DataField LineNr="35" EndLineNr="36" ID="280221" Level="2" ParentLevel="280209">
+      <DataIdent LineNr="35" EndLineNr="35" ID="280219" XRef="280221">
+       WS-MONTH
+      </DataIdent>
+      <PicClause LineNr="35" EndLineNr="35" ID="280220">
+       99
+      </PicClause>
+      <TheDot ID="283633">TRUE</TheDot>
+     <DataField LineNr="36" EndLineNr="36" ID="280227" Level="88" ParentLevel="280221">
+      <DataIdent LineNr="36" EndLineNr="36" ID="280222" XRef="280227">
+       CON-MONTH
+      </DataIdent>
+      <L88ValueClause LineNr="36" EndLineNr="36" ID="280226">
+       <ValueEntry LineNr="36" EndLineNr="36" ID="280225">
+        <IntegerLiteral LineNr="36" EndLineNr="36" ID="280223">
+         01
+        </IntegerLiteral>
+        <IntegerLiteral LineNr="36" EndLineNr="36" ID="280224">
+         12
+        </IntegerLiteral>
+       </ValueEntry>
+      </L88ValueClause>
+      <TheDot ID="283637">TRUE</TheDot>
+     </DataField></DataField><DataField LineNr="37" EndLineNr="38" ID="280230" Level="2" ParentLevel="280209">
+      <DataIdent LineNr="37" EndLineNr="37" ID="280228" XRef="280230">
+       WS-DAY
+      </DataIdent>
+      <PicClause LineNr="37" EndLineNr="37" ID="280229">
+       99
+      </PicClause>
+      <TheDot ID="283640">TRUE</TheDot>
+     <DataField LineNr="38" EndLineNr="38" ID="280236" Level="88" ParentLevel="280230">
+      <DataIdent LineNr="38" EndLineNr="38" ID="280231" XRef="280236">
+       CON-DAY
+      </DataIdent>
+      <L88ValueClause LineNr="38" EndLineNr="38" ID="280235">
+       <ValueEntry LineNr="38" EndLineNr="38" ID="280234">
+        <IntegerLiteral LineNr="38" EndLineNr="38" ID="280232">
+         01
+        </IntegerLiteral>
+        <IntegerLiteral LineNr="38" EndLineNr="38" ID="280233">
+         31
+        </IntegerLiteral>
+       </ValueEntry>
+      </L88ValueClause>
+      <TheDot ID="283644">TRUE</TheDot>
+     </DataField></DataField><DataField LineNr="39" EndLineNr="40" ID="280239" Level="2" ParentLevel="280209">
+      <DataIdent LineNr="39" EndLineNr="39" ID="280237" XRef="280239">
+       WS-HOUR
+      </DataIdent>
+      <PicClause LineNr="39" EndLineNr="39" ID="280238">
+       99
+      </PicClause>
+      <TheDot ID="283647">TRUE</TheDot>
+     <DataField LineNr="40" EndLineNr="40" ID="280245" Level="88" ParentLevel="280239">
+      <DataIdent LineNr="40" EndLineNr="40" ID="280240" XRef="280245">
+       CON-HOUR
+      </DataIdent>
+      <L88ValueClause LineNr="40" EndLineNr="40" ID="280244">
+       <ValueEntry LineNr="40" EndLineNr="40" ID="280243">
+        <IntegerLiteral LineNr="40" EndLineNr="40" ID="280241">
+         00
+        </IntegerLiteral>
+        <IntegerLiteral LineNr="40" EndLineNr="40" ID="280242">
+         23
+        </IntegerLiteral>
+       </ValueEntry>
+      </L88ValueClause>
+      <TheDot ID="283651">TRUE</TheDot>
+     </DataField></DataField><DataField LineNr="41" EndLineNr="42" ID="280248" Level="2" ParentLevel="280209">
+      <DataIdent LineNr="41" EndLineNr="41" ID="280246" XRef="280248">
+       WS-MIN
+      </DataIdent>
+      <PicClause LineNr="41" EndLineNr="41" ID="280247">
+       99
+      </PicClause>
+      <TheDot ID="283654">TRUE</TheDot>
+     <DataField LineNr="42" EndLineNr="42" ID="280254" Level="88" ParentLevel="280248">
+      <DataIdent LineNr="42" EndLineNr="42" ID="280249" XRef="280254">
+       CON-MIN
+      </DataIdent>
+      <L88ValueClause LineNr="42" EndLineNr="42" ID="280253">
+       <ValueEntry LineNr="42" EndLineNr="42" ID="280252">
+        <IntegerLiteral LineNr="42" EndLineNr="42" ID="280250">
+         00
+        </IntegerLiteral>
+        <IntegerLiteral LineNr="42" EndLineNr="42" ID="280251">
+         59
+        </IntegerLiteral>
+       </ValueEntry>
+      </L88ValueClause>
+      <TheDot ID="283658">TRUE</TheDot>
+     </DataField></DataField><DataField LineNr="43" EndLineNr="44" ID="280257" Level="2" ParentLevel="280209">
+      <DataIdent LineNr="43" EndLineNr="43" ID="280255" XRef="280257">
+       WS-SECOND
+      </DataIdent>
+      <PicClause LineNr="43" EndLineNr="43" ID="280256">
+       99
+      </PicClause>
+      <TheDot ID="283661">TRUE</TheDot>
+     <DataField LineNr="44" EndLineNr="44" ID="280263" Level="88" ParentLevel="280257">
+      <DataIdent LineNr="44" EndLineNr="44" ID="280258" XRef="280263">
+       CON-SEC
+      </DataIdent>
+      <L88ValueClause LineNr="44" EndLineNr="44" ID="280262">
+       <ValueEntry LineNr="44" EndLineNr="44" ID="280261">
+        <IntegerLiteral LineNr="44" EndLineNr="44" ID="280259">
+         00
+        </IntegerLiteral>
+        <IntegerLiteral LineNr="44" EndLineNr="44" ID="280260">
+         59
+        </IntegerLiteral>
+       </ValueEntry>
+      </L88ValueClause>
+      <TheDot ID="283665">TRUE</TheDot>
+     </DataField></DataField><DataField LineNr="45" EndLineNr="46" ID="280266" Level="2" ParentLevel="280209">
+      <DataIdent LineNr="45" EndLineNr="45" ID="280264" XRef="280266">
+       WS-HUNDSEC
+      </DataIdent>
+      <PicClause LineNr="45" EndLineNr="45" ID="280265">
+       99
+      </PicClause>
+      <TheDot ID="283668">TRUE</TheDot>
+     <DataField LineNr="46" EndLineNr="46" ID="280272" Level="88" ParentLevel="280266">
+      <DataIdent LineNr="46" EndLineNr="46" ID="280267" XRef="280272">
+       CON-HUNDSEC
+      </DataIdent>
+      <L88ValueClause LineNr="46" EndLineNr="46" ID="280271">
+       <ValueEntry LineNr="46" EndLineNr="46" ID="280270">
+        <IntegerLiteral LineNr="46" EndLineNr="46" ID="280268">
+         00
+        </IntegerLiteral>
+        <IntegerLiteral LineNr="46" EndLineNr="46" ID="280269">
+         99
+        </IntegerLiteral>
+       </ValueEntry>
+      </L88ValueClause>
+      <TheDot ID="283672">TRUE</TheDot>
+     </DataField></DataField><DataField LineNr="47" EndLineNr="48" ID="280275" Level="2" ParentLevel="280209">
+      <DataIdent LineNr="47" EndLineNr="47" ID="280273" XRef="280275">
+       WS-GREENW
+      </DataIdent>
+      <PicClause LineNr="47" EndLineNr="47" ID="280274">
+       X
+      </PicClause>
+      <TheDot ID="283675">TRUE</TheDot>
+     <DataField LineNr="48" EndLineNr="48" ID="280286" Level="88" ParentLevel="280275">
+      <DataIdent LineNr="48" EndLineNr="48" ID="280276" XRef="280286">
+       CON-GREENW
+      </DataIdent>
+      <L88ValueClause LineNr="48" EndLineNr="48" ID="280285">
+       <ValueEntry LineNr="48" EndLineNr="48" ID="280279">
+        <StringLiteral LineNr="48" EndLineNr="48" ID="280278">
+         "-"
+        </StringLiteral>
+       </ValueEntry>
+       <ValueEntry LineNr="48" EndLineNr="48" ID="280282">
+        <StringLiteral LineNr="48" EndLineNr="48" ID="280281">
+         "+"
+        </StringLiteral>
+       </ValueEntry>
+       <ValueEntry LineNr="48" EndLineNr="48" ID="280284">
+        <StringLiteral LineNr="48" EndLineNr="48" ID="280283">
+         "0"
+        </StringLiteral>
+       </ValueEntry>
+      </L88ValueClause>
+      <TheDot ID="283680">TRUE</TheDot>
+     </DataField></DataField><DataField LineNr="49" EndLineNr="50" ID="280289" Level="2" ParentLevel="280209">
+      <DataIdent LineNr="49" EndLineNr="49" ID="280287" XRef="280289">
+       WS-OFFSET
+      </DataIdent>
+      <PicClause LineNr="49" EndLineNr="49" ID="280288">
+       99
+      </PicClause>
+      <TheDot ID="283683">TRUE</TheDot>
+     <DataField LineNr="50" EndLineNr="50" ID="280295" Level="88" ParentLevel="280289">
+      <DataIdent LineNr="50" EndLineNr="50" ID="280290" XRef="280295">
+       CON-OFFSET
+      </DataIdent>
+      <L88ValueClause LineNr="50" EndLineNr="50" ID="280294">
+       <ValueEntry LineNr="50" EndLineNr="50" ID="280293">
+        <IntegerLiteral LineNr="50" EndLineNr="50" ID="280291">
+         00
+        </IntegerLiteral>
+        <IntegerLiteral LineNr="50" EndLineNr="50" ID="280292">
+         13
+        </IntegerLiteral>
+       </ValueEntry>
+      </L88ValueClause>
+      <TheDot ID="283687">TRUE</TheDot>
+     </DataField></DataField></DataField>
+     
+     
+     
+     
+     
+     
+     
+     
+     
+     
+     
+     
+     
+     
+     
+     
+     
+     
+     <DataField LineNr="54" EndLineNr="65" ID="280297" Level="1">
+      <DataIdent LineNr="54" EndLineNr="54" ID="280296" XRef="280297">
+       TEST-RESULTS
+      </DataIdent>
+      <TheDot ID="283689">TRUE</TheDot>
+     <DataField LineNr="55" EndLineNr="55" ID="280301" Level="2" ParentLevel="280297">
+      <PicClause LineNr="55" EndLineNr="55" ID="280298">
+       X
+      </PicClause>
+      <ValueClause LineNr="55" EndLineNr="55" ID="280300">
+       <PredefinedLiteral LineNr="55" EndLineNr="55" ID="280299">
+        <TheCode ID="283691">SpaceKeyword</TheCode>
+       </PredefinedLiteral>
+      </ValueClause>
+      <TheDot ID="283692">TRUE</TheDot>
+      <TheIsFiller ID="283693">TRUE</TheIsFiller>
+     </DataField><DataField LineNr="56" EndLineNr="56" ID="280306" Level="2" ParentLevel="280297">
+      <DataIdent LineNr="56" EndLineNr="56" ID="280302" XRef="280306">
+       FEATURE
+      </DataIdent>
+      <PicClause LineNr="56" EndLineNr="56" ID="280303">
+       X(20)
+      </PicClause>
+      <ValueClause LineNr="56" EndLineNr="56" ID="280305">
+       <PredefinedLiteral LineNr="56" EndLineNr="56" ID="280304">
+        <TheCode ID="283696">SpaceKeyword</TheCode>
+       </PredefinedLiteral>
+      </ValueClause>
+      <TheDot ID="283697">TRUE</TheDot>
+     </DataField><DataField LineNr="57" EndLineNr="57" ID="280310" Level="2" ParentLevel="280297">
+      <PicClause LineNr="57" EndLineNr="57" ID="280307">
+       X
+      </PicClause>
+      <ValueClause LineNr="57" EndLineNr="57" ID="280309">
+       <PredefinedLiteral LineNr="57" EndLineNr="57" ID="280308">
+        <TheCode ID="283699">SpaceKeyword</TheCode>
+       </PredefinedLiteral>
+      </ValueClause>
+      <TheDot ID="283700">TRUE</TheDot>
+      <TheIsFiller ID="283701">TRUE</TheIsFiller>
+     </DataField><DataField LineNr="58" EndLineNr="58" ID="280315" Level="2" ParentLevel="280297">
+      <DataIdent LineNr="58" EndLineNr="58" ID="280311" XRef="280315">
+       P-OR-F
+      </DataIdent>
+      <PicClause LineNr="58" EndLineNr="58" ID="280312">
+       X(5)
+      </PicClause>
+      <ValueClause LineNr="58" EndLineNr="58" ID="280314">
+       <PredefinedLiteral LineNr="58" EndLineNr="58" ID="280313">
+        <TheCode ID="283704">SpaceKeyword</TheCode>
+       </PredefinedLiteral>
+      </ValueClause>
+      <TheDot ID="283705">TRUE</TheDot>
+     </DataField><DataField LineNr="59" EndLineNr="59" ID="280319" Level="2" ParentLevel="280297">
+      <PicClause LineNr="59" EndLineNr="59" ID="280316">
+       X
+      </PicClause>
+      <ValueClause LineNr="59" EndLineNr="59" ID="280318">
+       <PredefinedLiteral LineNr="59" EndLineNr="59" ID="280317">
+        <TheCode ID="283707">SpaceKeyword</TheCode>
+       </PredefinedLiteral>
+      </ValueClause>
+      <TheDot ID="283708">TRUE</TheDot>
+      <TheIsFiller ID="283709">TRUE</TheIsFiller>
+     </DataField><DataField LineNr="60" EndLineNr="63" ID="280321" Level="2" ParentLevel="280297">
+      <DataIdent LineNr="60" EndLineNr="60" ID="280320" XRef="280321">
+       PAR-NAME
+      </DataIdent>
+      <TheDot ID="283711">TRUE</TheDot>
+     <DataField LineNr="61" EndLineNr="61" ID="280325" Level="3" ParentLevel="280321">
+      <PicClause LineNr="61" EndLineNr="61" ID="280322">
+       X(19)
+      </PicClause>
+      <ValueClause LineNr="61" EndLineNr="61" ID="280324">
+       <PredefinedLiteral LineNr="61" EndLineNr="61" ID="280323">
+        <TheCode ID="283713">SpaceKeyword</TheCode>
+       </PredefinedLiteral>
+      </ValueClause>
+      <TheDot ID="283714">TRUE</TheDot>
+      <TheIsFiller ID="283715">TRUE</TheIsFiller>
+     </DataField><DataField LineNr="62" EndLineNr="62" ID="280330" Level="3" ParentLevel="280321">
+      <DataIdent LineNr="62" EndLineNr="62" ID="280326" XRef="280330">
+       PARDOT-X
+      </DataIdent>
+      <PicClause LineNr="62" EndLineNr="62" ID="280327">
+       X
+      </PicClause>
+      <ValueClause LineNr="62" EndLineNr="62" ID="280329">
+       <PredefinedLiteral LineNr="62" EndLineNr="62" ID="280328">
+        <TheCode ID="283718">SpaceKeyword</TheCode>
+       </PredefinedLiteral>
+      </ValueClause>
+      <TheDot ID="283719">TRUE</TheDot>
+     </DataField><DataField LineNr="63" EndLineNr="63" ID="280335" Level="3" ParentLevel="280321">
+      <DataIdent LineNr="63" EndLineNr="63" ID="280331" XRef="280335">
+       DOTVALUE
+      </DataIdent>
+      <PicClause LineNr="63" EndLineNr="63" ID="280332">
+       99
+      </PicClause>
+      <ValueClause LineNr="63" EndLineNr="63" ID="280334">
+       <PredefinedLiteral LineNr="63" EndLineNr="63" ID="280333">
+        <TheCode ID="283722">ZeroKeyword</TheCode>
+       </PredefinedLiteral>
+      </ValueClause>
+      <TheDot ID="283723">TRUE</TheDot>
+     </DataField></DataField><DataField LineNr="64" EndLineNr="64" ID="280339" Level="2" ParentLevel="280297">
+      <PicClause LineNr="64" EndLineNr="64" ID="280336">
+       X(8)
+      </PicClause>
+      <ValueClause LineNr="64" EndLineNr="64" ID="280338">
+       <PredefinedLiteral LineNr="64" EndLineNr="64" ID="280337">
+        <TheCode ID="283725">SpaceKeyword</TheCode>
+       </PredefinedLiteral>
+      </ValueClause>
+      <TheDot ID="283726">TRUE</TheDot>
+      <TheIsFiller ID="283727">TRUE</TheIsFiller>
+     </DataField><DataField LineNr="65" EndLineNr="65" ID="280342" Level="2" ParentLevel="280297">
+      <DataIdent LineNr="65" EndLineNr="65" ID="280340" XRef="280342">
+       RE-MARK
+      </DataIdent>
+      <PicClause LineNr="65" EndLineNr="65" ID="280341">
+       X(61)
+      </PicClause>
+      <TheDot ID="283730">TRUE</TheDot>
+     </DataField></DataField>
+     
+     
+     
+     
+     
+     
+     
+     
+     
+     
+     
+     <DataField LineNr="66" EndLineNr="80" ID="280344" Level="1">
+      <DataIdent LineNr="66" EndLineNr="66" ID="280343" XRef="280344">
+       TEST-COMPUTED
+      </DataIdent>
+      <TheDot ID="283732">TRUE</TheDot>
+     <DataField LineNr="67" EndLineNr="67" ID="280348" Level="2" ParentLevel="280344">
+      <PicClause LineNr="67" EndLineNr="67" ID="280345">
+       X(30)
+      </PicClause>
+      <ValueClause LineNr="67" EndLineNr="67" ID="280347">
+       <PredefinedLiteral LineNr="67" EndLineNr="67" ID="280346">
+        <TheCode ID="283734">SpaceKeyword</TheCode>
+       </PredefinedLiteral>
+      </ValueClause>
+      <TheDot ID="283735">TRUE</TheDot>
+      <TheIsFiller ID="283736">TRUE</TheIsFiller>
+     </DataField><DataField LineNr="68" EndLineNr="69" ID="280352" Level="2" ParentLevel="280344">
+      <PicClause LineNr="68" EndLineNr="68" ID="280349">
+       X(17)
+      </PicClause>
+      <ValueClause LineNr="68" EndLineNr="69" ID="280351">
+       <StringLiteral LineNr="69" EndLineNr="69" ID="280350">
+        "       COMPUTED="
+       </StringLiteral>
+      </ValueClause>
+      <TheDot ID="283739">TRUE</TheDot>
+      <TheIsFiller ID="283740">TRUE</TheIsFiller>
+     </DataField><DataField LineNr="70" EndLineNr="80" ID="280354" Level="2" ParentLevel="280344">
+      <DataIdent LineNr="70" EndLineNr="70" ID="280353" XRef="280354">
+       COMPUTED-X
+      </DataIdent>
+      <TheDot ID="283742">TRUE</TheDot>
+     <DataField LineNr="71" EndLineNr="71" ID="280359" Level="3" ParentLevel="280354">
+      <DataIdent LineNr="71" EndLineNr="71" ID="280355" XRef="280359">
+       COMPUTED-A
+      </DataIdent>
+      <PicClause LineNr="71" EndLineNr="71" ID="280356">
+       X(20)
+      </PicClause>
+      <ValueClause LineNr="71" EndLineNr="71" ID="280358">
+       <PredefinedLiteral LineNr="71" EndLineNr="71" ID="280357">
+        <TheCode ID="283745">SpaceKeyword</TheCode>
+       </PredefinedLiteral>
+      </ValueClause>
+      <TheDot ID="283746">TRUE</TheDot>
+     </DataField><DataField LineNr="72" EndLineNr="73" ID="280376" Level="3" ParentLevel="280354">
+      <DataIdent LineNr="72" EndLineNr="72" ID="280360" XRef="280376">
+       COMPUTED-N
+      </DataIdent>
+      <PicClause LineNr="73" EndLineNr="73" ID="280375">
+       -9(9).9(9)
+      </PicClause>
+      <TheDot ID="283749">TRUE</TheDot>
+      <Designator LineNr="72" EndLineNr="72" ID="280374" XRef="280359">
+       <DesigElement LineNr="72" EndLineNr="72" ID="280373">
+        <DataIdent LineNr="72" EndLineNr="72" ID="280372" XRef="280359">
+         COMPUTED-A
+        </DataIdent>
+       </DesigElement>
+      </Designator>
+     </DataField><DataField LineNr="74" EndLineNr="74" ID="280387" Level="3" ParentLevel="280354">
+      <DataIdent LineNr="74" EndLineNr="74" ID="280377" XRef="280387">
+       COMPUTED-0V18
+      </DataIdent>
+      <PicClause LineNr="74" EndLineNr="74" ID="280386">
+       -.9(18)
+      </PicClause>
+      <TheDot ID="283753">TRUE</TheDot>
+      <Designator LineNr="74" EndLineNr="74" ID="280385" XRef="280359">
+       <DesigElement LineNr="74" EndLineNr="74" ID="280384">
+        <DataIdent LineNr="74" EndLineNr="74" ID="280383" XRef="280359">
+         COMPUTED-A
+        </DataIdent>
+       </DesigElement>
+      </Designator>
+     </DataField><DataField LineNr="75" EndLineNr="75" ID="280398" Level="3" ParentLevel="280354">
+      <DataIdent LineNr="75" EndLineNr="75" ID="280388" XRef="280398">
+       COMPUTED-4V14
+      </DataIdent>
+      <PicClause LineNr="75" EndLineNr="75" ID="280397">
+       -9(4).9(14)
+      </PicClause>
+      <TheDot ID="283757">TRUE</TheDot>
+      <Designator LineNr="75" EndLineNr="75" ID="280396" XRef="280359">
+       <DesigElement LineNr="75" EndLineNr="75" ID="280395">
+        <DataIdent LineNr="75" EndLineNr="75" ID="280394" XRef="280359">
+         COMPUTED-A
+        </DataIdent>
+       </DesigElement>
+      </Designator>
+     </DataField><DataField LineNr="76" EndLineNr="76" ID="280409" Level="3" ParentLevel="280354">
+      <DataIdent LineNr="76" EndLineNr="76" ID="280399" XRef="280409">
+       COMPUTED-14V4
+      </DataIdent>
+      <PicClause LineNr="76" EndLineNr="76" ID="280408">
+       -9(14).9(4)
+      </PicClause>
+      <TheDot ID="283761">TRUE</TheDot>
+      <Designator LineNr="76" EndLineNr="76" ID="280407" XRef="280359">
+       <DesigElement LineNr="76" EndLineNr="76" ID="280406">
+        <DataIdent LineNr="76" EndLineNr="76" ID="280405" XRef="280359">
+         COMPUTED-A
+        </DataIdent>
+       </DesigElement>
+      </Designator>
+     </DataField><DataField LineNr="77" EndLineNr="79" ID="280424" Level="3" ParentLevel="280354">
+      <DataIdent LineNr="77" EndLineNr="77" ID="280410" XRef="280424">
+       CM-18V0
+      </DataIdent>
+      <TheDot ID="283764">TRUE</TheDot>
+      <Designator LineNr="77" EndLineNr="77" ID="280423" XRef="280359">
+       <DesigElement LineNr="77" EndLineNr="77" ID="280422">
+        <DataIdent LineNr="77" EndLineNr="77" ID="280421" XRef="280359">
+         COMPUTED-A
+        </DataIdent>
+       </DesigElement>
+      </Designator>
+     <DataField LineNr="78" EndLineNr="78" ID="280427" Level="4" ParentLevel="280424">
+      <DataIdent LineNr="78" EndLineNr="78" ID="280425" XRef="280427">
+       COMPUTED-18V0
+      </DataIdent>
+      <PicClause LineNr="78" EndLineNr="78" ID="280426">
+       -9(18)
+      </PicClause>
+      <TheDot ID="283768">TRUE</TheDot>
+     </DataField><DataField LineNr="79" EndLineNr="79" ID="280429" Level="4" ParentLevel="280424">
+      <PicClause LineNr="79" EndLineNr="79" ID="280428">
+       X
+      </PicClause>
+      <TheDot ID="283770">TRUE</TheDot>
+      <TheIsFiller ID="283771">TRUE</TheIsFiller>
+     </DataField></DataField><DataField LineNr="80" EndLineNr="80" ID="280433" Level="3" ParentLevel="280354">
+      <PicClause LineNr="80" EndLineNr="80" ID="280430">
+       X(50)
+      </PicClause>
+      <ValueClause LineNr="80" EndLineNr="80" ID="280432">
+       <PredefinedLiteral LineNr="80" EndLineNr="80" ID="280431">
+        <TheCode ID="283773">SpaceKeyword</TheCode>
+       </PredefinedLiteral>
+      </ValueClause>
+      <TheDot ID="283774">TRUE</TheDot>
+      <TheIsFiller ID="283775">TRUE</TheIsFiller>
+     </DataField></DataField></DataField>
+     
+     
+     
+     
+     
+     
+     
+     
+     
+     
+     
+     
+     <DataField LineNr="81" EndLineNr="94" ID="280435" Level="1">
+      <DataIdent LineNr="81" EndLineNr="81" ID="280434" XRef="280435">
+       TEST-CORRECT
+      </DataIdent>
+      <TheDot ID="283777">TRUE</TheDot>
+     <DataField LineNr="82" EndLineNr="82" ID="280439" Level="2" ParentLevel="280435">
+      <PicClause LineNr="82" EndLineNr="82" ID="280436">
+       X(30)
+      </PicClause>
+      <ValueClause LineNr="82" EndLineNr="82" ID="280438">
+       <PredefinedLiteral LineNr="82" EndLineNr="82" ID="280437">
+        <TheCode ID="283779">SpaceKeyword</TheCode>
+       </PredefinedLiteral>
+      </ValueClause>
+      <TheDot ID="283780">TRUE</TheDot>
+      <TheIsFiller ID="283781">TRUE</TheIsFiller>
+     </DataField><DataField LineNr="83" EndLineNr="83" ID="280443" Level="2" ParentLevel="280435">
+      <PicClause LineNr="83" EndLineNr="83" ID="280440">
+       X(17)
+      </PicClause>
+      <ValueClause LineNr="83" EndLineNr="83" ID="280442">
+       <StringLiteral LineNr="83" EndLineNr="83" ID="280441">
+        "       CORRECT ="
+       </StringLiteral>
+      </ValueClause>
+      <TheDot ID="283784">TRUE</TheDot>
+      <TheIsFiller ID="283785">TRUE</TheIsFiller>
+     </DataField><DataField LineNr="84" EndLineNr="94" ID="280445" Level="2" ParentLevel="280435">
+      <DataIdent LineNr="84" EndLineNr="84" ID="280444" XRef="280445">
+       CORRECT-X
+      </DataIdent>
+      <TheDot ID="283787">TRUE</TheDot>
+     <DataField LineNr="85" EndLineNr="85" ID="280450" Level="3" ParentLevel="280445">
+      <DataIdent LineNr="85" EndLineNr="85" ID="280446" XRef="280450">
+       CORRECT-A
+      </DataIdent>
+      <PicClause LineNr="85" EndLineNr="85" ID="280447">
+       X(20)
+      </PicClause>
+      <ValueClause LineNr="85" EndLineNr="85" ID="280449">
+       <PredefinedLiteral LineNr="85" EndLineNr="85" ID="280448">
+        <TheCode ID="283790">SpaceKeyword</TheCode>
+       </PredefinedLiteral>
+      </ValueClause>
+      <TheDot ID="283791">TRUE</TheDot>
+     </DataField><DataField LineNr="86" EndLineNr="86" ID="280461" Level="3" ParentLevel="280445">
+      <DataIdent LineNr="86" EndLineNr="86" ID="280451" XRef="280461">
+       CORRECT-N
+      </DataIdent>
+      <PicClause LineNr="86" EndLineNr="86" ID="280460">
+       -9(9).9(9)
+      </PicClause>
+      <TheDot ID="283794">TRUE</TheDot>
+      <Designator LineNr="86" EndLineNr="86" ID="280459" XRef="280450">
+       <DesigElement LineNr="86" EndLineNr="86" ID="280458">
+        <DataIdent LineNr="86" EndLineNr="86" ID="280457" XRef="280450">
+         CORRECT-A
+        </DataIdent>
+       </DesigElement>
+      </Designator>
+     </DataField><DataField LineNr="87" EndLineNr="87" ID="280472" Level="3" ParentLevel="280445">
+      <DataIdent LineNr="87" EndLineNr="87" ID="280462" XRef="280472">
+       CORRECT-0V18
+      </DataIdent>
+      <PicClause LineNr="87" EndLineNr="87" ID="280471">
+       -.9(18)
+      </PicClause>
+      <TheDot ID="283798">TRUE</TheDot>
+      <Designator LineNr="87" EndLineNr="87" ID="280470" XRef="280450">
+       <DesigElement LineNr="87" EndLineNr="87" ID="280469">
+        <DataIdent LineNr="87" EndLineNr="87" ID="280468" XRef="280450">
+         CORRECT-A
+        </DataIdent>
+       </DesigElement>
+      </Designator>
+     </DataField><DataField LineNr="88" EndLineNr="88" ID="280483" Level="3" ParentLevel="280445">
+      <DataIdent LineNr="88" EndLineNr="88" ID="280473" XRef="280483">
+       CORRECT-4V14
+      </DataIdent>
+      <PicClause LineNr="88" EndLineNr="88" ID="280482">
+       -9(4).9(14)
+      </PicClause>
+      <TheDot ID="283802">TRUE</TheDot>
+      <Designator LineNr="88" EndLineNr="88" ID="280481" XRef="280450">
+       <DesigElement LineNr="88" EndLineNr="88" ID="280480">
+        <DataIdent LineNr="88" EndLineNr="88" ID="280479" XRef="280450">
+         CORRECT-A
+        </DataIdent>
+       </DesigElement>
+      </Designator>
+     </DataField><DataField LineNr="89" EndLineNr="89" ID="280494" Level="3" ParentLevel="280445">
+      <DataIdent LineNr="89" EndLineNr="89" ID="280484" XRef="280494">
+       CORRECT-14V4
+      </DataIdent>
+      <PicClause LineNr="89" EndLineNr="89" ID="280493">
+       -9(14).9(4)
+      </PicClause>
+      <TheDot ID="283806">TRUE</TheDot>
+      <Designator LineNr="89" EndLineNr="89" ID="280492" XRef="280450">
+       <DesigElement LineNr="89" EndLineNr="89" ID="280491">
+        <DataIdent LineNr="89" EndLineNr="89" ID="280490" XRef="280450">
+         CORRECT-A
+        </DataIdent>
+       </DesigElement>
+      </Designator>
+     </DataField><DataField LineNr="90" EndLineNr="92" ID="280509" Level="3" ParentLevel="280445">
+      <DataIdent LineNr="90" EndLineNr="90" ID="280495" XRef="280509">
+       CR-18V0
+      </DataIdent>
+      <TheDot ID="283809">TRUE</TheDot>
+      <Designator LineNr="90" EndLineNr="90" ID="280508" XRef="280450">
+       <DesigElement LineNr="90" EndLineNr="90" ID="280507">
+        <DataIdent LineNr="90" EndLineNr="90" ID="280506" XRef="280450">
+         CORRECT-A
+        </DataIdent>
+       </DesigElement>
+      </Designator>
+     <DataField LineNr="91" EndLineNr="91" ID="280512" Level="4" ParentLevel="280509">
+      <DataIdent LineNr="91" EndLineNr="91" ID="280510" XRef="280512">
+       CORRECT-18V0
+      </DataIdent>
+      <PicClause LineNr="91" EndLineNr="91" ID="280511">
+       -9(18)
+      </PicClause>
+      <TheDot ID="283813">TRUE</TheDot>
+     </DataField><DataField LineNr="92" EndLineNr="92" ID="280514" Level="4" ParentLevel="280509">
+      <PicClause LineNr="92" EndLineNr="92" ID="280513">
+       X
+      </PicClause>
+      <TheDot ID="283815">TRUE</TheDot>
+      <TheIsFiller ID="283816">TRUE</TheIsFiller>
+     </DataField></DataField><DataField LineNr="93" EndLineNr="93" ID="280518" Level="3" ParentLevel="280445">
+      <PicClause LineNr="93" EndLineNr="93" ID="280515">
+       X(2)
+      </PicClause>
+      <ValueClause LineNr="93" EndLineNr="93" ID="280517">
+       <PredefinedLiteral LineNr="93" EndLineNr="93" ID="280516">
+        <TheCode ID="283818">SpaceKeyword</TheCode>
+       </PredefinedLiteral>
+      </ValueClause>
+      <TheDot ID="283819">TRUE</TheDot>
+      <TheIsFiller ID="283820">TRUE</TheIsFiller>
+     </DataField><DataField LineNr="94" EndLineNr="94" ID="280523" Level="3" ParentLevel="280445">
+      <DataIdent LineNr="94" EndLineNr="94" ID="280519" XRef="280523">
+       COR-ANSI-REFERENCE
+      </DataIdent>
+      <PicClause LineNr="94" EndLineNr="94" ID="280520">
+       X(48)
+      </PicClause>
+      <ValueClause LineNr="94" EndLineNr="94" ID="280522">
+       <PredefinedLiteral LineNr="94" EndLineNr="94" ID="280521">
+        <TheCode ID="283823">SpaceKeyword</TheCode>
+       </PredefinedLiteral>
+      </ValueClause>
+      <TheDot ID="283824">TRUE</TheDot>
+     </DataField></DataField></DataField>
+     
+     
+     
+     
+     
+     
+     
+     
+     
+     
+     
+     
+     
+     <DataField LineNr="95" EndLineNr="99" ID="280525" Level="1">
+      <DataIdent LineNr="95" EndLineNr="95" ID="280524" XRef="280525">
+       CCVS-C-1
+      </DataIdent>
+      <TheDot ID="283826">TRUE</TheDot>
+     <DataField LineNr="96" EndLineNr="96" ID="280529" Level="2" ParentLevel="280525">
+      <PicClause LineNr="96" EndLineNr="96" ID="280526">
+       X(99)
+      </PicClause>
+      <ValueClause LineNr="96" EndLineNr="96" ID="280528">
+       <StringLiteral LineNr="96" EndLineNr="96" ID="280527">
+        " FEATURE              PASS  PARAGRAPH-NAME                                                 REMARKS"
+       </StringLiteral>
+      </ValueClause>
+      <TheDot ID="283829">TRUE</TheDot>
+      <TheIsFiller ID="283830">TRUE</TheIsFiller>
+     </DataField><DataField LineNr="99" EndLineNr="99" ID="280533" Level="2" ParentLevel="280525">
+      <PicClause LineNr="99" EndLineNr="99" ID="280530">
+       X(20)
+      </PicClause>
+      <ValueClause LineNr="99" EndLineNr="99" ID="280532">
+       <PredefinedLiteral LineNr="99" EndLineNr="99" ID="280531">
+        <TheCode ID="283832">SpaceKeyword</TheCode>
+       </PredefinedLiteral>
+      </ValueClause>
+      <TheDot ID="283833">TRUE</TheDot>
+      <TheIsFiller ID="283834">TRUE</TheIsFiller>
+     </DataField></DataField>
+     
+     
+     <DataField LineNr="100" EndLineNr="105" ID="280535" Level="1">
+      <DataIdent LineNr="100" EndLineNr="100" ID="280534" XRef="280535">
+       CCVS-C-2
+      </DataIdent>
+      <TheDot ID="283836">TRUE</TheDot>
+     <DataField LineNr="101" EndLineNr="101" ID="280539" Level="2" ParentLevel="280535">
+      <PicClause LineNr="101" EndLineNr="101" ID="280536">
+       X
+      </PicClause>
+      <ValueClause LineNr="101" EndLineNr="101" ID="280538">
+       <PredefinedLiteral LineNr="101" EndLineNr="101" ID="280537">
+        <TheCode ID="283838">SpaceKeyword</TheCode>
+       </PredefinedLiteral>
+      </ValueClause>
+      <TheDot ID="283839">TRUE</TheDot>
+      <TheIsFiller ID="283840">TRUE</TheIsFiller>
+     </DataField><DataField LineNr="102" EndLineNr="102" ID="280543" Level="2" ParentLevel="280535">
+      <PicClause LineNr="102" EndLineNr="102" ID="280540">
+       X(6)
+      </PicClause>
+      <ValueClause LineNr="102" EndLineNr="102" ID="280542">
+       <StringLiteral LineNr="102" EndLineNr="102" ID="280541">
+        "TESTED"
+       </StringLiteral>
+      </ValueClause>
+      <TheDot ID="283843">TRUE</TheDot>
+      <TheIsFiller ID="283844">TRUE</TheIsFiller>
+     </DataField><DataField LineNr="103" EndLineNr="103" ID="280547" Level="2" ParentLevel="280535">
+      <PicClause LineNr="103" EndLineNr="103" ID="280544">
+       X(15)
+      </PicClause>
+      <ValueClause LineNr="103" EndLineNr="103" ID="280546">
+       <PredefinedLiteral LineNr="103" EndLineNr="103" ID="280545">
+        <TheCode ID="283846">SpaceKeyword</TheCode>
+       </PredefinedLiteral>
+      </ValueClause>
+      <TheDot ID="283847">TRUE</TheDot>
+      <TheIsFiller ID="283848">TRUE</TheIsFiller>
+     </DataField><DataField LineNr="104" EndLineNr="104" ID="280551" Level="2" ParentLevel="280535">
+      <PicClause LineNr="104" EndLineNr="104" ID="280548">
+       X(4)
+      </PicClause>
+      <ValueClause LineNr="104" EndLineNr="104" ID="280550">
+       <StringLiteral LineNr="104" EndLineNr="104" ID="280549">
+        "FAIL"
+       </StringLiteral>
+      </ValueClause>
+      <TheDot ID="283851">TRUE</TheDot>
+      <TheIsFiller ID="283852">TRUE</TheIsFiller>
+     </DataField><DataField LineNr="105" EndLineNr="105" ID="280555" Level="2" ParentLevel="280535">
+      <PicClause LineNr="105" EndLineNr="105" ID="280552">
+       X(94)
+      </PicClause>
+      <ValueClause LineNr="105" EndLineNr="105" ID="280554">
+       <PredefinedLiteral LineNr="105" EndLineNr="105" ID="280553">
+        <TheCode ID="283854">SpaceKeyword</TheCode>
+       </PredefinedLiteral>
+      </ValueClause>
+      <TheDot ID="283855">TRUE</TheDot>
+      <TheIsFiller ID="283856">TRUE</TheIsFiller>
+     </DataField></DataField>
+     
+     
+     
+     
+     
+     <DataField LineNr="106" EndLineNr="106" ID="280560" Level="1">
+      <DataIdent LineNr="106" EndLineNr="106" ID="280556" XRef="280560">
+       REC-SKL-SUB
+      </DataIdent>
+      <PicClause LineNr="106" EndLineNr="106" ID="280557">
+       9(2)
+      </PicClause>
+      <ValueClause LineNr="106" EndLineNr="106" ID="280559">
+       <PredefinedLiteral LineNr="106" EndLineNr="106" ID="280558">
+        <TheCode ID="283859">ZeroKeyword</TheCode>
+       </PredefinedLiteral>
+      </ValueClause>
+      <TheDot ID="283860">TRUE</TheDot>
+     </DataField>
+     <DataField LineNr="107" EndLineNr="107" ID="280565" Level="1">
+      <DataIdent LineNr="107" EndLineNr="107" ID="280561" XRef="280565">
+       REC-CT
+      </DataIdent>
+      <PicClause LineNr="107" EndLineNr="107" ID="280562">
+       99
+      </PicClause>
+      <ValueClause LineNr="107" EndLineNr="107" ID="280564">
+       <PredefinedLiteral LineNr="107" EndLineNr="107" ID="280563">
+        <TheCode ID="283863">ZeroKeyword</TheCode>
+       </PredefinedLiteral>
+      </ValueClause>
+      <TheDot ID="283864">TRUE</TheDot>
+     </DataField>
+     <DataField LineNr="108" EndLineNr="108" ID="280570" Level="1">
+      <DataIdent LineNr="108" EndLineNr="108" ID="280566" XRef="280570">
+       DELETE-COUNTER
+      </DataIdent>
+      <PicClause LineNr="108" EndLineNr="108" ID="280567">
+       999
+      </PicClause>
+      <ValueClause LineNr="108" EndLineNr="108" ID="280569">
+       <PredefinedLiteral LineNr="108" EndLineNr="108" ID="280568">
+        <TheCode ID="283867">ZeroKeyword</TheCode>
+       </PredefinedLiteral>
+      </ValueClause>
+      <TheDot ID="283868">TRUE</TheDot>
+     </DataField>
+     <DataField LineNr="109" EndLineNr="109" ID="280575" Level="1">
+      <DataIdent LineNr="109" EndLineNr="109" ID="280571" XRef="280575">
+       ERROR-COUNTER
+      </DataIdent>
+      <PicClause LineNr="109" EndLineNr="109" ID="280572">
+       999
+      </PicClause>
+      <ValueClause LineNr="109" EndLineNr="109" ID="280574">
+       <PredefinedLiteral LineNr="109" EndLineNr="109" ID="280573">
+        <TheCode ID="283871">ZeroKeyword</TheCode>
+       </PredefinedLiteral>
+      </ValueClause>
+      <TheDot ID="283872">TRUE</TheDot>
+     </DataField>
+     <DataField LineNr="110" EndLineNr="110" ID="280580" Level="1">
+      <DataIdent LineNr="110" EndLineNr="110" ID="280576" XRef="280580">
+       INSPECT-COUNTER
+      </DataIdent>
+      <PicClause LineNr="110" EndLineNr="110" ID="280577">
+       999
+      </PicClause>
+      <ValueClause LineNr="110" EndLineNr="110" ID="280579">
+       <PredefinedLiteral LineNr="110" EndLineNr="110" ID="280578">
+        <TheCode ID="283875">ZeroKeyword</TheCode>
+       </PredefinedLiteral>
+      </ValueClause>
+      <TheDot ID="283876">TRUE</TheDot>
+     </DataField>
+     <DataField LineNr="111" EndLineNr="111" ID="280585" Level="1">
+      <DataIdent LineNr="111" EndLineNr="111" ID="280581" XRef="280585">
+       PASS-COUNTER
+      </DataIdent>
+      <PicClause LineNr="111" EndLineNr="111" ID="280582">
+       999
+      </PicClause>
+      <ValueClause LineNr="111" EndLineNr="111" ID="280584">
+       <PredefinedLiteral LineNr="111" EndLineNr="111" ID="280583">
+        <TheCode ID="283879">ZeroKeyword</TheCode>
+       </PredefinedLiteral>
+      </ValueClause>
+      <TheDot ID="283880">TRUE</TheDot>
+     </DataField>
+     <DataField LineNr="112" EndLineNr="112" ID="280590" Level="1">
+      <DataIdent LineNr="112" EndLineNr="112" ID="280586" XRef="280590">
+       TOTAL-ERROR
+      </DataIdent>
+      <PicClause LineNr="112" EndLineNr="112" ID="280587">
+       999
+      </PicClause>
+      <ValueClause LineNr="112" EndLineNr="112" ID="280589">
+       <PredefinedLiteral LineNr="112" EndLineNr="112" ID="280588">
+        <TheCode ID="283883">ZeroKeyword</TheCode>
+       </PredefinedLiteral>
+      </ValueClause>
+      <TheDot ID="283884">TRUE</TheDot>
+     </DataField>
+     <DataField LineNr="113" EndLineNr="113" ID="280595" Level="1">
+      <DataIdent LineNr="113" EndLineNr="113" ID="280591" XRef="280595">
+       ERROR-HOLD
+      </DataIdent>
+      <PicClause LineNr="113" EndLineNr="113" ID="280592">
+       999
+      </PicClause>
+      <ValueClause LineNr="113" EndLineNr="113" ID="280594">
+       <PredefinedLiteral LineNr="113" EndLineNr="113" ID="280593">
+        <TheCode ID="283887">ZeroKeyword</TheCode>
+       </PredefinedLiteral>
+      </ValueClause>
+      <TheDot ID="283888">TRUE</TheDot>
+     </DataField>
+     <DataField LineNr="114" EndLineNr="114" ID="280600" Level="1">
+      <DataIdent LineNr="114" EndLineNr="114" ID="280596" XRef="280600">
+       DUMMY-HOLD
+      </DataIdent>
+      <PicClause LineNr="114" EndLineNr="114" ID="280597">
+       X(120)
+      </PicClause>
+      <ValueClause LineNr="114" EndLineNr="114" ID="280599">
+       <PredefinedLiteral LineNr="114" EndLineNr="114" ID="280598">
+        <TheCode ID="283891">SpaceKeyword</TheCode>
+       </PredefinedLiteral>
+      </ValueClause>
+      <TheDot ID="283892">TRUE</TheDot>
+     </DataField>
+     <DataField LineNr="115" EndLineNr="115" ID="280605" Level="1">
+      <DataIdent LineNr="115" EndLineNr="115" ID="280601" XRef="280605">
+       RECORD-COUNT
+      </DataIdent>
+      <PicClause LineNr="115" EndLineNr="115" ID="280602">
+       9(5)
+      </PicClause>
+      <ValueClause LineNr="115" EndLineNr="115" ID="280604">
+       <PredefinedLiteral LineNr="115" EndLineNr="115" ID="280603">
+        <TheCode ID="283895">ZeroKeyword</TheCode>
+       </PredefinedLiteral>
+      </ValueClause>
+      <TheDot ID="283896">TRUE</TheDot>
+     </DataField>
+     <DataField LineNr="116" EndLineNr="116" ID="280610" Level="1">
+      <DataIdent LineNr="116" EndLineNr="116" ID="280606" XRef="280610">
+       ANSI-REFERENCE
+      </DataIdent>
+      <PicClause LineNr="116" EndLineNr="116" ID="280607">
+       X(48)
+      </PicClause>
+      <ValueClause LineNr="116" EndLineNr="116" ID="280609">
+       <PredefinedLiteral LineNr="116" EndLineNr="116" ID="280608">
+        <TheCode ID="283899">SpaceKeyword</TheCode>
+       </PredefinedLiteral>
+      </ValueClause>
+      <TheDot ID="283900">TRUE</TheDot>
+     </DataField>
+     <DataField LineNr="117" EndLineNr="121" ID="280612" Level="1">
+      <DataIdent LineNr="117" EndLineNr="117" ID="280611" XRef="280612">
+       CCVS-H-1
+      </DataIdent>
+      <TheDot ID="283902">TRUE</TheDot>
+     <DataField LineNr="118" EndLineNr="118" ID="280616" Level="2" ParentLevel="280612">
+      <PicClause LineNr="118" EndLineNr="118" ID="280613">
+       X(39)
+      </PicClause>
+      <ValueClause LineNr="118" EndLineNr="118" ID="280615">
+       <PredefinedLiteral LineNr="118" EndLineNr="118" ID="280614">
+        <TheCode ID="283904">SpaceKeyword</TheCode>
+       </PredefinedLiteral>
+      </ValueClause>
+      <TheDot ID="283905">TRUE</TheDot>
+      <TheIsFiller ID="283906">TRUE</TheIsFiller>
+     </DataField><DataField LineNr="119" EndLineNr="120" ID="280620" Level="2" ParentLevel="280612">
+      <PicClause LineNr="119" EndLineNr="119" ID="280617">
+       X(42)
+      </PicClause>
+      <ValueClause LineNr="119" EndLineNr="120" ID="280619">
+       <StringLiteral LineNr="120" EndLineNr="120" ID="280618">
+        "OFFICIAL COBOL COMPILER VALIDATION SYSTEM"
+       </StringLiteral>
+      </ValueClause>
+      <TheDot ID="283909">TRUE</TheDot>
+      <TheIsFiller ID="283910">TRUE</TheIsFiller>
+     </DataField><DataField LineNr="121" EndLineNr="121" ID="280624" Level="2" ParentLevel="280612">
+      <PicClause LineNr="121" EndLineNr="121" ID="280621">
+       X(39)
+      </PicClause>
+      <ValueClause LineNr="121" EndLineNr="121" ID="280623">
+       <PredefinedLiteral LineNr="121" EndLineNr="121" ID="280622">
+        <TheCode ID="283912">SpaceKeyword</TheCode>
+       </PredefinedLiteral>
+      </ValueClause>
+      <TheDot ID="283913">TRUE</TheDot>
+      <TheIsFiller ID="283914">TRUE</TheIsFiller>
+     </DataField></DataField>
+     
+     
+     
+     <DataField LineNr="122" EndLineNr="129" ID="280626" Level="1">
+      <DataIdent LineNr="122" EndLineNr="122" ID="280625" XRef="280626">
+       CCVS-H-2A
+      </DataIdent>
+      <TheDot ID="283916">TRUE</TheDot>
+     <DataField LineNr="123" EndLineNr="123" ID="280630" Level="2" ParentLevel="280626">
+      <PicClause LineNr="123" EndLineNr="123" ID="280627">
+       X(40)
+      </PicClause>
+      <ValueClause LineNr="123" EndLineNr="123" ID="280629">
+       <PredefinedLiteral LineNr="123" EndLineNr="123" ID="280628">
+        <TheCode ID="283918">SpaceKeyword</TheCode>
+       </PredefinedLiteral>
+      </ValueClause>
+      <TheDot ID="283919">TRUE</TheDot>
+      <TheIsFiller ID="283920">TRUE</TheIsFiller>
+     </DataField><DataField LineNr="124" EndLineNr="124" ID="280634" Level="2" ParentLevel="280626">
+      <PicClause LineNr="124" EndLineNr="124" ID="280631">
+       X(7)
+      </PicClause>
+      <ValueClause LineNr="124" EndLineNr="124" ID="280633">
+       <StringLiteral LineNr="124" EndLineNr="124" ID="280632">
+        "CCVS85 "
+       </StringLiteral>
+      </ValueClause>
+      <TheDot ID="283923">TRUE</TheDot>
+      <TheIsFiller ID="283924">TRUE</TheIsFiller>
+     </DataField><DataField LineNr="125" EndLineNr="126" ID="280638" Level="2" ParentLevel="280626">
+      <PicClause LineNr="125" EndLineNr="125" ID="280635">
+       XXXX
+      </PicClause>
+      <ValueClause LineNr="125" EndLineNr="126" ID="280637">
+       <StringLiteral LineNr="126" EndLineNr="126" ID="280636">
+        "4.2 "
+       </StringLiteral>
+      </ValueClause>
+      <TheDot ID="283927">TRUE</TheDot>
+      <TheIsFiller ID="283928">TRUE</TheIsFiller>
+     </DataField><DataField LineNr="127" EndLineNr="128" ID="280642" Level="2" ParentLevel="280626">
+      <PicClause LineNr="127" EndLineNr="127" ID="280639">
+       X(28)
+      </PicClause>
+      <ValueClause LineNr="127" EndLineNr="128" ID="280641">
+       <StringLiteral LineNr="128" EndLineNr="128" ID="280640">
+        " COPY - NOT FOR DISTRIBUTION"
+       </StringLiteral>
+      </ValueClause>
+      <TheDot ID="283931">TRUE</TheDot>
+      <TheIsFiller ID="283932">TRUE</TheIsFiller>
+     </DataField><DataField LineNr="129" EndLineNr="129" ID="280646" Level="2" ParentLevel="280626">
+      <PicClause LineNr="129" EndLineNr="129" ID="280643">
+       X(41)
+      </PicClause>
+      <ValueClause LineNr="129" EndLineNr="129" ID="280645">
+       <PredefinedLiteral LineNr="129" EndLineNr="129" ID="280644">
+        <TheCode ID="283934">SpaceKeyword</TheCode>
+       </PredefinedLiteral>
+      </ValueClause>
+      <TheDot ID="283935">TRUE</TheDot>
+      <TheIsFiller ID="283936">TRUE</TheIsFiller>
+     </DataField></DataField>
+     
+     
+     
+     
+     
+     <DataField LineNr="131" EndLineNr="142" ID="280648" Level="1">
+      <DataIdent LineNr="131" EndLineNr="131" ID="280647" XRef="280648">
+       CCVS-H-2B
+      </DataIdent>
+      <TheDot ID="283938">TRUE</TheDot>
+     <DataField LineNr="132" EndLineNr="133" ID="280652" Level="2" ParentLevel="280648">
+      <PicClause LineNr="132" EndLineNr="132" ID="280649">
+       X(15)
+      </PicClause>
+      <ValueClause LineNr="132" EndLineNr="133" ID="280651">
+       <StringLiteral LineNr="133" EndLineNr="133" ID="280650">
+        "TEST RESULT OF "
+       </StringLiteral>
+      </ValueClause>
+      <TheDot ID="283941">TRUE</TheDot>
+      <TheIsFiller ID="283942">TRUE</TheIsFiller>
+     </DataField><DataField LineNr="134" EndLineNr="134" ID="280655" Level="2" ParentLevel="280648">
+      <DataIdent LineNr="134" EndLineNr="134" ID="280653" XRef="280655">
+       TEST-ID
+      </DataIdent>
+      <PicClause LineNr="134" EndLineNr="134" ID="280654">
+       X(9)
+      </PicClause>
+      <TheDot ID="283945">TRUE</TheDot>
+     </DataField><DataField LineNr="135" EndLineNr="136" ID="280659" Level="2" ParentLevel="280648">
+      <PicClause LineNr="135" EndLineNr="135" ID="280656">
+       X(4)
+      </PicClause>
+      <ValueClause LineNr="135" EndLineNr="136" ID="280658">
+       <StringLiteral LineNr="136" EndLineNr="136" ID="280657">
+        " IN "
+       </StringLiteral>
+      </ValueClause>
+      <TheDot ID="283948">TRUE</TheDot>
+      <TheIsFiller ID="283949">TRUE</TheIsFiller>
+     </DataField><DataField LineNr="137" EndLineNr="138" ID="280663" Level="2" ParentLevel="280648">
+      <PicClause LineNr="137" EndLineNr="137" ID="280660">
+       X(12)
+      </PicClause>
+      <ValueClause LineNr="137" EndLineNr="138" ID="280662">
+       <StringLiteral LineNr="138" EndLineNr="138" ID="280661">
+        " HIGH       "
+       </StringLiteral>
+      </ValueClause>
+      <TheDot ID="283952">TRUE</TheDot>
+      <TheIsFiller ID="283953">TRUE</TheIsFiller>
+     </DataField><DataField LineNr="139" EndLineNr="140" ID="280667" Level="2" ParentLevel="280648">
+      <PicClause LineNr="139" EndLineNr="139" ID="280664">
+       X(22)
+      </PicClause>
+      <ValueClause LineNr="139" EndLineNr="140" ID="280666">
+       <StringLiteral LineNr="140" EndLineNr="140" ID="280665">
+        " LEVEL VALIDATION FOR "
+       </StringLiteral>
+      </ValueClause>
+      <TheDot ID="283956">TRUE</TheDot>
+      <TheIsFiller ID="283957">TRUE</TheIsFiller>
+     </DataField><DataField LineNr="141" EndLineNr="142" ID="280671" Level="2" ParentLevel="280648">
+      <PicClause LineNr="141" EndLineNr="141" ID="280668">
+       X(58)
+      </PicClause>
+      <ValueClause LineNr="141" EndLineNr="142" ID="280670">
+       <StringLiteral LineNr="142" EndLineNr="142" ID="280669">
+        "ON-SITE VALIDATION, NATIONAL INSTITUTE OF STD &amp; TECH.     "
+       </StringLiteral>
+      </ValueClause>
+      <TheDot ID="283960">TRUE</TheDot>
+      <TheIsFiller ID="283961">TRUE</TheIsFiller>
+     </DataField></DataField>
+     
+     
+     
+     
+     
+     
+     <DataField LineNr="143" EndLineNr="149" ID="280673" Level="1">
+      <DataIdent LineNr="143" EndLineNr="143" ID="280672" XRef="280673">
+       CCVS-H-3
+      </DataIdent>
+      <TheDot ID="283963">TRUE</TheDot>
+     <DataField LineNr="144" EndLineNr="145" ID="280677" Level="2" ParentLevel="280673">
+      <PicClause LineNr="144" EndLineNr="144" ID="280674">
+       X(34)
+      </PicClause>
+      <ValueClause LineNr="144" EndLineNr="145" ID="280676">
+       <StringLiteral LineNr="145" EndLineNr="145" ID="280675">
+        " FOR OFFICIAL USE ONLY    "
+       </StringLiteral>
+      </ValueClause>
+      <TheDot ID="283966">TRUE</TheDot>
+      <TheIsFiller ID="283967">TRUE</TheIsFiller>
+     </DataField><DataField LineNr="146" EndLineNr="147" ID="280681" Level="2" ParentLevel="280673">
+      <PicClause LineNr="146" EndLineNr="146" ID="280678">
+       X(58)
+      </PicClause>
+      <ValueClause LineNr="146" EndLineNr="147" ID="280680">
+       <StringLiteral LineNr="147" EndLineNr="147" ID="280679">
+        "COBOL 85 VERSION 4.2, Apr  1993 SSVG                      "
+       </StringLiteral>
+      </ValueClause>
+      <TheDot ID="283970">TRUE</TheDot>
+      <TheIsFiller ID="283971">TRUE</TheIsFiller>
+     </DataField><DataField LineNr="148" EndLineNr="149" ID="280685" Level="2" ParentLevel="280673">
+      <PicClause LineNr="148" EndLineNr="148" ID="280682">
+       X(28)
+      </PicClause>
+      <ValueClause LineNr="148" EndLineNr="149" ID="280684">
+       <StringLiteral LineNr="149" EndLineNr="149" ID="280683">
+        "  COPYRIGHT   1985 "
+       </StringLiteral>
+      </ValueClause>
+      <TheDot ID="283974">TRUE</TheDot>
+      <TheIsFiller ID="283975">TRUE</TheIsFiller>
+     </DataField></DataField>
+     
+     
+     
+     <DataField LineNr="150" EndLineNr="154" ID="280687" Level="1">
+      <DataIdent LineNr="150" EndLineNr="150" ID="280686" XRef="280687">
+       CCVS-E-1
+      </DataIdent>
+      <TheDot ID="283977">TRUE</TheDot>
+     <DataField LineNr="151" EndLineNr="151" ID="280691" Level="2" ParentLevel="280687">
+      <PicClause LineNr="151" EndLineNr="151" ID="280688">
+       X(52)
+      </PicClause>
+      <ValueClause LineNr="151" EndLineNr="151" ID="280690">
+       <PredefinedLiteral LineNr="151" EndLineNr="151" ID="280689">
+        <TheCode ID="283979">SpaceKeyword</TheCode>
+       </PredefinedLiteral>
+      </ValueClause>
+      <TheDot ID="283980">TRUE</TheDot>
+      <TheIsFiller ID="283981">TRUE</TheIsFiller>
+     </DataField><DataField LineNr="152" EndLineNr="152" ID="280695" Level="2" ParentLevel="280687">
+      <PicClause LineNr="152" EndLineNr="152" ID="280692">
+       X(14)
+      </PicClause>
+      <ValueClause LineNr="152" EndLineNr="152" ID="280694">
+       <StringLiteral LineNr="152" EndLineNr="152" ID="280693">
+        "END OF TEST-  "
+       </StringLiteral>
+      </ValueClause>
+      <TheDot ID="283984">TRUE</TheDot>
+      <TheIsFiller ID="283985">TRUE</TheIsFiller>
+     </DataField><DataField LineNr="153" EndLineNr="153" ID="280698" Level="2" ParentLevel="280687">
+      <DataIdent LineNr="153" EndLineNr="153" ID="280696" XRef="280698">
+       ID-AGAIN
+      </DataIdent>
+      <PicClause LineNr="153" EndLineNr="153" ID="280697">
+       X(9)
+      </PicClause>
+      <TheDot ID="283988">TRUE</TheDot>
+     </DataField><DataField LineNr="154" EndLineNr="154" ID="280702" Level="2" ParentLevel="280687">
+      <PicClause LineNr="154" EndLineNr="154" ID="280699">
+       X(45)
+      </PicClause>
+      <ValueClause LineNr="154" EndLineNr="154" ID="280701">
+       <PredefinedLiteral LineNr="154" EndLineNr="154" ID="280700">
+        <TheCode ID="283990">SpaceKeyword</TheCode>
+       </PredefinedLiteral>
+      </ValueClause>
+      <TheDot ID="283991">TRUE</TheDot>
+      <TheIsFiller ID="283992">TRUE</TheIsFiller>
+     </DataField></DataField>
+     
+     
+     
+     
+     <DataField LineNr="155" EndLineNr="162" ID="280704" Level="1">
+      <DataIdent LineNr="155" EndLineNr="155" ID="280703" XRef="280704">
+       CCVS-E-2
+      </DataIdent>
+      <TheDot ID="283994">TRUE</TheDot>
+     <DataField LineNr="156" EndLineNr="156" ID="280708" Level="2" ParentLevel="280704">
+      <PicClause LineNr="156" EndLineNr="156" ID="280705">
+       X(31)
+      </PicClause>
+      <ValueClause LineNr="156" EndLineNr="156" ID="280707">
+       <PredefinedLiteral LineNr="156" EndLineNr="156" ID="280706">
+        <TheCode ID="283996">SpaceKeyword</TheCode>
+       </PredefinedLiteral>
+      </ValueClause>
+      <TheDot ID="283997">TRUE</TheDot>
+      <TheIsFiller ID="283998">TRUE</TheIsFiller>
+     </DataField><DataField LineNr="157" EndLineNr="157" ID="280712" Level="2" ParentLevel="280704">
+      <PicClause LineNr="157" EndLineNr="157" ID="280709">
+       X(21)
+      </PicClause>
+      <ValueClause LineNr="157" EndLineNr="157" ID="280711">
+       <PredefinedLiteral LineNr="157" EndLineNr="157" ID="280710">
+        <TheCode ID="284000">SpaceKeyword</TheCode>
+       </PredefinedLiteral>
+      </ValueClause>
+      <TheDot ID="284001">TRUE</TheDot>
+      <TheIsFiller ID="284002">TRUE</TheIsFiller>
+     </DataField><DataField LineNr="158" EndLineNr="162" ID="280714" Level="2" ParentLevel="280704">
+      <DataIdent LineNr="158" EndLineNr="158" ID="280713" XRef="280714">
+       CCVS-E-2-2
+      </DataIdent>
+      <TheDot ID="284004">TRUE</TheDot>
+     <DataField LineNr="159" EndLineNr="159" ID="280719" Level="3" ParentLevel="280714">
+      <DataIdent LineNr="159" EndLineNr="159" ID="280715" XRef="280719">
+       ERROR-TOTAL
+      </DataIdent>
+      <PicClause LineNr="159" EndLineNr="159" ID="280716">
+       XXX
+      </PicClause>
+      <ValueClause LineNr="159" EndLineNr="159" ID="280718">
+       <PredefinedLiteral LineNr="159" EndLineNr="159" ID="280717">
+        <TheCode ID="284007">SpaceKeyword</TheCode>
+       </PredefinedLiteral>
+      </ValueClause>
+      <TheDot ID="284008">TRUE</TheDot>
+     </DataField><DataField LineNr="160" EndLineNr="160" ID="280723" Level="3" ParentLevel="280714">
+      <PicClause LineNr="160" EndLineNr="160" ID="280720">
+       X
+      </PicClause>
+      <ValueClause LineNr="160" EndLineNr="160" ID="280722">
+       <PredefinedLiteral LineNr="160" EndLineNr="160" ID="280721">
+        <TheCode ID="284010">SpaceKeyword</TheCode>
+       </PredefinedLiteral>
+      </ValueClause>
+      <TheDot ID="284011">TRUE</TheDot>
+      <TheIsFiller ID="284012">TRUE</TheIsFiller>
+     </DataField><DataField LineNr="161" EndLineNr="162" ID="280728" Level="3" ParentLevel="280714">
+      <DataIdent LineNr="161" EndLineNr="161" ID="280724" XRef="280728">
+       ENDER-DESC
+      </DataIdent>
+      <PicClause LineNr="161" EndLineNr="161" ID="280725">
+       X(44)
+      </PicClause>
+      <ValueClause LineNr="161" EndLineNr="162" ID="280727">
+       <StringLiteral LineNr="162" EndLineNr="162" ID="280726">
+        "ERRORS ENCOUNTERED"
+       </StringLiteral>
+      </ValueClause>
+      <TheDot ID="284016">TRUE</TheDot>
+     </DataField></DataField></DataField>
+     
+     
+     
+     
+     
+     
+     <DataField LineNr="163" EndLineNr="171" ID="280730" Level="1">
+      <DataIdent LineNr="163" EndLineNr="163" ID="280729" XRef="280730">
+       CCVS-E-3
+      </DataIdent>
+      <TheDot ID="284018">TRUE</TheDot>
+     <DataField LineNr="164" EndLineNr="165" ID="280734" Level="2" ParentLevel="280730">
+      <PicClause LineNr="164" EndLineNr="164" ID="280731">
+       X(22)
+      </PicClause>
+      <ValueClause LineNr="164" EndLineNr="165" ID="280733">
+       <StringLiteral LineNr="165" EndLineNr="165" ID="280732">
+        " FOR OFFICIAL USE ONLY"
+       </StringLiteral>
+      </ValueClause>
+      <TheDot ID="284021">TRUE</TheDot>
+      <TheIsFiller ID="284022">TRUE</TheIsFiller>
+     </DataField><DataField LineNr="166" EndLineNr="166" ID="280738" Level="2" ParentLevel="280730">
+      <PicClause LineNr="166" EndLineNr="166" ID="280735">
+       X(12)
+      </PicClause>
+      <ValueClause LineNr="166" EndLineNr="166" ID="280737">
+       <PredefinedLiteral LineNr="166" EndLineNr="166" ID="280736">
+        <TheCode ID="284024">SpaceKeyword</TheCode>
+       </PredefinedLiteral>
+      </ValueClause>
+      <TheDot ID="284025">TRUE</TheDot>
+      <TheIsFiller ID="284026">TRUE</TheIsFiller>
+     </DataField><DataField LineNr="167" EndLineNr="168" ID="280742" Level="2" ParentLevel="280730">
+      <PicClause LineNr="167" EndLineNr="167" ID="280739">
+       X(58)
+      </PicClause>
+      <ValueClause LineNr="167" EndLineNr="168" ID="280741">
+       <StringLiteral LineNr="168" EndLineNr="168" ID="280740">
+        "ON-SITE VALIDATION, NATIONAL INSTITUTE OF STD &amp; TECH.     "
+       </StringLiteral>
+      </ValueClause>
+      <TheDot ID="284029">TRUE</TheDot>
+      <TheIsFiller ID="284030">TRUE</TheIsFiller>
+     </DataField><DataField LineNr="169" EndLineNr="169" ID="280746" Level="2" ParentLevel="280730">
+      <PicClause LineNr="169" EndLineNr="169" ID="280743">
+       X(13)
+      </PicClause>
+      <ValueClause LineNr="169" EndLineNr="169" ID="280745">
+       <PredefinedLiteral LineNr="169" EndLineNr="169" ID="280744">
+        <TheCode ID="284032">SpaceKeyword</TheCode>
+       </PredefinedLiteral>
+      </ValueClause>
+      <TheDot ID="284033">TRUE</TheDot>
+      <TheIsFiller ID="284034">TRUE</TheIsFiller>
+     </DataField><DataField LineNr="170" EndLineNr="171" ID="280750" Level="2" ParentLevel="280730">
+      <PicClause LineNr="170" EndLineNr="170" ID="280747">
+       X(15)
+      </PicClause>
+      <ValueClause LineNr="170" EndLineNr="171" ID="280749">
+       <StringLiteral LineNr="171" EndLineNr="171" ID="280748">
+        " COPYRIGHT 1985"
+       </StringLiteral>
+      </ValueClause>
+      <TheDot ID="284037">TRUE</TheDot>
+      <TheIsFiller ID="284038">TRUE</TheIsFiller>
+     </DataField></DataField>
+     
+     
+     
+     
+     
+     <DataField LineNr="172" EndLineNr="177" ID="280752" Level="1">
+      <DataIdent LineNr="172" EndLineNr="172" ID="280751" XRef="280752">
+       CCVS-E-4
+      </DataIdent>
+      <TheDot ID="284040">TRUE</TheDot>
+     <DataField LineNr="173" EndLineNr="173" ID="280757" Level="2" ParentLevel="280752">
+      <DataIdent LineNr="173" EndLineNr="173" ID="280753" XRef="280757">
+       CCVS-E-4-1
+      </DataIdent>
+      <PicClause LineNr="173" EndLineNr="173" ID="280754">
+       XXX
+      </PicClause>
+      <ValueClause LineNr="173" EndLineNr="173" ID="280756">
+       <PredefinedLiteral LineNr="173" EndLineNr="173" ID="280755">
+        <TheCode ID="284043">SpaceKeyword</TheCode>
+       </PredefinedLiteral>
+      </ValueClause>
+      <TheDot ID="284044">TRUE</TheDot>
+     </DataField><DataField LineNr="174" EndLineNr="174" ID="280761" Level="2" ParentLevel="280752">
+      <PicClause LineNr="174" EndLineNr="174" ID="280758">
+       X(4)
+      </PicClause>
+      <ValueClause LineNr="174" EndLineNr="174" ID="280760">
+       <StringLiteral LineNr="174" EndLineNr="174" ID="280759">
+        " OF "
+       </StringLiteral>
+      </ValueClause>
+      <TheDot ID="284047">TRUE</TheDot>
+      <TheIsFiller ID="284048">TRUE</TheIsFiller>
+     </DataField><DataField LineNr="175" EndLineNr="175" ID="280766" Level="2" ParentLevel="280752">
+      <DataIdent LineNr="175" EndLineNr="175" ID="280762" XRef="280766">
+       CCVS-E-4-2
+      </DataIdent>
+      <PicClause LineNr="175" EndLineNr="175" ID="280763">
+       XXX
+      </PicClause>
+      <ValueClause LineNr="175" EndLineNr="175" ID="280765">
+       <PredefinedLiteral LineNr="175" EndLineNr="175" ID="280764">
+        <TheCode ID="284051">SpaceKeyword</TheCode>
+       </PredefinedLiteral>
+      </ValueClause>
+      <TheDot ID="284052">TRUE</TheDot>
+     </DataField><DataField LineNr="176" EndLineNr="177" ID="280770" Level="2" ParentLevel="280752">
+      <PicClause LineNr="176" EndLineNr="176" ID="280767">
+       X(40)
+      </PicClause>
+      <ValueClause LineNr="176" EndLineNr="177" ID="280769">
+       <StringLiteral LineNr="177" EndLineNr="177" ID="280768">
+        "  TESTS WERE EXECUTED SUCCESSFULLY"
+       </StringLiteral>
+      </ValueClause>
+      <TheDot ID="284055">TRUE</TheDot>
+      <TheIsFiller ID="284056">TRUE</TheIsFiller>
+     </DataField></DataField>
+     
+     
+     
+     
+     <DataField LineNr="178" EndLineNr="186" ID="280772" Level="1">
+      <DataIdent LineNr="178" EndLineNr="178" ID="280771" XRef="280772">
+       XXINFO
+      </DataIdent>
+      <TheDot ID="284058">TRUE</TheDot>
+     <DataField LineNr="179" EndLineNr="180" ID="280776" Level="2" ParentLevel="280772">
+      <PicClause LineNr="179" EndLineNr="179" ID="280773">
+       X(19)
+      </PicClause>
+      <ValueClause LineNr="179" EndLineNr="180" ID="280775">
+       <StringLiteral LineNr="180" EndLineNr="180" ID="280774">
+        "*** INFORMATION ***"
+       </StringLiteral>
+      </ValueClause>
+      <TheDot ID="284061">TRUE</TheDot>
+      <TheIsFiller ID="284062">TRUE</TheIsFiller>
+     </DataField><DataField LineNr="181" EndLineNr="185" ID="280778" Level="2" ParentLevel="280772">
+      <DataIdent LineNr="181" EndLineNr="181" ID="280777" XRef="280778">
+       INFO-TEXT
+      </DataIdent>
+      <TheDot ID="284064">TRUE</TheDot>
+     <DataField LineNr="182" EndLineNr="182" ID="280782" Level="4" ParentLevel="280778">
+      <PicClause LineNr="182" EndLineNr="182" ID="280779">
+       X(8)
+      </PicClause>
+      <ValueClause LineNr="182" EndLineNr="182" ID="280781">
+       <PredefinedLiteral LineNr="182" EndLineNr="182" ID="280780">
+        <TheCode ID="284066">SpaceKeyword</TheCode>
+       </PredefinedLiteral>
+      </ValueClause>
+      <TheDot ID="284067">TRUE</TheDot>
+      <TheIsFiller ID="284068">TRUE</TheIsFiller>
+     </DataField><DataField LineNr="183" EndLineNr="183" ID="280785" Level="4" ParentLevel="280778">
+      <DataIdent LineNr="183" EndLineNr="183" ID="280783" XRef="280785">
+       XXCOMPUTED
+      </DataIdent>
+      <PicClause LineNr="183" EndLineNr="183" ID="280784">
+       X(20)
+      </PicClause>
+      <TheDot ID="284071">TRUE</TheDot>
+     </DataField><DataField LineNr="184" EndLineNr="184" ID="280789" Level="4" ParentLevel="280778">
+      <PicClause LineNr="184" EndLineNr="184" ID="280786">
+       X(5)
+      </PicClause>
+      <ValueClause LineNr="184" EndLineNr="184" ID="280788">
+       <PredefinedLiteral LineNr="184" EndLineNr="184" ID="280787">
+        <TheCode ID="284073">SpaceKeyword</TheCode>
+       </PredefinedLiteral>
+      </ValueClause>
+      <TheDot ID="284074">TRUE</TheDot>
+      <TheIsFiller ID="284075">TRUE</TheIsFiller>
+     </DataField><DataField LineNr="185" EndLineNr="185" ID="280792" Level="4" ParentLevel="280778">
+      <DataIdent LineNr="185" EndLineNr="185" ID="280790" XRef="280792">
+       XXCORRECT
+      </DataIdent>
+      <PicClause LineNr="185" EndLineNr="185" ID="280791">
+       X(20)
+      </PicClause>
+      <TheDot ID="284078">TRUE</TheDot>
+     </DataField></DataField><DataField LineNr="186" EndLineNr="186" ID="280795" Level="2" ParentLevel="280772">
+      <DataIdent LineNr="186" EndLineNr="186" ID="280793" XRef="280795">
+       INF-ANSI-REFERENCE
+      </DataIdent>
+      <PicClause LineNr="186" EndLineNr="186" ID="280794">
+       X(48)
+      </PicClause>
+      <TheDot ID="284081">TRUE</TheDot>
+     </DataField></DataField>
+     
+     
+     
+     
+     
+     
+     
+     <DataField LineNr="187" EndLineNr="191" ID="280797" Level="1">
+      <DataIdent LineNr="187" EndLineNr="187" ID="280796" XRef="280797">
+       HYPHEN-LINE
+      </DataIdent>
+      <TheDot ID="284083">TRUE</TheDot>
+     <DataField LineNr="188" EndLineNr="188" ID="280801" Level="2" ParentLevel="280797">
+      <PicClause LineNr="188" EndLineNr="188" ID="280798">
+       X
+      </PicClause>
+      <ValueClause LineNr="188" EndLineNr="188" ID="280800">
+       <PredefinedLiteral LineNr="188" EndLineNr="188" ID="280799">
+        <TheCode ID="284085">SpaceKeyword</TheCode>
+       </PredefinedLiteral>
+      </ValueClause>
+      <TheDot ID="284086">TRUE</TheDot>
+      <TheIsFiller ID="284087">TRUE</TheIsFiller>
+     </DataField><DataField LineNr="189" EndLineNr="189" ID="280805" Level="2" ParentLevel="280797">
+      <PicClause LineNr="189" EndLineNr="189" ID="280802">
+       X(65)
+      </PicClause>
+      <ValueClause LineNr="189" EndLineNr="189" ID="280804">
+       <StringLiteral LineNr="189" EndLineNr="189" ID="280803">
+        "*****************************************************************"
+       </StringLiteral>
+      </ValueClause>
+      <TheDot ID="284090">TRUE</TheDot>
+      <TheIsFiller ID="284091">TRUE</TheIsFiller>
+     </DataField><DataField LineNr="191" EndLineNr="191" ID="280809" Level="2" ParentLevel="280797">
+      <PicClause LineNr="191" EndLineNr="191" ID="280806">
+       X(54)
+      </PicClause>
+      <ValueClause LineNr="191" EndLineNr="191" ID="280808">
+       <StringLiteral LineNr="191" EndLineNr="191" ID="280807">
+        "******************************************************"
+       </StringLiteral>
+      </ValueClause>
+      <TheDot ID="284094">TRUE</TheDot>
+      <TheIsFiller ID="284095">TRUE</TheIsFiller>
+     </DataField></DataField>
+     
+     
+     
+     <DataField LineNr="193" EndLineNr="194" ID="280814" Level="1">
+      <DataIdent LineNr="193" EndLineNr="193" ID="280810" XRef="280814">
+       CCVS-PGM-ID
+      </DataIdent>
+      <PicClause LineNr="193" EndLineNr="193" ID="280811">
+       X(9)
+      </PicClause>
+      <ValueClause LineNr="193" EndLineNr="194" ID="280813">
+       <StringLiteral LineNr="194" EndLineNr="194" ID="280812">
+        "IF142A"
+       </StringLiteral>
+      </ValueClause>
+      <TheDot ID="284099">TRUE</TheDot>
+     </DataField>
+    </DataDecl>
+   </WorkingStorageSection>
+  </DataDivision>
+  <ProcedureDivision LineNr="195" EndLineNr="367" ID="283563">
+   <SectionStatementBlock LineNr="196" EndLineNr="196" ID="280825">
+    <LabelIdent LineNr="196" EndLineNr="196" ID="280819" XRef="280825">
+     CCVS1
+    </LabelIdent>
+   </SectionStatementBlock>
+   <ParagraphStatementBlock LineNr="197" EndLineNr="202" ID="280902">
+    <LabelIdent LineNr="197" EndLineNr="197" ID="280826" XRef="280902">
+     OPEN-FILES
+    </LabelIdent>
+    <PeriodStatementList LineNr="198" EndLineNr="202" ID="280901">
+     <OpenStatement LineNr="198" EndLineNr="198" ID="280830">
+      <FileList LineNr="198" EndLineNr="198" ID="280829">
+       <TheMode ID="284102">OutputKeyword</TheMode>
+       <FileIdent LineNr="198" EndLineNr="198" ID="280828" XRef="280203">
+        PRINT-FILE
+       </FileIdent>
+      </FileList>
+     </OpenStatement>
+     <MoveStatement LineNr="199" EndLineNr="199" ID="280839">
+      <Designator LineNr="199" EndLineNr="199" ID="280835" XRef="280814">
+       <DesigElement LineNr="199" EndLineNr="199" ID="280834">
+        <DataIdent LineNr="199" EndLineNr="199" ID="280833" XRef="280814">
+         CCVS-PGM-ID
+        </DataIdent>
+       </DesigElement>
+      </Designator>
+      <Designator LineNr="199" EndLineNr="199" ID="280838" XRef="280655">
+       <DesigElement LineNr="199" EndLineNr="199" ID="280837">
+        <DataIdent LineNr="199" EndLineNr="199" ID="280836" XRef="280655">
+         TEST-ID
+        </DataIdent>
+       </DesigElement>
+      </Designator>
+     </MoveStatement>
+     <MoveStatement LineNr="199" EndLineNr="199" ID="280851">
+      <Designator LineNr="199" EndLineNr="199" ID="280844" XRef="280814">
+       <DesigElement LineNr="199" EndLineNr="199" ID="280843">
+        <DataIdent LineNr="199" EndLineNr="199" ID="280842" XRef="280814">
+         CCVS-PGM-ID
+        </DataIdent>
+       </DesigElement>
+      </Designator>
+      <Designator LineNr="199" EndLineNr="199" ID="280850" XRef="280698">
+       <DesigElement LineNr="199" EndLineNr="199" ID="280849">
+        <DataIdent LineNr="199" EndLineNr="199" ID="280848" XRef="280698">
+         ID-AGAIN
+        </DataIdent>
+       </DesigElement>
+      </Designator>
+     </MoveStatement>
+     <MoveStatement LineNr="200" EndLineNr="200" ID="280861">
+      <PredefinedLiteral LineNr="200" EndLineNr="200" ID="280854">
+       <TheCode ID="284108">SpaceKeyword</TheCode>
+      </PredefinedLiteral>
+      <Designator LineNr="200" EndLineNr="200" ID="280860" XRef="280297">
+       <DesigElement LineNr="200" EndLineNr="200" ID="280859">
+        <DataIdent LineNr="200" EndLineNr="200" ID="280858" XRef="280297">
+         TEST-RESULTS
+        </DataIdent>
+       </DesigElement>
+      </Designator>
+     </MoveStatement>
+     <PerformStatement LineNr="201" EndLineNr="201" ID="280889">
+      <SectionCodeRef LineNr="201" EndLineNr="201" ID="280888">
+       <TargetLabel LineNr="201" EndLineNr="201" ID="280885" XRef="281517">
+        <LabelIdent LineNr="201" EndLineNr="201" ID="280884" XRef="281517">
+         HEAD-ROUTINE
+        </LabelIdent>
+       </TargetLabel>
+       <TargetLabel LineNr="201" EndLineNr="201" ID="280887" XRef="281658">
+        <LabelIdent LineNr="201" EndLineNr="201" ID="280886" XRef="281658">
+         COLUMN-NAMES-ROUTINE
+        </LabelIdent>
+       </TargetLabel>
+      </SectionCodeRef>
+     </PerformStatement>
+     <GotoStatement LineNr="202" EndLineNr="202" ID="280894">
+      <TargetLabel LineNr="202" EndLineNr="202" ID="280893" XRef="283095">
+       <LabelIdent LineNr="202" EndLineNr="202" ID="280892" XRef="283095">
+        CCVS1-EXIT
+       </LabelIdent>
+      </TargetLabel>
+     </GotoStatement>
+    </PeriodStatementList>
+    <TheDot ID="284113">TRUE</TheDot>
+   </ParagraphStatementBlock>
+   <ParagraphStatementBlock LineNr="203" EndLineNr="204" ID="280943">
+    <LabelIdent LineNr="203" EndLineNr="203" ID="280903" XRef="280943">
+     CLOSE-FILES
+    </LabelIdent>
+    <PeriodStatementList LineNr="204" EndLineNr="204" ID="280942">
+     <PerformStatement LineNr="204" EndLineNr="204" ID="280929">
+      <SectionCodeRef LineNr="204" EndLineNr="204" ID="280928">
+       <TargetLabel LineNr="204" EndLineNr="204" ID="280925" XRef="281723">
+        <LabelIdent LineNr="204" EndLineNr="204" ID="280924" XRef="281723">
+         END-ROUTINE
+        </LabelIdent>
+       </TargetLabel>
+       <TargetLabel LineNr="204" EndLineNr="204" ID="280927" XRef="282201">
+        <LabelIdent LineNr="204" EndLineNr="204" ID="280926" XRef="282201">
+         END-ROUTINE-13
+        </LabelIdent>
+       </TargetLabel>
+      </SectionCodeRef>
+     </PerformStatement>
+     <CloseStatement LineNr="204" EndLineNr="204" ID="280935">
+      <FileAccess LineNr="204" EndLineNr="204" ID="280934">
+       <FileIdent LineNr="204" EndLineNr="204" ID="280933" XRef="280203">
+        PRINT-FILE
+       </FileIdent>
+      </FileAccess>
+     </CloseStatement>
+    </PeriodStatementList>
+    <TheDot ID="284118">TRUE</TheDot>
+   </ParagraphStatementBlock>
+   <ParagraphStatementBlock LineNr="205" EndLineNr="206" ID="280952">
+    <LabelIdent LineNr="205" EndLineNr="205" ID="280944" XRef="280952">
+     TERMINATE-CCVS
+    </LabelIdent>
+    <PeriodStatementList LineNr="206" EndLineNr="206" ID="280951">
+     <StopStatement LineNr="206" EndLineNr="206" ID="280945">
+      <TheMode ID="284120">RunKeyword</TheMode>
+     </StopStatement>
+    </PeriodStatementList>
+    <TheDot ID="284121">TRUE</TheDot>
+   </ParagraphStatementBlock>
+   <ParagraphStatementBlock LineNr="207" EndLineNr="207" ID="280976">
+    <LabelIdent LineNr="207" EndLineNr="207" ID="280953" XRef="280976">
+     INSPT
+    </LabelIdent>
+    <PeriodStatementList LineNr="207" EndLineNr="207" ID="280975">
+     <MoveStatement LineNr="207" EndLineNr="207" ID="280958">
+      <StringLiteral LineNr="207" EndLineNr="207" ID="280954">
+       "INSPT"
+      </StringLiteral>
+      <Designator LineNr="207" EndLineNr="207" ID="280957" XRef="280315">
+       <DesigElement LineNr="207" EndLineNr="207" ID="280956">
+        <DataIdent LineNr="207" EndLineNr="207" ID="280955" XRef="280315">
+         P-OR-F
+        </DataIdent>
+       </DesigElement>
+      </Designator>
+     </MoveStatement>
+     <AddStatement LineNr="207" EndLineNr="207" ID="280969">
+      <IntegerLiteral LineNr="207" EndLineNr="207" ID="280961">
+       1
+      </IntegerLiteral>
+      <ArithDesignator LineNr="207" EndLineNr="207" ID="280968">
+       <Designator LineNr="207" EndLineNr="207" ID="280967" XRef="280580">
+        <DesigElement LineNr="207" EndLineNr="207" ID="280966">
+         <DataIdent LineNr="207" EndLineNr="207" ID="280965" XRef="280580">
+          INSPECT-COUNTER
+         </DataIdent>
+        </DesigElement>
+       </Designator>
+      </ArithDesignator>
+     </AddStatement>
+    </PeriodStatementList>
+    <TheDot ID="284127">TRUE</TheDot>
+   </ParagraphStatementBlock>
+   <ParagraphStatementBlock LineNr="208" EndLineNr="208" ID="281000">
+    <LabelIdent LineNr="208" EndLineNr="208" ID="280977" XRef="281000">
+     PASS
+    </LabelIdent>
+    <PeriodStatementList LineNr="208" EndLineNr="208" ID="280999">
+     <MoveStatement LineNr="208" EndLineNr="208" ID="280982">
+      <StringLiteral LineNr="208" EndLineNr="208" ID="280978">
+       "PASS "
+      </StringLiteral>
+      <Designator LineNr="208" EndLineNr="208" ID="280981" XRef="280315">
+       <DesigElement LineNr="208" EndLineNr="208" ID="280980">
+        <DataIdent LineNr="208" EndLineNr="208" ID="280979" XRef="280315">
+         P-OR-F
+        </DataIdent>
+       </DesigElement>
+      </Designator>
+     </MoveStatement>
+     <AddStatement LineNr="208" EndLineNr="208" ID="280993">
+      <IntegerLiteral LineNr="208" EndLineNr="208" ID="280985">
+       1
+      </IntegerLiteral>
+      <ArithDesignator LineNr="208" EndLineNr="208" ID="280992">
+       <Designator LineNr="208" EndLineNr="208" ID="280991" XRef="280585">
+        <DesigElement LineNr="208" EndLineNr="208" ID="280990">
+         <DataIdent LineNr="208" EndLineNr="208" ID="280989" XRef="280585">
+          PASS-COUNTER
+         </DataIdent>
+        </DesigElement>
+       </Designator>
+      </ArithDesignator>
+     </AddStatement>
+    </PeriodStatementList>
+    <TheDot ID="284133">TRUE</TheDot>
+   </ParagraphStatementBlock>
+   <ParagraphStatementBlock LineNr="209" EndLineNr="209" ID="281024">
+    <LabelIdent LineNr="209" EndLineNr="209" ID="281001" XRef="281024">
+     FAIL
+    </LabelIdent>
+    <PeriodStatementList LineNr="209" EndLineNr="209" ID="281023">
+     <MoveStatement LineNr="209" EndLineNr="209" ID="281006">
+      <StringLiteral LineNr="209" EndLineNr="209" ID="281002">
+       "FAIL*"
+      </StringLiteral>
+      <Designator LineNr="209" EndLineNr="209" ID="281005" XRef="280315">
+       <DesigElement LineNr="209" EndLineNr="209" ID="281004">
+        <DataIdent LineNr="209" EndLineNr="209" ID="281003" XRef="280315">
+         P-OR-F
+        </DataIdent>
+       </DesigElement>
+      </Designator>
+     </MoveStatement>
+     <AddStatement LineNr="209" EndLineNr="209" ID="281017">
+      <IntegerLiteral LineNr="209" EndLineNr="209" ID="281009">
+       1
+      </IntegerLiteral>
+      <ArithDesignator LineNr="209" EndLineNr="209" ID="281016">
+       <Designator LineNr="209" EndLineNr="209" ID="281015" XRef="280575">
+        <DesigElement LineNr="209" EndLineNr="209" ID="281014">
+         <DataIdent LineNr="209" EndLineNr="209" ID="281013" XRef="280575">
+          ERROR-COUNTER
+         </DataIdent>
+        </DesigElement>
+       </Designator>
+      </ArithDesignator>
+     </AddStatement>
+    </PeriodStatementList>
+    <TheDot ID="284139">TRUE</TheDot>
+   </ParagraphStatementBlock>
+   <ParagraphStatementBlock LineNr="210" EndLineNr="211" ID="281059">
+    <LabelIdent LineNr="210" EndLineNr="210" ID="281025" XRef="281059">
+     DE-LETE
+    </LabelIdent>
+    <PeriodStatementList LineNr="210" EndLineNr="211" ID="281058">
+     <MoveStatement LineNr="210" EndLineNr="210" ID="281030">
+      <StringLiteral LineNr="210" EndLineNr="210" ID="281026">
+       "*****"
+      </StringLiteral>
+      <Designator LineNr="210" EndLineNr="210" ID="281029" XRef="280315">
+       <DesigElement LineNr="210" EndLineNr="210" ID="281028">
+        <DataIdent LineNr="210" EndLineNr="210" ID="281027" XRef="280315">
+         P-OR-F
+        </DataIdent>
+       </DesigElement>
+      </Designator>
+     </MoveStatement>
+     <AddStatement LineNr="210" EndLineNr="210" ID="281041">
+      <IntegerLiteral LineNr="210" EndLineNr="210" ID="281033">
+       1
+      </IntegerLiteral>
+      <ArithDesignator LineNr="210" EndLineNr="210" ID="281040">
+       <Designator LineNr="210" EndLineNr="210" ID="281039" XRef="280570">
+        <DesigElement LineNr="210" EndLineNr="210" ID="281038">
+         <DataIdent LineNr="210" EndLineNr="210" ID="281037" XRef="280570">
+          DELETE-COUNTER
+         </DataIdent>
+        </DesigElement>
+       </Designator>
+      </ArithDesignator>
+     </AddStatement>
+     <MoveStatement LineNr="211" EndLineNr="211" ID="281051">
+      <StringLiteral LineNr="211" EndLineNr="211" ID="281044">
+       "****TEST DELETED****"
+      </StringLiteral>
+      <Designator LineNr="211" EndLineNr="211" ID="281050" XRef="280342">
+       <DesigElement LineNr="211" EndLineNr="211" ID="281049">
+        <DataIdent LineNr="211" EndLineNr="211" ID="281048" XRef="280342">
+         RE-MARK
+        </DataIdent>
+       </DesigElement>
+      </Designator>
+     </MoveStatement>
+    </PeriodStatementList>
+    <TheDot ID="284147">TRUE</TheDot>
+   </ParagraphStatementBlock>
+   <ParagraphStatementBlock LineNr="212" EndLineNr="223" ID="281278">
+    <LabelIdent LineNr="212" EndLineNr="212" ID="281060" XRef="281278">
+     PRINT-DETAIL
+    </LabelIdent>
+    <PeriodStatementList LineNr="213" EndLineNr="223" ID="281277">
+     <IfStatement LineNr="213" EndLineNr="215" ID="281087">
+      <AtomicComparison LineNr="213" EndLineNr="213" ID="281068">
+       <Designator LineNr="213" EndLineNr="213" ID="281063" XRef="280565">
+        <DesigElement LineNr="213" EndLineNr="213" ID="281062">
+         <DataIdent LineNr="213" EndLineNr="213" ID="281061" XRef="280565">
+          REC-CT
+         </DataIdent>
+        </DesigElement>
+       </Designator>
+       <SingleRightSide LineNr="213" EndLineNr="213" ID="281067">
+        <ComparisonOperator LineNr="213" EndLineNr="213" ID="281065">
+         <TheOp ID="284150">EqualKeyword</TheOp>
+         <TheNegated ID="284151">TRUE</TheNegated>
+        </ComparisonOperator>
+        <PredefinedLiteral LineNr="213" EndLineNr="213" ID="281066">
+         <TheCode ID="284152">ZeroKeyword</TheCode>
+        </PredefinedLiteral>
+       </SingleRightSide>
+      </AtomicComparison>
+      <StatementList LineNr="214" EndLineNr="215" ID="281086">
+       <MoveStatement LineNr="214" EndLineNr="214" ID="281075">
+        <StringLiteral LineNr="214" EndLineNr="214" ID="281069">
+         "."
+        </StringLiteral>
+        <Designator LineNr="214" EndLineNr="214" ID="281074" XRef="280330">
+         <DesigElement LineNr="214" EndLineNr="214" ID="281073">
+          <DataIdent LineNr="214" EndLineNr="214" ID="281072" XRef="280330">
+           PARDOT-X
+          </DataIdent>
+         </DesigElement>
+        </Designator>
+       </MoveStatement>
+       <MoveStatement LineNr="215" EndLineNr="215" ID="281085">
+        <Designator LineNr="215" EndLineNr="215" ID="281078" XRef="280565">
+         <DesigElement LineNr="215" EndLineNr="215" ID="281077">
+          <DataIdent LineNr="215" EndLineNr="215" ID="281076" XRef="280565">
+           REC-CT
+          </DataIdent>
+         </DesigElement>
+        </Designator>
+        <Designator LineNr="215" EndLineNr="215" ID="281084" XRef="280335">
+         <DesigElement LineNr="215" EndLineNr="215" ID="281083">
+          <DataIdent LineNr="215" EndLineNr="215" ID="281082" XRef="280335">
+           DOTVALUE
+          </DataIdent>
+         </DesigElement>
+        </Designator>
+       </MoveStatement>
+      </StatementList>
+     </IfStatement>
+     <MoveStatement LineNr="216" EndLineNr="216" ID="281096">
+      <Designator LineNr="216" EndLineNr="216" ID="281092" XRef="280297">
+       <DesigElement LineNr="216" EndLineNr="216" ID="281091">
+        <DataIdent LineNr="216" EndLineNr="216" ID="281090" XRef="280297">
+         TEST-RESULTS
+        </DataIdent>
+       </DesigElement>
+      </Designator>
+      <Designator LineNr="216" EndLineNr="216" ID="281095" XRef="280198">
+       <DesigElement LineNr="216" EndLineNr="216" ID="281094">
+        <DataIdent LineNr="216" EndLineNr="216" ID="281093" XRef="280198">
+         PRINT-REC
+        </DataIdent>
+       </DesigElement>
+      </Designator>
+     </MoveStatement>
+     <PerformStatement LineNr="216" EndLineNr="216" ID="281124">
+      <SectionCodeRef LineNr="216" EndLineNr="216" ID="281123">
+       <TargetLabel LineNr="216" EndLineNr="216" ID="281122" XRef="282608">
+        <LabelIdent LineNr="216" EndLineNr="216" ID="281121" XRef="282608">
+         WRITE-LINE
+        </LabelIdent>
+       </TargetLabel>
+      </SectionCodeRef>
+     </PerformStatement>
+     <IfStatement LineNr="217" EndLineNr="219" ID="281213">
+      <AtomicComparison LineNr="217" EndLineNr="217" ID="281134">
+       <Designator LineNr="217" EndLineNr="217" ID="281129" XRef="280315">
+        <DesigElement LineNr="217" EndLineNr="217" ID="281128">
+         <DataIdent LineNr="217" EndLineNr="217" ID="281127" XRef="280315">
+          P-OR-F
+         </DataIdent>
+        </DesigElement>
+       </Designator>
+       <SingleRightSide LineNr="217" EndLineNr="217" ID="281133">
+        <ComparisonOperator LineNr="217" EndLineNr="217" ID="281131">
+         <TheOp ID="284161">EqualKeyword</TheOp>
+        </ComparisonOperator>
+        <StringLiteral LineNr="217" EndLineNr="217" ID="281132">
+         "FAIL*"
+        </StringLiteral>
+       </SingleRightSide>
+      </AtomicComparison>
+      <StatementList LineNr="217" EndLineNr="218" ID="281185">
+       <PerformStatement LineNr="217" EndLineNr="217" ID="281158">
+        <SectionCodeRef LineNr="217" EndLineNr="217" ID="281157">
+         <TargetLabel LineNr="217" EndLineNr="217" ID="281156" XRef="282608">
+          <LabelIdent LineNr="217" EndLineNr="217" ID="281155" XRef="282608">
+           WRITE-LINE
+          </LabelIdent>
+         </TargetLabel>
+        </SectionCodeRef>
+       </PerformStatement>
+       <PerformStatement LineNr="218" EndLineNr="218" ID="281184">
+        <SectionCodeRef LineNr="218" EndLineNr="218" ID="281183">
+         <TargetLabel LineNr="218" EndLineNr="218" ID="281180" XRef="282801">
+          <LabelIdent LineNr="218" EndLineNr="218" ID="281179" XRef="282801">
+           FAIL-ROUTINE
+          </LabelIdent>
+         </TargetLabel>
+         <TargetLabel LineNr="218" EndLineNr="218" ID="281182" XRef="282929">
+          <LabelIdent LineNr="218" EndLineNr="218" ID="281181" XRef="282929">
+           FAIL-ROUTINE-EX
+          </LabelIdent>
+         </TargetLabel>
+        </SectionCodeRef>
+       </PerformStatement>
+      </StatementList>
+      <StatementList LineNr="219" EndLineNr="219" ID="281212">
+       <PerformStatement LineNr="219" EndLineNr="219" ID="281211">
+        <SectionCodeRef LineNr="219" EndLineNr="219" ID="281210">
+         <TargetLabel LineNr="219" EndLineNr="219" ID="281207" XRef="282966">
+          <LabelIdent LineNr="219" EndLineNr="219" ID="281206" XRef="282966">
+           BAIL-OUT
+          </LabelIdent>
+         </TargetLabel>
+         <TargetLabel LineNr="219" EndLineNr="219" ID="281209" XRef="283086">
+          <LabelIdent LineNr="219" EndLineNr="219" ID="281208" XRef="283086">
+           BAIL-OUT-EX
+          </LabelIdent>
+         </TargetLabel>
+        </SectionCodeRef>
+       </PerformStatement>
+      </StatementList>
+      <TheElse ID="284168">TRUE</TheElse>
+     </IfStatement>
+     <MoveStatement LineNr="220" EndLineNr="220" ID="281220">
+      <PredefinedLiteral LineNr="220" EndLineNr="220" ID="281216">
+       <TheCode ID="284169">SpaceKeyword</TheCode>
+      </PredefinedLiteral>
+      <Designator LineNr="220" EndLineNr="220" ID="281219" XRef="280315">
+       <DesigElement LineNr="220" EndLineNr="220" ID="281218">
+        <DataIdent LineNr="220" EndLineNr="220" ID="281217" XRef="280315">
+         P-OR-F
+        </DataIdent>
+       </DesigElement>
+      </Designator>
+     </MoveStatement>
+     <MoveStatement LineNr="220" EndLineNr="220" ID="281230">
+      <PredefinedLiteral LineNr="220" EndLineNr="220" ID="281223">
+       <TheCode ID="284171">SpaceKeyword</TheCode>
+      </PredefinedLiteral>
+      <Designator LineNr="220" EndLineNr="220" ID="281229" XRef="280354">
+       <DesigElement LineNr="220" EndLineNr="220" ID="281228">
+        <DataIdent LineNr="220" EndLineNr="220" ID="281227" XRef="280354">
+         COMPUTED-X
+        </DataIdent>
+       </DesigElement>
+      </Designator>
+     </MoveStatement>
+     <MoveStatement LineNr="221" EndLineNr="221" ID="281240">
+      <PredefinedLiteral LineNr="221" EndLineNr="221" ID="281233">
+       <TheCode ID="284173">SpaceKeyword</TheCode>
+      </PredefinedLiteral>
+      <Designator LineNr="221" EndLineNr="221" ID="281239" XRef="280445">
+       <DesigElement LineNr="221" EndLineNr="221" ID="281238">
+        <DataIdent LineNr="221" EndLineNr="221" ID="281237" XRef="280445">
+         CORRECT-X
+        </DataIdent>
+       </DesigElement>
+      </Designator>
+     </MoveStatement>
+     <IfStatement LineNr="222" EndLineNr="222" ID="281260">
+      <AtomicComparison LineNr="222" EndLineNr="222" ID="281250">
+       <Designator LineNr="222" EndLineNr="222" ID="281245" XRef="280565">
+        <DesigElement LineNr="222" EndLineNr="222" ID="281244">
+         <DataIdent LineNr="222" EndLineNr="222" ID="281243" XRef="280565">
+          REC-CT
+         </DataIdent>
+        </DesigElement>
+       </Designator>
+       <SingleRightSide LineNr="222" EndLineNr="222" ID="281249">
+        <ComparisonOperator LineNr="222" EndLineNr="222" ID="281247">
+         <TheOp ID="284176">EqualKeyword</TheOp>
+        </ComparisonOperator>
+        <PredefinedLiteral LineNr="222" EndLineNr="222" ID="281248">
+         <TheCode ID="284177">ZeroKeyword</TheCode>
+        </PredefinedLiteral>
+       </SingleRightSide>
+      </AtomicComparison>
+      <StatementList LineNr="222" EndLineNr="222" ID="281259">
+       <MoveStatement LineNr="222" EndLineNr="222" ID="281258">
+        <PredefinedLiteral LineNr="222" EndLineNr="222" ID="281251">
+         <TheCode ID="284178">SpaceKeyword</TheCode>
+        </PredefinedLiteral>
+        <Designator LineNr="222" EndLineNr="222" ID="281257" XRef="280321">
+         <DesigElement LineNr="222" EndLineNr="222" ID="281256">
+          <DataIdent LineNr="222" EndLineNr="222" ID="281255" XRef="280321">
+           PAR-NAME
+          </DataIdent>
+         </DesigElement>
+        </Designator>
+       </MoveStatement>
+      </StatementList>
+     </IfStatement>
+     <MoveStatement LineNr="223" EndLineNr="223" ID="281270">
+      <PredefinedLiteral LineNr="223" EndLineNr="223" ID="281263">
+       <TheCode ID="284180">SpaceKeyword</TheCode>
+      </PredefinedLiteral>
+      <Designator LineNr="223" EndLineNr="223" ID="281269" XRef="280342">
+       <DesigElement LineNr="223" EndLineNr="223" ID="281268">
+        <DataIdent LineNr="223" EndLineNr="223" ID="281267" XRef="280342">
+         RE-MARK
+        </DataIdent>
+       </DesigElement>
+      </Designator>
+     </MoveStatement>
+    </PeriodStatementList>
+    <TheDot ID="284182">TRUE</TheDot>
+   </ParagraphStatementBlock>
+   <ParagraphStatementBlock LineNr="224" EndLineNr="228" ID="281517">
+    <LabelIdent LineNr="224" EndLineNr="224" ID="281279" XRef="281517">
+     HEAD-ROUTINE
+    </LabelIdent>
+    <PeriodStatementList LineNr="225" EndLineNr="228" ID="281516">
+     <MoveStatement LineNr="225" EndLineNr="225" ID="281286">
+      <Designator LineNr="225" EndLineNr="225" ID="281282" XRef="280612">
+       <DesigElement LineNr="225" EndLineNr="225" ID="281281">
+        <DataIdent LineNr="225" EndLineNr="225" ID="281280" XRef="280612">
+         CCVS-H-1
+        </DataIdent>
+       </DesigElement>
+      </Designator>
+      <Designator LineNr="225" EndLineNr="225" ID="281285" XRef="280201">
+       <DesigElement LineNr="225" EndLineNr="225" ID="281284">
+        <DataIdent LineNr="225" EndLineNr="225" ID="281283" XRef="280201">
+         DUMMY-RECORD
+        </DataIdent>
+       </DesigElement>
+      </Designator>
+     </MoveStatement>
+     <PerformStatement LineNr="225" EndLineNr="225" ID="281335">
+      <IntegerLiteral LineNr="225" EndLineNr="225" ID="281334">
+       2
+      </IntegerLiteral>
+      <SectionCodeRef LineNr="225" EndLineNr="225" ID="281333">
+       <TargetLabel LineNr="225" EndLineNr="225" ID="281332" XRef="282608">
+        <LabelIdent LineNr="225" EndLineNr="225" ID="281331" XRef="282608">
+         WRITE-LINE
+        </LabelIdent>
+       </TargetLabel>
+      </SectionCodeRef>
+     </PerformStatement>
+     <MoveStatement LineNr="226" EndLineNr="226" ID="281344">
+      <Designator LineNr="226" EndLineNr="226" ID="281340" XRef="280626">
+       <DesigElement LineNr="226" EndLineNr="226" ID="281339">
+        <DataIdent LineNr="226" EndLineNr="226" ID="281338" XRef="280626">
+         CCVS-H-2A
+        </DataIdent>
+       </DesigElement>
+      </Designator>
+      <Designator LineNr="226" EndLineNr="226" ID="281343" XRef="280201">
+       <DesigElement LineNr="226" EndLineNr="226" ID="281342">
+        <DataIdent LineNr="226" EndLineNr="226" ID="281341" XRef="280201">
+         DUMMY-RECORD
+        </DataIdent>
+       </DesigElement>
+      </Designator>
+     </MoveStatement>
+     <PerformStatement LineNr="226" EndLineNr="226" ID="281393">
+      <IntegerLiteral LineNr="226" EndLineNr="226" ID="281392">
+       2
+      </IntegerLiteral>
+      <SectionCodeRef LineNr="226" EndLineNr="226" ID="281391">
+       <TargetLabel LineNr="226" EndLineNr="226" ID="281390" XRef="282608">
+        <LabelIdent LineNr="226" EndLineNr="226" ID="281389" XRef="282608">
+         WRITE-LINE
+        </LabelIdent>
+       </TargetLabel>
+      </SectionCodeRef>
+     </PerformStatement>
+     <MoveStatement LineNr="227" EndLineNr="227" ID="281402">
+      <Designator LineNr="227" EndLineNr="227" ID="281398" XRef="280648">
+       <DesigElement LineNr="227" EndLineNr="227" ID="281397">
+        <DataIdent LineNr="227" EndLineNr="227" ID="281396" XRef="280648">
+         CCVS-H-2B
+        </DataIdent>
+       </DesigElement>
+      </Designator>
+      <Designator LineNr="227" EndLineNr="227" ID="281401" XRef="280201">
+       <DesigElement LineNr="227" EndLineNr="227" ID="281400">
+        <DataIdent LineNr="227" EndLineNr="227" ID="281399" XRef="280201">
+         DUMMY-RECORD
+        </DataIdent>
+       </DesigElement>
+      </Designator>
+     </MoveStatement>
+     <PerformStatement LineNr="227" EndLineNr="227" ID="281451">
+      <IntegerLiteral LineNr="227" EndLineNr="227" ID="281450">
+       3
+      </IntegerLiteral>
+      <SectionCodeRef LineNr="227" EndLineNr="227" ID="281449">
+       <TargetLabel LineNr="227" EndLineNr="227" ID="281448" XRef="282608">
+        <LabelIdent LineNr="227" EndLineNr="227" ID="281447" XRef="282608">
+         WRITE-LINE
+        </LabelIdent>
+       </TargetLabel>
+      </SectionCodeRef>
+     </PerformStatement>
+     <MoveStatement LineNr="228" EndLineNr="228" ID="281460">
+      <Designator LineNr="228" EndLineNr="228" ID="281456" XRef="280673">
+       <DesigElement LineNr="228" EndLineNr="228" ID="281455">
+        <DataIdent LineNr="228" EndLineNr="228" ID="281454" XRef="280673">
+         CCVS-H-3
+        </DataIdent>
+       </DesigElement>
+      </Designator>
+      <Designator LineNr="228" EndLineNr="228" ID="281459" XRef="280201">
+       <DesigElement LineNr="228" EndLineNr="228" ID="281458">
+        <DataIdent LineNr="228" EndLineNr="228" ID="281457" XRef="280201">
+         DUMMY-RECORD
+        </DataIdent>
+       </DesigElement>
+      </Designator>
+     </MoveStatement>
+     <PerformStatement LineNr="228" EndLineNr="228" ID="281509">
+      <IntegerLiteral LineNr="228" EndLineNr="228" ID="281508">
+       3
+      </IntegerLiteral>
+      <SectionCodeRef LineNr="228" EndLineNr="228" ID="281507">
+       <TargetLabel LineNr="228" EndLineNr="228" ID="281506" XRef="282608">
+        <LabelIdent LineNr="228" EndLineNr="228" ID="281505" XRef="282608">
+         WRITE-LINE
+        </LabelIdent>
+       </TargetLabel>
+      </SectionCodeRef>
+     </PerformStatement>
+    </PeriodStatementList>
+    <TheDot ID="284200">TRUE</TheDot>
+   </ParagraphStatementBlock>
+   <ParagraphStatementBlock LineNr="229" EndLineNr="232" ID="281658">
+    <LabelIdent LineNr="229" EndLineNr="229" ID="281518" XRef="281658">
+     COLUMN-NAMES-ROUTINE
+    </LabelIdent>
+    <PeriodStatementList LineNr="230" EndLineNr="232" ID="281657">
+     <MoveStatement LineNr="230" EndLineNr="230" ID="281525">
+      <Designator LineNr="230" EndLineNr="230" ID="281521" XRef="280525">
+       <DesigElement LineNr="230" EndLineNr="230" ID="281520">
+        <DataIdent LineNr="230" EndLineNr="230" ID="281519" XRef="280525">
+         CCVS-C-1
+        </DataIdent>
+       </DesigElement>
+      </Designator>
+      <Designator LineNr="230" EndLineNr="230" ID="281524" XRef="280201">
+       <DesigElement LineNr="230" EndLineNr="230" ID="281523">
+        <DataIdent LineNr="230" EndLineNr="230" ID="281522" XRef="280201">
+         DUMMY-RECORD
+        </DataIdent>
+       </DesigElement>
+      </Designator>
+     </MoveStatement>
+     <PerformStatement LineNr="230" EndLineNr="230" ID="281553">
+      <SectionCodeRef LineNr="230" EndLineNr="230" ID="281552">
+       <TargetLabel LineNr="230" EndLineNr="230" ID="281551" XRef="282608">
+        <LabelIdent LineNr="230" EndLineNr="230" ID="281550" XRef="282608">
+         WRITE-LINE
+        </LabelIdent>
+       </TargetLabel>
+      </SectionCodeRef>
+     </PerformStatement>
+     <MoveStatement LineNr="231" EndLineNr="231" ID="281562">
+      <Designator LineNr="231" EndLineNr="231" ID="281558" XRef="280535">
+       <DesigElement LineNr="231" EndLineNr="231" ID="281557">
+        <DataIdent LineNr="231" EndLineNr="231" ID="281556" XRef="280535">
+         CCVS-C-2
+        </DataIdent>
+       </DesigElement>
+      </Designator>
+      <Designator LineNr="231" EndLineNr="231" ID="281561" XRef="280201">
+       <DesigElement LineNr="231" EndLineNr="231" ID="281560">
+        <DataIdent LineNr="231" EndLineNr="231" ID="281559" XRef="280201">
+         DUMMY-RECORD
+        </DataIdent>
+       </DesigElement>
+      </Designator>
+     </MoveStatement>
+     <PerformStatement LineNr="231" EndLineNr="231" ID="281611">
+      <IntegerLiteral LineNr="231" EndLineNr="231" ID="281610">
+       2
+      </IntegerLiteral>
+      <SectionCodeRef LineNr="231" EndLineNr="231" ID="281609">
+       <TargetLabel LineNr="231" EndLineNr="231" ID="281608" XRef="282608">
+        <LabelIdent LineNr="231" EndLineNr="231" ID="281607" XRef="282608">
+         WRITE-LINE
+        </LabelIdent>
+       </TargetLabel>
+      </SectionCodeRef>
+     </PerformStatement>
+     <MoveStatement LineNr="232" EndLineNr="232" ID="281620">
+      <Designator LineNr="232" EndLineNr="232" ID="281616" XRef="280797">
+       <DesigElement LineNr="232" EndLineNr="232" ID="281615">
+        <DataIdent LineNr="232" EndLineNr="232" ID="281614" XRef="280797">
+         HYPHEN-LINE
+        </DataIdent>
+       </DesigElement>
+      </Designator>
+      <Designator LineNr="232" EndLineNr="232" ID="281619" XRef="280201">
+       <DesigElement LineNr="232" EndLineNr="232" ID="281618">
+        <DataIdent LineNr="232" EndLineNr="232" ID="281617" XRef="280201">
+         DUMMY-RECORD
+        </DataIdent>
+       </DesigElement>
+      </Designator>
+     </MoveStatement>
+     <PerformStatement LineNr="232" EndLineNr="232" ID="281650">
+      <SectionCodeRef LineNr="232" EndLineNr="232" ID="281649">
+       <TargetLabel LineNr="232" EndLineNr="232" ID="281648" XRef="282608">
+        <LabelIdent LineNr="232" EndLineNr="232" ID="281647" XRef="282608">
+         WRITE-LINE
+        </LabelIdent>
+       </TargetLabel>
+      </SectionCodeRef>
+     </PerformStatement>
+    </PeriodStatementList>
+    <TheDot ID="284212">TRUE</TheDot>
+   </ParagraphStatementBlock>
+   <ParagraphStatementBlock LineNr="233" EndLineNr="235" ID="281723">
+    <LabelIdent LineNr="233" EndLineNr="233" ID="281659" XRef="281723">
+     END-ROUTINE
+    </LabelIdent>
+    <PeriodStatementList LineNr="234" EndLineNr="235" ID="281722">
+     <MoveStatement LineNr="234" EndLineNr="234" ID="281666">
+      <Designator LineNr="234" EndLineNr="234" ID="281662" XRef="280797">
+       <DesigElement LineNr="234" EndLineNr="234" ID="281661">
+        <DataIdent LineNr="234" EndLineNr="234" ID="281660" XRef="280797">
+         HYPHEN-LINE
+        </DataIdent>
+       </DesigElement>
+      </Designator>
+      <Designator LineNr="234" EndLineNr="234" ID="281665" XRef="280201">
+       <DesigElement LineNr="234" EndLineNr="234" ID="281664">
+        <DataIdent LineNr="234" EndLineNr="234" ID="281663" XRef="280201">
+         DUMMY-RECORD
+        </DataIdent>
+       </DesigElement>
+      </Designator>
+     </MoveStatement>
+     <PerformStatement LineNr="234" EndLineNr="235" ID="281715">
+      <IntegerLiteral LineNr="234" EndLineNr="234" ID="281714">
+       5
+      </IntegerLiteral>
+      <SectionCodeRef LineNr="234" EndLineNr="234" ID="281713">
+       <TargetLabel LineNr="234" EndLineNr="234" ID="281712" XRef="282608">
+        <LabelIdent LineNr="234" EndLineNr="234" ID="281711" XRef="282608">
+         WRITE-LINE
+        </LabelIdent>
+       </TargetLabel>
+      </SectionCodeRef>
+     </PerformStatement>
+    </PeriodStatementList>
+    <TheDot ID="284218">TRUE</TheDot>
+   </ParagraphStatementBlock>
+   <ParagraphStatementBlock LineNr="236" EndLineNr="237" ID="281788">
+    <LabelIdent LineNr="236" EndLineNr="236" ID="281724" XRef="281788">
+     END-RTN-EXIT
+    </LabelIdent>
+    <PeriodStatementList LineNr="237" EndLineNr="237" ID="281787">
+     <MoveStatement LineNr="237" EndLineNr="237" ID="281731">
+      <Designator LineNr="237" EndLineNr="237" ID="281727" XRef="280687">
+       <DesigElement LineNr="237" EndLineNr="237" ID="281726">
+        <DataIdent LineNr="237" EndLineNr="237" ID="281725" XRef="280687">
+         CCVS-E-1
+        </DataIdent>
+       </DesigElement>
+      </Designator>
+      <Designator LineNr="237" EndLineNr="237" ID="281730" XRef="280201">
+       <DesigElement LineNr="237" EndLineNr="237" ID="281729">
+        <DataIdent LineNr="237" EndLineNr="237" ID="281728" XRef="280201">
+         DUMMY-RECORD
+        </DataIdent>
+       </DesigElement>
+      </Designator>
+     </MoveStatement>
+     <PerformStatement LineNr="237" EndLineNr="237" ID="281780">
+      <IntegerLiteral LineNr="237" EndLineNr="237" ID="281779">
+       2
+      </IntegerLiteral>
+      <SectionCodeRef LineNr="237" EndLineNr="237" ID="281778">
+       <TargetLabel LineNr="237" EndLineNr="237" ID="281777" XRef="282608">
+        <LabelIdent LineNr="237" EndLineNr="237" ID="281776" XRef="282608">
+         WRITE-LINE
+        </LabelIdent>
+       </TargetLabel>
+      </SectionCodeRef>
+     </PerformStatement>
+    </PeriodStatementList>
+    <TheDot ID="284224">TRUE</TheDot>
+   </ParagraphStatementBlock>
+   <ParagraphStatementBlock LineNr="238" EndLineNr="245" ID="281914">
+    <LabelIdent LineNr="238" EndLineNr="238" ID="281789" XRef="281914">
+     END-ROUTINE-1
+    </LabelIdent>
+    <PeriodStatementList LineNr="239" EndLineNr="245" ID="281913">
+     <AddStatement LineNr="239" EndLineNr="239" ID="281797">
+      <Designator LineNr="239" EndLineNr="239" ID="281792" XRef="280575">
+       <DesigElement LineNr="239" EndLineNr="239" ID="281791">
+        <DataIdent LineNr="239" EndLineNr="239" ID="281790" XRef="280575">
+         ERROR-COUNTER
+        </DataIdent>
+       </DesigElement>
+      </Designator>
+      <ArithDesignator LineNr="239" EndLineNr="239" ID="281796">
+       <Designator LineNr="239" EndLineNr="239" ID="281795" XRef="280595">
+        <DesigElement LineNr="239" EndLineNr="239" ID="281794">
+         <DataIdent LineNr="239" EndLineNr="239" ID="281793" XRef="280595">
+          ERROR-HOLD
+         </DataIdent>
+        </DesigElement>
+       </Designator>
+      </ArithDesignator>
+     </AddStatement>
+     <AddStatement LineNr="239" EndLineNr="240" ID="281806">
+      <Designator LineNr="239" EndLineNr="239" ID="281801" XRef="280580">
+       <DesigElement LineNr="239" EndLineNr="239" ID="281800">
+        <DataIdent LineNr="239" EndLineNr="239" ID="281799" XRef="280580">
+         INSPECT-COUNTER
+        </DataIdent>
+       </DesigElement>
+      </Designator>
+      <ArithDesignator LineNr="240" EndLineNr="240" ID="281805">
+       <Designator LineNr="240" EndLineNr="240" ID="281804" XRef="280595">
+        <DesigElement LineNr="240" EndLineNr="240" ID="281803">
+         <DataIdent LineNr="240" EndLineNr="240" ID="281802" XRef="280595">
+          ERROR-HOLD
+         </DataIdent>
+        </DesigElement>
+       </Designator>
+      </ArithDesignator>
+     </AddStatement>
+     <AddStatement LineNr="240" EndLineNr="240" ID="281819">
+      <Designator LineNr="240" EndLineNr="240" ID="281811" XRef="280570">
+       <DesigElement LineNr="240" EndLineNr="240" ID="281810">
+        <DataIdent LineNr="240" EndLineNr="240" ID="281809" XRef="280570">
+         DELETE-COUNTER
+        </DataIdent>
+       </DesigElement>
+      </Designator>
+      <ArithDesignator LineNr="240" EndLineNr="240" ID="281818">
+       <Designator LineNr="240" EndLineNr="240" ID="281817" XRef="280595">
+        <DesigElement LineNr="240" EndLineNr="240" ID="281816">
+         <DataIdent LineNr="240" EndLineNr="240" ID="281815" XRef="280595">
+          ERROR-HOLD
+         </DataIdent>
+        </DesigElement>
+       </Designator>
+      </ArithDesignator>
+     </AddStatement>
+     <AddStatement LineNr="241" EndLineNr="241" ID="281832">
+      <Designator LineNr="241" EndLineNr="241" ID="281824" XRef="280585">
+       <DesigElement LineNr="241" EndLineNr="241" ID="281823">
+        <DataIdent LineNr="241" EndLineNr="241" ID="281822" XRef="280585">
+         PASS-COUNTER
+        </DataIdent>
+       </DesigElement>
+      </Designator>
+      <ArithDesignator LineNr="241" EndLineNr="241" ID="281831">
+       <Designator LineNr="241" EndLineNr="241" ID="281830" XRef="280595">
+        <DesigElement LineNr="241" EndLineNr="241" ID="281829">
+         <DataIdent LineNr="241" EndLineNr="241" ID="281828" XRef="280595">
+          ERROR-HOLD
+         </DataIdent>
+        </DesigElement>
+       </Designator>
+      </ArithDesignator>
+     </AddStatement>
+     <MoveStatement LineNr="242" EndLineNr="242" ID="281844">
+      <Designator LineNr="242" EndLineNr="242" ID="281837" XRef="280585">
+       <DesigElement LineNr="242" EndLineNr="242" ID="281836">
+        <DataIdent LineNr="242" EndLineNr="242" ID="281835" XRef="280585">
+         PASS-COUNTER
+        </DataIdent>
+       </DesigElement>
+      </Designator>
+      <Designator LineNr="242" EndLineNr="242" ID="281843" XRef="280757">
+       <DesigElement LineNr="242" EndLineNr="242" ID="281842">
+        <DataIdent LineNr="242" EndLineNr="242" ID="281841" XRef="280757">
+         CCVS-E-4-1
+        </DataIdent>
+       </DesigElement>
+      </Designator>
+     </MoveStatement>
+     <MoveStatement LineNr="243" EndLineNr="243" ID="281856">
+      <Designator LineNr="243" EndLineNr="243" ID="281849" XRef="280595">
+       <DesigElement LineNr="243" EndLineNr="243" ID="281848">
+        <DataIdent LineNr="243" EndLineNr="243" ID="281847" XRef="280595">
+         ERROR-HOLD
+        </DataIdent>
+       </DesigElement>
+      </Designator>
+      <Designator LineNr="243" EndLineNr="243" ID="281855" XRef="280766">
+       <DesigElement LineNr="243" EndLineNr="243" ID="281854">
+        <DataIdent LineNr="243" EndLineNr="243" ID="281853" XRef="280766">
+         CCVS-E-4-2
+        </DataIdent>
+       </DesigElement>
+      </Designator>
+     </MoveStatement>
+     <MoveStatement LineNr="244" EndLineNr="244" ID="281868">
+      <Designator LineNr="244" EndLineNr="244" ID="281861" XRef="280752">
+       <DesigElement LineNr="244" EndLineNr="244" ID="281860">
+        <DataIdent LineNr="244" EndLineNr="244" ID="281859" XRef="280752">
+         CCVS-E-4
+        </DataIdent>
+       </DesigElement>
+      </Designator>
+      <Designator LineNr="244" EndLineNr="244" ID="281867" XRef="280714">
+       <DesigElement LineNr="244" EndLineNr="244" ID="281866">
+        <DataIdent LineNr="244" EndLineNr="244" ID="281865" XRef="280714">
+         CCVS-E-2-2
+        </DataIdent>
+       </DesigElement>
+      </Designator>
+     </MoveStatement>
+     <MoveStatement LineNr="245" EndLineNr="245" ID="281877">
+      <Designator LineNr="245" EndLineNr="245" ID="281873" XRef="280704">
+       <DesigElement LineNr="245" EndLineNr="245" ID="281872">
+        <DataIdent LineNr="245" EndLineNr="245" ID="281871" XRef="280704">
+         CCVS-E-2
+        </DataIdent>
+       </DesigElement>
+      </Designator>
+      <Designator LineNr="245" EndLineNr="245" ID="281876" XRef="280201">
+       <DesigElement LineNr="245" EndLineNr="245" ID="281875">
+        <DataIdent LineNr="245" EndLineNr="245" ID="281874" XRef="280201">
+         DUMMY-RECORD
+        </DataIdent>
+       </DesigElement>
+      </Designator>
+     </MoveStatement>
+     <PerformStatement LineNr="245" EndLineNr="245" ID="281906">
+      <SectionCodeRef LineNr="245" EndLineNr="245" ID="281905">
+       <TargetLabel LineNr="245" EndLineNr="245" ID="281904" XRef="282608">
+        <LabelIdent LineNr="245" EndLineNr="245" ID="281903" XRef="282608">
+         WRITE-LINE
+        </LabelIdent>
+       </TargetLabel>
+      </SectionCodeRef>
+     </PerformStatement>
+    </PeriodStatementList>
+    <TheDot ID="284243">TRUE</TheDot>
+   </ParagraphStatementBlock>
+   <ParagraphStatementBlock LineNr="246" EndLineNr="253" ID="282003">
+    <LabelIdent LineNr="246" EndLineNr="246" ID="281915" XRef="282003">
+     END-ROUTINE-12
+    </LabelIdent>
+    <PeriodStatementList LineNr="247" EndLineNr="253" ID="282002">
+     <MoveStatement LineNr="247" EndLineNr="247" ID="281923">
+      <StringLiteral LineNr="247" EndLineNr="247" ID="281916">
+       "TEST(S) FAILED"
+      </StringLiteral>
+      <Designator LineNr="247" EndLineNr="247" ID="281922" XRef="280728">
+       <DesigElement LineNr="247" EndLineNr="247" ID="281921">
+        <DataIdent LineNr="247" EndLineNr="247" ID="281920" XRef="280728">
+         ENDER-DESC
+        </DataIdent>
+       </DesigElement>
+      </Designator>
+     </MoveStatement>
+     <IfStatement LineNr="248" EndLineNr="251" ID="281953">
+      <AtomicComparison LineNr="248" EndLineNr="248" ID="281933">
+       <Designator LineNr="248" EndLineNr="248" ID="281928" XRef="280575">
+        <DesigElement LineNr="248" EndLineNr="248" ID="281927">
+         <DataIdent LineNr="248" EndLineNr="248" ID="281926" XRef="280575">
+          ERROR-COUNTER
+         </DataIdent>
+        </DesigElement>
+       </Designator>
+       <SingleRightSide LineNr="248" EndLineNr="248" ID="281932">
+        <ComparisonOperator LineNr="248" EndLineNr="248" ID="281930">
+         <TheOp ID="284248">EqualKeyword</TheOp>
+        </ComparisonOperator>
+        <PredefinedLiteral LineNr="248" EndLineNr="248" ID="281931">
+         <TheCode ID="284249">ZeroKeyword</TheCode>
+        </PredefinedLiteral>
+       </SingleRightSide>
+      </AtomicComparison>
+      <StatementList LineNr="249" EndLineNr="249" ID="281941">
+       <MoveStatement LineNr="249" EndLineNr="249" ID="281940">
+        <StringLiteral LineNr="249" EndLineNr="249" ID="281934">
+         "NO "
+        </StringLiteral>
+        <Designator LineNr="249" EndLineNr="249" ID="281939" XRef="280719">
+         <DesigElement LineNr="249" EndLineNr="249" ID="281938">
+          <DataIdent LineNr="249" EndLineNr="249" ID="281937" XRef="280719">
+           ERROR-TOTAL
+          </DataIdent>
+         </DesigElement>
+        </Designator>
+       </MoveStatement>
+      </StatementList>
+      <StatementList LineNr="251" EndLineNr="251" ID="281952">
+       <MoveStatement LineNr="251" EndLineNr="251" ID="281951">
+        <Designator LineNr="251" EndLineNr="251" ID="281944" XRef="280575">
+         <DesigElement LineNr="251" EndLineNr="251" ID="281943">
+          <DataIdent LineNr="251" EndLineNr="251" ID="281942" XRef="280575">
+           ERROR-COUNTER
+          </DataIdent>
+         </DesigElement>
+        </Designator>
+        <Designator LineNr="251" EndLineNr="251" ID="281950" XRef="280719">
+         <DesigElement LineNr="251" EndLineNr="251" ID="281949">
+          <DataIdent LineNr="251" EndLineNr="251" ID="281948" XRef="280719">
+           ERROR-TOTAL
+          </DataIdent>
+         </DesigElement>
+        </Designator>
+       </MoveStatement>
+      </StatementList>
+      <TheElse ID="284254">TRUE</TheElse>
+     </IfStatement>
+     <MoveStatement LineNr="252" EndLineNr="252" ID="281965">
+      <Designator LineNr="252" EndLineNr="252" ID="281958" XRef="280704">
+       <DesigElement LineNr="252" EndLineNr="252" ID="281957">
+        <DataIdent LineNr="252" EndLineNr="252" ID="281956" XRef="280704">
+         CCVS-E-2
+        </DataIdent>
+       </DesigElement>
+      </Designator>
+      <Designator LineNr="252" EndLineNr="252" ID="281964" XRef="280201">
+       <DesigElement LineNr="252" EndLineNr="252" ID="281963">
+        <DataIdent LineNr="252" EndLineNr="252" ID="281962" XRef="280201">
+         DUMMY-RECORD
+        </DataIdent>
+       </DesigElement>
+      </Designator>
+     </MoveStatement>
+     <PerformStatement LineNr="253" EndLineNr="253" ID="281995">
+      <SectionCodeRef LineNr="253" EndLineNr="253" ID="281994">
+       <TargetLabel LineNr="253" EndLineNr="253" ID="281993" XRef="282608">
+        <LabelIdent LineNr="253" EndLineNr="253" ID="281992" XRef="282608">
+         WRITE-LINE
+        </LabelIdent>
+       </TargetLabel>
+      </SectionCodeRef>
+     </PerformStatement>
+    </PeriodStatementList>
+    <TheDot ID="284258">TRUE</TheDot>
+   </ParagraphStatementBlock>
+   <ParagraphStatementBlock LineNr="254" EndLineNr="265" ID="282201">
+    <LabelIdent LineNr="254" EndLineNr="254" ID="282004" XRef="282201">
+     END-ROUTINE-13
+    </LabelIdent>
+    <PeriodStatementList LineNr="255" EndLineNr="265" ID="282200">
+     <IfStatement LineNr="255" EndLineNr="257" ID="282030">
+      <AtomicComparison LineNr="255" EndLineNr="255" ID="282012">
+       <Designator LineNr="255" EndLineNr="255" ID="282007" XRef="280570">
+        <DesigElement LineNr="255" EndLineNr="255" ID="282006">
+         <DataIdent LineNr="255" EndLineNr="255" ID="282005" XRef="280570">
+          DELETE-COUNTER
+         </DataIdent>
+        </DesigElement>
+       </Designator>
+       <SingleRightSide LineNr="255" EndLineNr="255" ID="282011">
+        <ComparisonOperator LineNr="255" EndLineNr="255" ID="282009">
+         <TheOp ID="284261">EqualKeyword</TheOp>
+        </ComparisonOperator>
+        <PredefinedLiteral LineNr="255" EndLineNr="255" ID="282010">
+         <TheCode ID="284262">ZeroKeyword</TheCode>
+        </PredefinedLiteral>
+       </SingleRightSide>
+      </AtomicComparison>
+      <StatementList LineNr="256" EndLineNr="256" ID="282018">
+       <MoveStatement LineNr="256" EndLineNr="256" ID="282017">
+        <StringLiteral LineNr="256" EndLineNr="256" ID="282013">
+         "NO "
+        </StringLiteral>
+        <Designator LineNr="256" EndLineNr="256" ID="282016" XRef="280719">
+         <DesigElement LineNr="256" EndLineNr="256" ID="282015">
+          <DataIdent LineNr="256" EndLineNr="256" ID="282014" XRef="280719">
+           ERROR-TOTAL
+          </DataIdent>
+         </DesigElement>
+        </Designator>
+       </MoveStatement>
+      </StatementList>
+      <StatementList LineNr="257" EndLineNr="257" ID="282029">
+       <MoveStatement LineNr="257" EndLineNr="257" ID="282028">
+        <Designator LineNr="257" EndLineNr="257" ID="282021" XRef="280570">
+         <DesigElement LineNr="257" EndLineNr="257" ID="282020">
+          <DataIdent LineNr="257" EndLineNr="257" ID="282019" XRef="280570">
+           DELETE-COUNTER
+          </DataIdent>
+         </DesigElement>
+        </Designator>
+        <Designator LineNr="257" EndLineNr="257" ID="282027" XRef="280719">
+         <DesigElement LineNr="257" EndLineNr="257" ID="282026">
+          <DataIdent LineNr="257" EndLineNr="257" ID="282025" XRef="280719">
+           ERROR-TOTAL
+          </DataIdent>
+         </DesigElement>
+        </Designator>
+       </MoveStatement>
+      </StatementList>
+      <TheElse ID="284267">TRUE</TheElse>
+     </IfStatement>
+     <MoveStatement LineNr="258" EndLineNr="258" ID="282040">
+      <StringLiteral LineNr="258" EndLineNr="258" ID="282033">
+       "TEST(S) DELETED     "
+      </StringLiteral>
+      <Designator LineNr="258" EndLineNr="258" ID="282039" XRef="280728">
+       <DesigElement LineNr="258" EndLineNr="258" ID="282038">
+        <DataIdent LineNr="258" EndLineNr="258" ID="282037" XRef="280728">
+         ENDER-DESC
+        </DataIdent>
+       </DesigElement>
+      </Designator>
+     </MoveStatement>
+     <MoveStatement LineNr="259" EndLineNr="259" ID="282049">
+      <Designator LineNr="259" EndLineNr="259" ID="282045" XRef="280704">
+       <DesigElement LineNr="259" EndLineNr="259" ID="282044">
+        <DataIdent LineNr="259" EndLineNr="259" ID="282043" XRef="280704">
+         CCVS-E-2
+        </DataIdent>
+       </DesigElement>
+      </Designator>
+      <Designator LineNr="259" EndLineNr="259" ID="282048" XRef="280201">
+       <DesigElement LineNr="259" EndLineNr="259" ID="282047">
+        <DataIdent LineNr="259" EndLineNr="259" ID="282046" XRef="280201">
+         DUMMY-RECORD
+        </DataIdent>
+       </DesigElement>
+      </Designator>
+     </MoveStatement>
+     <PerformStatement LineNr="259" EndLineNr="259" ID="282077">
+      <SectionCodeRef LineNr="259" EndLineNr="259" ID="282076">
+       <TargetLabel LineNr="259" EndLineNr="259" ID="282075" XRef="282608">
+        <LabelIdent LineNr="259" EndLineNr="259" ID="282074" XRef="282608">
+         WRITE-LINE
+        </LabelIdent>
+       </TargetLabel>
+      </SectionCodeRef>
+     </PerformStatement>
+     <IfStatement LineNr="260" EndLineNr="262" ID="282107">
+      <AtomicComparison LineNr="260" EndLineNr="260" ID="282087">
+       <Designator LineNr="260" EndLineNr="260" ID="282082" XRef="280580">
+        <DesigElement LineNr="260" EndLineNr="260" ID="282081">
+         <DataIdent LineNr="260" EndLineNr="260" ID="282080" XRef="280580">
+          INSPECT-COUNTER
+         </DataIdent>
+        </DesigElement>
+       </Designator>
+       <SingleRightSide LineNr="260" EndLineNr="260" ID="282086">
+        <ComparisonOperator LineNr="260" EndLineNr="260" ID="282084">
+         <TheOp ID="284274">EqualKeyword</TheOp>
+        </ComparisonOperator>
+        <PredefinedLiteral LineNr="260" EndLineNr="260" ID="282085">
+         <TheCode ID="284275">ZeroKeyword</TheCode>
+        </PredefinedLiteral>
+       </SingleRightSide>
+      </AtomicComparison>
+      <StatementList LineNr="261" EndLineNr="261" ID="282095">
+       <MoveStatement LineNr="261" EndLineNr="261" ID="282094">
+        <StringLiteral LineNr="261" EndLineNr="261" ID="282088">
+         "NO "
+        </StringLiteral>
+        <Designator LineNr="261" EndLineNr="261" ID="282093" XRef="280719">
+         <DesigElement LineNr="261" EndLineNr="261" ID="282092">
+          <DataIdent LineNr="261" EndLineNr="261" ID="282091" XRef="280719">
+           ERROR-TOTAL
+          </DataIdent>
+         </DesigElement>
+        </Designator>
+       </MoveStatement>
+      </StatementList>
+      <StatementList LineNr="262" EndLineNr="262" ID="282106">
+       <MoveStatement LineNr="262" EndLineNr="262" ID="282105">
+        <Designator LineNr="262" EndLineNr="262" ID="282098" XRef="280580">
+         <DesigElement LineNr="262" EndLineNr="262" ID="282097">
+          <DataIdent LineNr="262" EndLineNr="262" ID="282096" XRef="280580">
+           INSPECT-COUNTER
+          </DataIdent>
+         </DesigElement>
+        </Designator>
+        <Designator LineNr="262" EndLineNr="262" ID="282104" XRef="280719">
+         <DesigElement LineNr="262" EndLineNr="262" ID="282103">
+          <DataIdent LineNr="262" EndLineNr="262" ID="282102" XRef="280719">
+           ERROR-TOTAL
+          </DataIdent>
+         </DesigElement>
+        </Designator>
+       </MoveStatement>
+      </StatementList>
+      <TheElse ID="284280">TRUE</TheElse>
+     </IfStatement>
+     <MoveStatement LineNr="263" EndLineNr="263" ID="282117">
+      <StringLiteral LineNr="263" EndLineNr="263" ID="282110">
+       "TEST(S) REQUIRE INSPECTION"
+      </StringLiteral>
+      <Designator LineNr="263" EndLineNr="263" ID="282116" XRef="280728">
+       <DesigElement LineNr="263" EndLineNr="263" ID="282115">
+        <DataIdent LineNr="263" EndLineNr="263" ID="282114" XRef="280728">
+         ENDER-DESC
+        </DataIdent>
+       </DesigElement>
+      </Designator>
+     </MoveStatement>
+     <MoveStatement LineNr="264" EndLineNr="264" ID="282126">
+      <Designator LineNr="264" EndLineNr="264" ID="282122" XRef="280704">
+       <DesigElement LineNr="264" EndLineNr="264" ID="282121">
+        <DataIdent LineNr="264" EndLineNr="264" ID="282120" XRef="280704">
+         CCVS-E-2
+        </DataIdent>
+       </DesigElement>
+      </Designator>
+      <Designator LineNr="264" EndLineNr="264" ID="282125" XRef="280201">
+       <DesigElement LineNr="264" EndLineNr="264" ID="282124">
+        <DataIdent LineNr="264" EndLineNr="264" ID="282123" XRef="280201">
+         DUMMY-RECORD
+        </DataIdent>
+       </DesigElement>
+      </Designator>
+     </MoveStatement>
+     <PerformStatement LineNr="264" EndLineNr="264" ID="282154">
+      <SectionCodeRef LineNr="264" EndLineNr="264" ID="282153">
+       <TargetLabel LineNr="264" EndLineNr="264" ID="282152" XRef="282608">
+        <LabelIdent LineNr="264" EndLineNr="264" ID="282151" XRef="282608">
+         WRITE-LINE
+        </LabelIdent>
+       </TargetLabel>
+      </SectionCodeRef>
+     </PerformStatement>
+     <MoveStatement LineNr="265" EndLineNr="265" ID="282163">
+      <Designator LineNr="265" EndLineNr="265" ID="282159" XRef="280730">
+       <DesigElement LineNr="265" EndLineNr="265" ID="282158">
+        <DataIdent LineNr="265" EndLineNr="265" ID="282157" XRef="280730">
+         CCVS-E-3
+        </DataIdent>
+       </DesigElement>
+      </Designator>
+      <Designator LineNr="265" EndLineNr="265" ID="282162" XRef="280201">
+       <DesigElement LineNr="265" EndLineNr="265" ID="282161">
+        <DataIdent LineNr="265" EndLineNr="265" ID="282160" XRef="280201">
+         DUMMY-RECORD
+        </DataIdent>
+       </DesigElement>
+      </Designator>
+     </MoveStatement>
+     <PerformStatement LineNr="265" EndLineNr="265" ID="282193">
+      <SectionCodeRef LineNr="265" EndLineNr="265" ID="282192">
+       <TargetLabel LineNr="265" EndLineNr="265" ID="282191" XRef="282608">
+        <LabelIdent LineNr="265" EndLineNr="265" ID="282190" XRef="282608">
+         WRITE-LINE
+        </LabelIdent>
+       </TargetLabel>
+      </SectionCodeRef>
+     </PerformStatement>
+    </PeriodStatementList>
+    <TheDot ID="284289">TRUE</TheDot>
+   </ParagraphStatementBlock>
+   <ParagraphStatementBlock LineNr="266" EndLineNr="281" ID="282608">
+    <LabelIdent LineNr="266" EndLineNr="266" ID="282202" XRef="282608">
+     WRITE-LINE
+    </LabelIdent>
+    <PeriodStatementList LineNr="267" EndLineNr="281" ID="282607">
+     <AddStatement LineNr="267" EndLineNr="267" ID="282211">
+      <IntegerLiteral LineNr="267" EndLineNr="267" ID="282203">
+       1
+      </IntegerLiteral>
+      <ArithDesignator LineNr="267" EndLineNr="267" ID="282210">
+       <Designator LineNr="267" EndLineNr="267" ID="282209" XRef="280605">
+        <DesigElement LineNr="267" EndLineNr="267" ID="282208">
+         <DataIdent LineNr="267" EndLineNr="267" ID="282207" XRef="280605">
+          RECORD-COUNT
+         </DataIdent>
+        </DesigElement>
+       </Designator>
+      </ArithDesignator>
+     </AddStatement>
+     <IfStatement LineNr="268" EndLineNr="280" ID="282570">
+      <AtomicComparison LineNr="268" EndLineNr="268" ID="282221">
+       <Designator LineNr="268" EndLineNr="268" ID="282216" XRef="280605">
+        <DesigElement LineNr="268" EndLineNr="268" ID="282215">
+         <DataIdent LineNr="268" EndLineNr="268" ID="282214" XRef="280605">
+          RECORD-COUNT
+         </DataIdent>
+        </DesigElement>
+       </Designator>
+       <SingleRightSide LineNr="268" EndLineNr="268" ID="282220">
+        <ComparisonOperator LineNr="268" EndLineNr="268" ID="282218">
+         <TheOp ID="284294">GreaterKeyword</TheOp>
+        </ComparisonOperator>
+        <IntegerLiteral LineNr="268" EndLineNr="268" ID="282219">
+         42
+        </IntegerLiteral>
+       </SingleRightSide>
+      </AtomicComparison>
+      <StatementList LineNr="269" EndLineNr="280" ID="282569">
+       <MoveStatement LineNr="269" EndLineNr="269" ID="282230">
+        <Designator LineNr="269" EndLineNr="269" ID="282224" XRef="280201">
+         <DesigElement LineNr="269" EndLineNr="269" ID="282223">
+          <DataIdent LineNr="269" EndLineNr="269" ID="282222" XRef="280201">
+           DUMMY-RECORD
+          </DataIdent>
+         </DesigElement>
+        </Designator>
+        <Designator LineNr="269" EndLineNr="269" ID="282229" XRef="280600">
+         <DesigElement LineNr="269" EndLineNr="269" ID="282228">
+          <DataIdent LineNr="269" EndLineNr="269" ID="282227" XRef="280600">
+           DUMMY-HOLD
+          </DataIdent>
+         </DesigElement>
+        </Designator>
+       </MoveStatement>
+       <MoveStatement LineNr="270" EndLineNr="270" ID="282237">
+        <PredefinedLiteral LineNr="270" EndLineNr="270" ID="282231">
+         <TheCode ID="284298">SpaceKeyword</TheCode>
+        </PredefinedLiteral>
+        <Designator LineNr="270" EndLineNr="270" ID="282236" XRef="280201">
+         <DesigElement LineNr="270" EndLineNr="270" ID="282235">
+          <DataIdent LineNr="270" EndLineNr="270" ID="282234" XRef="280201">
+           DUMMY-RECORD
+          </DataIdent>
+         </DesigElement>
+        </Designator>
+       </MoveStatement>
+       <WriteStatement LineNr="271" EndLineNr="271" ID="282242">
+        <TheAdvancingCode ID="284300">AfterKeyword</TheAdvancingCode>
+        <TheAdvancingMode ID="284301">AdvancingKeyword</TheAdvancingMode>
+        <TheUnit ID="284302">LinesKeyword</TheUnit>
+        <IntegerLiteral LineNr="271" EndLineNr="271" ID="282241">
+         1
+        </IntegerLiteral>
+        <Designator LineNr="271" EndLineNr="271" ID="282240" XRef="280201">
+         <DesigElement LineNr="271" EndLineNr="271" ID="282239">
+          <DataIdent LineNr="271" EndLineNr="271" ID="282238" XRef="280201">
+           DUMMY-RECORD
+          </DataIdent>
+         </DesigElement>
+        </Designator>
+       </WriteStatement>
+       <MoveStatement LineNr="272" EndLineNr="272" ID="282249">
+        <Designator LineNr="272" EndLineNr="272" ID="282245" XRef="280612">
+         <DesigElement LineNr="272" EndLineNr="272" ID="282244">
+          <DataIdent LineNr="272" EndLineNr="272" ID="282243" XRef="280612">
+           CCVS-H-1
+          </DataIdent>
+         </DesigElement>
+        </Designator>
+        <Designator LineNr="272" EndLineNr="272" ID="282248" XRef="280201">
+         <DesigElement LineNr="272" EndLineNr="272" ID="282247">
+          <DataIdent LineNr="272" EndLineNr="272" ID="282246" XRef="280201">
+           DUMMY-RECORD
+          </DataIdent>
+         </DesigElement>
+        </Designator>
+       </MoveStatement>
+       <PerformStatement LineNr="272" EndLineNr="272" ID="282296">
+        <IntegerLiteral LineNr="272" EndLineNr="272" ID="282295">
+         2
+        </IntegerLiteral>
+        <SectionCodeRef LineNr="272" EndLineNr="272" ID="282294">
+         <TargetLabel LineNr="272" EndLineNr="272" ID="282293" XRef="282632">
+          <LabelIdent LineNr="272" EndLineNr="272" ID="282292" XRef="282632">
+           WRT-LN
+          </LabelIdent>
+         </TargetLabel>
+        </SectionCodeRef>
+       </PerformStatement>
+       <MoveStatement LineNr="273" EndLineNr="273" ID="282303">
+        <Designator LineNr="273" EndLineNr="273" ID="282299" XRef="280626">
+         <DesigElement LineNr="273" EndLineNr="273" ID="282298">
+          <DataIdent LineNr="273" EndLineNr="273" ID="282297" XRef="280626">
+           CCVS-H-2A
+          </DataIdent>
+         </DesigElement>
+        </Designator>
+        <Designator LineNr="273" EndLineNr="273" ID="282302" XRef="280201">
+         <DesigElement LineNr="273" EndLineNr="273" ID="282301">
+          <DataIdent LineNr="273" EndLineNr="273" ID="282300" XRef="280201">
+           DUMMY-RECORD
+          </DataIdent>
+         </DesigElement>
+        </Designator>
+       </MoveStatement>
+       <PerformStatement LineNr="273" EndLineNr="273" ID="282350">
+        <IntegerLiteral LineNr="273" EndLineNr="273" ID="282349">
+         2
+        </IntegerLiteral>
+        <SectionCodeRef LineNr="273" EndLineNr="273" ID="282348">
+         <TargetLabel LineNr="273" EndLineNr="273" ID="282347" XRef="282632">
+          <LabelIdent LineNr="273" EndLineNr="273" ID="282346" XRef="282632">
+           WRT-LN
+          </LabelIdent>
+         </TargetLabel>
+        </SectionCodeRef>
+       </PerformStatement>
+       <MoveStatement LineNr="274" EndLineNr="274" ID="282357">
+        <Designator LineNr="274" EndLineNr="274" ID="282353" XRef="280648">
+         <DesigElement LineNr="274" EndLineNr="274" ID="282352">
+          <DataIdent LineNr="274" EndLineNr="274" ID="282351" XRef="280648">
+           CCVS-H-2B
+          </DataIdent>
+         </DesigElement>
+        </Designator>
+        <Designator LineNr="274" EndLineNr="274" ID="282356" XRef="280201">
+         <DesigElement LineNr="274" EndLineNr="274" ID="282355">
+          <DataIdent LineNr="274" EndLineNr="274" ID="282354" XRef="280201">
+           DUMMY-RECORD
+          </DataIdent>
+         </DesigElement>
+        </Designator>
+       </MoveStatement>
+       <PerformStatement LineNr="274" EndLineNr="274" ID="282404">
+        <IntegerLiteral LineNr="274" EndLineNr="274" ID="282403">
+         3
+        </IntegerLiteral>
+        <SectionCodeRef LineNr="274" EndLineNr="274" ID="282402">
+         <TargetLabel LineNr="274" EndLineNr="274" ID="282401" XRef="282632">
+          <LabelIdent LineNr="274" EndLineNr="274" ID="282400" XRef="282632">
+           WRT-LN
+          </LabelIdent>
+         </TargetLabel>
+        </SectionCodeRef>
+       </PerformStatement>
+       <MoveStatement LineNr="275" EndLineNr="275" ID="282411">
+        <Designator LineNr="275" EndLineNr="275" ID="282407" XRef="280673">
+         <DesigElement LineNr="275" EndLineNr="275" ID="282406">
+          <DataIdent LineNr="275" EndLineNr="275" ID="282405" XRef="280673">
+           CCVS-H-3
+          </DataIdent>
+         </DesigElement>
+        </Designator>
+        <Designator LineNr="275" EndLineNr="275" ID="282410" XRef="280201">
+         <DesigElement LineNr="275" EndLineNr="275" ID="282409">
+          <DataIdent LineNr="275" EndLineNr="275" ID="282408" XRef="280201">
+           DUMMY-RECORD
+          </DataIdent>
+         </DesigElement>
+        </Designator>
+       </MoveStatement>
+       <PerformStatement LineNr="275" EndLineNr="275" ID="282458">
+        <IntegerLiteral LineNr="275" EndLineNr="275" ID="282457">
+         3
+        </IntegerLiteral>
+        <SectionCodeRef LineNr="275" EndLineNr="275" ID="282456">
+         <TargetLabel LineNr="275" EndLineNr="275" ID="282455" XRef="282632">
+          <LabelIdent LineNr="275" EndLineNr="275" ID="282454" XRef="282632">
+           WRT-LN
+          </LabelIdent>
+         </TargetLabel>
+        </SectionCodeRef>
+       </PerformStatement>
+       <MoveStatement LineNr="276" EndLineNr="276" ID="282465">
+        <Designator LineNr="276" EndLineNr="276" ID="282461" XRef="280525">
+         <DesigElement LineNr="276" EndLineNr="276" ID="282460">
+          <DataIdent LineNr="276" EndLineNr="276" ID="282459" XRef="280525">
+           CCVS-C-1
+          </DataIdent>
+         </DesigElement>
+        </Designator>
+        <Designator LineNr="276" EndLineNr="276" ID="282464" XRef="280201">
+         <DesigElement LineNr="276" EndLineNr="276" ID="282463">
+          <DataIdent LineNr="276" EndLineNr="276" ID="282462" XRef="280201">
+           DUMMY-RECORD
+          </DataIdent>
+         </DesigElement>
+        </Designator>
+       </MoveStatement>
+       <PerformStatement LineNr="276" EndLineNr="276" ID="282489">
+        <SectionCodeRef LineNr="276" EndLineNr="276" ID="282488">
+         <TargetLabel LineNr="276" EndLineNr="276" ID="282487" XRef="282632">
+          <LabelIdent LineNr="276" EndLineNr="276" ID="282486" XRef="282632">
+           WRT-LN
+          </LabelIdent>
+         </TargetLabel>
+        </SectionCodeRef>
+       </PerformStatement>
+       <MoveStatement LineNr="277" EndLineNr="277" ID="282496">
+        <Designator LineNr="277" EndLineNr="277" ID="282492" XRef="280535">
+         <DesigElement LineNr="277" EndLineNr="277" ID="282491">
+          <DataIdent LineNr="277" EndLineNr="277" ID="282490" XRef="280535">
+           CCVS-C-2
+          </DataIdent>
+         </DesigElement>
+        </Designator>
+        <Designator LineNr="277" EndLineNr="277" ID="282495" XRef="280201">
+         <DesigElement LineNr="277" EndLineNr="277" ID="282494">
+          <DataIdent LineNr="277" EndLineNr="277" ID="282493" XRef="280201">
+           DUMMY-RECORD
+          </DataIdent>
+         </DesigElement>
+        </Designator>
+       </MoveStatement>
+       <PerformStatement LineNr="277" EndLineNr="277" ID="282520">
+        <SectionCodeRef LineNr="277" EndLineNr="277" ID="282519">
+         <TargetLabel LineNr="277" EndLineNr="277" ID="282518" XRef="282632">
+          <LabelIdent LineNr="277" EndLineNr="277" ID="282517" XRef="282632">
+           WRT-LN
+          </LabelIdent>
+         </TargetLabel>
+        </SectionCodeRef>
+       </PerformStatement>
+       <MoveStatement LineNr="278" EndLineNr="278" ID="282527">
+        <Designator LineNr="278" EndLineNr="278" ID="282523" XRef="280797">
+         <DesigElement LineNr="278" EndLineNr="278" ID="282522">
+          <DataIdent LineNr="278" EndLineNr="278" ID="282521" XRef="280797">
+           HYPHEN-LINE
+          </DataIdent>
+         </DesigElement>
+        </Designator>
+        <Designator LineNr="278" EndLineNr="278" ID="282526" XRef="280201">
+         <DesigElement LineNr="278" EndLineNr="278" ID="282525">
+          <DataIdent LineNr="278" EndLineNr="278" ID="282524" XRef="280201">
+           DUMMY-RECORD
+          </DataIdent>
+         </DesigElement>
+        </Designator>
+       </MoveStatement>
+       <PerformStatement LineNr="278" EndLineNr="278" ID="282551">
+        <SectionCodeRef LineNr="278" EndLineNr="278" ID="282550">
+         <TargetLabel LineNr="278" EndLineNr="278" ID="282549" XRef="282632">
+          <LabelIdent LineNr="278" EndLineNr="278" ID="282548" XRef="282632">
+           WRT-LN
+          </LabelIdent>
+         </TargetLabel>
+        </SectionCodeRef>
+       </PerformStatement>
+       <MoveStatement LineNr="279" EndLineNr="279" ID="282560">
+        <Designator LineNr="279" EndLineNr="279" ID="282554" XRef="280600">
+         <DesigElement LineNr="279" EndLineNr="279" ID="282553">
+          <DataIdent LineNr="279" EndLineNr="279" ID="282552" XRef="280600">
+           DUMMY-HOLD
+          </DataIdent>
+         </DesigElement>
+        </Designator>
+        <Designator LineNr="279" EndLineNr="279" ID="282559" XRef="280201">
+         <DesigElement LineNr="279" EndLineNr="279" ID="282558">
+          <DataIdent LineNr="279" EndLineNr="279" ID="282557" XRef="280201">
+           DUMMY-RECORD
+          </DataIdent>
+         </DesigElement>
+        </Designator>
+       </MoveStatement>
+       <MoveStatement LineNr="280" EndLineNr="280" ID="282568">
+        <PredefinedLiteral LineNr="280" EndLineNr="280" ID="282561">
+         <TheCode ID="284332">ZeroKeyword</TheCode>
+        </PredefinedLiteral>
+        <Designator LineNr="280" EndLineNr="280" ID="282567" XRef="280605">
+         <DesigElement LineNr="280" EndLineNr="280" ID="282566">
+          <DataIdent LineNr="280" EndLineNr="280" ID="282565" XRef="280605">
+           RECORD-COUNT
+          </DataIdent>
+         </DesigElement>
+        </Designator>
+       </MoveStatement>
+      </StatementList>
+     </IfStatement>
+     <PerformStatement LineNr="281" EndLineNr="281" ID="282600">
+      <SectionCodeRef LineNr="281" EndLineNr="281" ID="282599">
+       <TargetLabel LineNr="281" EndLineNr="281" ID="282598" XRef="282632">
+        <LabelIdent LineNr="281" EndLineNr="281" ID="282597" XRef="282632">
+         WRT-LN
+        </LabelIdent>
+       </TargetLabel>
+      </SectionCodeRef>
+     </PerformStatement>
+    </PeriodStatementList>
+    <TheDot ID="284335">TRUE</TheDot>
+   </ParagraphStatementBlock>
+   <ParagraphStatementBlock LineNr="282" EndLineNr="284" ID="282632">
+    <LabelIdent LineNr="282" EndLineNr="282" ID="282609" XRef="282632">
+     WRT-LN
+    </LabelIdent>
+    <PeriodStatementList LineNr="283" EndLineNr="284" ID="282631">
+     <WriteStatement LineNr="283" EndLineNr="283" ID="282614">
+      <TheAdvancingCode ID="284337">AfterKeyword</TheAdvancingCode>
+      <TheAdvancingMode ID="284338">AdvancingKeyword</TheAdvancingMode>
+      <TheUnit ID="284339">LinesKeyword</TheUnit>
+      <IntegerLiteral LineNr="283" EndLineNr="283" ID="282613">
+       1
+      </IntegerLiteral>
+      <Designator LineNr="283" EndLineNr="283" ID="282612" XRef="280201">
+       <DesigElement LineNr="283" EndLineNr="283" ID="282611">
+        <DataIdent LineNr="283" EndLineNr="283" ID="282610" XRef="280201">
+         DUMMY-RECORD
+        </DataIdent>
+       </DesigElement>
+      </Designator>
+     </WriteStatement>
+     <MoveStatement LineNr="284" EndLineNr="284" ID="282624">
+      <PredefinedLiteral LineNr="284" EndLineNr="284" ID="282617">
+       <TheCode ID="284342">SpaceKeyword</TheCode>
+      </PredefinedLiteral>
+      <Designator LineNr="284" EndLineNr="284" ID="282623" XRef="280201">
+       <DesigElement LineNr="284" EndLineNr="284" ID="282622">
+        <DataIdent LineNr="284" EndLineNr="284" ID="282621" XRef="280201">
+         DUMMY-RECORD
+        </DataIdent>
+       </DesigElement>
+      </Designator>
+     </MoveStatement>
+    </PeriodStatementList>
+    <TheDot ID="284344">TRUE</TheDot>
+   </ParagraphStatementBlock>
+   <ParagraphStatementBlock LineNr="285" EndLineNr="286" ID="282669">
+    <LabelIdent LineNr="285" EndLineNr="285" ID="282633" XRef="282669">
+     BLANK-LINE-PRINT
+    </LabelIdent>
+    <PeriodStatementList LineNr="286" EndLineNr="286" ID="282668">
+     <PerformStatement LineNr="286" EndLineNr="286" ID="282661">
+      <SectionCodeRef LineNr="286" EndLineNr="286" ID="282660">
+       <TargetLabel LineNr="286" EndLineNr="286" ID="282659" XRef="282632">
+        <LabelIdent LineNr="286" EndLineNr="286" ID="282658" XRef="282632">
+         WRT-LN
+        </LabelIdent>
+       </TargetLabel>
+      </SectionCodeRef>
+     </PerformStatement>
+    </PeriodStatementList>
+    <TheDot ID="284347">TRUE</TheDot>
+   </ParagraphStatementBlock>
+   <ParagraphStatementBlock LineNr="287" EndLineNr="295" ID="282801">
+    <LabelIdent LineNr="287" EndLineNr="287" ID="282670" XRef="282801">
+     FAIL-ROUTINE
+    </LabelIdent>
+    <PeriodStatementList LineNr="288" EndLineNr="295" ID="282800">
+     <IfStatement LineNr="288" EndLineNr="289" ID="282683">
+      <AtomicComparison LineNr="288" EndLineNr="288" ID="282678">
+       <Designator LineNr="288" EndLineNr="288" ID="282673" XRef="280354">
+        <DesigElement LineNr="288" EndLineNr="288" ID="282672">
+         <DataIdent LineNr="288" EndLineNr="288" ID="282671" XRef="280354">
+          COMPUTED-X
+         </DataIdent>
+        </DesigElement>
+       </Designator>
+       <SingleRightSide LineNr="288" EndLineNr="288" ID="282677">
+        <ComparisonOperator LineNr="288" EndLineNr="288" ID="282675">
+         <TheOp ID="284350">EqualKeyword</TheOp>
+         <TheNegated ID="284351">TRUE</TheNegated>
+        </ComparisonOperator>
+        <PredefinedLiteral LineNr="288" EndLineNr="288" ID="282676">
+         <TheCode ID="284352">SpaceKeyword</TheCode>
+        </PredefinedLiteral>
+       </SingleRightSide>
+      </AtomicComparison>
+      <StatementList LineNr="289" EndLineNr="289" ID="282682">
+       <GotoStatement LineNr="289" EndLineNr="289" ID="282681">
+        <TargetLabel LineNr="289" EndLineNr="289" ID="282680" XRef="282919">
+         <LabelIdent LineNr="289" EndLineNr="289" ID="282679" XRef="282919">
+          FAIL-ROUTINE-WRITE
+         </LabelIdent>
+        </TargetLabel>
+       </GotoStatement>
+      </StatementList>
+     </IfStatement>
+     <IfStatement LineNr="290" EndLineNr="290" ID="282698">
+      <AtomicComparison LineNr="290" EndLineNr="290" ID="282693">
+       <Designator LineNr="290" EndLineNr="290" ID="282688" XRef="280445">
+        <DesigElement LineNr="290" EndLineNr="290" ID="282687">
+         <DataIdent LineNr="290" EndLineNr="290" ID="282686" XRef="280445">
+          CORRECT-X
+         </DataIdent>
+        </DesigElement>
+       </Designator>
+       <SingleRightSide LineNr="290" EndLineNr="290" ID="282692">
+        <ComparisonOperator LineNr="290" EndLineNr="290" ID="282690">
+         <TheOp ID="284355">EqualKeyword</TheOp>
+         <TheNegated ID="284356">TRUE</TheNegated>
+        </ComparisonOperator>
+        <PredefinedLiteral LineNr="290" EndLineNr="290" ID="282691">
+         <TheCode ID="284357">SpaceKeyword</TheCode>
+        </PredefinedLiteral>
+       </SingleRightSide>
+      </AtomicComparison>
+      <StatementList LineNr="290" EndLineNr="290" ID="282697">
+       <GotoStatement LineNr="290" EndLineNr="290" ID="282696">
+        <TargetLabel LineNr="290" EndLineNr="290" ID="282695" XRef="282919">
+         <LabelIdent LineNr="290" EndLineNr="290" ID="282694" XRef="282919">
+          FAIL-ROUTINE-WRITE
+         </LabelIdent>
+        </TargetLabel>
+       </GotoStatement>
+      </StatementList>
+     </IfStatement>
+     <MoveStatement LineNr="291" EndLineNr="291" ID="282710">
+      <Designator LineNr="291" EndLineNr="291" ID="282703" XRef="280610">
+       <DesigElement LineNr="291" EndLineNr="291" ID="282702">
+        <DataIdent LineNr="291" EndLineNr="291" ID="282701" XRef="280610">
+         ANSI-REFERENCE
+        </DataIdent>
+       </DesigElement>
+      </Designator>
+      <Designator LineNr="291" EndLineNr="291" ID="282709" XRef="280795">
+       <DesigElement LineNr="291" EndLineNr="291" ID="282708">
+        <DataIdent LineNr="291" EndLineNr="291" ID="282707" XRef="280795">
+         INF-ANSI-REFERENCE
+        </DataIdent>
+       </DesigElement>
+      </Designator>
+     </MoveStatement>
+     <MoveStatement LineNr="292" EndLineNr="292" ID="282720">
+      <StringLiteral LineNr="292" EndLineNr="292" ID="282713">
+       "NO FURTHER INFORMATION, SEE PROGRAM."
+      </StringLiteral>
+      <Designator LineNr="292" EndLineNr="292" ID="282719" XRef="280778">
+       <DesigElement LineNr="292" EndLineNr="292" ID="282718">
+        <DataIdent LineNr="292" EndLineNr="292" ID="282717" XRef="280778">
+         INFO-TEXT
+        </DataIdent>
+       </DesigElement>
+      </Designator>
+     </MoveStatement>
+     <MoveStatement LineNr="293" EndLineNr="293" ID="282729">
+      <Designator LineNr="293" EndLineNr="293" ID="282725" XRef="280772">
+       <DesigElement LineNr="293" EndLineNr="293" ID="282724">
+        <DataIdent LineNr="293" EndLineNr="293" ID="282723" XRef="280772">
+         XXINFO
+        </DataIdent>
+       </DesigElement>
+      </Designator>
+      <Designator LineNr="293" EndLineNr="293" ID="282728" XRef="280201">
+       <DesigElement LineNr="293" EndLineNr="293" ID="282727">
+        <DataIdent LineNr="293" EndLineNr="293" ID="282726" XRef="280201">
+         DUMMY-RECORD
+        </DataIdent>
+       </DesigElement>
+      </Designator>
+     </MoveStatement>
+     <PerformStatement LineNr="293" EndLineNr="293" ID="282778">
+      <IntegerLiteral LineNr="293" EndLineNr="293" ID="282777">
+       2
+      </IntegerLiteral>
+      <SectionCodeRef LineNr="293" EndLineNr="293" ID="282776">
+       <TargetLabel LineNr="293" EndLineNr="293" ID="282775" XRef="282608">
+        <LabelIdent LineNr="293" EndLineNr="293" ID="282774" XRef="282608">
+         WRITE-LINE
+        </LabelIdent>
+       </TargetLabel>
+      </SectionCodeRef>
+     </PerformStatement>
+     <MoveStatement LineNr="294" EndLineNr="294" ID="282788">
+      <PredefinedLiteral LineNr="294" EndLineNr="294" ID="282781">
+       <TheCode ID="284367">SpaceKeyword</TheCode>
+      </PredefinedLiteral>
+      <Designator LineNr="294" EndLineNr="294" ID="282787" XRef="280795">
+       <DesigElement LineNr="294" EndLineNr="294" ID="282786">
+        <DataIdent LineNr="294" EndLineNr="294" ID="282785" XRef="280795">
+         INF-ANSI-REFERENCE
+        </DataIdent>
+       </DesigElement>
+      </Designator>
+     </MoveStatement>
+     <GotoStatement LineNr="295" EndLineNr="295" ID="282793">
+      <TargetLabel LineNr="295" EndLineNr="295" ID="282792" XRef="282929">
+       <LabelIdent LineNr="295" EndLineNr="295" ID="282791" XRef="282929">
+        FAIL-ROUTINE-EX
+       </LabelIdent>
+      </TargetLabel>
+     </GotoStatement>
+    </PeriodStatementList>
+    <TheDot ID="284370">TRUE</TheDot>
+   </ParagraphStatementBlock>
+   <ParagraphStatementBlock LineNr="296" EndLineNr="300" ID="282919">
+    <LabelIdent LineNr="296" EndLineNr="296" ID="282802" XRef="282919">
+     FAIL-ROUTINE-WRITE
+    </LabelIdent>
+    <PeriodStatementList LineNr="297" EndLineNr="300" ID="282918">
+     <MoveStatement LineNr="297" EndLineNr="297" ID="282809">
+      <Designator LineNr="297" EndLineNr="297" ID="282805" XRef="280344">
+       <DesigElement LineNr="297" EndLineNr="297" ID="282804">
+        <DataIdent LineNr="297" EndLineNr="297" ID="282803" XRef="280344">
+         TEST-COMPUTED
+        </DataIdent>
+       </DesigElement>
+      </Designator>
+      <Designator LineNr="297" EndLineNr="297" ID="282808" XRef="280198">
+       <DesigElement LineNr="297" EndLineNr="297" ID="282807">
+        <DataIdent LineNr="297" EndLineNr="297" ID="282806" XRef="280198">
+         PRINT-REC
+        </DataIdent>
+       </DesigElement>
+      </Designator>
+     </MoveStatement>
+     <PerformStatement LineNr="297" EndLineNr="297" ID="282834">
+      <SectionCodeRef LineNr="297" EndLineNr="297" ID="282833">
+       <TargetLabel LineNr="297" EndLineNr="297" ID="282832" XRef="282608">
+        <LabelIdent LineNr="297" EndLineNr="297" ID="282831" XRef="282608">
+         WRITE-LINE
+        </LabelIdent>
+       </TargetLabel>
+      </SectionCodeRef>
+     </PerformStatement>
+     <MoveStatement LineNr="298" EndLineNr="298" ID="282845">
+      <Designator LineNr="298" EndLineNr="298" ID="282838" XRef="280610">
+       <DesigElement LineNr="298" EndLineNr="298" ID="282837">
+        <DataIdent LineNr="298" EndLineNr="298" ID="282836" XRef="280610">
+         ANSI-REFERENCE
+        </DataIdent>
+       </DesigElement>
+      </Designator>
+      <Designator LineNr="298" EndLineNr="298" ID="282844" XRef="280523">
+       <DesigElement LineNr="298" EndLineNr="298" ID="282843">
+        <DataIdent LineNr="298" EndLineNr="298" ID="282842" XRef="280523">
+         COR-ANSI-REFERENCE
+        </DataIdent>
+       </DesigElement>
+      </Designator>
+     </MoveStatement>
+     <MoveStatement LineNr="299" EndLineNr="299" ID="282854">
+      <Designator LineNr="299" EndLineNr="299" ID="282850" XRef="280435">
+       <DesigElement LineNr="299" EndLineNr="299" ID="282849">
+        <DataIdent LineNr="299" EndLineNr="299" ID="282848" XRef="280435">
+         TEST-CORRECT
+        </DataIdent>
+       </DesigElement>
+      </Designator>
+      <Designator LineNr="299" EndLineNr="299" ID="282853" XRef="280198">
+       <DesigElement LineNr="299" EndLineNr="299" ID="282852">
+        <DataIdent LineNr="299" EndLineNr="299" ID="282851" XRef="280198">
+         PRINT-REC
+        </DataIdent>
+       </DesigElement>
+      </Designator>
+     </MoveStatement>
+     <PerformStatement LineNr="299" EndLineNr="299" ID="282902">
+      <IntegerLiteral LineNr="299" EndLineNr="299" ID="282901">
+       2
+      </IntegerLiteral>
+      <SectionCodeRef LineNr="299" EndLineNr="299" ID="282900">
+       <TargetLabel LineNr="299" EndLineNr="299" ID="282899" XRef="282608">
+        <LabelIdent LineNr="299" EndLineNr="299" ID="282898" XRef="282608">
+         WRITE-LINE
+        </LabelIdent>
+       </TargetLabel>
+      </SectionCodeRef>
+     </PerformStatement>
+     <MoveStatement LineNr="300" EndLineNr="300" ID="282912">
+      <PredefinedLiteral LineNr="300" EndLineNr="300" ID="282905">
+       <TheCode ID="284381">SpaceKeyword</TheCode>
+      </PredefinedLiteral>
+      <Designator LineNr="300" EndLineNr="300" ID="282911" XRef="280523">
+       <DesigElement LineNr="300" EndLineNr="300" ID="282910">
+        <DataIdent LineNr="300" EndLineNr="300" ID="282909" XRef="280523">
+         COR-ANSI-REFERENCE
+        </DataIdent>
+       </DesigElement>
+      </Designator>
+     </MoveStatement>
+    </PeriodStatementList>
+    <TheDot ID="284383">TRUE</TheDot>
+   </ParagraphStatementBlock>
+   <ParagraphStatementBlock LineNr="301" EndLineNr="301" ID="282929">
+    <LabelIdent LineNr="301" EndLineNr="301" ID="282920" XRef="282929">
+     FAIL-ROUTINE-EX
+    </LabelIdent>
+    <PeriodStatementList LineNr="301" EndLineNr="301" ID="282928">
+     <ExitStatement LineNr="301" EndLineNr="301" ID="282921">
+     </ExitStatement>
+    </PeriodStatementList>
+    <TheDot ID="284385">TRUE</TheDot>
+   </ParagraphStatementBlock>
+   <ParagraphStatementBlock LineNr="302" EndLineNr="304" ID="282966">
+    <LabelIdent LineNr="302" EndLineNr="302" ID="282930" XRef="282966">
+     BAIL-OUT
+    </LabelIdent>
+    <PeriodStatementList LineNr="303" EndLineNr="304" ID="282965">
+     <IfStatement LineNr="303" EndLineNr="303" ID="282943">
+      <AtomicComparison LineNr="303" EndLineNr="303" ID="282938">
+       <Designator LineNr="303" EndLineNr="303" ID="282933" XRef="280359">
+        <DesigElement LineNr="303" EndLineNr="303" ID="282932">
+         <DataIdent LineNr="303" EndLineNr="303" ID="282931" XRef="280359">
+          COMPUTED-A
+         </DataIdent>
+        </DesigElement>
+       </Designator>
+       <SingleRightSide LineNr="303" EndLineNr="303" ID="282937">
+        <ComparisonOperator LineNr="303" EndLineNr="303" ID="282935">
+         <TheOp ID="284388">EqualKeyword</TheOp>
+         <TheNegated ID="284389">TRUE</TheNegated>
+        </ComparisonOperator>
+        <PredefinedLiteral LineNr="303" EndLineNr="303" ID="282936">
+         <TheCode ID="284390">SpaceKeyword</TheCode>
+        </PredefinedLiteral>
+       </SingleRightSide>
+      </AtomicComparison>
+      <StatementList LineNr="303" EndLineNr="303" ID="282942">
+       <GotoStatement LineNr="303" EndLineNr="303" ID="282941">
+        <TargetLabel LineNr="303" EndLineNr="303" ID="282940" XRef="283076">
+         <LabelIdent LineNr="303" EndLineNr="303" ID="282939" XRef="283076">
+          BAIL-OUT-WRITE
+         </LabelIdent>
+        </TargetLabel>
+       </GotoStatement>
+      </StatementList>
+     </IfStatement>
+     <IfStatement LineNr="304" EndLineNr="304" ID="282958">
+      <AtomicComparison LineNr="304" EndLineNr="304" ID="282953">
+       <Designator LineNr="304" EndLineNr="304" ID="282948" XRef="280450">
+        <DesigElement LineNr="304" EndLineNr="304" ID="282947">
+         <DataIdent LineNr="304" EndLineNr="304" ID="282946" XRef="280450">
+          CORRECT-A
+         </DataIdent>
+        </DesigElement>
+       </Designator>
+       <SingleRightSide LineNr="304" EndLineNr="304" ID="282952">
+        <ComparisonOperator LineNr="304" EndLineNr="304" ID="282950">
+         <TheOp ID="284393">EqualKeyword</TheOp>
+        </ComparisonOperator>
+        <PredefinedLiteral LineNr="304" EndLineNr="304" ID="282951">
+         <TheCode ID="284394">SpaceKeyword</TheCode>
+        </PredefinedLiteral>
+       </SingleRightSide>
+      </AtomicComparison>
+      <StatementList LineNr="304" EndLineNr="304" ID="282957">
+       <GotoStatement LineNr="304" EndLineNr="304" ID="282956">
+        <TargetLabel LineNr="304" EndLineNr="304" ID="282955" XRef="283086">
+         <LabelIdent LineNr="304" EndLineNr="304" ID="282954" XRef="283086">
+          BAIL-OUT-EX
+         </LabelIdent>
+        </TargetLabel>
+       </GotoStatement>
+      </StatementList>
+     </IfStatement>
+    </PeriodStatementList>
+    <TheDot ID="284396">TRUE</TheDot>
+   </ParagraphStatementBlock>
+   <ParagraphStatementBlock LineNr="305" EndLineNr="310" ID="283076">
+    <LabelIdent LineNr="305" EndLineNr="305" ID="282967" XRef="283076">
+     BAIL-OUT-WRITE
+    </LabelIdent>
+    <PeriodStatementList LineNr="306" EndLineNr="310" ID="283075">
+     <MoveStatement LineNr="306" EndLineNr="306" ID="282977">
+      <Designator LineNr="306" EndLineNr="306" ID="282970" XRef="280450">
+       <DesigElement LineNr="306" EndLineNr="306" ID="282969">
+        <DataIdent LineNr="306" EndLineNr="306" ID="282968" XRef="280450">
+         CORRECT-A
+        </DataIdent>
+       </DesigElement>
+      </Designator>
+      <Designator LineNr="306" EndLineNr="306" ID="282976" XRef="280792">
+       <DesigElement LineNr="306" EndLineNr="306" ID="282975">
+        <DataIdent LineNr="306" EndLineNr="306" ID="282974" XRef="280792">
+         XXCORRECT
+        </DataIdent>
+       </DesigElement>
+      </Designator>
+     </MoveStatement>
+     <MoveStatement LineNr="307" EndLineNr="307" ID="282989">
+      <Designator LineNr="307" EndLineNr="307" ID="282982" XRef="280359">
+       <DesigElement LineNr="307" EndLineNr="307" ID="282981">
+        <DataIdent LineNr="307" EndLineNr="307" ID="282980" XRef="280359">
+         COMPUTED-A
+        </DataIdent>
+       </DesigElement>
+      </Designator>
+      <Designator LineNr="307" EndLineNr="307" ID="282988" XRef="280785">
+       <DesigElement LineNr="307" EndLineNr="307" ID="282987">
+        <DataIdent LineNr="307" EndLineNr="307" ID="282986" XRef="280785">
+         XXCOMPUTED
+        </DataIdent>
+       </DesigElement>
+      </Designator>
+     </MoveStatement>
+     <MoveStatement LineNr="308" EndLineNr="308" ID="283001">
+      <Designator LineNr="308" EndLineNr="308" ID="282994" XRef="280610">
+       <DesigElement LineNr="308" EndLineNr="308" ID="282993">
+        <DataIdent LineNr="308" EndLineNr="308" ID="282992" XRef="280610">
+         ANSI-REFERENCE
+        </DataIdent>
+       </DesigElement>
+      </Designator>
+      <Designator LineNr="308" EndLineNr="308" ID="283000" XRef="280795">
+       <DesigElement LineNr="308" EndLineNr="308" ID="282999">
+        <DataIdent LineNr="308" EndLineNr="308" ID="282998" XRef="280795">
+         INF-ANSI-REFERENCE
+        </DataIdent>
+       </DesigElement>
+      </Designator>
+     </MoveStatement>
+     <MoveStatement LineNr="309" EndLineNr="309" ID="283010">
+      <Designator LineNr="309" EndLineNr="309" ID="283006" XRef="280772">
+       <DesigElement LineNr="309" EndLineNr="309" ID="283005">
+        <DataIdent LineNr="309" EndLineNr="309" ID="283004" XRef="280772">
+         XXINFO
+        </DataIdent>
+       </DesigElement>
+      </Designator>
+      <Designator LineNr="309" EndLineNr="309" ID="283009" XRef="280201">
+       <DesigElement LineNr="309" EndLineNr="309" ID="283008">
+        <DataIdent LineNr="309" EndLineNr="309" ID="283007" XRef="280201">
+         DUMMY-RECORD
+        </DataIdent>
+       </DesigElement>
+      </Designator>
+     </MoveStatement>
+     <PerformStatement LineNr="309" EndLineNr="309" ID="283059">
+      <IntegerLiteral LineNr="309" EndLineNr="309" ID="283058">
+       2
+      </IntegerLiteral>
+      <SectionCodeRef LineNr="309" EndLineNr="309" ID="283057">
+       <TargetLabel LineNr="309" EndLineNr="309" ID="283056" XRef="282608">
+        <LabelIdent LineNr="309" EndLineNr="309" ID="283055" XRef="282608">
+         WRITE-LINE
+        </LabelIdent>
+       </TargetLabel>
+      </SectionCodeRef>
+     </PerformStatement>
+     <MoveStatement LineNr="310" EndLineNr="310" ID="283069">
+      <PredefinedLiteral LineNr="310" EndLineNr="310" ID="283062">
+       <TheCode ID="284408">SpaceKeyword</TheCode>
+      </PredefinedLiteral>
+      <Designator LineNr="310" EndLineNr="310" ID="283068" XRef="280795">
+       <DesigElement LineNr="310" EndLineNr="310" ID="283067">
+        <DataIdent LineNr="310" EndLineNr="310" ID="283066" XRef="280795">
+         INF-ANSI-REFERENCE
+        </DataIdent>
+       </DesigElement>
+      </Designator>
+     </MoveStatement>
+    </PeriodStatementList>
+    <TheDot ID="284410">TRUE</TheDot>
+   </ParagraphStatementBlock>
+   <ParagraphStatementBlock LineNr="311" EndLineNr="311" ID="283086">
+    <LabelIdent LineNr="311" EndLineNr="311" ID="283077" XRef="283086">
+     BAIL-OUT-EX
+    </LabelIdent>
+    <PeriodStatementList LineNr="311" EndLineNr="311" ID="283085">
+     <ExitStatement LineNr="311" EndLineNr="311" ID="283078">
+     </ExitStatement>
+    </PeriodStatementList>
+    <TheDot ID="284412">TRUE</TheDot>
+   </ParagraphStatementBlock>
+   <ParagraphStatementBlock LineNr="312" EndLineNr="313" ID="283095">
+    <LabelIdent LineNr="312" EndLineNr="312" ID="283087" XRef="283095">
+     CCVS1-EXIT
+    </LabelIdent>
+    <PeriodStatementList LineNr="313" EndLineNr="313" ID="283094">
+     <ExitStatement LineNr="313" EndLineNr="313" ID="283088">
+     </ExitStatement>
+    </PeriodStatementList>
+    <TheDot ID="284414">TRUE</TheDot>
+   </ParagraphStatementBlock>
+   <SectionStatementBlock LineNr="319" EndLineNr="319" ID="283099">
+    <LabelIdent LineNr="319" EndLineNr="319" ID="283096" XRef="283099">
+     SECT-IF142A
+    </LabelIdent>
+   </SectionStatementBlock>
+   <ParagraphStatementBlock LineNr="320" EndLineNr="322" ID="283126">
+    <LabelIdent LineNr="320" EndLineNr="320" ID="283100" XRef="283126">
+     F-WHENCOMP-INFO
+    </LabelIdent>
+    <PeriodStatementList LineNr="321" EndLineNr="322" ID="283125">
+     <MoveStatement LineNr="321" EndLineNr="321" ID="283108">
+      <StringLiteral LineNr="321" EndLineNr="321" ID="283101">
+       "See ref. A-75 2.46"
+      </StringLiteral>
+      <Designator LineNr="321" EndLineNr="321" ID="283107" XRef="280610">
+       <DesigElement LineNr="321" EndLineNr="321" ID="283106">
+        <DataIdent LineNr="321" EndLineNr="321" ID="283105" XRef="280610">
+         ANSI-REFERENCE
+        </DataIdent>
+       </DesigElement>
+      </Designator>
+     </MoveStatement>
+     <MoveStatement LineNr="322" EndLineNr="322" ID="283118">
+      <StringLiteral LineNr="322" EndLineNr="322" ID="283111">
+       "WHEN-COMPILED"
+      </StringLiteral>
+      <Designator LineNr="322" EndLineNr="322" ID="283117" XRef="280306">
+       <DesigElement LineNr="322" EndLineNr="322" ID="283116">
+        <DataIdent LineNr="322" EndLineNr="322" ID="283115" XRef="280306">
+         FEATURE
+        </DataIdent>
+       </DesigElement>
+      </Designator>
+     </MoveStatement>
+    </PeriodStatementList>
+    <TheDot ID="284421">TRUE</TheDot>
+   </ParagraphStatementBlock>
+   <ParagraphStatementBlock LineNr="324" EndLineNr="326" ID="283153">
+    <LabelIdent LineNr="324" EndLineNr="324" ID="283127" XRef="283153">
+     F-WHENCOMP-01
+    </LabelIdent>
+    <PeriodStatementList LineNr="325" EndLineNr="326" ID="283152">
+     <MoveStatement LineNr="325" EndLineNr="325" ID="283135">
+      <PredefinedLiteral LineNr="325" EndLineNr="325" ID="283128">
+       <TheCode ID="284423">SpaceKeyword</TheCode>
+      </PredefinedLiteral>
+      <Designator LineNr="325" EndLineNr="325" ID="283134" XRef="280207">
+       <DesigElement LineNr="325" EndLineNr="325" ID="283133">
+        <DataIdent LineNr="325" EndLineNr="325" ID="283132" XRef="280207">
+         TEMP1
+        </DataIdent>
+       </DesigElement>
+      </Designator>
+     </MoveStatement>
+     <MoveStatement LineNr="326" EndLineNr="326" ID="283145">
+      <PredefinedLiteral LineNr="326" EndLineNr="326" ID="283138">
+       <TheCode ID="284425">SpaceKeyword</TheCode>
+      </PredefinedLiteral>
+      <Designator LineNr="326" EndLineNr="326" ID="283144" XRef="280209">
+       <DesigElement LineNr="326" EndLineNr="326" ID="283143">
+        <DataIdent LineNr="326" EndLineNr="326" ID="283142" XRef="280209">
+         WS-DATE
+        </DataIdent>
+       </DesigElement>
+      </Designator>
+     </MoveStatement>
+    </PeriodStatementList>
+    <TheDot ID="284427">TRUE</TheDot>
+   </ParagraphStatementBlock>
+   <ParagraphStatementBlock LineNr="327" EndLineNr="344" ID="283303">
+    <LabelIdent LineNr="327" EndLineNr="327" ID="283154" XRef="283303">
+     F-WHENCOMP-TEST-01
+    </LabelIdent>
+    <PeriodStatementList LineNr="328" EndLineNr="344" ID="283302">
+     <MoveStatement LineNr="328" EndLineNr="328" ID="283163">
+      <FunctionCallExpression LineNr="328" EndLineNr="328" ID="283156">
+       <AnonIdent LineNr="328" EndLineNr="328" ID="283155">
+        WHEN-COMPILED
+       </AnonIdent>
+      </FunctionCallExpression>
+      <Designator LineNr="328" EndLineNr="328" ID="283162" XRef="280207">
+       <DesigElement LineNr="328" EndLineNr="328" ID="283161">
+        <DataIdent LineNr="328" EndLineNr="328" ID="283160" XRef="280207">
+         TEMP1
+        </DataIdent>
+       </DesigElement>
+      </Designator>
+     </MoveStatement>
+     <MoveStatement LineNr="329" EndLineNr="329" ID="283175">
+      <Designator LineNr="329" EndLineNr="329" ID="283168" XRef="280207">
+       <DesigElement LineNr="329" EndLineNr="329" ID="283167">
+        <DataIdent LineNr="329" EndLineNr="329" ID="283166" XRef="280207">
+         TEMP1
+        </DataIdent>
+       </DesigElement>
+      </Designator>
+      <Designator LineNr="329" EndLineNr="329" ID="283174" XRef="280209">
+       <DesigElement LineNr="329" EndLineNr="329" ID="283173">
+        <DataIdent LineNr="329" EndLineNr="329" ID="283172" XRef="280209">
+         WS-DATE
+        </DataIdent>
+       </DesigElement>
+      </Designator>
+     </MoveStatement>
+     <IfStatement LineNr="330" EndLineNr="343" ID="283290">
+      <BinaryCondition LineNr="330" EndLineNr="338" ID="283221">
+       <TheOp ID="284433">AndKeyword</TheOp>
+       <BinaryCondition LineNr="330" EndLineNr="337" ID="283216">
+        <TheOp ID="284434">AndKeyword</TheOp>
+        <BinaryCondition LineNr="330" EndLineNr="336" ID="283211">
+         <TheOp ID="284435">AndKeyword</TheOp>
+         <BinaryCondition LineNr="330" EndLineNr="335" ID="283206">
+          <TheOp ID="284436">AndKeyword</TheOp>
+          <BinaryCondition LineNr="330" EndLineNr="334" ID="283201">
+           <TheOp ID="284437">AndKeyword</TheOp>
+           <BinaryCondition LineNr="330" EndLineNr="333" ID="283196">
+            <TheOp ID="284438">AndKeyword</TheOp>
+            <BinaryCondition LineNr="330" EndLineNr="332" ID="283191">
+             <TheOp ID="284439">AndKeyword</TheOp>
+             <BinaryCondition LineNr="330" EndLineNr="331" ID="283186">
+              <TheOp ID="284440">AndKeyword</TheOp>
+              <DesignatorCondition LineNr="330" EndLineNr="330" ID="283181">
+               <Designator LineNr="330" EndLineNr="330" ID="283180" XRef="280218">
+                <DesigElement LineNr="330" EndLineNr="330" ID="283179">
+                 <DataIdent LineNr="330" EndLineNr="330" ID="283178" XRef="280218">
+                  CON-YEAR
+                 </DataIdent>
+                </DesigElement>
+               </Designator>
+              </DesignatorCondition>
+              <DesignatorCondition LineNr="331" EndLineNr="331" ID="283185">
+               <Designator LineNr="331" EndLineNr="331" ID="283184" XRef="280227">
+                <DesigElement LineNr="331" EndLineNr="331" ID="283183">
+                 <DataIdent LineNr="331" EndLineNr="331" ID="283182" XRef="280227">
+                  CON-MONTH
+                 </DataIdent>
+                </DesigElement>
+               </Designator>
+              </DesignatorCondition>
+             </BinaryCondition>
+             <DesignatorCondition LineNr="332" EndLineNr="332" ID="283190">
+              <Designator LineNr="332" EndLineNr="332" ID="283189" XRef="280236">
+               <DesigElement LineNr="332" EndLineNr="332" ID="283188">
+                <DataIdent LineNr="332" EndLineNr="332" ID="283187" XRef="280236">
+                 CON-DAY
+                </DataIdent>
+               </DesigElement>
+              </Designator>
+             </DesignatorCondition>
+            </BinaryCondition>
+            <DesignatorCondition LineNr="333" EndLineNr="333" ID="283195">
+             <Designator LineNr="333" EndLineNr="333" ID="283194" XRef="280245">
+              <DesigElement LineNr="333" EndLineNr="333" ID="283193">
+               <DataIdent LineNr="333" EndLineNr="333" ID="283192" XRef="280245">
+                CON-HOUR
+               </DataIdent>
+              </DesigElement>
+             </Designator>
+            </DesignatorCondition>
+           </BinaryCondition>
+           <DesignatorCondition LineNr="334" EndLineNr="334" ID="283200">
+            <Designator LineNr="334" EndLineNr="334" ID="283199" XRef="280254">
+             <DesigElement LineNr="334" EndLineNr="334" ID="283198">
+              <DataIdent LineNr="334" EndLineNr="334" ID="283197" XRef="280254">
+               CON-MIN
+              </DataIdent>
+             </DesigElement>
+            </Designator>
+           </DesignatorCondition>
+          </BinaryCondition>
+          <DesignatorCondition LineNr="335" EndLineNr="335" ID="283205">
+           <Designator LineNr="335" EndLineNr="335" ID="283204" XRef="280263">
+            <DesigElement LineNr="335" EndLineNr="335" ID="283203">
+             <DataIdent LineNr="335" EndLineNr="335" ID="283202" XRef="280263">
+              CON-SEC
+             </DataIdent>
+            </DesigElement>
+           </Designator>
+          </DesignatorCondition>
+         </BinaryCondition>
+         <DesignatorCondition LineNr="336" EndLineNr="336" ID="283210">
+          <Designator LineNr="336" EndLineNr="336" ID="283209" XRef="280272">
+           <DesigElement LineNr="336" EndLineNr="336" ID="283208">
+            <DataIdent LineNr="336" EndLineNr="336" ID="283207" XRef="280272">
+             CON-HUNDSEC
+            </DataIdent>
+           </DesigElement>
+          </Designator>
+         </DesignatorCondition>
+        </BinaryCondition>
+        <DesignatorCondition LineNr="337" EndLineNr="337" ID="283215">
+         <Designator LineNr="337" EndLineNr="337" ID="283214" XRef="280286">
+          <DesigElement LineNr="337" EndLineNr="337" ID="283213">
+           <DataIdent LineNr="337" EndLineNr="337" ID="283212" XRef="280286">
+            CON-GREENW
+           </DataIdent>
+          </DesigElement>
+         </Designator>
+        </DesignatorCondition>
+       </BinaryCondition>
+       <DesignatorCondition LineNr="338" EndLineNr="338" ID="283220">
+        <Designator LineNr="338" EndLineNr="338" ID="283219" XRef="280295">
+         <DesigElement LineNr="338" EndLineNr="338" ID="283218">
+          <DataIdent LineNr="338" EndLineNr="338" ID="283217" XRef="280295">
+           CON-OFFSET
+          </DataIdent>
+         </DesigElement>
+        </Designator>
+       </DesignatorCondition>
+      </BinaryCondition>
+      <StatementList LineNr="339" EndLineNr="339" ID="283246">
+       <PerformStatement LineNr="339" EndLineNr="339" ID="283245">
+        <SectionCodeRef LineNr="339" EndLineNr="339" ID="283244">
+         <TargetLabel LineNr="339" EndLineNr="339" ID="283243" XRef="281000">
+          <LabelIdent LineNr="339" EndLineNr="339" ID="283242" XRef="281000">
+           PASS
+          </LabelIdent>
+         </TargetLabel>
+        </SectionCodeRef>
+       </PerformStatement>
+      </StatementList>
+      <StatementList LineNr="341" EndLineNr="343" ID="283289">
+       <MoveStatement LineNr="341" EndLineNr="341" ID="283255">
+        <Designator LineNr="341" EndLineNr="341" ID="283249" XRef="280207">
+         <DesigElement LineNr="341" EndLineNr="341" ID="283248">
+          <DataIdent LineNr="341" EndLineNr="341" ID="283247" XRef="280207">
+           TEMP1
+          </DataIdent>
+         </DesigElement>
+        </Designator>
+        <Designator LineNr="341" EndLineNr="341" ID="283254" XRef="280359">
+         <DesigElement LineNr="341" EndLineNr="341" ID="283253">
+          <DataIdent LineNr="341" EndLineNr="341" ID="283252" XRef="280359">
+           COMPUTED-A
+          </DataIdent>
+         </DesigElement>
+        </Designator>
+       </MoveStatement>
+       <MoveStatement LineNr="342" EndLineNr="342" ID="283262">
+        <StringLiteral LineNr="342" EndLineNr="342" ID="283256">
+         "Date &amp; Time value "
+        </StringLiteral>
+        <Designator LineNr="342" EndLineNr="342" ID="283261" XRef="280445">
+         <DesigElement LineNr="342" EndLineNr="342" ID="283260">
+          <DataIdent LineNr="342" EndLineNr="342" ID="283259" XRef="280445">
+           CORRECT-X
+          </DataIdent>
+         </DesigElement>
+        </Designator>
+       </MoveStatement>
+       <PerformStatement LineNr="343" EndLineNr="343" ID="283288">
+        <SectionCodeRef LineNr="343" EndLineNr="343" ID="283287">
+         <TargetLabel LineNr="343" EndLineNr="343" ID="283286" XRef="281024">
+          <LabelIdent LineNr="343" EndLineNr="343" ID="283285" XRef="281024">
+           FAIL
+          </LabelIdent>
+         </TargetLabel>
+        </SectionCodeRef>
+       </PerformStatement>
+      </StatementList>
+      <TheThen ID="284456">TRUE</TheThen>
+      <TheElse ID="284457">TRUE</TheElse>
+     </IfStatement>
+     <GotoStatement LineNr="344" EndLineNr="344" ID="283295">
+      <TargetLabel LineNr="344" EndLineNr="344" ID="283294" XRef="283390">
+       <LabelIdent LineNr="344" EndLineNr="344" ID="283293" XRef="283390">
+        F-WHENCOMP-WRITE-01
+       </LabelIdent>
+      </TargetLabel>
+     </GotoStatement>
+    </PeriodStatementList>
+    <TheDot ID="284459">TRUE</TheDot>
+   </ParagraphStatementBlock>
+   <ParagraphStatementBlock LineNr="345" EndLineNr="347" ID="283343">
+    <LabelIdent LineNr="345" EndLineNr="345" ID="283304" XRef="283343">
+     F-WHENCOMP-DELETE-01
+    </LabelIdent>
+    <PeriodStatementList LineNr="346" EndLineNr="347" ID="283342">
+     <PerformStatement LineNr="346" EndLineNr="346" ID="283330">
+      <SectionCodeRef LineNr="346" EndLineNr="346" ID="283329">
+       <TargetLabel LineNr="346" EndLineNr="346" ID="283328" XRef="281059">
+        <LabelIdent LineNr="346" EndLineNr="346" ID="283327" XRef="281059">
+         DE-LETE
+        </LabelIdent>
+       </TargetLabel>
+      </SectionCodeRef>
+     </PerformStatement>
+     <GotoStatement LineNr="347" EndLineNr="347" ID="283335">
+      <TargetLabel LineNr="347" EndLineNr="347" ID="283334" XRef="283390">
+       <LabelIdent LineNr="347" EndLineNr="347" ID="283333" XRef="283390">
+        F-WHENCOMP-WRITE-01
+       </LabelIdent>
+      </TargetLabel>
+     </GotoStatement>
+    </PeriodStatementList>
+    <TheDot ID="284463">TRUE</TheDot>
+   </ParagraphStatementBlock>
+   <ParagraphStatementBlock LineNr="348" EndLineNr="350" ID="283390">
+    <LabelIdent LineNr="348" EndLineNr="348" ID="283344" XRef="283390">
+     F-WHENCOMP-WRITE-01
+    </LabelIdent>
+    <PeriodStatementList LineNr="349" EndLineNr="350" ID="283389">
+     <MoveStatement LineNr="349" EndLineNr="349" ID="283352">
+      <StringLiteral LineNr="349" EndLineNr="349" ID="283345">
+       "F-WHENCOMP-01"
+      </StringLiteral>
+      <Designator LineNr="349" EndLineNr="349" ID="283351" XRef="280321">
+       <DesigElement LineNr="349" EndLineNr="349" ID="283350">
+        <DataIdent LineNr="349" EndLineNr="349" ID="283349" XRef="280321">
+         PAR-NAME
+        </DataIdent>
+       </DesigElement>
+      </Designator>
+     </MoveStatement>
+     <PerformStatement LineNr="350" EndLineNr="350" ID="283382">
+      <SectionCodeRef LineNr="350" EndLineNr="350" ID="283381">
+       <TargetLabel LineNr="350" EndLineNr="350" ID="283380" XRef="281278">
+        <LabelIdent LineNr="350" EndLineNr="350" ID="283379" XRef="281278">
+         PRINT-DETAIL
+        </LabelIdent>
+       </TargetLabel>
+      </SectionCodeRef>
+     </PerformStatement>
+    </PeriodStatementList>
+    <TheDot ID="284468">TRUE</TheDot>
+   </ParagraphStatementBlock>
+   <ParagraphStatementBlock LineNr="352" EndLineNr="357" ID="283465">
+    <LabelIdent LineNr="352" EndLineNr="352" ID="283391" XRef="283465">
+     F-WHENCOMP-TEST-02
+    </LabelIdent>
+    <PeriodStatementList LineNr="353" EndLineNr="357" ID="283464">
+     <IfStatement LineNr="353" EndLineNr="356" ID="283452">
+      <AtomicComparison LineNr="353" EndLineNr="353" ID="283399">
+       <FunctionCallExpression LineNr="353" EndLineNr="353" ID="283393">
+        <AnonIdent LineNr="353" EndLineNr="353" ID="283392">
+         WHEN-COMPILED
+        </AnonIdent>
+       </FunctionCallExpression>
+       <SingleRightSide LineNr="353" EndLineNr="353" ID="283398">
+        <ComparisonOperator LineNr="353" EndLineNr="353" ID="283394">
+         <TheOp ID="284471">GreaterEqual</TheOp>
+        </ComparisonOperator>
+        <Designator LineNr="353" EndLineNr="353" ID="283397" XRef="280207">
+         <DesigElement LineNr="353" EndLineNr="353" ID="283396">
+          <DataIdent LineNr="353" EndLineNr="353" ID="283395" XRef="280207">
+           TEMP1
+          </DataIdent>
+         </DesigElement>
+        </Designator>
+       </SingleRightSide>
+      </AtomicComparison>
+      <StatementList LineNr="354" EndLineNr="354" ID="283424">
+       <PerformStatement LineNr="354" EndLineNr="354" ID="283423">
+        <SectionCodeRef LineNr="354" EndLineNr="354" ID="283422">
+         <TargetLabel LineNr="354" EndLineNr="354" ID="283421" XRef="281000">
+          <LabelIdent LineNr="354" EndLineNr="354" ID="283420" XRef="281000">
+           PASS
+          </LabelIdent>
+         </TargetLabel>
+        </SectionCodeRef>
+       </PerformStatement>
+      </StatementList>
+      <StatementList LineNr="356" EndLineNr="356" ID="283451">
+       <PerformStatement LineNr="356" EndLineNr="356" ID="283450">
+        <SectionCodeRef LineNr="356" EndLineNr="356" ID="283449">
+         <TargetLabel LineNr="356" EndLineNr="356" ID="283448" XRef="281024">
+          <LabelIdent LineNr="356" EndLineNr="356" ID="283447" XRef="281024">
+           FAIL
+          </LabelIdent>
+         </TargetLabel>
+        </SectionCodeRef>
+       </PerformStatement>
+      </StatementList>
+      <TheThen ID="284475">TRUE</TheThen>
+      <TheElse ID="284476">TRUE</TheElse>
+     </IfStatement>
+     <GotoStatement LineNr="357" EndLineNr="357" ID="283457">
+      <TargetLabel LineNr="357" EndLineNr="357" ID="283456" XRef="283550">
+       <LabelIdent LineNr="357" EndLineNr="357" ID="283455" XRef="283550">
+        F-WHENCOMP-WRITE-02
+       </LabelIdent>
+      </TargetLabel>
+     </GotoStatement>
+    </PeriodStatementList>
+    <TheDot ID="284478">TRUE</TheDot>
+   </ParagraphStatementBlock>
+   <ParagraphStatementBlock LineNr="358" EndLineNr="360" ID="283505">
+    <LabelIdent LineNr="358" EndLineNr="358" ID="283466" XRef="283505">
+     F-WHENCOMP-DELETE-02
+    </LabelIdent>
+    <PeriodStatementList LineNr="359" EndLineNr="360" ID="283504">
+     <PerformStatement LineNr="359" EndLineNr="359" ID="283492">
+      <SectionCodeRef LineNr="359" EndLineNr="359" ID="283491">
+       <TargetLabel LineNr="359" EndLineNr="359" ID="283490" XRef="281059">
+        <LabelIdent LineNr="359" EndLineNr="359" ID="283489" XRef="281059">
+         DE-LETE
+        </LabelIdent>
+       </TargetLabel>
+      </SectionCodeRef>
+     </PerformStatement>
+     <GotoStatement LineNr="360" EndLineNr="360" ID="283497">
+      <TargetLabel LineNr="360" EndLineNr="360" ID="283496" XRef="283550">
+       <LabelIdent LineNr="360" EndLineNr="360" ID="283495" XRef="283550">
+        F-WHENCOMP-WRITE-02
+       </LabelIdent>
+      </TargetLabel>
+     </GotoStatement>
+    </PeriodStatementList>
+    <TheDot ID="284482">TRUE</TheDot>
+   </ParagraphStatementBlock>
+   <ParagraphStatementBlock LineNr="361" EndLineNr="363" ID="283550">
+    <LabelIdent LineNr="361" EndLineNr="361" ID="283506" XRef="283550">
+     F-WHENCOMP-WRITE-02
+    </LabelIdent>
+    <PeriodStatementList LineNr="362" EndLineNr="363" ID="283549">
+     <MoveStatement LineNr="362" EndLineNr="362" ID="283514">
+      <StringLiteral LineNr="362" EndLineNr="362" ID="283507">
+       "F-WHENCOMP-02"
+      </StringLiteral>
+      <Designator LineNr="362" EndLineNr="362" ID="283513" XRef="280321">
+       <DesigElement LineNr="362" EndLineNr="362" ID="283512">
+        <DataIdent LineNr="362" EndLineNr="362" ID="283511" XRef="280321">
+         PAR-NAME
+        </DataIdent>
+       </DesigElement>
+      </Designator>
+     </MoveStatement>
+     <PerformStatement LineNr="363" EndLineNr="363" ID="283543">
+      <SectionCodeRef LineNr="363" EndLineNr="363" ID="283542">
+       <TargetLabel LineNr="363" EndLineNr="363" ID="283541" XRef="281278">
+        <LabelIdent LineNr="363" EndLineNr="363" ID="283540" XRef="281278">
+         PRINT-DETAIL
+        </LabelIdent>
+       </TargetLabel>
+      </SectionCodeRef>
+     </PerformStatement>
+    </PeriodStatementList>
+    <TheDot ID="284487">TRUE</TheDot>
+   </ParagraphStatementBlock>
+   <SectionStatementBlock LineNr="365" EndLineNr="365" ID="283554">
+    <LabelIdent LineNr="365" EndLineNr="365" ID="283551" XRef="283554">
+     CCVS-EXIT
+    </LabelIdent>
+   </SectionStatementBlock>
+   <ParagraphStatementBlock LineNr="366" EndLineNr="367" ID="283562">
+    <LabelIdent LineNr="366" EndLineNr="366" ID="283555" XRef="283562">
+     CCVS-999999
+    </LabelIdent>
+    <PeriodStatementList LineNr="367" EndLineNr="367" ID="283561">
+     <GotoStatement LineNr="367" EndLineNr="367" ID="283558">
+      <TargetLabel LineNr="367" EndLineNr="367" ID="283557" XRef="280943">
+       <LabelIdent LineNr="367" EndLineNr="367" ID="283556" XRef="280943">
+        CLOSE-FILES
+       </LabelIdent>
+      </TargetLabel>
+     </GotoStatement>
+    </PeriodStatementList>
+    <TheDot ID="284491">TRUE</TheDot>
+   </ParagraphStatementBlock>
+  </ProcedureDivision>
+ </CobolProgram></SourceFile>
