@@ -17,11 +17,15 @@ public class Parser {
     private Map<String,Symbol> terminals;
     private Map<String, String> images;
 
-    public Parser(PCFG pcfg, String rootName) {
-        this.rootName = rootName;
+    public Parser(PCFG pcfg, String rootName, String rootParentName) {
+        this.rootName = PCFG.getParentAnnotatedName(rootName, rootParentName).toLowerCase();
         this.cfg = pcfg.getCfg();
         this.terminals  = pcfg.getTerminals();
         this.images = pcfg.getImages();
+    }
+
+    public Parser(PCFG pcfg, String rootName) {
+        this(pcfg, rootName, "");
     }
 
     public void parseDirectory(String path) {
@@ -38,11 +42,8 @@ public class Parser {
     }
 
     private void parseSingleXML(Node root) {
-        // TODO assuming root is the parent of the actual root(ie root is SourceFile but "true" root is CompilationUnit)
-        // TODO variable root
         this.stack = new ArrayDeque<>();
-        this.stack.push(new Pair<>(cfg.get(PCFG.getParentAnnotatedName(rootName, "sourcefile")
-                .toLowerCase()), null));
+        this.stack.push(new Pair<>(cfg.get(rootName), null));
         this.dfsIterator = XMLUtil.asPreorderIterator(XMLUtil.asIterator(root.getChildNodes()), (Node e) ->
                 XMLUtil.asIterator(e.getChildNodes()));
         this.dfsIterator.next();
@@ -68,7 +69,7 @@ public class Parser {
 
             if (currentNode.getNodeType() == Node.ELEMENT_NODE) {
                 if (PCFG.getParentAnnotatedName(currentNode.getNodeName(),
-                        parentNode.getNodeName()).toLowerCase()
+                        parentNode.getNodeName())
                         .equals(currentSymbol.getName())) {
                     currentSymbol.incCount();
                     System.out.println("EQUALS " + currentSymbol.getName());
@@ -92,14 +93,15 @@ public class Parser {
                     }
 
                     SymbolsRHS rule = found.getRulesByName(
-                            PCFG.getParentAnnotatedName(childNodeName, currentNode.getNodeName()).toLowerCase());
+                            PCFG.getParentAnnotatedName(childNodeName, currentNode.getNodeName()));
                     if (rule == null && (
                             (found.getRules().size() == 1 && found.findEpsilonRule() == null)
                             || found.getRules().size() == 2 && found.findEpsilonRule() != null)) {
+                        // rule of type X -> A or X -> A | epsilon possible, replace top of stack with A
                         rule = found.getRules().get(0);
                     } else if (rule == null) {
                         throw new IllegalArgumentException("Ambiguous "
-                                + PCFG.getParentAnnotatedName(childNodeName, currentNode.getNodeName()).toLowerCase());
+                                + PCFG.getParentAnnotatedName(childNodeName, currentNode.getNodeName()));
                     }
                     // Increment rule usage counter
                     rule.incCount();
@@ -108,7 +110,11 @@ public class Parser {
                     List<Symbol> rhs = rule.getRhs();
                     for (int j = rhs.size() - 1; j >= 0; j--) {
                         Symbol next = rhs.get(j);
-                        if (next.getName().endsWith("^list")) {
+                        // A list symbol should have order set
+                        assert (!next.getName().endsWith(PCFG.getListAnnotatedName(""))
+                                || next.getOrder() != Symbol.Order.NONE);
+                        if (next.getOrder() != Symbol.Order.NONE) {
+                            // Add frame to collect children of this (un)ordered list symbol
                             next.addStack();
                         }
                         this.stack.push(new Pair<>(next, currentSymbol));
@@ -119,7 +125,7 @@ public class Parser {
                     // Symbol & input not matching, find appropriate production rule
                     SymbolsRHS rule = currentSymbol.getRulesByName(
                             PCFG.getParentAnnotatedName(currentNode.getNodeName(),
-                                    parentNode.getNodeName()).toLowerCase());
+                                    parentNode.getNodeName()));
                     if (rule != null) {
                         rule.incCount();
                         stack.poll();

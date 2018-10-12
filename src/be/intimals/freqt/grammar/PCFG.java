@@ -14,7 +14,7 @@ public class PCFG {
     private Map<String, String> images;
     private static final String PARENT_ANNOTATION = "^";
 
-    public void loadGrammar(String path) {
+    public void loadGrammar(String path) throws IllegalArgumentException {
         try {
             Node root = XMLUtil.getXMLRoot(path);
             abstractNodes = loadAbstractNodes(root);
@@ -39,8 +39,8 @@ public class PCFG {
 
                             Node currentChild = childrenList.item(i);
                             NamedNodeMap nodeMap = currentChild.getAttributes();
-                            boolean isMandatory = nodeMap.getNamedItem("mandatory") == null ? false :
-                                    Boolean.valueOf(nodeMap.getNamedItem("mandatory").getNodeValue());
+                            boolean isMandatory = nodeMap.getNamedItem("optional") == null
+                                    || !Boolean.valueOf(nodeMap.getNamedItem("optional").getNodeValue());
                             for (int j = 0; j < nodeMap.getLength(); ++j) { // For each attribute
                                 Node currentChildAttr = nodeMap.item(j);
                                 Symbol rhsSymbol = null;
@@ -72,7 +72,7 @@ public class PCFG {
 
                                         break;
 
-                                    case "mandatory":
+                                    case "optional":
                                         // Not needed here
                                         break;
 
@@ -91,14 +91,9 @@ public class PCFG {
                     lhsSymbol.setChildren(Symbol.Children.N);
                 }
             }
-            // TODO shouldn't be hardcoded
-            Symbol start = cfg.get("compilationunit");
-            start.setName(start.getName() + "^sourcefile");
-            cfg.put(start.getName(), start);
             System.out.println("CFG loaded");
         } catch (Exception e) {
-            // TODO
-            e.printStackTrace();
+            throw new IllegalArgumentException("Unable to load the given grammar : " + e.getMessage());
         }
     }
 
@@ -142,7 +137,7 @@ public class PCFG {
             rhsSymbol = Symbol.newSymbol(getParentAnnotatedName(currentChild.getNodeName(), lhsSymbol.getName()));
 
             for (String concrete : abstractNodes.get(targetNode)) {
-                String annotatedName = getParentAnnotatedName(concrete, currentChild.getNodeName()).toLowerCase();
+                String annotatedName = getParentAnnotatedName(concrete, currentChild.getNodeName());
                 Symbol annotatedSymbol = cfg.getOrDefault(annotatedName,
                         Symbol.newSymbol(annotatedName));
 
@@ -157,18 +152,16 @@ public class PCFG {
             }
         } else {
             rhsSymbol = cfg.getOrDefault(
-                    getParentAnnotatedName(currentChild.getNodeName(), lhsSymbol.getName()).toLowerCase(),
-                    Symbol.newSymbol(
-                            getParentAnnotatedName(currentChild.getNodeName(), lhsSymbol.getName()).toLowerCase()));
+                    getParentAnnotatedName(currentChild.getNodeName(), lhsSymbol.getName()),
+                    Symbol.newSymbol(getParentAnnotatedName(currentChild.getNodeName(), lhsSymbol.getName())));
             // Add the unannotated target symbol to rhs rules
             Symbol targetRhsSymbolUnannotated = cfg.getOrDefault(targetNode.toLowerCase(),
                     Symbol.newSymbol(targetNode.toLowerCase()));
 
             // Also add target symbol, annotated with its parent
             Symbol targetRhsSymbolAnnotated = cfg.getOrDefault(
-                    getParentAnnotatedName(targetNode.toLowerCase(), currentChild.getNodeName()).toLowerCase(),
-                    Symbol.newSymbol(getParentAnnotatedName(targetNode.toLowerCase(),
-                            currentChild.getNodeName()).toLowerCase()));
+                    getParentAnnotatedName(targetNode, currentChild.getNodeName()),
+                    Symbol.newSymbol(getParentAnnotatedName(targetNode, currentChild.getNodeName())));
 
             // The symbol should point to the annotated symbol
             rhsSymbol.addRule(SymbolsRHS.newRHS().addSymbol(targetRhsSymbolAnnotated));
@@ -195,7 +188,7 @@ public class PCFG {
      * @return
      */
     public static String getParentAnnotatedName(String child, String parent) {
-        return child + PARENT_ANNOTATION + parent;
+        return (child + PARENT_ANNOTATION + parent).toLowerCase();
     }
 
     /**
@@ -204,7 +197,7 @@ public class PCFG {
      * @return
      */
     public static String getListAnnotatedName(String name) {
-        return name + PARENT_ANNOTATION + "list";
+        return (name + PARENT_ANNOTATION + "list").toLowerCase();
     }
 
     /**
