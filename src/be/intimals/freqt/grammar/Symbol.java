@@ -164,7 +164,11 @@ public class Symbol {
     @Override
     public String toString() {
         return "Symbol{"
-                + "name='" + name + '\''
+                + "name='" + toPrettyString() + '\''
                 + '}';
+    }
+
+    public String toPrettyString() {
+        return (name.equals(Symbol.EPSILON.getName()) ? "EPSILON" : name);
     }
 }

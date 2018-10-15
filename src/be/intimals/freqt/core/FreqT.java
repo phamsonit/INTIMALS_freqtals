@@ -366,7 +366,7 @@ public class FreqT {
             // TODO temporary
             PCFG pcfg = new PCFG();
             pcfg.loadGrammar(config.getGrammarFile());
-            Parser parser = new Parser(pcfg,"CompilationUnit", "SourceFile");
+            Parser parser = new Parser(pcfg,"CompilationUnit");
             parser.parseDirectory("D:\\Mem\\fret_java\\data\\java_AST\\jhotdrawParser");
 
             initGrammar();

@@ -91,6 +91,15 @@ public class PCFG {
                     lhsSymbol.setChildren(Symbol.Children.N);
                 }
             }
+
+            // Symbols like A^X & A^Y currently point to the same SymbolsRHS in their lists.
+            // Once all the rules are built, make copies as each should have a separate counter.
+            this.cfg.entrySet().stream()
+                    .filter(e -> e.getKey().contains(PARENT_ANNOTATION))
+                    .forEach(e -> e.getValue().setRules(e.getValue().getRules().stream()
+                            .map(SymbolsRHS::newRHS)
+                            .collect(Collectors.toList())));
+
             System.out.println("CFG loaded");
         } catch (Exception e) {
             throw new IllegalArgumentException("Unable to load the given grammar : " + e.getMessage());
