@@ -4,6 +4,7 @@ import javafx.util.Pair;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.stream.Collectors;
 
 public class SymbolsRHS {
     private List<Symbol> rhs;
@@ -73,12 +74,6 @@ public class SymbolsRHS {
 
     @Override
     public String toString() {
-        StringBuilder sb = new StringBuilder();
-        sb.append(" -> ");
-        for (Symbol s : rhs) {
-            sb.append(s.toPrettyString()).append(" ");
-        }
-
-        return sb.toString();
+        return String.join(" ", rhs.stream().map(Symbol::toPrettyString).collect(Collectors.toList()));
     }
 }

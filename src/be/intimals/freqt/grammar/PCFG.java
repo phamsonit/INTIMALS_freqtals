@@ -6,13 +6,18 @@ import org.w3c.dom.Node;
 import org.w3c.dom.NodeList;
 
 import java.util.*;
+import java.util.function.BiFunction;
+import java.util.logging.Logger;
 import java.util.stream.Collectors;
 
 public class PCFG {
+    private static final Logger LOGGER = Logger.getLogger(PCFG.class.getName());
+    private static String PARENT_ANNOTATION = "^"; // Unique delimiter not appearing in grammar
+
     private Map<String, Symbol> cfg = new HashMap<>();
     private Map<String, Set<String>> abstractNodes;
     private Map<String, String> images;
-    private static final String PARENT_ANNOTATION = "^";
+    private List<String> possibleRoots;
 
     public void loadGrammar(String path) throws IllegalArgumentException {
         try {
@@ -77,7 +82,7 @@ public class PCFG {
                                         break;
 
                                     default:
-                                        System.err.println("Unknown attribute found " + currentChildAttr.getNodeName());
+                                        LOGGER.info("Unknown attribute found " + currentChildAttr.getNodeName());
                                         break;
                                 }
                                 if (rhsSymbol != null) {
@@ -100,10 +105,24 @@ public class PCFG {
                             .map(SymbolsRHS::newRHS)
                             .collect(Collectors.toList())));
 
-            System.out.println("CFG loaded");
+            possibleRoots = findRoots();
+
+            LOGGER.info("CFG loaded");
+            LOGGER.info(toPrettyString(false));
         } catch (Exception e) {
             throw new IllegalArgumentException("Unable to load the given grammar : " + e.getMessage());
         }
+    }
+
+    private List<String> findRoots() {
+        // Find all the tags appearing in the grammar
+        List<String> unannotated = this.cfg.entrySet().stream()
+                .filter(e -> !e.getKey().contains(PARENT_ANNOTATION) && e.getValue() != Symbol.EPSILON)
+                .map(Map.Entry::getKey).collect(Collectors.toList());
+        // If a tag is used as a child, remove it from candidates
+        unannotated.removeIf(tag -> cfg.keySet().stream().anyMatch(k -> k.startsWith(tag + PARENT_ANNOTATION)));
+        if (unannotated.isEmpty()) throw new IllegalArgumentException("Unable to find root node");
+        return unannotated;
     }
 
     private Symbol buildRHSList(Node currentChild, Node currentChildAttr, Symbol lhsSymbol,
@@ -135,6 +154,8 @@ public class PCFG {
             rhsSymbol.addRule(SymbolsRHS.newRHS().addSymbol(Symbol.EPSILON));
             rhsSymbol.setMandatory(false);
         }
+        // List symbol is part of production rules, add it
+        this.cfg.put(listProduction.getName().toLowerCase(), listProduction);
         return rhsSymbol;
     }
 
@@ -210,6 +231,14 @@ public class PCFG {
     }
 
     /**
+     * Sets the delimiter between the child and parent. Should be unique, fixed and not appear in the grammar.
+     * @param parentAnnotation
+     */
+    public static void setParentAnnotation(String parentAnnotation) {
+        PARENT_ANNOTATION = parentAnnotation;
+    }
+
+    /**
      * Build a map of abstract nodes and their concrete nodes. The set contains only concrete nodes regardless
      * of the level of abstractions (ie nested abstract nodes).
      * @param root
@@ -282,10 +311,6 @@ public class PCFG {
         return cfg;
     }
 
-    public void setCfg(Map<String, Symbol> cfg) {
-        this.cfg = cfg;
-    }
-
     /**
      * Returns the terminals in the grammar (i.e. the symbols with no rhs rules)
      * @return
@@ -298,10 +323,47 @@ public class PCFG {
 
     /**
      * Returns a map <String, String> where the key is the value of the image attribute
-     * and the value the name of the node (e.g. != : NOT_EQUALS)
+     * and the value the name of the node (e.g. != : NOT_EQUALS).
      * @return
      */
     public Map<String, String> getImages() {
         return this.images;
+    }
+
+    public List<String> getRoots() {
+        return this.possibleRoots;
+    }
+
+    public String toPrettyString(boolean showCounts) {
+        BiFunction<StringBuilder, String, Void> appendIf = (StringBuilder sb, String val) -> {
+            if (showCounts) {
+                sb.append(val);
+            }
+            return null;
+        };
+        StringBuilder prod = new StringBuilder();
+        prod.append("Productions: \n");
+        StringBuilder terminals = new StringBuilder();
+        terminals.append("Terminals: \n");
+        for (Map.Entry<String, Symbol> e : this.cfg.entrySet()) {
+            Symbol symbol = e.getValue();
+            if (symbol.getRules().isEmpty() || symbol.getName().equals(Symbol.EPSILON.getName())) {
+                terminals.append(symbol.toPrettyString());
+                appendIf.apply(terminals, "(" + symbol.getCount() + ")");
+                terminals.append(" ");
+            } else {
+                prod.append(symbol.toPrettyString());
+                appendIf.apply(prod, "(" + symbol.getCount() + ")");
+                prod.append(" -> \n\t\t");
+                for (SymbolsRHS rhs : symbol.getRules()) {
+                    prod.append("[").append(rhs.toString()).append("]");
+                    appendIf.apply(prod, "(" + rhs.getCount() + ")");
+                    prod.append(" | ");
+                }
+                prod.delete(prod.length() - 3, prod.length() - 1);
+                prod.append("\n");
+            }
+        }
+        return prod.toString() + "\n" + terminals.toString();
     }
 }

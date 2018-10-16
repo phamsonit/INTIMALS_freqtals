@@ -169,6 +169,6 @@ public class Symbol {
     }
 
     public String toPrettyString() {
-        return (name.equals(Symbol.EPSILON.getName()) ? "EPSILON" : name);
+        return (name.equals(Symbol.EPSILON.getName()) ? "ϵ" : name);
     }
 }

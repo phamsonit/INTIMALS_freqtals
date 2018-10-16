@@ -6,10 +6,18 @@ import javafx.util.Pair;
 import org.w3c.dom.Node;
 
 import java.io.File;
+import java.io.IOException;
 import java.util.*;
+import java.util.logging.FileHandler;
+import java.util.logging.LogRecord;
+import java.util.logging.Logger;
+import java.util.logging.SimpleFormatter;
 import java.util.stream.Collectors;
 
 public class Parser {
+    private static final Logger LOGGER = Logger.getLogger(Parser.class.getName());
+
+    private PCFG pcfg;
     private Deque<Pair<Symbol, Symbol>> stack;
     private PeekableIterator<Node> dfsIterator;
     private String rootName;
@@ -18,12 +26,34 @@ public class Parser {
     private Map<String, String> images;
     private int currentTid;
 
-    public Parser(PCFG pcfg, String rootName) {
+    public Parser(PCFG pcfg, String rootName) throws IOException {
+        this.pcfg = pcfg;
         this.rootName = rootName.toLowerCase();
         this.cfg = pcfg.getCfg();
+        if (!this.cfg.containsKey(this.rootName)) throw new IllegalArgumentException("Root not found");
+        // TODO hacky, SourceFile not in grammar issue
+        Symbol root = this.cfg.get(this.rootName);
+        root.setName(PCFG.getParentAnnotatedName(root.getName(), "SourceFile"));
+        this.cfg.put(root.getName(), root);
+
         this.terminals  = pcfg.getTerminals();
         this.images = pcfg.getImages();
         this.currentTid = 0;
+
+        FileHandler handler = new FileHandler("out/parser_log.txt");
+        handler.setFormatter(new SimpleFormatter() {
+            private static final String format = "%3$s %n";
+
+            @Override
+            public synchronized String format(LogRecord lr) {
+                return String.format(format,
+                        new Date(lr.getMillis()),
+                        lr.getLevel().getLocalizedName(),
+                        lr.getMessage()
+                );
+            }
+        });
+        LOGGER.addHandler(handler);
     }
 
     public void parseDirectory(String path) {
@@ -31,12 +61,14 @@ public class Parser {
             List<File> files = XMLUtil.loadXMLDirectory(path, (String file) -> true);
             currentTid = 0;
             for (File f : files) {
-                System.out.println("Parsing : " + f.getName());
+                LOGGER.info("Parsing : " + f.getName());
                 Node root = XMLUtil.getXMLRoot(f);
                 parseSingleXML(root);
                 ++currentTid;
             }
+            LOGGER.info(pcfg.toPrettyString(true));
         } catch (Exception e) {
+            LOGGER.severe("Unable to parse directory " + e.getMessage());
             e.printStackTrace();
         }
     }
@@ -56,20 +88,15 @@ public class Parser {
             Symbol parentSymbol = item.getValue();
 
             if (currentSymbol == null) throw new NullPointerException("Null symbol with remaining input");
+            currentSymbol.incCount();
 
             Node currentNode = dfsIterator.peek();
             Node parentNode = currentNode.getParentNode();
 
-            String debugID = (currentNode.getAttributes() != null
-                    && currentNode.getAttributes().getNamedItem("ID") != null
-                    ? currentNode.getAttributes().getNamedItem("ID").getNodeValue() : "");
-            System.out.println(" Input: " + currentNode.getNodeName()
-                    + "(" + debugID + ") "
-                    + "Stack: " + stack.stream().map(x -> x.getKey().getName()).collect(Collectors.toList()));
-
             if (currentNode.getNodeType() == Node.ELEMENT_NODE) {
-                if (PCFG.getParentAnnotatedName(currentNode.getNodeName(),
-                        parentNode.getNodeName())
+                LOGGER.info(showParseState(stack, currentNode));
+
+                if (PCFG.getParentAnnotatedName(currentNode.getNodeName(), parentNode.getNodeName())
                         .equals(currentSymbol.getName())) {
                     // Symbol & input matching, find next production rule
                     handleMatching(currentSymbol, parentSymbol, currentNode, parentNode);
@@ -78,16 +105,9 @@ public class Parser {
                     handleNotMatching(currentSymbol, parentSymbol, currentNode, parentNode);
                 }
             } else if (currentNode.getNodeType() == Node.TEXT_NODE) {
-                // Terminal in XML
-                currentSymbol.incCount();
-                // Should also match a terminal production rule
-                if (!terminals.containsKey(currentSymbol.getName())) {
-                    throw new IllegalArgumentException("Terminal found when not expected :" + currentSymbol.getName());
-                } // else continue expanding the stack
-                dfsIterator.next();
-                stack.poll();
+                handleTerminal(currentSymbol);
             } else {
-                System.err.println("Should not have empty nodes in xml");
+                LOGGER.severe("Should not have empty nodes in xml");
             }
         }
 
@@ -97,16 +117,25 @@ public class Parser {
             Symbol currentSymbol = item.getKey();
             Symbol parentSymbol = item.getValue();
 
+            currentSymbol.incCount();
             tryEpsilon(currentSymbol, parentSymbol);
         }
-        System.out.println("Done");
+        LOGGER.info("Done");
+    }
+
+    private void handleTerminal(Symbol currentSymbol) {
+        // Terminal in XML
+        // Should also match a terminal production rule
+        if (!terminals.containsKey(currentSymbol.getName())) {
+            throw new IllegalArgumentException("Terminal found when not expected :" + currentSymbol.getName());
+        } // else continue expanding the stack
+        dfsIterator.next();
+        stack.poll();
     }
 
     private void handleMatching(Symbol currentSymbol, Symbol parentSymbol, Node currentNode, Node parentNode) {
-        currentSymbol.incCount();
-        System.out.println("EQUALS: " + currentSymbol.getName());
+        LOGGER.info("[OK] " + currentSymbol.getName());
         if (parentSymbol != null && parentSymbol.getOrder() != Symbol.Order.NONE) {
-            //parentSymbol.addStack();
             parentSymbol.addChild(currentSymbol.getName());
         }
 
@@ -115,45 +144,51 @@ public class Parser {
 
         // Parent is now currentNode
         Node childNode = currentNode.getFirstChild();
-        String childNodeName;
-
-        // If string operator, find its node
-        if (childNode.getNodeType() == Node.TEXT_NODE) {
-            childNodeName = images.getOrDefault(childNode.getNodeValue(), childNode.getNodeValue());
-        } else {
-            childNodeName = childNode.getNodeName();
-        }
-
-        SymbolsRHS rule = found.getRulesByName(
-                PCFG.getParentAnnotatedName(childNodeName, currentNode.getNodeName()));
-        if (rule == null && (
-                (found.getRules().size() == 1 && found.findEpsilonRule() == null)
-                || found.getRules().size() == 2 && found.findEpsilonRule() != null)) {
-            // rule of type X -> A or X -> A | epsilon possible, replace top of stack with A
-            rule = found.getRules().get(0);
-        } else if (rule == null) {
-            throw new IllegalArgumentException("Ambiguous "
-                    + PCFG.getParentAnnotatedName(childNodeName, currentNode.getNodeName()));
-        }
-
-        printUsedRule(currentSymbol, rule, currentNode, parentNode);
-
-        // Increment rule usage counter
-        rule.incCount();
-        rule.addOccurrence(currentTid, getNodeID(currentNode));
-        // Replace lhs non-terminal by rhs symbols
-        stack.poll();
-        List<Symbol> rhs = rule.getRhs();
-        for (int j = rhs.size() - 1; j >= 0; j--) {
-            Symbol next = rhs.get(j);
-            // A list symbol should have order set
-            assert (!next.getName().endsWith(PCFG.getListAnnotatedName(""))
-                    || next.getOrder() != Symbol.Order.NONE);
-            if (next.getOrder() != Symbol.Order.NONE) {
-                // Add frame to collect children of this (un)ordered list symbol
-                next.addStack();
+        if (childNode != null) {
+            String childNodeName;
+            // If string operator, find its node
+            if (childNode.getNodeType() == Node.TEXT_NODE) {
+                childNodeName = images.getOrDefault(childNode.getNodeValue(), childNode.getNodeValue());
+            } else {
+                childNodeName = childNode.getNodeName();
             }
-            this.stack.push(new Pair<>(next, currentSymbol));
+
+            SymbolsRHS rule = found.getRulesByName(
+                    PCFG.getParentAnnotatedName(childNodeName, currentNode.getNodeName()));
+            if (rule == null && (
+                    (found.getRules().size() == 1 && found.findEpsilonRule() == null)
+                            || found.getRules().size() == 2 && found.findEpsilonRule() != null)) {
+                // rule of type X -> A or X -> A | epsilon possible, replace top of stack with A
+                rule = found.getRules().get(0);
+            } else if (rule == null) {
+                throw new IllegalArgumentException("Ambiguous "
+                        + PCFG.getParentAnnotatedName(childNodeName, currentNode.getNodeName()));
+            }
+
+            LOGGER.info("[M] " + showUsedRule(currentSymbol, rule, currentNode, parentNode));
+
+            // Increment rule usage counter
+            rule.incCount();
+            rule.addOccurrence(currentTid, getNodeID(currentNode));
+
+            // Replace lhs non-terminal by rhs symbols
+            stack.poll();
+            List<Symbol> rhs = rule.getRhs();
+            for (int j = rhs.size() - 1; j >= 0; j--) {
+                Symbol next = rhs.get(j);
+                // A list symbol should have order set
+                assert (!next.getName().endsWith(PCFG.getListAnnotatedName(""))
+                        || next.getOrder() != Symbol.Order.NONE);
+                if (next.getOrder() != Symbol.Order.NONE) {
+                    // Add frame to collect children of this (un)ordered list symbol
+                    next.addStack();
+                }
+                this.stack.push(new Pair<>(next, currentSymbol));
+            }
+        } else {
+            // XML tag with no children, symbol shouldn't have rules neither
+            if (!found.getRules().isEmpty()) throw new IllegalArgumentException("Empty node");
+            stack.poll();
         }
         // Advance in input
         dfsIterator.next();
@@ -164,9 +199,9 @@ public class Parser {
                 PCFG.getParentAnnotatedName(currentNode.getNodeName(),
                         parentNode.getNodeName()));
         if (rule != null) {
-            printUsedRule(currentSymbol, rule, currentNode, parentNode);
+            LOGGER.info("[D] " + showUsedRule(currentSymbol, rule, currentNode, parentNode));
             rule.incCount();
-            rule.addOccurrence(currentTid, getNodeID(parentNode));
+            rule.addOccurrence(currentTid, getNodeID(currentNode));
             stack.poll();
             List<Symbol> rhs = rule.getRhs();
             for (int j = rhs.size() - 1; j >= 0; j--) {
@@ -186,8 +221,8 @@ public class Parser {
 
             Node currentNode = dfsIterator.peek();
             Node parentNode = (currentNode == null ? null : currentNode.getParentNode());
-            printUsedRule(currentSymbol, epsilon, currentNode, parentNode);
-            epsilon.addOccurrence(currentTid, getNodeID(parentNode));
+            LOGGER.info("[E] " + showUsedRule(currentSymbol, epsilon, currentNode, parentNode));
+            epsilon.addOccurrence(currentTid, getNodeID(currentNode));
 
             // Parent was a list symbol & epsilon encountered, no more children
             if (parentSymbol != null && parentSymbol.getOrder() != Symbol.Order.NONE) {
@@ -201,11 +236,20 @@ public class Parser {
         }
     }
 
-    private static void printUsedRule(Symbol currentSymbol, SymbolsRHS rule, Node currentNode, Node parentNode) {
-        System.out.println("RULE: "
+
+    private static String showUsedRule(Symbol currentSymbol, SymbolsRHS rule, Node currentNode, Node parentNode) {
+        return "RULE: "
+                + "(" + getNodeID(currentNode) + ", " + getNodeID(parentNode) + ") "
                 + currentSymbol.getName()
-                + rule.toString()
-                + "(" + getNodeID(currentNode) + ", " + getNodeID(parentNode) + ")");
+                + " -> "
+                + rule.toString();
+    }
+
+    private static String showParseState(Deque<Pair<Symbol, Symbol>> stack, Node currentNode) {
+        String nodeID = currentNode.getAttributes().getNamedItem("ID").getNodeValue();
+        return "\tInput: " + currentNode.getNodeName()
+                + "(" + nodeID + ") "
+                + "Stack: " + stack.stream().map(x -> x.getKey().getName()).collect(Collectors.toList());
     }
 
     private static String getNodeID(Node node) {
