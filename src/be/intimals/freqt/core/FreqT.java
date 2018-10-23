@@ -369,6 +369,7 @@ public class FreqT {
             Parser parser = new Parser(pcfg,"ClassBodyDeclaration");
             parser.parseDirectory("D:\\Mem\\fret_java\\data\\test");
 
+            System.out.println(pcfg.getDataCodingLength());
             initGrammar();
             initDatabase();
             readBlackLabel(); // Read data to blackListNode

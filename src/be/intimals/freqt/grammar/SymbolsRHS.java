@@ -8,7 +8,7 @@ import java.util.stream.Collectors;
 
 public class SymbolsRHS {
     private List<Symbol> rhs;
-    private double prob;
+    private double prob; // Log Probability
     private int count;
     private List<Pair<Integer, Integer>> occurrences = new ArrayList<>();
 
@@ -60,17 +60,17 @@ public class SymbolsRHS {
         return this.count;
     }
 
-    public void addOccurrence(Integer tid, String id) {
-        try {
-            this.occurrences.add(new Pair<>(tid, Integer.valueOf(id)));
-        } catch (NumberFormatException e) {
-            // Don't add
-        }
-    }
-
-    public List<Pair<Integer, Integer>> getOccurrences() {
-        return this.occurrences;
-    }
+    //public void addOccurrence(Integer tid, String id) {
+    //    try {
+    //        this.occurrences.add(new Pair<>(tid, Integer.valueOf(id)));
+    //    } catch (NumberFormatException e) {
+    //        // Don't add
+    //    }
+    //}
+//
+    //public List<Pair<Integer, Integer>> getOccurrences() {
+    //    return this.occurrences;
+    //}
 
     @Override
     public String toString() {

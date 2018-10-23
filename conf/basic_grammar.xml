@@ -20,7 +20,7 @@
     <modifiers ordered-nodelist="ModifierKeyword"/>
     <type node="Type"/>
     <name simplevalue="String"/>
-    <body optional="true" unordered-nodelist="InfixExpression"/>
+    <body optional="true" unordered-nodelist="Expression"/>
   </MethodDeclaration>
 
   <ModifierKeyword abstract="true">
@@ -34,11 +34,20 @@
     <INTEGER_TYPE/>
   </Type>
 
+  <Expression abstract="true">
+    <InfixExpression/>
+  </Expression>
+  <Expression abstract="true">
+    <NullLiteral/>
+  </Expression>
   <InfixExpression>
     <left simplevalue="String"/>
     <op node="Operator"/>
     <right simplevalue="String"/>
   </InfixExpression>
+  <NullLiteral>
+    <token simplevalue="String"/>
+  </NullLiteral>
 
   <Operator abstract="true">
     <PLUS/>

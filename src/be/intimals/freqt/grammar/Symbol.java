@@ -1,5 +1,7 @@
 package be.intimals.freqt.grammar;
 
+import be.intimals.freqt.util.MarkovChain;
+
 import java.util.*;
 
 public class Symbol {
@@ -20,8 +22,12 @@ public class Symbol {
     private List<SymbolsRHS> rules;
     private Map<String, SymbolsRHS> rulesMapped;
     private int count;
+
+    // Those are for list type rules only
+    private double geomPHat = 0.0;
     private List<List<String>> listChildren = new ArrayList<>();
     private Deque<List<String>> stackChildren = new ArrayDeque<>();
+    private MarkovChain<String> mc;
 
     public Symbol(String name) {
         this.name = name;
@@ -112,6 +118,7 @@ public class Symbol {
     }
 
     public Map<String, SymbolsRHS> getRulesMap() {
+        lockAsMap();
         return this.rulesMapped;
     }
 
@@ -146,6 +153,22 @@ public class Symbol {
 
     public void addStack() {
         this.stackChildren.push(new ArrayList<>());
+    }
+
+    public double getGeomParam() {
+        return geomPHat;
+    }
+
+    public void setGeomParam(double pHat) {
+        this.geomPHat = pHat;
+    }
+
+    public MarkovChain<String> getMC() {
+        return mc;
+    }
+
+    public void setMC(MarkovChain<String> mc) {
+        this.mc = mc;
     }
 
     @Override

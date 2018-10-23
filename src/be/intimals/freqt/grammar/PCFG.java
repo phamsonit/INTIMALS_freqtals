@@ -1,5 +1,7 @@
 package be.intimals.freqt.grammar;
 
+import be.intimals.freqt.util.DoubleUtil;
+import be.intimals.freqt.util.MarkovChain;
 import be.intimals.freqt.util.XMLUtil;
 import org.w3c.dom.NamedNodeMap;
 import org.w3c.dom.Node;
@@ -112,6 +114,172 @@ public class PCFG {
         } catch (Exception e) {
             throw new IllegalArgumentException("Unable to load the given grammar : " + e.getMessage());
         }
+    }
+
+    public void computeProbabilities() {
+        computeMLLogProb();
+        fitGeometric();
+        computeTransitionMatrix();
+
+        // For all X, sum of probabilities X->A should be 1
+        assert (this.cfg.values().stream()
+                // Filter no occurrences of X & terminals
+                .filter(s -> s.getCount() != 0 && !s.getRules().isEmpty())
+                .mapToDouble(s -> s.getRules().stream().mapToDouble(d -> DoubleUtil.exp2(d.getProb())).sum())
+                .allMatch(d -> Double.compare(d, 1.0) == 0));
+    }
+
+    private void computeTransitionMatrix() {
+        this.cfg.values().stream()
+                .filter(s -> s.getName().endsWith(PCFG.getListAnnotatedName("")))
+                .forEach(s -> {
+                    String parentRuleName = PCFG.removeListAnnotation(s.getName());
+                    Symbol parent = cfg.get(parentRuleName);
+
+                    Set<String> keys = new HashSet<>(s.getRulesMap().keySet());
+                    keys.add(Symbol.EPSILON.getName());
+                    List<String> states = new ArrayList<>(s.getRulesMap().keySet());
+                    // Sort states by alphabetical order
+                    Collections.sort(states);
+                    Map<String, Integer> statesIdx = new HashMap<>();
+                    for (int i = 0; i < states.size(); i++) {
+                        statesIdx.put(states.get(i), i);
+                    }
+
+                    // Init variables
+                    double[] initState = new double[states.size()];
+                    Arrays.fill(initState, 0.0);
+                    double[][] transMatrix = new double[states.size()][];
+                    for (int i = 0; i < transMatrix.length; i++) {
+                        transMatrix[i] = new double[states.size()];
+                        Arrays.fill(transMatrix[i], 0.0);
+                    }
+                    // Make epsilon absorbing
+                    int epsilonIdx = statesIdx.get(Symbol.EPSILON.getName());
+                    transMatrix[epsilonIdx][epsilonIdx] = 1.0;
+
+                    for (List<String> sample : s.getListChildren()) {
+                        if (sample.isEmpty()) {
+                            // Starts at epsilon directly
+                            ++initState[statesIdx.get(Symbol.EPSILON.getName())];
+                        } else {
+                            String prevState = sample.get(0);
+                            int prevStateIdx = statesIdx.get(prevState);
+                            ++initState[statesIdx.get(prevState)];
+                            for (int i = 1; i < sample.size(); i++) {
+                                String currentState = sample.get(i);
+                                int currentStateIdx = statesIdx.get(currentState);
+
+                                ++transMatrix[prevStateIdx][currentStateIdx];
+                                prevStateIdx = currentStateIdx;
+                            }
+                            String lastState = sample.get(sample.size() - 1);
+                            int lastStateIdx = statesIdx.get(lastState);
+                            ++transMatrix[lastStateIdx][statesIdx.get(Symbol.EPSILON.getName())];
+                        }
+                    }
+                    // Normalize
+                    for (int i = 0; i < transMatrix.length; i++) {
+                        double sumRow = Arrays.stream(transMatrix[i]).sum();
+                        if (sumRow == 0) {
+                            // State never occurred, make it absorbing TODO smooth?
+                            transMatrix[i][i] = 1.0;
+                            continue;
+                        }
+                        for (int j = 0; j < transMatrix[i].length; j++) {
+                            //transMatrix[i][j] = DoubleUtil.log2(transMatrix[i][j]) - DoubleUtil.log2(sumRow);
+                            transMatrix[i][j] = transMatrix[i][j] / sumRow;
+                        }
+                    }
+                    double sumInit = Arrays.stream(initState).sum();
+                    if (sumInit == 0) {
+                        initState[epsilonIdx] = 1.0;
+                    } else {
+                        for (int i = 0; i < initState.length; i++) {
+                            //initState[i] = DoubleUtil.log2(initState[i]) - DoubleUtil.log2(sumInit);
+                            initState[i] = initState[i] / sumInit;
+                        }
+                    }
+                    // All rows should sum to 1
+                    assert (Math.abs(1.0 - Arrays.stream(initState).sum()) < DoubleUtil.PRECISION);
+                    assert (Arrays.stream(transMatrix)
+                            .allMatch(row -> Math.abs(1.0 - Arrays.stream(row).sum()) < DoubleUtil.PRECISION));
+
+                    MarkovChain<String> mc = new MarkovChain<>(transMatrix, initState, states,
+                            statesIdx, Symbol.EPSILON.getName());
+                    parent.setMC(mc);
+                    s.setMC(mc);
+                });
+    }
+
+    private void fitGeometric() {
+        // For list type rules, we're want to fit a geometric distribution
+        this.cfg.values().stream()
+                .filter(s -> s.getName().endsWith(PCFG.getListAnnotatedName("")))
+                .forEach(s -> {
+                    // Empty children list won't appear in occurrences lists, fix this based on parent count
+                    String parentRuleName = PCFG.removeListAnnotation(s.getName());
+                    Symbol parent = cfg.get(parentRuleName);
+                    int emptyChildCount = 0;
+                    if (parent.findEpsilonRule() != null) {
+                        emptyChildCount = parent.getCount() - s.getListChildren().size();
+                    }
+                    // Add empty children to occurrences
+                    for (int i = 0; i < emptyChildCount; i++) {
+                        s.addStack();
+                        s.removeStack();
+                    }
+
+                    int n = s.getListChildren().size();
+                    // We model the geometric distribution for lists
+                    // as k trials (k = 1, 2, ...) where the success is epsilon (epsilon "is" at list.size() + 1)
+                    int sumSamples = s.getListChildren().stream().mapToInt(sample -> sample.size() + 1).sum();
+                    double geomPHat = n / (double) sumSamples;
+                    parent.setGeomParam(geomPHat);
+                    s.setGeomParam(geomPHat);
+                });
+    }
+
+    private void computeMLLogProb() {
+        // Compute the log prob for each rule
+        this.cfg.values().forEach(s -> {
+            s.getRules().forEach(r -> {
+                double prob = DoubleUtil.ZERO_LOG2P;
+                if (r.getCount() != 0 && s.getCount() != 0) {
+                    prob = r.getCount() / (double) s.getCount();
+                }
+                assert (!Double.isNaN(DoubleUtil.log2(prob)) && !Double.isInfinite(DoubleUtil.log2(prob)));
+                r.setProb(DoubleUtil.log2(prob));
+            });
+        });
+    }
+
+    public double getDataCodingLength() {
+        double length = 0.0;
+        for (Symbol symbol : cfg.values()) {
+            if (!symbol.getRules().isEmpty() && symbol.getCount() != 0) {
+                if (!symbol.getName().endsWith(PCFG.getListAnnotatedName(""))) {
+                    for (SymbolsRHS rule : symbol.getRules()) {
+                        length += -(rule.getProb() * rule.getCount());
+                    }
+                } else {
+                    for (List<String> sample : symbol.getListChildren()) {
+                        // Encode prob of encountering sample of this size
+                        int k = sample.size() + 1;
+                        double p = symbol.getGeomParam();
+                        double q = 1 - p;
+                        double probSuccess = Math.pow(q, k - 1) * p;
+                        length += -(DoubleUtil.log2(probSuccess));
+
+                        // Encode prob of encountering this sequence
+                        MarkovChain<String> mc = symbol.getMC();
+                        double prob = mc.run(sample);
+                        length += -(DoubleUtil.log2(prob));
+                    }
+                }
+            }
+        }
+        return length;
     }
 
     private List<String> findRoots() {
@@ -228,6 +396,11 @@ public class PCFG {
      */
     public static String getListAnnotatedName(String name) {
         return (name + PARENT_ANNOTATION + "list").toLowerCase();
+    }
+
+    public static String removeListAnnotation(String name) {
+        String annotation = PCFG.getListAnnotatedName("");
+        return (name.endsWith(annotation) ? name.substring(0, name.length() - annotation.length()) : name);
     }
 
     /**
@@ -357,7 +530,7 @@ public class PCFG {
                 prod.append(" -> \n\t\t");
                 for (SymbolsRHS rhs : symbol.getRules()) {
                     prod.append("[").append(rhs.toString()).append("]");
-                    appendIf.apply(prod, "(" + rhs.getCount() + ")");
+                    appendIf.apply(prod, "(" + rhs.getCount() + ", Log2P:" + rhs.getProb() + ")");
                     prod.append(" | ");
                 }
                 prod.delete(prod.length() - 3, prod.length() - 1);

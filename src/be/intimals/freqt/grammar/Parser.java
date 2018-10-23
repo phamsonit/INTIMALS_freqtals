@@ -66,6 +66,7 @@ public class Parser {
                 parseSingleXML(root);
                 ++currentTid;
             }
+            pcfg.computeProbabilities();
             LOGGER.info(pcfg.toPrettyString(true));
         } catch (Exception e) {
             LOGGER.severe("Unable to parse directory " + e.getMessage());
@@ -169,7 +170,7 @@ public class Parser {
 
             // Increment rule usage counter
             rule.incCount();
-            rule.addOccurrence(currentTid, getNodeID(currentNode));
+            //rule.addOccurrence(currentTid, getNodeID(currentNode));
 
             // Replace lhs non-terminal by rhs symbols
             stack.poll();
@@ -201,7 +202,7 @@ public class Parser {
         if (rule != null) {
             LOGGER.info("[D] " + showUsedRule(currentSymbol, rule, currentNode, parentNode));
             rule.incCount();
-            rule.addOccurrence(currentTid, getNodeID(currentNode));
+            //rule.addOccurrence(currentTid, getNodeID(currentNode));
             stack.poll();
             List<Symbol> rhs = rule.getRhs();
             for (int j = rhs.size() - 1; j >= 0; j--) {
@@ -222,7 +223,7 @@ public class Parser {
             Node currentNode = dfsIterator.peek();
             Node parentNode = (currentNode == null ? null : currentNode.getParentNode());
             LOGGER.info("[E] " + showUsedRule(currentSymbol, epsilon, currentNode, parentNode));
-            epsilon.addOccurrence(currentTid, getNodeID(currentNode));
+            //epsilon.addOccurrence(currentTid, getNodeID(currentNode));
 
             // Parent was a list symbol & epsilon encountered, no more children
             if (parentSymbol != null && parentSymbol.getOrder() != Symbol.Order.NONE) {
