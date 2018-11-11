@@ -10,9 +10,6 @@ public class MarkovChain<T> {
     private Map<T, Integer> statesIdx;
     private T empty;
 
-    public MarkovChain() {
-    }
-
     public MarkovChain(double[][] transMatrix, double[] initState, List<T> states, Map<T, Integer> statesIdx,
                        T empty) {
         this.transMatrix = transMatrix;

@@ -265,11 +265,11 @@ public class PCFG {
                 } else {
                     for (List<String> sample : symbol.getListChildren()) {
                         // Encode prob of encountering sample of this size
-                        int k = sample.size() + 1;
-                        double p = symbol.getGeomParam();
-                        double q = 1 - p;
-                        double probSuccess = Math.pow(q, k - 1) * p;
-                        length += -(DoubleUtil.log2(probSuccess));
+                        //int k = sample.size() + 1;
+                        //double p = symbol.getGeomParam();
+                        //double q = 1 - p;
+                        //double probSuccess = Math.pow(q, k - 1) * p;
+                        //length += -(DoubleUtil.log2(probSuccess));
 
                         // Encode prob of encountering this sequence
                         MarkovChain<String> mc = symbol.getMC();
@@ -522,15 +522,15 @@ public class PCFG {
             Symbol symbol = e.getValue();
             if (symbol.getRules().isEmpty() || symbol.getName().equals(Symbol.EPSILON.getName())) {
                 terminals.append(symbol.toPrettyString());
-                appendIf.apply(terminals, "(" + symbol.getCount() + ")");
+                appendIf.apply(terminals, "(Count:" + symbol.getCount() + ")");
                 terminals.append(" ");
             } else {
                 prod.append(symbol.toPrettyString());
-                appendIf.apply(prod, "(" + symbol.getCount() + ")");
+                appendIf.apply(prod, "(Count:" + symbol.getCount() + ")");
                 prod.append(" -> \n\t\t");
                 for (SymbolsRHS rhs : symbol.getRules()) {
                     prod.append("[").append(rhs.toString()).append("]");
-                    appendIf.apply(prod, "(" + rhs.getCount() + ", Log2P:" + rhs.getProb() + ")");
+                    appendIf.apply(prod, "(Count:" + rhs.getCount() + ", Log2P:" + rhs.getProb() + ")");
                     prod.append(" | ");
                 }
                 prod.delete(prod.length() - 3, prod.length() - 1);

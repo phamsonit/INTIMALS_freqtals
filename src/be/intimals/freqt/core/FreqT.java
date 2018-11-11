@@ -367,7 +367,7 @@ public class FreqT {
             PCFG pcfg = new PCFG();
             pcfg.loadGrammar(config.getGrammarFile());
             Parser parser = new Parser(pcfg,"ClassBodyDeclaration");
-            parser.parseDirectory("D:\\Mem\\fret_java\\data\\test");
+            parser.parseDirectory("D:\\Mem\\fret_java\\out\\test_temp");
 
             System.out.println(pcfg.getDataCodingLength());
             initGrammar();

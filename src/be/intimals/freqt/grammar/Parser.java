@@ -24,7 +24,6 @@ public class Parser {
     private Map<String, Symbol> cfg;
     private Map<String,Symbol> terminals;
     private Map<String, String> images;
-    private int currentTid;
 
     public Parser(PCFG pcfg, String rootName) throws IOException {
         this.pcfg = pcfg;
@@ -38,7 +37,6 @@ public class Parser {
 
         this.terminals  = pcfg.getTerminals();
         this.images = pcfg.getImages();
-        this.currentTid = 0;
 
         FileHandler handler = new FileHandler("out/parser_log.txt");
         handler.setFormatter(new SimpleFormatter() {
@@ -59,12 +57,10 @@ public class Parser {
     public void parseDirectory(String path) {
         try {
             List<File> files = XMLUtil.loadXMLDirectory(path, (String file) -> true);
-            currentTid = 0;
             for (File f : files) {
                 LOGGER.info("Parsing : " + f.getName());
                 Node root = XMLUtil.getXMLRoot(f);
                 parseSingleXML(root);
-                ++currentTid;
             }
             pcfg.computeProbabilities();
             LOGGER.info(pcfg.toPrettyString(true));
@@ -219,6 +215,8 @@ public class Parser {
         SymbolsRHS epsilon = currentSymbol.findEpsilonRule();
         if (epsilon != null) {
             epsilon.incCount();
+            // TODO epsilon not parent annotated, doesn't really matter though
+            Symbol.EPSILON.incCount();
 
             Node currentNode = dfsIterator.peek();
             Node parentNode = (currentNode == null ? null : currentNode.getParentNode());
