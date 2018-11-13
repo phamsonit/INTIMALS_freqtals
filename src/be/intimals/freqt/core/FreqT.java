@@ -363,13 +363,6 @@ public class FreqT {
             System.out.println("running FreqT");
             System.out.println("=============");
 
-            // TODO temporary
-            PCFG pcfg = new PCFG();
-            pcfg.loadGrammar(config.getGrammarFile());
-            Parser parser = new Parser(pcfg,"ClassBodyDeclaration");
-            parser.parseDirectory("D:\\Mem\\fret_java\\data\\test");
-
-            System.out.println(pcfg.getDataCodingLength());
             initGrammar();
             initDatabase();
             readBlackLabel(); // Read data to blackListNode

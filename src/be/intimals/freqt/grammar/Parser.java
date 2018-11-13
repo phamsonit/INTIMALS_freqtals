@@ -40,7 +40,12 @@ public class Parser {
         this.images = pcfg.getImages();
         this.currentTid = 0;
 
-        FileHandler handler = new FileHandler("out/parser_log.txt");
+        LOGGER.setUseParentHandlers(false); // Disables console output
+        addFileLog("out/parser_log.txt");
+    }
+
+    private void addFileLog(String path) throws IOException {
+        FileHandler handler = new FileHandler(path);
         handler.setFormatter(new SimpleFormatter() {
             private static final String format = "%3$s %n";
 
@@ -67,7 +72,7 @@ public class Parser {
                 ++currentTid;
             }
             pcfg.computeProbabilities();
-            LOGGER.info(pcfg.toPrettyString(true));
+            //LOGGER.info(pcfg.toPrettyString(true));
         } catch (Exception e) {
             LOGGER.severe("Unable to parse directory " + e.getMessage());
             e.printStackTrace();
@@ -247,7 +252,8 @@ public class Parser {
     }
 
     private static String showParseState(Deque<Pair<Symbol, Symbol>> stack, Node currentNode) {
-        String nodeID = currentNode.getAttributes().getNamedItem("ID").getNodeValue();
+        String nodeID = getNodeID(currentNode);
+        if (nodeID.equals("")) LOGGER.warning("No ID for current node");
         return "\tInput: " + currentNode.getNodeName()
                 + "(" + nodeID + ") "
                 + "Stack: " + stack.stream().map(x -> x.getKey().getName()).collect(Collectors.toList());

@@ -9,6 +9,7 @@ import org.w3c.dom.NodeList;
 
 import java.util.*;
 import java.util.function.BiFunction;
+import java.util.logging.Level;
 import java.util.logging.Logger;
 import java.util.stream.Collectors;
 
@@ -22,6 +23,7 @@ public class PCFG {
     private List<String> possibleRoots;
 
     public void loadGrammar(String path) throws IllegalArgumentException {
+        LOGGER.setLevel(Level.OFF);
         try {
             Node root = XMLUtil.getXMLRoot(path);
             abstractNodes = loadAbstractNodes(root);
