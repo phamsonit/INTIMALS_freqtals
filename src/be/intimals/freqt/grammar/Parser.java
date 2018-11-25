@@ -1,6 +1,7 @@
 package be.intimals.freqt.grammar;
 
 import be.intimals.freqt.util.PeekableIterator;
+import be.intimals.freqt.util.Util;
 import be.intimals.freqt.util.XMLUtil;
 import javafx.util.Pair;
 import org.w3c.dom.Node;
@@ -73,7 +74,7 @@ public class Parser {
     private void parseSingleXML(Node root) {
         this.stack = new ArrayDeque<>();
         this.stack.push(new Pair<>(cfg.get(rootName), null));
-        this.dfsIterator = XMLUtil.asPreorderIterator(XMLUtil.asIterator(root.getChildNodes()), (Node e) ->
+        this.dfsIterator = Util.asPreOrderIterator(XMLUtil.asIterator(root.getChildNodes()), (Node e) ->
                 XMLUtil.asIterator(e.getChildNodes()));
         this.dfsIterator.next();
 

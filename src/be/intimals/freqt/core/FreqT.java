@@ -4,8 +4,6 @@ import be.intimals.freqt.Config;
 import be.intimals.freqt.constraints.Closed;
 import be.intimals.freqt.constraints.ClosedNoop;
 import be.intimals.freqt.constraints.IClosed;
-import be.intimals.freqt.grammar.PCFG;
-import be.intimals.freqt.grammar.Parser;
 import be.intimals.freqt.input.CreateGrammar;
 import be.intimals.freqt.input.ReadGrammar;
 import be.intimals.freqt.input.ReadXML;
@@ -363,13 +361,6 @@ public class FreqT {
             System.out.println("running FreqT");
             System.out.println("=============");
 
-            // TODO temporary
-            PCFG pcfg = new PCFG();
-            pcfg.loadGrammar(config.getGrammarFile());
-            Parser parser = new Parser(pcfg,"ClassBodyDeclaration");
-            parser.parseDirectory("D:\\Mem\\fret_java\\out\\test_temp");
-
-            System.out.println(pcfg.getDataCodingLength());
             initGrammar();
             initDatabase();
             readBlackLabel(); // Read data to blackListNode

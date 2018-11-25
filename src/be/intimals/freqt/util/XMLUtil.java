@@ -63,6 +63,14 @@ public class XMLUtil {
         return res;
     }
 
+    public static File loadXMLFile(String path, DirectoryFilter filter) {
+        File res = new File(path);
+        if (res.isFile() && filter.apply(res.getName())) {
+            return res;
+        }
+        return null;
+    }
+
     public static String toString(Node node) {
         // https://gist.github.com/skermes/3138513
         try {
@@ -95,44 +103,4 @@ public class XMLUtil {
     }
 
 
-    public interface ChildNodes<T> {
-        Iterator<T> get(T current);
-    }
-
-    public static <T> PeekableIterator<T> asPreorderIterator(final Iterator<T> root, ChildNodes<T> childrenFN) {
-        return new PeekableIterator<T>() {
-
-            private T nextItem = null;
-            private Deque<Iterator<T>> stack = new ArrayDeque<>();
-
-            public boolean hasNext() {
-                return !stack.isEmpty();
-            }
-
-            public T next() {
-                Iterator<T> current = this.stack.peek();
-
-                while (!current.hasNext()) {
-                    this.stack.pop();
-                    if (this.stack.isEmpty()) {
-                        nextItem = null;
-                        return null;
-                    }
-                    current = this.stack.peek();
-                }
-                nextItem = current.next();
-                this.stack.push(childrenFN.get(nextItem));
-                return nextItem;
-            }
-
-            public T peek() {
-                return nextItem;
-            }
-
-            private PeekableIterator<T> init(Iterator<T> first) {
-                this.stack.add(first);
-                return this;
-            }
-        }.init(root);
-    }
 }
