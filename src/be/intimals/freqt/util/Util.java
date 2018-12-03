@@ -18,7 +18,7 @@ public class Util {
         return new ArrayList<>(set);
     }
 
-    public static <T> Iterator<T> asIterator(final T item) {
+    public static <T> Iterator<T> asSingleIterator(final T item) {
         Set<T> res = new HashSet<>();
         res.add(item);
         return res.iterator();
@@ -104,5 +104,62 @@ public class Util {
                 return this;
             }
         }.init(root);
+    }
+
+    /*
+    public static <T> PeekableIterator<T> asBFSIterator(final Iterator<T> root, ChildNodes<T> childrenFN) {
+        return new PeekableIterator<T>() {
+
+            private T nextItem = null;
+            private Queue<Iterator<T>> stack = new ArrayDeque<>();
+
+            public boolean hasNext() {
+                return !stack.isEmpty();
+            }
+
+            public T next() {
+                if (stack.isEmpty()) throw new NoSuchElementException();
+                Iterator<T> current = this.stack.peek();
+                if (current == null) throw new IllegalArgumentException("null not allowed");
+
+                while (!current.hasNext()) {
+                    this.stack.poll();
+                    if (this.stack.isEmpty()) {
+                        nextItem = null;
+                        return null;
+                    }
+                    current = this.stack.peek();
+                }
+                nextItem = current.next();
+                this.stack.add(childrenFN.get(nextItem));
+                return nextItem;
+            }
+
+            public T peek() {
+                return nextItem;
+            }
+
+            private PeekableIterator<T> init(Iterator<T> first) {
+                this.stack.add(first);
+                return this;
+            }
+        }.init(root);
+    }
+    */
+
+    public static <U> List<Integer> getParentPosFromPreorder(List<U> preorder, U delimiter) {
+        List<Integer> parentPos = new ArrayList<>();
+        Deque<Integer> stack = new ArrayDeque<>();
+        stack.push(-1);
+        for (int i = 0; i < preorder.size(); i++) {
+            U val = preorder.get(i);
+            if (val.equals(delimiter)) {
+                stack.poll();
+            } else {
+                parentPos.add(stack.peek());
+                stack.push(i);
+            }
+        }
+        return parentPos;
     }
 }

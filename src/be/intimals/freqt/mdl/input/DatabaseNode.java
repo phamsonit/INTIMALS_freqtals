@@ -25,9 +25,22 @@ public class DatabaseNode<T> implements IDatabaseNode<T> {
         setID();
     }
 
+    private DatabaseNode(int tid, T label, IDatabaseNode<T> parent) {
+        this.tid = tid;
+        this.label = label;
+        this.parent = parent;
+        setUID();
+        setID();
+    }
+
     public static <T> DatabaseNode<T> create() {
         return new DatabaseNode<>();
     }
+
+    public static <T> DatabaseNode<T> create(int tid, T label, IDatabaseNode<T> parent) {
+        return new DatabaseNode<>(tid, label, parent);
+    }
+
 
     private void setUID() {
         this.uid = uidCounter;
@@ -87,6 +100,15 @@ public class DatabaseNode<T> implements IDatabaseNode<T> {
     @Override
     public void setChildren(List<IDatabaseNode<T>> children) {
         this.children = children;
+        for (IDatabaseNode<T> child : this.children) {
+            child.setParent(this);
+        }
+    }
+
+    @Override
+    public void addChild(IDatabaseNode<T> child) {
+        this.children.add(child);
+        child.setParent(this);
     }
 
     @Override

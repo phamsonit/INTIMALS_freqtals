@@ -33,4 +33,8 @@ public class Database<T> {
     public IDatabaseNode<T> getTid(int id) {
         return transactions.get(id);
     }
+
+    public int getSize() {
+        return this.transactions.size();
+    }
 }

@@ -23,32 +23,63 @@ public class TSGNode<T> implements ITSGNode<T> {
         return new TSGNode<>(label);
     }
 
-    //public static <T> TSGNode<T> createFrom(IDatabaseNode<T> dbNode) {
-    //    return new TSGNode<>(dbNode.getLabel());
-    //}
+    public static <T> TSGNode<T> clone(ITSGNode<T> root) {
+        if (root == null) return null;
+        //TSGNode<T> res = new TSGNode<>(root.getLabel());
+        //res.setParent(root.getParent() != null ? new TSGNode<>(root.getParent().getLabel()) : null);
+        //res.setChildren(root.getChildren().stream().map(c -> {
+        //    TSGNode<T> clonedChild = clone(c);
+        //    clonedChild.setParent(res);
+        //    return clonedChild;
+        //}).collect(Collectors.toList()));
+        //return res;
 
-    private static <T> TSGNode<T> createFrom(ITreeNode<T, ?> node) {
-        return new TSGNode<>(node.getLabel());
+        ITSGNode<T> start = root.getParent();
+        while (start.getParent() != null) {
+            start = start.getParent();
+        }
+        List<TSGNode<T>> res = new ArrayList<>();
+        cloneSingle(root, start, null, res);
+        assert (res.size() == 1);
+        return res.get(0);
     }
 
-    //public static <T> TSGNode<T> createFromWithChildren(IDatabaseNode<T> dbNode) {
-    //    TSGNode<T> res = new TSGNode<>(dbNode.getLabel());
-    //    res.setChildren(dbNode.getChildren().stream()
-    //            .map(n -> {
-    //                TSGNode<T> r = TSGNode.createFrom(n);
-    //                r.setParent(res);
-    //                return r;
-    //            }).collect(Collectors.toList()));
-    //    return res;
-    //}
-
-    public static <T> TSGNode<T> createFromWithChildren(ITreeNode<T, ? extends ITreeNode<T, ?>> dbNode) {
-        TSGNode<T> res = createFrom(dbNode);
-        TSGNode<T> parent = dbNode.getParent() != null ? createFrom(dbNode.getParent()) : null;
+    private static <T> TSGNode<T> cloneSingle(ITSGNode<T> root, ITSGNode<T> current,
+                                              ITSGNode<T> parent, List<TSGNode<T>> out) {
+        TSGNode<T> res = new TSGNode<>(current.getLabel());
+        if (current == root) {
+            out.add(res);
+        }
+        res.setChildren(current.getChildren().stream().map(c -> {
+            TSGNode<T> clonedChild = cloneSingle(root, c, res, out);
+            return clonedChild;
+        }).collect(Collectors.toList()));
         res.setParent(parent);
+        return res;
+    }
+
+    public static <T> TSGNode<T> createFromWithParent(ITreeNode<T, ? extends ITreeNode<T, ?>> node,
+                                                       ITreeNode<T, ? extends ITreeNode<T, ?>> parent) {
+        TSGNode<T> res = new TSGNode<>(node.getLabel());
+        if (parent != null) {
+            TSGNode<T> parentNode = new TSGNode<>(parent.getLabel());
+            if (parent.getParent() != null) {
+                TSGNode<T> gpNode = new TSGNode<>(parent.getParent().getLabel());
+                gpNode.setChildren(Arrays.asList(parentNode));
+                parentNode.setParent(gpNode);
+            }
+            res.setParent(parentNode);
+            parentNode.setChildren(Arrays.asList(res));
+        }
+        return res;
+    }
+
+    public static <T> TSGNode<T> createFromWithChildren(ITreeNode<T, ? extends ITreeNode<T, ?>> dbNode,
+                                                        ITreeNode<T, ? extends ITreeNode<T, ?>> dbNodeParent) {
+        TSGNode<T> res = createFromWithParent(dbNode, dbNodeParent);
         res.setChildren(dbNode.getChildren().stream()
                 .map(n -> {
-                    TSGNode<T> r = TSGNode.createFrom(n);
+                    TSGNode<T> r = TSGNode.create(n.getLabel());
                     r.setParent(res);
                     return r;
                 }).collect(Collectors.toList()));
@@ -74,6 +105,15 @@ public class TSGNode<T> implements ITSGNode<T> {
     @Override
     public void setChildren(List<ITSGNode<T>> children) {
         this.children = children;
+        for (ITSGNode<T> child : this.children) {
+            child.setParent(this);
+        }
+    }
+
+    @Override
+    public void addChild(ITSGNode<T> child) {
+        this.children.add(child);
+        child.setParent(this);
     }
 
     @Override
@@ -106,14 +146,14 @@ public class TSGNode<T> implements ITSGNode<T> {
         this.parent = parent;
     }
 
-    public static <T> ITSGNode<T> debugFromString(T[] tokens) {
+    public static <T> ITSGNode<T> debugFromString(T[] tokens, String delimiter) {
         if (tokens.length == 0) return null;
-        if (Arrays.stream(tokens).allMatch(e -> e.equals("|"))) return null;
+        if (Arrays.stream(tokens).allMatch(e -> e.equals(delimiter))) return null;
 
         Deque<TSGNode<T>> stack = new ArrayDeque<>();
         for (int i = 0; i < tokens.length; i++) {
             T token = tokens[i];
-            if (token.equals("|")) {
+            if (token.equals(delimiter)) {
                 stack.poll();
             } else {
                 TSGNode<T> nodeParent = stack.isEmpty() ? null : stack.peek();

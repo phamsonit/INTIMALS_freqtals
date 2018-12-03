@@ -1,9 +1,11 @@
 package be.intimals.freqt.mdl.tsg;
 
+import be.intimals.freqt.mdl.common.ITreeNode;
 import be.intimals.freqt.util.PeekableIterator;
 import be.intimals.freqt.util.Util;
 
 import java.util.*;
+import java.util.stream.Collectors;
 import java.util.stream.IntStream;
 
 /**
@@ -17,8 +19,9 @@ public class TSGRule<T> {
     private T delimiter;
     private ITSGNode<T> root = null;
     private int count = 0;
-    private int initialCount = 0;
+    //private int initialCount = 0;
     private Map<Integer, List<TSGOccurrence<T>>> occurrencesPerTID = new HashMap<>();
+    private List<ITSGNode<T>> addedRoots = null;
 
     private TSGRule(T delimiter) {
         this.delimiter = delimiter;
@@ -44,26 +47,30 @@ public class TSGRule<T> {
         this.count = count;
     }
 
-    public void incCount() {
-        this.count++;
-    }
-
-    public void incCountBy(int by) {
+    private void incCountBy(int by) {
         this.count += by;
         assert (this.count >= 0);
     }
 
-    public int getInitialCount() {
-        return initialCount;
+    public List<ITSGNode<T>> getAddedRoots() {
+        return addedRoots;
     }
 
-    public void setInitialCount(int initialCount) {
-        this.initialCount = initialCount;
+    public void setAddedRoots(List<ITSGNode<T>> addedRoots) {
+        this.addedRoots = addedRoots;
     }
 
-    public void incInitialCount() {
-        this.initialCount++;
-    }
+    //public int getInitialCount() {
+    //    return initialCount;
+    //}
+//
+    //public void setInitialCount(int initialCount) {
+    //    this.initialCount = initialCount;
+    //}
+//
+    //public void incInitialCount() {
+    //    this.initialCount++;
+    //}
 
     public Map<Integer, List<TSGOccurrence<T>>> getOccurrences() {
         return occurrencesPerTID;
@@ -77,26 +84,57 @@ public class TSGRule<T> {
         List<TSGOccurrence<T>> occurrences = this.occurrencesPerTID.getOrDefault(tid, new ArrayList<>());
         TSGOccurrence<T> toAdd = TSGOccurrence.create(tid, occurrence, this);
         occurrences.add(toAdd);
+        incCountBy(1);
         this.occurrencesPerTID.put(tid, occurrences);
         return toAdd;
     }
 
-    public void removeOccurrence(int tid, TSGOccurrence<T> occurrence) {
+    public TSGOccurrence<T> addOccurrence(TSGOccurrence<T> occurrence) {
+        List<TSGOccurrence<T>> occurrences = this.occurrencesPerTID.getOrDefault(occurrence.getTID(),new ArrayList<>());
+        occurrences.add(occurrence);
+        occurrence.setOwner(this);
+        incCountBy(1);
+        this.occurrencesPerTID.put(occurrence.getTID(), occurrences);
+        return occurrence;
+    }
+
+    public boolean removeOccurrence(int tid, TSGOccurrence<T> occurrence) {
         List<TSGOccurrence<T>> occurrences = this.occurrencesPerTID.get(tid);
-        occurrences.remove(occurrence);
+        boolean removed = occurrences.remove(occurrence);
+        if (removed) incCountBy(-1);
         this.occurrencesPerTID.put(tid, occurrences);
+        return removed;
+    }
+
+    public T getDelimiter() {
+        return delimiter;
+    }
+
+    public void addCreatedRoot(ITSGNode<T> root) {
+        if (this.addedRoots == null) this.addedRoots = new ArrayList<>();
+        this.addedRoots.add(root);
+    }
+
+    public List<ITSGNode<T>> getCreatedRoots() {
+        return this.addedRoots;
     }
 
     public List<T> toPreOrderList() {
         if (root == null) return new ArrayList<>();
+
+        return toPreOrderNodeList().stream().map(ITreeNode::getLabel).collect(Collectors.toList());
+    }
+
+    public List<ITSGNode<T>> toPreOrderNodeList() {
+        if (root == null) return new ArrayList<>();
         ITSGNode<T> backtrack = TSGNode.create(delimiter);
 
         PeekableIterator<ITSGNode<T>> dfsIterator = Util.asPreOrderIteratorWithBacktrack(
-                Util.asIterator(root), (ITSGNode<T> node) -> node.getChildren().iterator(), backtrack);
+                Util.asSingleIterator(root), (ITSGNode<T> node) -> node.getChildren().iterator(), backtrack);
         dfsIterator.next();
-        List<T> res = new ArrayList<>();
+        List<ITSGNode<T>> res = new ArrayList<>();
         while (dfsIterator.hasNext()) {
-            T next = dfsIterator.peek() != backtrack ? dfsIterator.peek().getLabel() : delimiter;
+            ITSGNode<T> next = dfsIterator.peek();
             res.add(next);
             dfsIterator.next();
         }

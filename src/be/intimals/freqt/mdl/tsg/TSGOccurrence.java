@@ -56,8 +56,15 @@ public class TSGOccurrence<T> {
         this.mask = mask;
     }
 
+    public int getSize() {
+        return this.pos.size();
+    }
+
     public TSGRule<T> getOwner() {
         return owner;
     }
 
+    public void setOwner(TSGRule<T> owner) {
+        this.owner = owner;
+    }
 }

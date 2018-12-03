@@ -26,6 +26,11 @@ public class BasicTSG extends ATSG<String> {
     }
 
     @Override
+    protected String getPatternRuleKey(ITSGNode<String> newRoot, int patternId, Integer posInTree, int i) {
+        return "(" + patternId + " " + posInTree + " " + i + ")";
+    }
+
+    @Override
     public String getDelimiter() {
         return "$";
     }
@@ -46,6 +51,55 @@ public class BasicTSG extends ATSG<String> {
         return res;
     }
 
+    //private double getModelEntryCodingLength(GrammarEntry entry) {
+    //    double res = 0.0;
+    //    double productionsCountLog = DoubleUtil.log2(this.productionsCount);
+    //    // Compute the coding length of this tree rule
+//
+    //    // Add the probability of having this symbol as root
+    //    // Note: You add it only once as every rule derived from this root will have the same root
+    //    double productionCount = entry.getCount();
+    //    double rootP = -(DoubleUtil.log2(productionCount) - productionsCountLog);
+    //    res += rootP;
+//
+    //    for (TSGRule<String> rule : entry.getRules().values()) {
+    //        // If this entry is not used anymore, skip
+    //        if (rule.getCount() == 0) continue;
+    //        // Productions are in a tree format i.e. X -> (X(A_1(...))...(A_n(...)))
+    //        // Traverse the tree in pre order and, at each node, compute the probability
+    //        // of applying this specific production at this node
+    //        PeekableIterator<ITSGNode<String>> dfsIterator = Util.asPreOrderIterator(
+    //                Util.asIterator(rule.getRoot()), (ITSGNode<String> node) -> node.getChildren().iterator());
+    //        dfsIterator.next();
+    //        while (dfsIterator.hasNext()) {
+    //            ITSGNode<String> currentNode = dfsIterator.peek();
+    //            if (!currentNode.isLeaf()) { // Only consider productions
+    //                // Build the key that was used to put this production in grammar
+    //                String key = getGrammarKey(currentNode);
+    //                GrammarEntry currentEntry = grammar.get(key);
+//
+    //                // Create a new rule with only children of the given node and use it as a key in our grammar
+    //                TSGRule<String> ruleAsKey = TSGRule.create(getDelimiter());
+    //                ruleAsKey.setRoot(TSGNode.createFromWithChildren(currentNode));
+    //                TSGRule<String> ruleInGrammar = currentEntry.getRules().get(ruleAsKey);
+    //                // Should not be null because of the assumptions made (i.e. there should be such production)
+    //                // TODO Otherwise, need to go through the rules in the GrammarEntry and find where it matches
+    //                assert (ruleInGrammar != null);
+//
+    //                // Compute probability of this production based on _initial_ counts (i.e. at start, without any
+    //                // new rules added)
+    //                double productionP = -(DoubleUtil.log2(ruleInGrammar.getInitialCount())
+    //                        - DoubleUtil.log2(entry.getInitialCount()));
+    //                System.out.println(productionP + " bits for " + rule);
+    //                res += productionP;
+    //                assert (!Double.isNaN(res));
+    //            }
+    //            dfsIterator.next();
+    //        }
+    //    }
+    //    return res;
+    //}
+
     private double getModelEntryCodingLength(GrammarEntry entry) {
         double res = 0.0;
         double productionsCountLog = DoubleUtil.log2(this.productionsCount);
@@ -53,38 +107,36 @@ public class BasicTSG extends ATSG<String> {
 
         // Add the probability of having this symbol as root
         // Note: You add it only once as every rule derived from this root will have the same root
-        double productionCount = entry.getCount();
-        double rootP = -(DoubleUtil.log2(productionCount) - productionsCountLog);
-        res += rootP;
+        double currentProdCount = entry.getCount();
+        double rootP = -(DoubleUtil.log2(currentProdCount) - productionsCountLog);
 
         for (TSGRule<String> rule : entry.getRules().values()) {
             // If this entry is not used anymore, skip
             if (rule.getCount() == 0) continue;
+            res += rootP;
             // Productions are in a tree format i.e. X -> (X(A_1(...))...(A_n(...)))
             // Traverse the tree in pre order and, at each node, compute the probability
             // of applying this specific production at this node
             PeekableIterator<ITSGNode<String>> dfsIterator = Util.asPreOrderIterator(
-                    Util.asIterator(rule.getRoot()), (ITSGNode<String> node) -> node.getChildren().iterator());
+                    Util.asSingleIterator(rule.getRoot()), (ITSGNode<String> node) -> node.getChildren().iterator());
             dfsIterator.next();
             while (dfsIterator.hasNext()) {
                 ITSGNode<String> currentNode = dfsIterator.peek();
-                if (!currentNode.isLeaf()) { // Only consider productions
-                    // Build the key that was used to put this production in grammar
+                if (!currentNode.isLeaf() && !currentNode.isRoot()) { // Only consider productions
+                    // For each node A_i, get count(X->A_i) and count(X) based on the distribution in the data
+                    //TODO FIX CLONE
                     String key = getGrammarKey(currentNode);
-                    GrammarEntry currentEntry = grammar.get(key);
+                    String parentKey = getGrammarKey(currentNode.getParent());
+                    assert (parentKey != null);
+                    MapCounter<String> parentCounter = childrenCount.get(parentKey);
+                    assert (parentCounter != null);
+                    Integer prodCount = parentCounter.getCountFor(key);
+                    assert (prodCount != 0);
+                    Integer parentCount = parentCounter.getTotal();
 
-                    // Create a new rule with only children of the given node and use it as a key in our grammar
-                    TSGRule<String> ruleAsKey = TSGRule.create(getDelimiter());
-                    ruleAsKey.setRoot(TSGNode.createFromWithChildren(currentNode));
-                    TSGRule<String> ruleInGrammar = currentEntry.getRules().get(ruleAsKey);
-                    // Should not be null as the grammar was built on data and should contain a rule with those children
-                    assert (ruleInGrammar != null);
-
-                    // Compute probability of this production based on _initial_ counts (i.e. at start, without any
-                    // new rules added)
-                    double productionP = -(DoubleUtil.log2(ruleInGrammar.getInitialCount())
-                            - DoubleUtil.log2(entry.getInitialCount()));
-                    System.out.println(productionP + " bits for " + rule);
+                    double productionP = -(DoubleUtil.log2(prodCount)
+                            - DoubleUtil.log2(parentCount));
+                    //System.out.println(productionP + " bits for " + rule);
                     res += productionP;
                     assert (!Double.isNaN(res));
                 }

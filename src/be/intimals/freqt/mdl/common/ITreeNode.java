@@ -19,6 +19,8 @@ public interface ITreeNode<T, L extends ITreeNode> {
 
     void setChildren(List<L> children);
 
+    void addChild(L child);
+
     L getChildAt(int idx);
 
     L getParent();

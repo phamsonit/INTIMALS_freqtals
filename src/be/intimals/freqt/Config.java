@@ -38,6 +38,10 @@ public class Config {
         return prop.getProperty("blackLabelFile");
     }
 
+    public String getNodeListFile() {
+        return prop.getProperty("nodeListFile");
+    }
+
     public String getInputFiles() {
         return prop.getProperty("inFiles");
     }
