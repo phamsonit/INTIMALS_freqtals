@@ -15,8 +15,7 @@ public class ClosedNoop implements IClosed {
     /**
      * {@inheritDoc}
      */
-    public Set<Extension> buildBlanket(Map<String, Vector<String>> grammar,
-                                              Set<String> rootWhitelist,
+    public Set<Extension> buildBlanket(Set<String> rootWhitelist,
                                               Map<String, Set<String>> childrenBlacklist,
                                               Projected projected, Set<Pair<Integer, String>> right) {
         return new HashSet<>();

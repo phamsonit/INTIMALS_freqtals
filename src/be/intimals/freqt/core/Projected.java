@@ -99,7 +99,7 @@ public class Projected {
         for (int i = 1; i < getProjectLocationSize(); ++i) {
             tmp = Util.union(tmp, getProjectLocation(i).getLocationList());
         }
-        Collections.sort(tmp);
+        //Collections.sort(tmp);
         return tmp;
 
     }

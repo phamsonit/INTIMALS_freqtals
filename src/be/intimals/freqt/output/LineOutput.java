@@ -33,10 +33,10 @@ public class LineOutput extends AOutputFormatter {
 
             List<Integer> allOccurrences = projected.getUnionAllOccurences();
 
-            assert (Pattern.checkConstraints(config, pat));
+            //assert (Pattern.checkConstraints(config, pat));
             assert (size == projected.getProjectLocation(0).getLocationList().size());
 
-            out.write("occurrences:" + allOccurrences.size()
+            out.write("unique nodes:" + allOccurrences.size()
                     + " supp:" + sup + " wsupp:" + wsup + " size:" + size + "\t");
 
             int n = 0;

@@ -9,15 +9,13 @@ public interface IClosed {
     /**
      * Build the set of subtrees of a tree t such that they have one more vertex than t
      * (cfr. 3.2 The CMTreeMiner Algorithm (Chi et al., 2004))
-     * @param grammar
      * @param rootWhitelist
      * @param childrenBlacklist
      * @param projected
      * @param right
      * @return
      */
-    Set<Extension> buildBlanket(Map<String, Vector<String>> grammar,
-                                Set<String> rootWhitelist,
+    Set<Extension> buildBlanket(Set<String> rootWhitelist,
                                 Map<String, Set<String>> childrenBlacklist,
                                 Projected projected, Set<Pair<Integer, String>> right);
 

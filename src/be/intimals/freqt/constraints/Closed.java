@@ -19,8 +19,7 @@ public class Closed implements IClosed {
     /**
      * {@inheritDoc}
      */
-    public Set<Extension> buildBlanket(Map<String, Vector<String>> grammar,
-                                              Set<String> rootWhitelist,
+    public Set<Extension> buildBlanket(Set<String> rootWhitelist,
                                               Map<String, Set<String>> childrenBlacklist,
                                               Projected projected, Set<Pair<Integer, String>> right) {
         // Optimization: in theory, first checking root expansions (-1) is easier

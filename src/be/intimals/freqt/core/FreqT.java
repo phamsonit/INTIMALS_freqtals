@@ -135,7 +135,7 @@ public class FreqT {
             }
 
             Set<Pair<Integer, String>> rightExtensions = new HashSet<>();
-            Set<Extension> blanket = closed.buildBlanket(grammar, listRootLabel, listBlackLabel,
+            Set<Extension> blanket = closed.buildBlanket(listRootLabel, listBlackLabel,
                     projected, rightExtensions);
             // Build B^SM_t and B^OM_t which define if t is a closed subtree and if we can prune the whole branch
             boolean canPrune = closed.pruneOccurrenceMatchSet(projected, blanket, rightExtensions);
