@@ -27,6 +27,7 @@ public class Projected {
         l.setLocationId(i);
         l.addLocationPos(j);
         this.locations.add(l);
+        this.support = -1;
     }
 
     /**
@@ -75,6 +76,7 @@ public class Projected {
         l.setLocationId(i);
         l.addLocationPos(j);
         this.locations.add(l);
+        this.support = -1;
     }
 
     /**
@@ -102,5 +104,10 @@ public class Projected {
         //Collections.sort(tmp);
         return tmp;
 
+    }
+
+    public void removeLocation(int i) {
+        this.locations.remove(i);
+        this.support = -1;
     }
 }

@@ -151,13 +151,15 @@ public class Util {
         List<Integer> parentPos = new ArrayList<>();
         Deque<Integer> stack = new ArrayDeque<>();
         stack.push(-1);
+        int countSymbols = 0;
         for (int i = 0; i < preorder.size(); i++) {
             U val = preorder.get(i);
             if (val.equals(delimiter)) {
                 stack.poll();
             } else {
                 parentPos.add(stack.peek());
-                stack.push(i);
+                stack.push(countSymbols);
+                countSymbols++;
             }
         }
         return parentPos;
