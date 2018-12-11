@@ -48,8 +48,9 @@ public abstract class ABasicJavaLoader<T> implements IDatabaseLoader<T> {
             LOGGER.info("loadFile : " + f.getName());
             Node root = XMLUtil.getXMLRoot(f);
 
-            //IDatabaseNode<T> newTreeRoot = traverse(root);
-            IDatabaseNode<T> newTreeRoot = traverse(root, null);
+            //IDatabaseNode<T> newTreeRoot = traverse(root, null);
+            IDatabaseNode<T> newTreeRoot = DatabaseNode.create(currentTID, getKeyForNode(root), null);
+            traverseBFS(root, newTreeRoot, null);
             db.addTransaction(newTreeRoot);
 
             ++currentTID;
@@ -57,6 +58,7 @@ public abstract class ABasicJavaLoader<T> implements IDatabaseLoader<T> {
         }
     }
 
+    /*
     private IDatabaseNode<T> traverse(Node currentNode, IDatabaseNode<T> parent) {
         IDatabaseNode<T> newTreeNode = null;
 
@@ -80,68 +82,31 @@ public abstract class ABasicJavaLoader<T> implements IDatabaseLoader<T> {
         }
         return newTreeNode;
     }
+    */
 
-    //private IDatabaseNode<T> traverse(Node root) {
-    //    IDatabaseNode<T> treeRoot = null;
-    //    Map<Integer, IDatabaseNode<T>> treeNodeCache = new HashMap<>();
-//
-    //    PeekableIterator<Node> dfsIterator = Util.asPreOrderIterator(Util.asSingleIterator(root), (Node e) ->
-    //            XMLUtil.asIterator(e.getChildNodes()));
-    //    dfsIterator.next();
-//
-    //    while (dfsIterator.hasNext()) {
-    //        Node currentNode = dfsIterator.peek();
-    //        IDatabaseNode<T> newTreeNode = null;
-//
-    //        if (currentNode.getNodeType() == Node.ELEMENT_NODE) {
-    //            newTreeNode = asDBNode(treeNodeCache, currentNode);
-    //            T nodeKey = getKeyForNode(currentNode);
-    //            newTreeNode.setLabel(nodeKey);
-    //            if (currentNode.hasChildNodes()) {
-    //                List<IDatabaseNode<T>> treeChildren = new ArrayList<>();
-    //                NodeList nodeList = currentNode.getChildNodes();
-    //                for (int i = 0; i < nodeList.getLength(); i++) {
-    //                    Node child = nodeList.item(i);
-    //                    IDatabaseNode<T> newChildNode = asDBNode(treeNodeCache, child);
-    //                    T childKey = getKeyForNode(child);
-    //                    newChildNode.setLabel(childKey);
-    //                    newChildNode.setParent(newTreeNode);
-    //                    treeChildren.add(newChildNode);
-    //                }
-    //                newTreeNode.setChildren(treeChildren);
-    //            }
-    //            treeNodeCache.remove(getNodeID(currentNode));
-//
-    //        } else if (currentNode.getNodeType() == Node.TEXT_NODE) {
-    //            // Do nothing
-    //        } else {
-    //            LOGGER.severe("Unhandled XML nodes");
-    //        }
-//
-    //        if (treeRoot == null) treeRoot = newTreeNode;
-    //        dfsIterator.next();
-    //    }
-//
-    //    return treeRoot;
-    //}
+    private void traverseBFS(Node currentNode, IDatabaseNode<T> current, IDatabaseNode<T> parent) {
+        if (currentNode.getNodeType() == Node.ELEMENT_NODE) {
+            if (currentNode.hasChildNodes()) {
+                List<IDatabaseNode<T>> treeChildren = new ArrayList<>();
+                NodeList nodeList = currentNode.getChildNodes();
+                for (int i = 0; i < nodeList.getLength(); i++) {
+                    Node child = nodeList.item(i);
+                    IDatabaseNode<T> newChildNode = DatabaseNode.create(currentTID, getKeyForNode(child), current);
+                    treeChildren.add(newChildNode);
+                }
+                current.setChildren(treeChildren);
 
-    //private IDatabaseNode<T> asDBNode(Map<Integer, IDatabaseNode<T>> cache, Node current) {
-    //    Integer nodeID = getNodeID(current);
-    //    if (cache.containsKey(nodeID)) {
-    //        return cache.get(nodeID);
-    //    } else {
-    //        IDatabaseNode<T> newTreeNode = DatabaseNode.create();
-    //        newTreeNode.setTID(currentTID);
-    //        if (nodeID != -1) cache.put(nodeID, newTreeNode);
-    //        return newTreeNode;
-    //    }
-    //}
-//
-    //private static Integer getNodeID(Node node) {
-    //    return Integer.valueOf(Optional.ofNullable(node)
-    //            .map(Node::getAttributes).map(x -> x.getNamedItem("ID")).map(Node::getNodeValue)
-    //            .orElse("-1"));
-    //}
+                for (int i = 0; i < nodeList.getLength(); i++) {
+                    Node child = nodeList.item(i);
+                    traverseBFS(child, treeChildren.get(i), current);
+                }
+            }
+        } else if (currentNode.getNodeType() == Node.TEXT_NODE) {
+            // Don't do anything, already created
+        } else {
+            LOGGER.severe("Unhandled XML nodes");
+        }
+    }
 
     protected abstract T getKeyForNode(Node current);
 

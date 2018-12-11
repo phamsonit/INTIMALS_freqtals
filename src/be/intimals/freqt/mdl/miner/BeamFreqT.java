@@ -4,26 +4,31 @@ import be.intimals.freqt.Config;
 import be.intimals.freqt.constraints.Closed;
 import be.intimals.freqt.constraints.ClosedNoop;
 import be.intimals.freqt.constraints.IClosed;
-import be.intimals.freqt.core.Extension;
-import be.intimals.freqt.core.NodeFreqT;
-import be.intimals.freqt.core.Pattern;
-import be.intimals.freqt.core.Projected;
+import be.intimals.freqt.core.*;
 import be.intimals.freqt.mdl.input.Database;
 import be.intimals.freqt.mdl.input.IDatabaseNode;
 import be.intimals.freqt.mdl.tsg.ATSG;
+import be.intimals.freqt.mdl.tsg.ITSGNode;
+import be.intimals.freqt.mdl.tsg.TSGNode;
+import be.intimals.freqt.mdl.tsg.TSGRule;
 import be.intimals.freqt.output.AOutputFormatter;
 import be.intimals.freqt.output.LineOutput;
 import be.intimals.freqt.output.XMLOutput;
+import be.intimals.freqt.util.PeekableIterator;
 import be.intimals.freqt.util.SearchStatistics;
+import be.intimals.freqt.util.Util;
 import javafx.util.Pair;
+
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Paths;
 import java.util.*;
+import java.util.logging.Logger;
 import java.util.stream.Stream;
 
 
 public class BeamFreqT {
+    private static final Logger LOGGER = Logger.getLogger(BeamFreqT.class.getName());
     public static char uniChar = '\u00a5';// Japanese Yen symbol
 
     private static Config config;
@@ -35,6 +40,7 @@ public class BeamFreqT {
     private Set<String> listRootLabel = new HashSet<>();
     private Set<String> listNodeList = new HashSet<>();
     private IClosed closed;
+    private Map<Integer, Set<Integer>> coveredByTid = new HashMap<>();
 
     public SearchStatistics stats;
 
@@ -71,6 +77,31 @@ public class BeamFreqT {
             int sup = entry.getValue().getProjectedSupport();
             if (sup < config.getMinSupport()) {
                 iter.remove();
+            } else {
+                pruneAlreadyCovered(iter, entry.getValue());
+            }
+        }
+    }
+
+    private void pruneAlreadyCovered(Iterator<Map.Entry<String, Projected>> iter, Projected projected) {
+        for (int i = 0; i < projected.getProjectLocationSize(); i++) {
+            Location loc = projected.getProjectLocation(i);
+            if (coveredByTid.containsKey(loc.getLocationId())) {
+                Set<Integer> covered = coveredByTid.get(loc.getLocationId());
+                for (Integer val : covered) {
+                    if (loc.getLocationList().contains(val)) {
+                        // This node is already covered by another rule, we don't allow overlap, remove
+                        projected.removeLocation(i);
+                        LOGGER.info("REMOVED location, already covered: "
+                                + transactions.get(loc.getLocationId()).get(val).getNodeLabel() + " - " + val);
+                        // No longer enough support, remove from candidates
+                        if (projected.getProjectLocationSize() < config.getMinSupport()) {
+                            iter.remove();
+                            return;
+                        }
+                        break;
+                    }
+                }
             }
         }
     }
@@ -80,11 +111,46 @@ public class BeamFreqT {
         // closed if null blanket, closedness disabled or actually closed when enabled
         if (isClosed) {
             output.report(pat, projected);
+            addPatternToTSG(pat, projected);
+            double modelLength = tsg.getModelCodingLength();
+            double dataLength = tsg.getDataCodingLength();
+            System.out.println("Model: " + tsg.getModelCodingLength());
+            System.out.println("Data : " + tsg.getDataCodingLength());
+            System.out.println("Sum : " + (modelLength + dataLength));
             stats.incClosed();
         } else {
             stats.incNotClosed();
         }
-}
+    }
+
+    private void addPatternToTSG(Vector<String> pat, Projected projected) {
+        ITSGNode<String> patternRoot = TSGNode.buildFromList(pat.toArray(new String[]{}), ")");
+        TSGRule<String> rule = TSGRule.create(tsg.getDelimiter());
+        rule.setRoot(patternRoot);
+        for (int i = 0; i < projected.getProjectLocationSize(); i++) {
+            Location loc = projected.getProjectLocation(i);
+            Set<Integer> covered = coveredByTid.getOrDefault(loc.getLocationId(), new HashSet<>());
+            // NO overlap, remove overlapping locations
+            // (Note: IF relaxing this constraint, need to change how rules are added as after handling one occurrence,
+            // some overlapping nodes in the next occurrence will already point to the new rule)
+            boolean removed = false;
+            for (Integer val : covered) {
+                if (loc.getLocationList().contains(val)) {
+                    // This node is already covered by another rule, we don't allow overlap, remove
+                    LOGGER.info("SKIP location, would cover node twice: "
+                            + transactions.get(loc.getLocationId()).get(val).getNodeLabel() + " - " + val);
+                    removed = true;
+                    break;
+                }
+            }
+            if (!removed) {
+                rule.addOccurrence(loc.getLocationId(), loc.getLocationList());
+                covered.addAll(loc.getLocationList());
+                coveredByTid.putIfAbsent(loc.getLocationId(), covered);
+            }
+        }
+        tsg.addRule(rule);
+    }
 
 
     /**
@@ -120,10 +186,10 @@ public class BeamFreqT {
             //pruning relies on support: for each candidate if its support < minsup --> remove
             prune(candidates);
 
-            if (candidates.isEmpty()) {
-                report(pattern, projected, blanket);
-                return;
-            }
+            //if (candidates.isEmpty()) {
+            report(pattern, projected, blanket);
+                //return;
+            //}
 
             //expand the current pattern with each candidate
             Iterator<Map.Entry<String, Projected>> iter = candidates.entrySet().iterator();
@@ -197,6 +263,8 @@ public class BeamFreqT {
                 prefix += uniChar + ")";
             }
         }
+        assert (candidate.entrySet().stream()
+                .allMatch(c -> c.getValue().getProjectLocationSize() != 0));
         return candidate;
     }
 
@@ -313,6 +381,35 @@ public class BeamFreqT {
             transactions.get(tid).add(nodeParent);
             transformNode(tid, transactionRoot, 0, -1);
         }
+        assertDBConsistent();
+    }
+
+    private void assertDBConsistent() {
+        //IDatabaseNode<String> backtrack = DatabaseNode.create(0, "$", null);
+
+        assert(db.getSize() == transactions.size());
+
+        for (int tid = 0; tid < transactions.size(); tid++) {
+            List<String> compareFirst = new ArrayList<>();
+            for (int j = 0; j < transactions.get(tid).size(); j++) {
+                compareFirst.add(transactions.get(tid).get(j).getNodeLabel());
+            }
+            List<String> compareSecond = new ArrayList<>(Collections.nCopies(compareFirst.size(), ""));
+
+            IDatabaseNode<String> root = db.getTid(tid);
+            PeekableIterator<IDatabaseNode<String>> iterator = Util.asPreOrderIterator(
+                    Util.asSingleIterator(root),
+                    (IDatabaseNode<String> node) -> node.getChildren().iterator());
+            iterator.next();
+            while (iterator.hasNext()) {
+                IDatabaseNode<String> next = iterator.peek();
+                compareSecond.set(next.getID(), next.getLabel());
+                iterator.next();
+            }
+            assert (compareFirst.equals(compareSecond));
+        }
+
+
     }
 
     private void transformNode(int tid, IDatabaseNode<String> currentTreeNode, int parentPos, int sibilingPos) {

@@ -25,16 +25,8 @@ public class TSGNode<T> implements ITSGNode<T> {
 
     public static <T> TSGNode<T> clone(ITSGNode<T> root) {
         if (root == null) return null;
-        //TSGNode<T> res = new TSGNode<>(root.getLabel());
-        //res.setParent(root.getParent() != null ? new TSGNode<>(root.getParent().getLabel()) : null);
-        //res.setChildren(root.getChildren().stream().map(c -> {
-        //    TSGNode<T> clonedChild = clone(c);
-        //    clonedChild.setParent(res);
-        //    return clonedChild;
-        //}).collect(Collectors.toList()));
-        //return res;
 
-        ITSGNode<T> start = root.getParent();
+        ITSGNode<T> start = root.getParent() != null ? root.getParent() : root;
         while (start.getParent() != null) {
             start = start.getParent();
         }
@@ -146,7 +138,7 @@ public class TSGNode<T> implements ITSGNode<T> {
         this.parent = parent;
     }
 
-    public static <T> ITSGNode<T> debugFromString(T[] tokens, String delimiter) {
+    public static <T> ITSGNode<T> buildFromList(T[] tokens, String delimiter) {
         if (tokens.length == 0) return null;
         if (Arrays.stream(tokens).allMatch(e -> e.equals(delimiter))) return null;
 

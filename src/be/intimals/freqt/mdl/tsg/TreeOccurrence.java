@@ -4,32 +4,25 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 
-public class TSGOccurrence<T> {
+public class TreeOccurrence<T> {
     TSGRule<T> owner;
     private int tid;
     private List<Integer> pos = new ArrayList<>();
     private List<Integer> mask = new ArrayList<>();
 
-    private TSGOccurrence() {
+    private TreeOccurrence() {
     }
 
-    private TSGOccurrence(int tid, List<Integer> pos, TSGRule<T> owner) {
+    private TreeOccurrence(int tid, List<Integer> pos, TSGRule<T> owner) {
         this.tid = tid;
         this.pos = pos;
         this.mask = new ArrayList<>(Collections.nCopies(pos.size(), -1));
         this.owner = owner;
     }
 
-    //public static TSGOccurrence create() {
-    //    return new TSGOccurrence();
-    //}
 
-    public static <T> TSGOccurrence<T> create(int tid, List<Integer> occurrence, TSGRule<T> owner) {
-        return new TSGOccurrence<>(tid, occurrence, owner);
-    }
-
-    public TSGOccurrence(List<Integer> start) {
-        pos = new ArrayList<>(start);
+    public static <T> TreeOccurrence<T> create(int tid, List<Integer> occurrence, TSGRule<T> owner) {
+        return new TreeOccurrence<>(tid, occurrence, owner);
     }
 
     public int getTID() {

@@ -20,7 +20,7 @@ public class TSGRule<T> {
     private ITSGNode<T> root = null;
     private int count = 0;
     //private int initialCount = 0;
-    private Map<Integer, List<TSGOccurrence<T>>> occurrencesPerTID = new HashMap<>();
+    private Map<Integer, List<TreeOccurrence<T>>> occurrencesPerTID = new HashMap<>();
     private List<ITSGNode<T>> addedRoots = null;
 
     private TSGRule(T delimiter) {
@@ -60,37 +60,29 @@ public class TSGRule<T> {
         this.addedRoots = addedRoots;
     }
 
-    //public int getInitialCount() {
-    //    return initialCount;
-    //}
-//
-    //public void setInitialCount(int initialCount) {
-    //    this.initialCount = initialCount;
-    //}
-//
-    //public void incInitialCount() {
-    //    this.initialCount++;
-    //}
-
-    public Map<Integer, List<TSGOccurrence<T>>> getOccurrences() {
+    public Map<Integer, List<TreeOccurrence<T>>> getOccurrences() {
         return occurrencesPerTID;
     }
 
-    public List<TSGOccurrence<T>> getOccurrencesPerTID(int tid) {
+    public List<TreeOccurrence<T>> getAllOccurrences() {
+        return occurrencesPerTID.values().stream().flatMap(e -> e.stream()).collect(Collectors.toList());
+    }
+
+    public List<TreeOccurrence<T>> getOccurrencesPerTID(int tid) {
         return occurrencesPerTID.getOrDefault(tid, new ArrayList<>());
     }
 
-    public TSGOccurrence<T> addOccurrence(int tid, List<Integer> occurrence) {
-        List<TSGOccurrence<T>> occurrences = this.occurrencesPerTID.getOrDefault(tid, new ArrayList<>());
-        TSGOccurrence<T> toAdd = TSGOccurrence.create(tid, occurrence, this);
+    public TreeOccurrence<T> addOccurrence(int tid, List<Integer> occurrence) {
+        List<TreeOccurrence<T>> occurrences = this.occurrencesPerTID.getOrDefault(tid, new ArrayList<>());
+        TreeOccurrence<T> toAdd = TreeOccurrence.create(tid, occurrence, this);
         occurrences.add(toAdd);
         incCountBy(1);
         this.occurrencesPerTID.put(tid, occurrences);
         return toAdd;
     }
 
-    public TSGOccurrence<T> addOccurrence(TSGOccurrence<T> occurrence) {
-        List<TSGOccurrence<T>> occurrences = this.occurrencesPerTID.getOrDefault(occurrence.getTID(),new ArrayList<>());
+    public TreeOccurrence<T> addOccurrence(TreeOccurrence<T> occurrence) {
+        List<TreeOccurrence<T>> occurrences = this.occurrencesPerTID.getOrDefault(occurrence.getTID(),new ArrayList<>());
         occurrences.add(occurrence);
         occurrence.setOwner(this);
         incCountBy(1);
@@ -98,8 +90,8 @@ public class TSGRule<T> {
         return occurrence;
     }
 
-    public boolean removeOccurrence(int tid, TSGOccurrence<T> occurrence) {
-        List<TSGOccurrence<T>> occurrences = this.occurrencesPerTID.get(tid);
+    public boolean removeOccurrence(int tid, TreeOccurrence<T> occurrence) {
+        List<TreeOccurrence<T>> occurrences = this.occurrencesPerTID.get(tid);
         boolean removed = occurrences.remove(occurrence);
         if (removed) incCountBy(-1);
         this.occurrencesPerTID.put(tid, occurrences);

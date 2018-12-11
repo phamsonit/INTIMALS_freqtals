@@ -63,8 +63,8 @@ public abstract class ATSG<T> implements ITSG<T>, IMDL {
     // Count how many times child appears. First key is parent, second is child
     protected Map<T, MapCounter<T>> childrenCount = new HashMap<>();
 
-    // First map keys are TIDs, second maps node ID to its TSGOccurrence
-    protected Map<Integer, Map<Integer, TSGOccurrence<T>>> pointers = new HashMap<>();
+    // First map keys are TIDs, second maps node ID to its TreeOccurrence
+    protected Map<Integer, Map<Integer, TreeOccurrence<T>>> pointers = new HashMap<>();
 
     protected long productionsCount = 0;
 
@@ -72,12 +72,12 @@ public abstract class ATSG<T> implements ITSG<T>, IMDL {
 
     @Override
     public void addRule(TSGRule<T> ruleFormat) {
-        for (Iterator<TSGOccurrence<T>> iterOccurrences = ruleFormat.getOccurrences().values()
+        for (Iterator<TreeOccurrence<T>> iterOccurrences = ruleFormat.getOccurrences().values()
                 .stream().flatMap(e -> e.stream()).iterator(); iterOccurrences.hasNext(); ) {
-            TSGOccurrence<T> newOccurrenceToAdd = iterOccurrences.next();
-            // The nodes in the new TSGOccurrence point to the old TSGOccurrences
+            TreeOccurrence<T> newOccurrenceToAdd = iterOccurrences.next();
+            // The nodes in the new TreeOccurrence point to the old TreeOccurrence
             // Collect those old ones as some nodes may require new rules to be added
-            Set<Pair<Integer, TSGOccurrence<T>>> visited = collectOccurrencesToVisit(newOccurrenceToAdd);
+            Set<Pair<Integer, TreeOccurrence<T>>> visited = collectOccurrencesToVisit(newOccurrenceToAdd);
 
             // Note: ruleFormat gives the tree structure of the new rule to add but the parent can be different
             // depending on the current TSG (some nodes are parsed by newly added productions). We clear the added roots
@@ -89,9 +89,9 @@ public abstract class ATSG<T> implements ITSG<T>, IMDL {
 
             // If we add a new rule, some nodes may be not explained by any rule
             // Add new rules for those nodes
-            for (Pair<Integer,TSGOccurrence<T>> e : visited) {
+            for (Pair<Integer,TreeOccurrence<T>> e : visited) {
                 Integer posOfParent = e.getKey();
-                TSGOccurrence<T> visitedOccurrence = e.getValue();
+                TreeOccurrence<T> visitedOccurrence = e.getValue();
                 List<List<Integer>> remains = computeRemaining(visitedOccurrence);
 
                 ITSGNode<T> root = visitedOccurrence.getOwner().getRoot();
@@ -116,51 +116,16 @@ public abstract class ATSG<T> implements ITSG<T>, IMDL {
                     //newParent.setChildren(Arrays.asList(newRoot));
                     //newInBetweenRule.setRoot(newRoot);
 
+                    if (!indexes.isEmpty()) {
+                        int debug = 0;
+                    }
                     // Keep reference of newly created rule in main pattern
-                    TSGRule<T> createdInBetweenRule = updateGrammarEntry(posOfParent, i, visitedOccurrence, indexes);
+                    TSGRule<T> createdInBetweenRule = addInBetweenRuleToGrammar(posOfParent, i, visitedOccurrence, indexes);
                     ruleFormat.addCreatedRoot(createdInBetweenRule.getRoot());
                     ITSGNode<T> newRoot = createdInBetweenRule.getRoot();
+                    updateChildrenOfInBetweenRule(indexes, visitedOccurrence, root, newRoot);
 
-                    // Fix children of the new rule in between as they have a new parent now
-                    IntStream.range(0, indexes.size()).forEach(j -> {
-                        int k = indexes.get(j);
-
-                        ITSGNode<T> childNode = root.getChildAt(k);
-                        int pos = visitedOccurrence.getOccurrence().get(k + 1); // +1 to skip root
-                        GrammarEntry oldEntry = grammar.get(getGrammarKey(childNode));
-                        assert (oldEntry != null);
-                        // Collect all occurrences that have the current child as root
-                        // Put the occurrence in a new rule which reflects the new parent
-                        List<TSGOccurrence<T>> collected = oldEntry.getRules().values().stream()
-                                .flatMap(r -> r.getOccurrences().values().stream()
-                                        .flatMap(o -> o.stream()))
-                                .filter(occur -> occur.getOccurrence().get(0) == pos)
-                                .collect(Collectors.toList());
-
-                        for (TSGOccurrence<T> childOccur : collected) {
-                            // Remove occurrence from existing rule
-                            childOccur.getOwner().removeOccurrence(childOccur.getTID(), childOccur);
-
-                            // Build new rule with this occurrence and with appropriate parent
-                            TSGRule<T> fixedRule = TSGRule.create(getDelimiter());
-                            ITSGNode<T> cloned = TSGNode.clone(childOccur.getOwner().getRoot());
-                            ITSGNode<T> clonedParent = TSGNode.createFromWithParent(newRoot, newRoot.getParent());
-                            clonedParent.setChildren(new ArrayList<>());
-                            clonedParent.addChild(cloned);
-                            fixedRule.setRoot(cloned);
-                            fixedRule.addOccurrence(childOccur);
-
-                            // Add to grammar
-                            T newKey = getGrammarKey(fixedRule.getRoot());
-                            GrammarEntry newEntry = grammar.getOrDefault(newKey, new GrammarEntry());
-                            newEntry.incCountBy(fixedRule.getCount());
-                            newEntry.addRule(fixedRule);
-                            oldEntry.incCountBy(-1);
-                            grammar.put(newKey, newEntry);
-                        }
-                        int debug = 0;
-                    });
-                }
+                } // End remains
 
                 // Decrease the count for the production not used anymore
                 // and the entry which contains this production. Also, remove the occurrence from the production
@@ -199,7 +164,7 @@ public abstract class ATSG<T> implements ITSG<T>, IMDL {
                     // Update pointers for the nodes in this occurrence
                     for (int i = 1; i < newOccurrenceToAdd.getSize(); i++) {
                         Integer id = newOccurrenceToAdd.getOccurrence().get(i);
-                        Map<Integer, TSGOccurrence<T>> map = this.pointers.get(newOccurrenceToAdd.getTID());
+                        Map<Integer, TreeOccurrence<T>> map = this.pointers.get(newOccurrenceToAdd.getTID());
                         map.put(id, newOccurrenceToAdd);
                     }
 
@@ -214,8 +179,50 @@ public abstract class ATSG<T> implements ITSG<T>, IMDL {
         ++patternId;
     }
 
-    private TSGRule<T> updateGrammarEntry(Integer posOfParent, Integer i, TSGOccurrence<T> currentOccurrence,
-                                    List<Integer> indexes) {
+    private void updateChildrenOfInBetweenRule(List<Integer> indexes, TreeOccurrence<T> visitedOccurrence, ITSGNode<T> root, ITSGNode<T> newRoot) {
+        // Fix children of the new rule in between as they have a new parent now
+        IntStream.range(0, indexes.size()).forEach(j -> {
+            int k = indexes.get(j);
+
+            ITSGNode<T> childNode = root.getChildAt(k);
+            int pos = visitedOccurrence.getOccurrence().get(k + 1); // +1 to skip root
+            GrammarEntry oldEntry = grammar.get(getGrammarKey(childNode));
+            assert (oldEntry != null);
+            // Collect all occurrences that have the current child as root
+            // Put the occurrence in a new rule which reflects the new parent
+            List<TreeOccurrence<T>> collected = oldEntry.getRules().values().stream()
+                    .flatMap(r -> r.getOccurrences().values().stream()
+                            .flatMap(o -> o.stream()))
+                    .filter(occur -> occur.getOccurrence().get(0) == pos)
+                    .collect(Collectors.toList());
+
+            for (TreeOccurrence<T> childOccur : collected) {
+                // Remove occurrence from existing rule
+                childOccur.getOwner().removeOccurrence(childOccur.getTID(), childOccur);
+
+                // Build new rule with this occurrence and with appropriate parent
+                TSGRule<T> fixedRule = TSGRule.create(getDelimiter());
+                ITSGNode<T> cloned = TSGNode.clone(childOccur.getOwner().getRoot());
+                ITSGNode<T> clonedParent = TSGNode.createFromWithParent(newRoot, newRoot.getParent());
+                clonedParent.setChildren(new ArrayList<>());
+                clonedParent.addChild(cloned);
+                fixedRule.setRoot(cloned);
+                fixedRule.addOccurrence(childOccur);
+
+                // Add to grammar
+                T newKey = getGrammarKey(fixedRule.getRoot());
+                GrammarEntry newEntry = grammar.getOrDefault(newKey, new GrammarEntry());
+                newEntry.incCountBy(fixedRule.getCount());
+                newEntry.addRule(fixedRule);
+                oldEntry.incCountBy(-1);
+                grammar.put(newKey, newEntry);
+            }
+            int debug = 0;
+        });
+    }
+
+    private TSGRule<T> addInBetweenRuleToGrammar(Integer posOfParent, Integer i, TreeOccurrence<T> currentOccurrence,
+                                                 List<Integer> indexes) {
         // If nodes where not matched by pattern, make a new rule for them
         TSGRule<T> newInBetweenRule = buildNewRule(currentOccurrence.getOwner().getRoot(), posOfParent, i, indexes);
         ITSGNode<T> newRoot = newInBetweenRule.getRoot();
@@ -226,7 +233,7 @@ public abstract class ATSG<T> implements ITSG<T>, IMDL {
 
         // The new rule that we're adding may already be in the grammar, merge them.
         if (rules.containsKey(newInBetweenRule)) {
-            LOGGER.info("ALREADY IN RULES");
+            LOGGER.info("Already in rules" + newInBetweenRule.toString());
             newInBetweenRule = rules.get(newInBetweenRule);
         }
 
@@ -236,19 +243,26 @@ public abstract class ATSG<T> implements ITSG<T>, IMDL {
         nodeIDs.addAll(indexes.stream()
                 .map(k -> currentOccurrence.getOccurrence().get(k + 1))
                 .collect(Collectors.toList()));
-        TSGOccurrence<T> newTsgOccurrence = newInBetweenRule.addOccurrence(currentOccurrence.getTID(), nodeIDs);
+        TreeOccurrence<T> newTsgOccurrence = newInBetweenRule.addOccurrence(currentOccurrence.getTID(), nodeIDs);
 
         // Update grammar
         newGrammarEntry.addRule(newInBetweenRule);
         newGrammarEntry.incCountBy(1);
         grammar.put(grammarKey, newGrammarEntry);
 
-        // Remaining nodes should point to new TSGOccurrence
+        // Remaining nodes should point to new TreeOccurrence
         indexes.forEach(k -> {
-            Map<Integer, TSGOccurrence<T>> map = this.pointers.get(currentOccurrence.getTID());
+            Map<Integer, TreeOccurrence<T>> map = this.pointers.get(currentOccurrence.getTID());
             map.put(currentOccurrence.getOccurrence().get(k + 1), newTsgOccurrence);
             this.pointers.put(currentOccurrence.getTID(), map);
         });
+
+
+        // TODO if need to add the in-between rules to possible rules of their parents but need to prune empty later
+        //T grammarParentKey = getGrammarKey(newRoot.getParent());
+        //GrammarEntry entry = grammar.get(grammarParentKey);
+        //assert (entry != null); // By construction
+        //entry.addRule(newInBetweenRule);
 
         // TODO
         //// Update children counts
@@ -328,9 +342,9 @@ public abstract class ATSG<T> implements ITSG<T>, IMDL {
                             ITSGNode<T> added = iterRules.next();
                             if (grammar.containsKey(getGrammarKey(added))) {
                                 // TODO depending on rule, added.getParent may not be equal to rule.getRoot
-                                MapCounter<T> counter = childrenCount.getOrDefault(getGrammarKey(rule.getRoot()), MapCounter.create());
+                                MapCounter<T> counter = childrenCount.getOrDefault(getGrammarKey(added.getParent()), MapCounter.create());
                                 counter.incCountBy(getGrammarKey(added), 1);
-                                childrenCount.put(getGrammarKey(rule.getRoot()), counter);
+                                childrenCount.put(getGrammarKey(added.getParent()), counter);
                             } else {
                                 iterRules.remove();
                             }
@@ -341,7 +355,7 @@ public abstract class ATSG<T> implements ITSG<T>, IMDL {
         }
     }
 
-    private List<List<Integer>> computeRemaining(TSGOccurrence<T> current) {
+    private List<List<Integer>> computeRemaining(TreeOccurrence<T> current) {
         List<List<Integer>> remains = new ArrayList<>();
         List<Integer> accumulator = new ArrayList<>();
         for (int i = 1; i < current.getMask().size(); i++) { // Skip root
@@ -359,20 +373,23 @@ public abstract class ATSG<T> implements ITSG<T>, IMDL {
         return remains;
     }
 
-    private Set<Pair<Integer, TSGOccurrence<T>>> collectOccurrencesToVisit(TSGOccurrence<T> newOccurrenceToAdd) {
+    private Set<Pair<Integer, TreeOccurrence<T>>> collectOccurrencesToVisit(TreeOccurrence<T> newOccurrenceToAdd) {
         Integer tid = newOccurrenceToAdd.getTID();
-        Map<Integer, TSGOccurrence<T>> currentPointers = pointers.get(tid);
+        Map<Integer, TreeOccurrence<T>> currentPointers = pointers.get(tid);
         assert (currentPointers != null); // If this is null, pointers aren't built correctly
 
         List<ITSGNode<T>> preorderNodes = newOccurrenceToAdd.getOwner().toPreOrderNodeList();
         List<T> preorderLabels = preorderNodes.stream().map(ITreeNode::getLabel).collect(Collectors.toList());
         List<Integer> parentPos = Util.getParentPosFromPreorder(preorderLabels, getDelimiter());
+        // Assert: delimiters shouldn't be present
         assert (parentPos.size() == newOccurrenceToAdd.getSize());
+        // Assert: parent positions must be within the range
+        assert (parentPos.stream().allMatch(val -> val >= -1 && val < parentPos.size()));
 
-        Set<Pair<Integer,TSGOccurrence<T>>> visited = new HashSet<>();
+        Set<Pair<Integer,TreeOccurrence<T>>> visited = new HashSet<>();
         List<Integer> nodeIds = newOccurrenceToAdd.getOccurrence();
         for (int i = 1; i < nodeIds.size(); i++) { // Skip root
-            TSGOccurrence<T> occurrenceInTsg = currentPointers.get(nodeIds.get(i));
+            TreeOccurrence<T> occurrenceInTsg = currentPointers.get(nodeIds.get(i));
             int position = occurrenceInTsg.getOccurrence().indexOf(nodeIds.get(i));
             // Mark as "dirty"
             visited.add(new Pair<>(parentPos.get(i), occurrenceInTsg));
@@ -385,7 +402,90 @@ public abstract class ATSG<T> implements ITSG<T>, IMDL {
 
     @Override
     public void removeRule(TSGRule<T> rule) {
-        // TODO ?
+        ITSGNode<T> ruleRoot = rule.getRoot();
+        T grammarKey = getGrammarKey(ruleRoot);
+        GrammarEntry entry = grammar.get(grammarKey);
+        if (entry == null) throw new IllegalArgumentException("Missing rule in grammar");
+
+        Map<TSGRule<T>, TSGRule<T>> rules = entry.getRules();
+        TSGRule<T> existingRule = rules.get(rule);
+        if (existingRule == null) throw new IllegalArgumentException("This rule doesn't exist");
+
+        // Replace the tree rule by the initial rule based on the database
+        List<Boolean> isNodeLeaf = existingRule.toPreOrderNodeList().stream()
+                .map(ITreeNode::isLeaf).collect(Collectors.toList());
+        for (TreeOccurrence<T> occurrence : existingRule.getAllOccurrences()) {
+            for (int i = 0; i < isNodeLeaf.size(); i++) {
+                Boolean isLeaf = isNodeLeaf.get(i);
+                if (isLeaf) continue;
+
+                int tid = occurrence.getTID();
+                List<Integer> ids = occurrence.getOccurrence();
+
+                IDatabaseNode<T> node = db.findById(tid, ids.get(i));
+                createRuleFromDatabaseNode(tid, node);
+            }
+        }
+
+        // Remove added in-between rules
+        for (ITSGNode<T> addedRoot : existingRule.getAddedRoots()) {
+            T entryKey = getGrammarKey(addedRoot);
+            GrammarEntry toRemove = grammar.get(entryKey);
+            if (toRemove == null) throw new NullPointerException("Added root missing in grammar");
+
+            for (TSGRule<T> removeRule : toRemove.getRules().values()) {
+                List<ITSGNode<T>> removeChildren = removeRule.toPreOrderNodeList().stream()
+                        .filter(e -> e.getParent() != null && e.getParent().getLabel() == addedRoot.getLabel())
+                        .collect(Collectors.toList());
+                for (ITSGNode<T> node : removeChildren) {
+                    T removeKey = getGrammarKey(node);
+                    GrammarEntry childEntry = grammar.get(removeKey);
+
+                    // Going through full node list, some entries won't be present
+                    // TODO only go through immediate children of the added root
+                    if (childEntry != null) {
+                        ITSGNode<T> newParent = node.getParent().getParent(); // Will have parent cuz filtered in stream
+                        for (TSGRule<T> childRule : childEntry.getRules().values()) {
+                            ITSGNode<T> newParentCloned = TSGNode.clone(newParent);
+                            newParentCloned.setChildren(new ArrayList<>());
+                            newParentCloned.addChild(childRule.getRoot());
+                            T childKey = getGrammarKey(childRule.getRoot());
+                            GrammarEntry newEntry = grammar.getOrDefault(childKey, new GrammarEntry());
+                            TSGRule<T> newRule = newEntry.getRules().get(childRule);
+                            if (newRule == null) {
+                                newRule = childRule;
+                            } else {
+                                for (TreeOccurrence<T> occur : childRule.getAllOccurrences()) {
+                                    newRule.addOccurrence(occur);
+                                }
+                            }
+                            newEntry.getRules().put(newRule, newRule);
+                            newEntry.incCountBy(newRule.getCount());
+                            grammar.put(childKey, newEntry);
+
+                        }
+                        //productionsCount -= childEntry.getCount();
+                        grammar.remove(removeKey);
+                    }
+                }
+            }
+
+            productionsCount -= toRemove.getCount();
+            grammar.remove(entryKey);
+        }
+
+        // Remove rule from grammar entry and update counts
+        entry.getRules().remove(existingRule);
+        entry.incCountBy(-existingRule.getCount());
+        productionsCount -= existingRule.getCount();
+
+        // Update pointers
+        // Note: You don't do it after adding/updating a rule as it can be an existing rule with already update
+        // occurrences so you would redo some work
+        buildPointers();
+
+        // Update childrenCount map
+        refreshChildrenCount();
     }
 
     @Override
@@ -399,41 +499,7 @@ public abstract class ATSG<T> implements ITSG<T>, IMDL {
             while (dfsIterator.hasNext()) {
                 IDatabaseNode<T> currentTreeNode = dfsIterator.peek();
                 if (!currentTreeNode.isLeaf()) {
-                    T grammarKey = getGrammarKey(currentTreeNode);
-
-                    GrammarEntry entry = grammar.getOrDefault(grammarKey, new GrammarEntry());
-                    Map<TSGRule<T>, TSGRule<T>> rules = entry.getRules();
-
-                    // Build 1-depth trees
-                    TSGRule<T> newRule = TSGRule.create(getDelimiter());
-
-                    // Build root
-                    TSGNode<T> tsgRoot = TSGNode.createFromWithChildren(currentTreeNode, currentTreeNode.getParent());
-                    newRule.setRoot(tsgRoot);
-
-                    // Already found a rule of this form, use it instead
-                    if (rules.containsKey(newRule)) {
-                        newRule = rules.get(newRule);
-                    }
-
-                    List<IDatabaseNode<T>> children = currentTreeNode.getChildren();
-                    // Add database nodes ids to occurrence of the rule
-                    List<Integer> occurrence = new ArrayList<>();
-                    occurrence.add(currentTreeNode.getID());
-                    occurrence.addAll(children.stream()
-                            .map(IDatabaseNode::getID).collect(Collectors.toList()));
-                    newRule.addOccurrence(tid, occurrence);
-
-                    // TODO incremental
-                    //// Increment counters of children
-                    //MapCounter<T> counts = childrenCount.getOrDefault(grammarKey, MapCounter.create());
-                    //children.forEach(c -> counts.incCountBy(getGrammarKey(c), 1));
-                    //childrenCount.put(grammarKey, counts);
-
-                    // Update grammar
-                    rules.put(newRule, newRule);
-                    grammar.put(grammarKey, entry);
-
+                    createRuleFromDatabaseNode(tid, currentTreeNode);
                 }
                 dfsIterator.next();
             }
@@ -445,26 +511,64 @@ public abstract class ATSG<T> implements ITSG<T>, IMDL {
         refreshChildrenCount();
     }
 
+    private TSGRule<T> createRuleFromDatabaseNode(int tid, IDatabaseNode<T> currentTreeNode) {
+        T grammarKey = getGrammarKey(currentTreeNode);
+
+        GrammarEntry entry = grammar.getOrDefault(grammarKey, new GrammarEntry());
+        Map<TSGRule<T>, TSGRule<T>> rules = entry.getRules();
+
+        // Build 1-depth trees
+        TSGRule<T> newRule = TSGRule.create(getDelimiter());
+
+        // Build root
+        TSGNode<T> tsgRoot = TSGNode.createFromWithChildren(currentTreeNode, currentTreeNode.getParent());
+        newRule.setRoot(tsgRoot);
+
+        // Already found a rule of this form, use it instead
+        if (rules.containsKey(newRule)) {
+            newRule = rules.get(newRule);
+        }
+
+        List<IDatabaseNode<T>> children = currentTreeNode.getChildren();
+        // Add database nodes ids to occurrence of the rule
+        List<Integer> occurrence = new ArrayList<>();
+        occurrence.add(currentTreeNode.getID());
+        occurrence.addAll(children.stream()
+                .map(IDatabaseNode::getID).collect(Collectors.toList()));
+        newRule.addOccurrence(tid, occurrence);
+
+        // TODO incremental
+        //// Increment counters of children
+        //MapCounter<T> counts = childrenCount.getOrDefault(grammarKey, MapCounter.create());
+        //children.forEach(c -> counts.incCountBy(getGrammarKey(c), 1));
+        //childrenCount.put(grammarKey, counts);
+
+        // Update grammar
+        entry.incCountBy(newRule.getCount());
+        productionsCount += newRule.getCount();
+        rules.put(newRule, newRule);
+        grammar.put(grammarKey, entry);
+        return newRule;
+    }
+
     private void buildPointers() {
         for (Map.Entry<T, GrammarEntry> grammarEntries : this.grammar.entrySet()) {
             GrammarEntry entry = grammarEntries.getValue();
             Map<TSGRule<T>, TSGRule<T>> val = entry.getRules();
             for (TSGRule<T> rule : val.values()) {
-                // Increase count of productions used
-                productionsCount += rule.getCount();
-                //initialProductionsCount += rule.getCount();
+                //// Increase count of productions used
+                //productionsCount += rule.getCount();
 
-                // Increase the count of the specific production that is used
-                entry.incCountBy(rule.getCount());
-                //entry.incInitialCountBy(rule.getCount());
+                //// Increase the count of the specific production that is used
+                //entry.incCountBy(rule.getCount());
 
                 // Map each node in the database to its TSGOccurrence, group the maps by TIDs
-                for (Map.Entry<Integer, List<TSGOccurrence<T>>> occurrencePerTID : rule.getOccurrences().entrySet()) {
+                for (Map.Entry<Integer, List<TreeOccurrence<T>>> occurrencePerTID : rule.getOccurrences().entrySet()) {
                     Integer tid = occurrencePerTID.getKey();
-                    for (TSGOccurrence<T> occurrence : occurrencePerTID.getValue()) {
+                    for (TreeOccurrence<T> occurrence : occurrencePerTID.getValue()) {
                         // Skip root, may belong to multiple production (e.g. newly added productions)
                         for (int i = 1; i < occurrence.getSize(); i++) {
-                            Map<Integer, TSGOccurrence<T>> currentMap = this.pointers.getOrDefault(tid,new HashMap<>());
+                            Map<Integer, TreeOccurrence<T>> currentMap = this.pointers.getOrDefault(tid,new HashMap<>());
                             currentMap.put(occurrence.getOccurrence().get(i), occurrence);
                             this.pointers.put(tid, currentMap);
                         }
