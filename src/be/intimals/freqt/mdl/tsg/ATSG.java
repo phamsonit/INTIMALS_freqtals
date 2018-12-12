@@ -51,8 +51,9 @@ public abstract class ATSG<T> implements ITSG<T>, IMDL {
 
         @Override
         public String toString() {
-            return "(" + String.join(" | ", getRules().values().stream()
-                    .map(TSGRule::toString).collect(Collectors.toList())) + ")";
+            return "[" + getCount() + "]"
+                    + "(" + String.join(" | ", getRules().values().stream()
+                    .map(r -> r.toString() + "[" + r.getCount() + "]").collect(Collectors.toList())) + ")";
         }
     }
 
@@ -132,7 +133,7 @@ public abstract class ATSG<T> implements ITSG<T>, IMDL {
                 //currentOccurrence.getOwner().incCountBy(-1);
                 T ruleKey = getGrammarKey(visitedOccurrence.getOwner().getRoot());
                 GrammarEntry toUpdate = grammar.get(ruleKey);
-                toUpdate.incCountBy(-1);
+                //toUpdate.incCountBy(-1);
                 visitedOccurrence.getOwner().removeOccurrence(visitedOccurrence.getTID(), visitedOccurrence);
                 assert (visitedOccurrence.getOwner().getCount() == visitedOccurrence.getOwner().getOccurrences()
                         .values().stream().mapToInt(List::size).sum());
@@ -169,13 +170,13 @@ public abstract class ATSG<T> implements ITSG<T>, IMDL {
                     }
 
                     entryMain.addRule(ruleMain);
-                    entryMain.incCountBy(ruleMain.getCount());
+                    //entryMain.incCountBy(1);
                     grammar.put(grammarKey, entryMain);
                 }
             }
         }
-        pruneEmptyRules();
         refreshChildrenCount();
+        pruneEmptyRules();
         ++patternId;
     }
 
@@ -212,9 +213,9 @@ public abstract class ATSG<T> implements ITSG<T>, IMDL {
                 // Add to grammar
                 T newKey = getGrammarKey(fixedRule.getRoot());
                 GrammarEntry newEntry = grammar.getOrDefault(newKey, new GrammarEntry());
-                newEntry.incCountBy(fixedRule.getCount());
+                //newEntry.incCountBy(fixedRule.getCount());
                 newEntry.addRule(fixedRule);
-                oldEntry.incCountBy(-1);
+                //oldEntry.incCountBy(-1);
                 grammar.put(newKey, newEntry);
             }
             int debug = 0;
@@ -247,7 +248,7 @@ public abstract class ATSG<T> implements ITSG<T>, IMDL {
 
         // Update grammar
         newGrammarEntry.addRule(newInBetweenRule);
-        newGrammarEntry.incCountBy(1);
+        //newGrammarEntry.incCountBy(1);
         grammar.put(grammarKey, newGrammarEntry);
 
         // Remaining nodes should point to new TreeOccurrence
@@ -326,8 +327,11 @@ public abstract class ATSG<T> implements ITSG<T>, IMDL {
         childrenCount.clear();
         for (Iterator<Map.Entry<T, GrammarEntry>> iter = grammar.entrySet().iterator(); iter.hasNext(); ) {
             Map.Entry<T, GrammarEntry> entry = iter.next();
+            int sumEntry = 0;
             for (TSGRule<T> rule : entry.getValue().getRules().keySet()) {
                 if (rule.getCount() > 0) {
+                    rule.setCount(rule.getAllOccurrences().size());
+                    sumEntry += rule.getCount();
                     for (ITSGNode<T> node : rule.toPreOrderNodeList()) {
                         if (!node.isLeaf()) {
                             MapCounter<T> counter = childrenCount.getOrDefault(getGrammarKey(node), MapCounter.create());
@@ -352,6 +356,7 @@ public abstract class ATSG<T> implements ITSG<T>, IMDL {
                     }
                 }
             }
+            entry.getValue().setCount(sumEntry);
         }
     }
 
@@ -423,7 +428,12 @@ public abstract class ATSG<T> implements ITSG<T>, IMDL {
                 List<Integer> ids = occurrence.getOccurrence();
 
                 IDatabaseNode<T> node = db.findById(tid, ids.get(i));
+                // Note: It is possible there's already a rule with such format in the grammar, the occurrence will
+                // be appended once again in this case e.g removing rule (A(B)(C)) but in DB it's still (A(B)(C))
                 createRuleFromDatabaseNode(tid, node);
+
+                existingRule.removeOccurrence(tid, occurrence);
+                //entry.incCountBy(-1);
             }
         }
 
@@ -431,11 +441,11 @@ public abstract class ATSG<T> implements ITSG<T>, IMDL {
         for (ITSGNode<T> addedRoot : existingRule.getAddedRoots()) {
             T entryKey = getGrammarKey(addedRoot);
             GrammarEntry toRemove = grammar.get(entryKey);
-            if (toRemove == null) throw new NullPointerException("Added root missing in grammar");
+            if (toRemove == null) continue; // Might've been pruned if no occurrences
 
             for (TSGRule<T> removeRule : toRemove.getRules().values()) {
                 List<ITSGNode<T>> removeChildren = removeRule.toPreOrderNodeList().stream()
-                        .filter(e -> e.getParent() != null && e.getParent().getLabel() == addedRoot.getLabel())
+                        .filter(e -> e.getParent() != null && e.getParent().getLabel().equals(addedRoot.getLabel()))
                         .collect(Collectors.toList());
                 for (ITSGNode<T> node : removeChildren) {
                     T removeKey = getGrammarKey(node);
@@ -459,8 +469,8 @@ public abstract class ATSG<T> implements ITSG<T>, IMDL {
                                     newRule.addOccurrence(occur);
                                 }
                             }
-                            newEntry.getRules().put(newRule, newRule);
-                            newEntry.incCountBy(newRule.getCount());
+                            newEntry.addRule(newRule);
+                            //newEntry.incCountBy(newRule.getCount());
                             grammar.put(childKey, newEntry);
 
                         }
@@ -474,18 +484,13 @@ public abstract class ATSG<T> implements ITSG<T>, IMDL {
             grammar.remove(entryKey);
         }
 
-        // Remove rule from grammar entry and update counts
-        entry.getRules().remove(existingRule);
-        entry.incCountBy(-existingRule.getCount());
-        productionsCount -= existingRule.getCount();
+        // Note: We can't remove cuz might be an existing rule. We remove the occurrence instead & will be replaced
+        // by a new, identical one in that case
 
-        // Update pointers
-        // Note: You don't do it after adding/updating a rule as it can be an existing rule with already update
-        // occurrences so you would redo some work
+        /// Arguably, you can make the updates as you go but it's hard to get them right
         buildPointers();
-
-        // Update childrenCount map
         refreshChildrenCount();
+        pruneEmptyRules();
     }
 
     @Override
@@ -544,9 +549,9 @@ public abstract class ATSG<T> implements ITSG<T>, IMDL {
         //childrenCount.put(grammarKey, counts);
 
         // Update grammar
-        entry.incCountBy(newRule.getCount());
+        //entry.incCountBy(newRule.getCount());
         productionsCount += newRule.getCount();
-        rules.put(newRule, newRule);
+        entry.addRule(newRule);
         grammar.put(grammarKey, entry);
         return newRule;
     }

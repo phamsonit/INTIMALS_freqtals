@@ -51,7 +51,9 @@ public class MainMDL {
             rule2.setRoot(fakeRoot2);
             rule2.addOccurrence(0, Arrays.asList(1, 4, 6));
             rule2.addOccurrence(0, Arrays.asList(2, 13, 14));
-            tsg.addRule(rule2);
+            //tsg.addRule(rule2);
+
+            //tsg.removeRule(rule2);
 
             System.out.println("Model: " + tsg.getModelCodingLength());
             System.out.println("Data : " + tsg.getDataCodingLength());
