@@ -31,8 +31,8 @@ public class MainMDL {
             System.out.println("Data : " + tsg.getDataCodingLength());
             System.out.println("Sum : " + (modelLength + dataLength));
 
-            //BeamFreqT miner = BeamFreqT.create(db, tsg);
-            //miner.run(config);
+            BeamFreqT miner = BeamFreqT.create(db, tsg, Integer.MAX_VALUE);
+            miner.run(config);
 
             // TODO debug
 

@@ -16,4 +16,9 @@ public class BasicStrJavaLoader extends ABasicJavaLoader<String> {
         assert (key != null);
         return key;
     }
+
+    @Override
+    protected String getKeyForRoot() {
+        return "ROOT";
+    }
 }

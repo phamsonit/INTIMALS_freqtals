@@ -14,6 +14,7 @@ import be.intimals.freqt.mdl.tsg.TSGRule;
 import be.intimals.freqt.output.AOutputFormatter;
 import be.intimals.freqt.output.LineOutput;
 import be.intimals.freqt.output.XMLOutput;
+import be.intimals.freqt.util.KBest;
 import be.intimals.freqt.util.PeekableIterator;
 import be.intimals.freqt.util.SearchStatistics;
 import be.intimals.freqt.util.Util;
@@ -34,38 +35,31 @@ public class BeamFreqT {
     private static Config config;
     private AOutputFormatter output;
     private Vector<String> pattern;
-    private Database<String> db;
     private Vector<Vector<NodeFreqT>> transactions = new Vector<>();
     private ATSG<String> tsg;
-    private Set<String> listRootLabel = new HashSet<>();
-    private Set<String> listNodeList = new HashSet<>();
+    private Set<String> listRootLabel = new HashSet<>(); // Possible roots of trees
+    private Set<String> listNodeList = new HashSet<>(); // Which nodes should be modeled as lists (not fixed N children)
     private IClosed closed;
-    private Map<Integer, Set<Integer>> coveredByTid = new HashMap<>();
+    private Map<Integer, Set<Integer>> coveredByTid = new HashMap<>(); // Which nodes are already explained by a tree rule
+    private int BEAM_SIZE;
+    private double bestLength;
 
     public SearchStatistics stats;
 
-    private BeamFreqT(Database<String> db, ATSG<String> tsg) {
-        this.db = db;
+    private BeamFreqT(Database<String> db, ATSG<String> tsg, int beamSize) {
+        loadDatabase(db);
+        assertDBConsistent(db);
         this.tsg = tsg;
+        this.BEAM_SIZE = beamSize;
+        this.bestLength = tsg.getCodingLength();
     }
 
-    public static BeamFreqT create(Database<String> db, ATSG<String> tsg) {
-        return new BeamFreqT(db, tsg);
-    }
-
-    /**
-     * Get potential candidate.
-     *
-     * @param candidate
-     * @return
-     */
-    private String getPotentialCandidateLabel(String candidate) {
-        String[] p = candidate.split(String.valueOf(uniChar));
-        return p[p.length - 1];
+    public static BeamFreqT create(Database<String> db, ATSG<String> tsg, int beamSize) {
+        return new BeamFreqT(db, tsg, beamSize);
     }
 
     /**
-     * Prune candidates based on support.
+     * Prune candidates based on support. Also prunes if all occurrences of candidates are already covered.
      *
      * @param candidate
      */
@@ -83,13 +77,13 @@ public class BeamFreqT {
         }
     }
 
-    private void pruneAlreadyCovered(Iterator<Map.Entry<String, Projected>> iter, Projected projected) {
+    private boolean pruneAlreadyCovered(Iterator<Map.Entry<String, Projected>> iter, Projected projected) {
         for (int i = 0; i < projected.getProjectLocationSize(); i++) {
             Location loc = projected.getProjectLocation(i);
             if (coveredByTid.containsKey(loc.getLocationId())) {
                 Set<Integer> covered = coveredByTid.get(loc.getLocationId());
-                for (Integer val : covered) {
-                    if (loc.getLocationList().contains(val)) {
+                for (Integer val : loc.getLocationList()) {
+                    if (covered.contains(val)) {
                         // This node is already covered by another rule, we don't allow overlap, remove
                         projected.removeLocation(i);
                         LOGGER.info("REMOVED location, already covered: "
@@ -97,13 +91,14 @@ public class BeamFreqT {
                         // No longer enough support, remove from candidates
                         if (projected.getProjectLocationSize() < config.getMinSupport()) {
                             iter.remove();
-                            return;
+                            return true;
                         }
                         break;
                     }
                 }
             }
         }
+        return false;
     }
 
     private void report(Vector<String> pat, Projected projected, Set<Extension> blanket) {
@@ -111,62 +106,78 @@ public class BeamFreqT {
         // closed if null blanket, closedness disabled or actually closed when enabled
         if (isClosed) {
             output.report(pat, projected);
-            addPatternToTSG(pat, projected);
-            double modelLength = tsg.getModelCodingLength();
-            double dataLength = tsg.getDataCodingLength();
-            System.out.println("Model: " + tsg.getModelCodingLength());
-            System.out.println("Data : " + tsg.getDataCodingLength());
-            System.out.println("Sum : " + (modelLength + dataLength));
+            //addPatternToTSG(pat, projected);
+            //double modelLength = tsg.getModelCodingLength();
+            //double dataLength = tsg.getDataCodingLength();
+            //System.out.println("Model: " + tsg.getModelCodingLength());
+            //System.out.println("Data : " + tsg.getDataCodingLength());
+            //System.out.println("Sum : " + (modelLength + dataLength));
             stats.incClosed();
         } else {
             stats.incNotClosed();
         }
     }
 
-    private void addPatternToTSG(Vector<String> pat, Projected projected) {
-        ITSGNode<String> patternRoot = TSGNode.buildFromList(pat.toArray(new String[]{}), ")");
+    private Pair<Double, TSGRule<String>> addPatternToTSG(boolean tryAndRemove, Vector<String> pat, Projected projected) {
+        TSGRule<String> rule = buildRuleFromPattern(pat, projected, !tryAndRemove);
+        if (rule.getCount() == 0) return null;
+        tsg.addRule(rule);
+        double res = tsg.getCodingLength();
+        if (tryAndRemove) {
+            tsg.removeRule(rule);
+        }
+        return new Pair<>(res, rule);
+    }
+
+    private TSGRule<String> buildRuleFromPattern(Vector<String> pat, Projected projected, boolean updateCovered) {
+        assert (pat.size() >= 3);
+        ITSGNode<String> patternParentRoot = TSGNode.buildFromList(pat.toArray(new String[]{}), ")");
+        ITSGNode<String> patternRoot = patternParentRoot.getChildAt(0);
         TSGRule<String> rule = TSGRule.create(tsg.getDelimiter());
         rule.setRoot(patternRoot);
+        Map<Integer, Set<Integer>> tempCovered = new HashMap<>();
         for (int i = 0; i < projected.getProjectLocationSize(); i++) {
             Location loc = projected.getProjectLocation(i);
-            Set<Integer> covered = coveredByTid.getOrDefault(loc.getLocationId(), new HashSet<>());
+            // First element in occurrence is parent position that we don't need
+            List<Integer> occurrence = new ArrayList<>(loc.getLocationList().subList(1, loc.getLocationList().size()));
+            // If we add a rule definitively, we should update the covered nodes. Otherwise, we keep a temp copy and
+            // update it on-demand
+            Set<Integer> covered = updateCovered ? coveredByTid.getOrDefault(loc.getLocationId(), new HashSet<>()) :
+                    tempCovered.getOrDefault(loc.getLocationId(),
+                            new HashSet<>(coveredByTid.getOrDefault(loc.getLocationId(), new HashSet<>())));
             // NO overlap, remove overlapping locations
             // (Note: IF relaxing this constraint, need to change how rules are added as after handling one occurrence,
             // some overlapping nodes in the next occurrence will already point to the new rule)
             boolean removed = false;
-            for (Integer val : covered) {
-                if (loc.getLocationList().contains(val)) {
+            for (Integer val : occurrence) {
+                if (covered.contains(val)) {
                     // This node is already covered by another rule, we don't allow overlap, remove
-                    LOGGER.info("SKIP location, would cover node twice: "
-                            + transactions.get(loc.getLocationId()).get(val).getNodeLabel() + " - " + val);
+                    //LOGGER.info("SKIP location, would cover node twice: "
+                    //        + transactions.get(loc.getLocationId()).get(val).getNodeLabel() + " - " + val);
                     removed = true;
                     break;
                 }
             }
             if (!removed) {
-                rule.addOccurrence(loc.getLocationId(), loc.getLocationList());
-                covered.addAll(loc.getLocationList());
-                coveredByTid.putIfAbsent(loc.getLocationId(), covered);
+                rule.addOccurrence(loc.getLocationId(), occurrence);
+                covered.addAll(occurrence);
+                if (updateCovered) {
+                    coveredByTid.putIfAbsent(loc.getLocationId(), covered);
+                } else {
+                    tempCovered.putIfAbsent(loc.getLocationId(), covered);
+                }
             }
         }
-        tsg.addRule(rule);
+        return rule;
     }
 
 
-    /**
-     * Expand a subtree.
-     *
-     * @param projected
-     */
-    private void project(Projected projected) {
+    private void project(Projected projected, boolean shouldReport) {
         try {
             stats.incProject();
-            if (stats.getProject() % 1000 == 0) {
-                System.out.println(stats + " " + projected.getProjectLocation(0).getLocationList().size());
-                System.out.println(pattern);
-                output.flush();
-            }
+            debugPrintStats(projected);
 
+            // Closed: check if can prune & keep blanket for closed check
             Set<Pair<Integer, String>> rightExtensions = new HashSet<>();
             Set<Extension> blanket = closed.buildBlanket(listRootLabel, new HashMap<>(),
                     projected, rightExtensions);
@@ -178,54 +189,91 @@ public class BeamFreqT {
                 return;
             }
 
-            // TODO debug
-            //DebugUtil.writeHighWSupportPattern(projected, pattern, transactions);
-
             Map<String, Projected> candidates = generateCandidates(projected);
 
-            //pruning relies on support: for each candidate if its support < minsup --> remove
             prune(candidates);
 
-            //if (candidates.isEmpty()) {
-            report(pattern, projected, blanket);
-                //return;
-            //}
+            if (pattern.size() < 3) {
+                for (Map.Entry<String, Projected> entry : candidates.entrySet()) {
+                    int oldSize = pattern.size();
+                    expandCandidate(entry, false);
+                    pattern.setSize(oldSize);
+                }
+            } else {
+                if (shouldReport) {
+                    report(pattern, projected, blanket);
+                }
 
-            //expand the current pattern with each candidate
-            Iterator<Map.Entry<String, Projected>> iter = candidates.entrySet().iterator();
-            while (iter.hasNext()) {
-                int oldSize = pattern.size();
+                // Out of all candidates, keep only a best limited subset of them
+                KBest<Map.Entry<String, Projected>> kbest = KBest.create(BEAM_SIZE);
+                for (Map.Entry<String, Projected> entry : candidates.entrySet()) {
+                    Vector<String> testPattern = expandPattern(entry.getKey());
 
-                Map.Entry<String, Projected> entry = iter.next();
+                    Pair<Double, TSGRule<String>> lengthRule = addPatternToTSG(true, testPattern, entry.getValue());
+                    if (lengthRule != null) {
+                        kbest.add(lengthRule.getKey(), entry);
+                    }
+                }
 
-                expandCandidate(entry);
-                pattern.setSize(oldSize);
+                // Expand the candidates remaining
+                for (Pair<Double, Map.Entry<String, Projected>> entry : kbest.getKBest()) {
+                    int oldSize = pattern.size();
+                    double oldLength = bestLength;
+
+                    Map.Entry<String, Projected> currentCandidate = entry.getValue();
+                    double length = entry.getKey();
+
+                    Pair<Double, TSGRule<String>> lengthRule = null;
+                    if (length < bestLength) {
+                        Vector<String> addPattern = expandPattern(currentCandidate.getKey());
+                        lengthRule = addPatternToTSG(false, addPattern,
+                                currentCandidate.getValue());
+                        if (lengthRule != null) {
+                            LOGGER.info("Better than initial " + addPattern.toString()
+                                    + " Before: " + bestLength + " After: " + length);
+                            bestLength = length;
+                        } else {
+                            LOGGER.info("Better than initial but pruned " + addPattern.toString()
+                                    + " Before: " + bestLength + " After: " + length);
+                        }
+                    }
+
+                    expandCandidate(currentCandidate, lengthRule != null);
+
+                    pattern.setSize(oldSize);
+                    bestLength = oldLength;
+                    if (lengthRule != null) {
+                        tsg.removeRule(lengthRule.getValue());
+                    }
+                }
             }
         } catch (Exception e) {
             System.out.println("expanding error " + e);
         }
     }
 
-    private void expandCandidate(Map.Entry<String, Projected> entry) {
-        // add new candidate to current pattern
+    private Vector<String> expandPattern(String added) {
+        // Add new candidate to current pattern
+        Vector<String> res = new Vector<>(pattern);
+        String[] p = added.split(String.valueOf(uniChar));
+        for (int i = 0; i < p.length; ++i) {
+            if (!p[i].isEmpty()) {
+                res.addElement(p[i]);
+            }
+        }
+        return res;
+    }
+
+    private void expandCandidate(Map.Entry<String, Projected> entry, boolean shouldReport) {
+        // Add new candidate to current pattern
+        // TODO refactor with expandPattern
         String[] p = entry.getKey().split(String.valueOf(uniChar));
         for (int i = 0; i < p.length; ++i) {
             if (!p[i].isEmpty()) {
                 pattern.addElement(p[i]);
             }
         }
-        //////////expand subtree based on grammar///////////////////
-        // Find parent of potentialCandidate
-        String potentialCandidate = getPotentialCandidateLabel(entry.getKey());
-        if (potentialCandidate.charAt(0) == '*') { // potentialCandidate is a leaf node
-            project(entry.getValue());
-        } else { // Internal node
-            // Find grammar of parent of potentialCandidate
-            int parentPos = Pattern.findParent(pattern, uniChar, entry.getKey());
-            String parentLabel = pattern.elementAt(parentPos).split(String.valueOf(uniChar))[0];
-
-            project(entry.getValue());
-        }
+        project(entry.getValue(), shouldReport);
     }
 
     private Map<String, Projected> generateCandidates(Projected projected) {
@@ -237,6 +285,7 @@ public class BeamFreqT {
             int pos = projected.getProjectLocation(i).getLocationPos();
             // Add to keep all occurrences --> problem: memory consumption
             List<Integer> occurrences = projected.getProjectLocation(i).getLocationList();
+            int parentId = occurrences.get(0);
 
             String prefix = "";
             for (int d = -1; d < depth && pos != -1; ++d) {
@@ -245,8 +294,11 @@ public class BeamFreqT {
                 int newDepth = depth - d;
                 for (int l = start; l != -1;
                      l = transactions.get(id).get(l).getNodeSibling()) {
+                    // Limit root of pattern to have 1 child (size must be >2 to allow the first child candidate)
+                    if (occurrences.size() > 2 && transactions.get(id).get(l).getNodeParent() == parentId) continue;
                     String item = prefix + uniChar + transactions.get(id).get(l).getNodeLabel();
 
+                    // TODO don't add if covered
                     Projected tmp;
                     if (candidate.containsKey(item)) {
                         candidate.get(item).addProjectLocation(id, l, occurrences);
@@ -281,7 +333,7 @@ public class BeamFreqT {
             System.out.println("running BeamFreqT");
             System.out.println("=============");
 
-            loadDatabase();
+            //loadDatabase();
             readRootLabel();  // Read root labels (AST Nodes)
             readNodeList();
 
@@ -300,17 +352,18 @@ public class BeamFreqT {
             closed.pruneClosedFreq1(listRootLabel, freq1);
             System.out.println("all candidates after closed pruning " + freq1.keySet());
             // Grammar constraint: root pattern in listRootLabel
-            freq1.entrySet().removeIf(e -> !listRootLabel.contains(e.getKey()));
+            //freq1.entrySet().removeIf(e -> !listRootLabel.contains(e.getKey()));
             System.out.println("all candidates after root config pruning " + freq1.keySet());
 
             // Expansion every 1-subtree to find larger subtrees
+            // Using root whitelist so expand everything regardless of beam size initially
             pattern = new Vector<>();
             for (Map.Entry<String, Projected> entry : freq1.entrySet()) {
                 if (entry.getKey() != null && entry.getKey().charAt(0) != '*') {
                     entry.getValue().setProjectedDepth(0);
                     pattern.addElement(entry.getKey());
 
-                    project(entry.getValue());
+                    project(entry.getValue(), false);
 
                     pattern.setSize(pattern.size() - 1);
                 }
@@ -369,7 +422,7 @@ public class BeamFreqT {
         }
     }
 
-    private void loadDatabase() {
+    private void loadDatabase(Database<String> db) {
         for (int tid = 0; tid < db.getSize(); tid++) {
             IDatabaseNode<String> transactionRoot = db.getTid(tid);
             transactions.add(new Vector<>());
@@ -379,15 +432,13 @@ public class BeamFreqT {
             nodeParent.setNodeOrdered(true);
             nodeParent.setNodeLabel(transactionRoot.getLabel());
             transactions.get(tid).add(nodeParent);
-            transformNode(tid, transactionRoot, 0, -1);
+            transformNode(tid, transactionRoot, 0);
         }
-        assertDBConsistent();
+        assertDBConsistent(db);
     }
 
-    private void assertDBConsistent() {
-        //IDatabaseNode<String> backtrack = DatabaseNode.create(0, "$", null);
-
-        assert(db.getSize() == transactions.size());
+    private void assertDBConsistent(Database<String> db) {
+        assert (db.getSize() == transactions.size());
 
         for (int tid = 0; tid < transactions.size(); tid++) {
             List<String> compareFirst = new ArrayList<>();
@@ -412,7 +463,7 @@ public class BeamFreqT {
 
     }
 
-    private void transformNode(int tid, IDatabaseNode<String> currentTreeNode, int parentPos, int sibilingPos) {
+    private void transformNode(int tid, IDatabaseNode<String> currentTreeNode, int parentPos) {
         int startPos = transactions.get(tid).size();
         int nbChildren = currentTreeNode.getChildrenCount() - 1;
         for (int i = 0; i <= nbChildren; i++) {
@@ -430,7 +481,15 @@ public class BeamFreqT {
 
         for (int i = 0; i < currentTreeNode.getChildren().size(); i++) {
             IDatabaseNode<String> child = currentTreeNode.getChildAt(i);
-            transformNode(tid, child, startPos + i, 0);
+            transformNode(tid, child, startPos + i);
+        }
+    }
+
+    private void debugPrintStats(Projected projected) throws IOException {
+        if (stats.getProject() % 1000 == 0) {
+            System.out.println(stats + " " + projected.getProjectLocation(0).getLocationList().size());
+            System.out.println(pattern);
+            output.flush();
         }
     }
 

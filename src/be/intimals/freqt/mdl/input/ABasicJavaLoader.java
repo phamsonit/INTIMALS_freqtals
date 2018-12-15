@@ -49,9 +49,11 @@ public abstract class ABasicJavaLoader<T> implements IDatabaseLoader<T> {
             Node root = XMLUtil.getXMLRoot(f);
 
             //IDatabaseNode<T> newTreeRoot = traverse(root, null);
-            IDatabaseNode<T> newTreeRoot = DatabaseNode.create(currentTID, getKeyForNode(root), null);
-            traverseBFS(root, newTreeRoot, null);
-            db.addTransaction(newTreeRoot);
+            IDatabaseNode<T> transactionRoot = DatabaseNode.create(currentTID, getKeyForRoot(), null);
+            IDatabaseNode<T> newTreeRoot = DatabaseNode.create(currentTID, getKeyForNode(root), transactionRoot);
+            transactionRoot.addChild(newTreeRoot);
+            traverseHybrid(root, newTreeRoot);
+            db.addTransaction(transactionRoot);
 
             ++currentTID;
             newTreeRoot.resetID();
@@ -84,7 +86,7 @@ public abstract class ABasicJavaLoader<T> implements IDatabaseLoader<T> {
     }
     */
 
-    private void traverseBFS(Node currentNode, IDatabaseNode<T> current, IDatabaseNode<T> parent) {
+    private void traverseHybrid(Node currentNode, IDatabaseNode<T> current) {
         if (currentNode.getNodeType() == Node.ELEMENT_NODE) {
             if (currentNode.hasChildNodes()) {
                 List<IDatabaseNode<T>> treeChildren = new ArrayList<>();
@@ -98,7 +100,7 @@ public abstract class ABasicJavaLoader<T> implements IDatabaseLoader<T> {
 
                 for (int i = 0; i < nodeList.getLength(); i++) {
                     Node child = nodeList.item(i);
-                    traverseBFS(child, treeChildren.get(i), current);
+                    traverseHybrid(child, treeChildren.get(i));
                 }
             }
         } else if (currentNode.getNodeType() == Node.TEXT_NODE) {
@@ -109,6 +111,8 @@ public abstract class ABasicJavaLoader<T> implements IDatabaseLoader<T> {
     }
 
     protected abstract T getKeyForNode(Node current);
+
+    protected abstract T getKeyForRoot();
 
     protected void init() {
         currentTID = 0;

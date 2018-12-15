@@ -17,12 +17,21 @@ import java.util.logging.Logger;
  */
 public class BasicTSG extends ATSG<String> {
     private static final Logger LOGGER = Logger.getLogger(BasicTSG.class.getName());
+    static {
+        // TODO DEBUG
+        LOGGER.setUseParentHandlers(false);
+    }
     private static final String PARENT_ANNOTATION = "^";
 
     protected String getGrammarKey(ITreeNode<String, ? extends ITreeNode<String, ?>> child) {
         ITreeNode<String, ?> parent = child.getParent();
         String parentLabel = parent != null ? parent.getLabel() : "";
         return (child.getLabel() + PARENT_ANNOTATION + parentLabel).toLowerCase();
+    }
+
+    @Override
+    protected String getUnannotatedGrammarKey(ITreeNode<String, ? extends ITreeNode<String, ?>> child) {
+        return child.getLabel().toLowerCase();
     }
 
     @Override
@@ -46,59 +55,10 @@ public class BasicTSG extends ATSG<String> {
 
             double entryCodingLength = getModelEntryCodingLength(entry);
             res += entryCodingLength;
-            System.out.println(entryCodingLength + " bits for " + grammarEntries.getKey() + " -> " + entry);
+            LOGGER.info(entryCodingLength + " bits for " + grammarEntries.getKey() + " -> " + entry);
         }
         return res;
     }
-
-    //private double getModelEntryCodingLength(GrammarEntry entry) {
-    //    double res = 0.0;
-    //    double productionsCountLog = DoubleUtil.log2(this.productionsCount);
-    //    // Compute the coding length of this tree rule
-//
-    //    // Add the probability of having this symbol as root
-    //    // Note: You add it only once as every rule derived from this root will have the same root
-    //    double productionCount = entry.getCount();
-    //    double rootP = -(DoubleUtil.log2(productionCount) - productionsCountLog);
-    //    res += rootP;
-//
-    //    for (TSGRule<String> rule : entry.getRules().values()) {
-    //        // If this entry is not used anymore, skip
-    //        if (rule.getCount() == 0) continue;
-    //        // Productions are in a tree format i.e. X -> (X(A_1(...))...(A_n(...)))
-    //        // Traverse the tree in pre order and, at each node, compute the probability
-    //        // of applying this specific production at this node
-    //        PeekableIterator<ITSGNode<String>> dfsIterator = Util.asPreOrderIterator(
-    //                Util.asIterator(rule.getRoot()), (ITSGNode<String> node) -> node.getChildren().iterator());
-    //        dfsIterator.next();
-    //        while (dfsIterator.hasNext()) {
-    //            ITSGNode<String> currentNode = dfsIterator.peek();
-    //            if (!currentNode.isLeaf()) { // Only consider productions
-    //                // Build the key that was used to put this production in grammar
-    //                String key = getGrammarKey(currentNode);
-    //                GrammarEntry currentEntry = grammar.get(key);
-//
-    //                // Create a new rule with only children of the given node and use it as a key in our grammar
-    //                TSGRule<String> ruleAsKey = TSGRule.create(getDelimiter());
-    //                ruleAsKey.setRoot(TSGNode.createFromWithChildren(currentNode));
-    //                TSGRule<String> ruleInGrammar = currentEntry.getRules().get(ruleAsKey);
-    //                // Should not be null because of the assumptions made (i.e. there should be such production)
-    //                // TODO Otherwise, need to go through the rules in the GrammarEntry and find where it matches
-    //                assert (ruleInGrammar != null);
-//
-    //                // Compute probability of this production based on _initial_ counts (i.e. at start, without any
-    //                // new rules added)
-    //                double productionP = -(DoubleUtil.log2(ruleInGrammar.getInitialCount())
-    //                        - DoubleUtil.log2(entry.getInitialCount()));
-    //                System.out.println(productionP + " bits for " + rule);
-    //                res += productionP;
-    //                assert (!Double.isNaN(res));
-    //            }
-    //            dfsIterator.next();
-    //        }
-    //    }
-    //    return res;
-    //}
 
     private double getModelEntryCodingLength(GrammarEntry entry) {
         double res = 0.0;
@@ -124,19 +84,18 @@ public class BasicTSG extends ATSG<String> {
                 ITSGNode<String> currentNode = dfsIterator.peek();
                 if (!currentNode.isLeaf() && !currentNode.isRoot()) { // Only consider productions
                     // For each node A_i, get count(X->A_i) and count(X) based on the distribution in the data
-                    //TODO FIX CLONE
                     String key = getGrammarKey(currentNode);
-                    String parentKey = getGrammarKey(currentNode.getParent());
+                    String parentKey = getUnannotatedGrammarKey(currentNode.getParent());
                     assert (parentKey != null);
                     MapCounter<String> parentCounter = childrenCount.get(parentKey);
                     assert (parentCounter != null);
                     Integer prodCount = parentCounter.getCountFor(key);
                     assert (prodCount != 0);
+                    // Asserts: if counts are properly done, those vars shouldn't be null
                     Integer parentCount = parentCounter.getTotal();
 
                     double productionP = -(DoubleUtil.log2(prodCount)
                             - DoubleUtil.log2(parentCount));
-                    //System.out.println(productionP + " bits for " + rule);
                     res += productionP;
                     assert (!Double.isNaN(res));
                 }
@@ -153,7 +112,7 @@ public class BasicTSG extends ATSG<String> {
             double productionCount = grammarEntry.getValue().getCount();
             for (TSGRule<String> rule : grammarEntry.getValue().getRules().values()) {
                 double log2P = -(DoubleUtil.log2(rule.getCount()) - DoubleUtil.log2(productionCount));
-                System.out.println(log2P + " bits for " + rule);
+                LOGGER.info(log2P + " bits for " + rule);
                 res += log2P;
                 assert (!Double.isNaN(res));
             }
