@@ -1,0 +1,870 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<node>
+  <AnonymousClassDeclaration>
+    <bodyDeclarations unordered-nodelist="BodyDeclaration"/>
+  </AnonymousClassDeclaration>
+  <ArrayAccess>
+    <array node="Expression"/>
+    <index node="Expression"/>
+  </ArrayAccess>
+  <ArrayCreation>
+    <type node="ArrayType"/>
+    <dimensions optional="true" unordered-nodelist="Expression"/>
+    <initializer optional="true" node="ArrayInitializer"/>
+  </ArrayCreation>
+  <ArrayInitializer>
+    <expressions unordered-nodelist="Expression"/>
+  </ArrayInitializer>
+  <ArrayType>
+    <elementType node="Type"/>
+    <dimensions optional="true" unordered-nodelist="Dimension"/>
+  </ArrayType>
+  <AssertStatement>
+    <expression node="Expression"/>
+    <message optional="true" node="Expression"/>
+  </AssertStatement>
+  <Assignment>
+    <leftHandSide node="Expression"/>
+    <operator simplevalue="Operator"/>
+    <rightHandSide node="Expression"/>
+  </Assignment>
+  <Block>
+    <statements ordered-nodelist="Statement"/>
+  </Block>
+  <BooleanLiteral>
+    <booleanValue simplevalue="boolean"/>
+  </BooleanLiteral>
+  <BreakStatement>
+    <label optional="true" node="SimpleName"/>
+  </BreakStatement>
+  <CastExpression>
+    <type node="Type"/>
+    <expression node="Expression"/>
+  </CastExpression>
+  <CatchClause>
+    <exception node="SingleVariableDeclaration"/>
+    <body optional="true" node="Block"/>
+  </CatchClause>
+  <CharacterLiteral>
+    <escapedValue simplevalue="String"/>
+  </CharacterLiteral>
+  <ClassInstanceCreation>
+    <expression optional="true" node="Expression"/>
+    <typeArguments optional="true" ordered-nodelist="Type"/>
+    <type node="Type"/>
+    <arguments optional="true" ordered-nodelist="Expression"/>
+    <anonymousClassDeclaration optional="true" node="AnonymousClassDeclaration"/>
+  </ClassInstanceCreation>
+  <CompilationUnit>
+    <package optional="true" node="PackageDeclaration"/>
+    <imports optional="true" unordered-nodelist="ImportDeclaration"/>
+    <types optional="true" unordered-nodelist="AbstractTypeDeclaration"/>
+    <module optional="true" node="ModuleDeclaration"/>
+  </CompilationUnit>
+  <ConditionalExpression>
+    <expression node="Expression"/>
+    <thenExpression optional="true" node="Expression"/>
+    <elseExpression node="Expression"/>
+  </ConditionalExpression>
+  <ConstructorInvocation>
+    <typeArguments optional="true" ordered-nodelist="Type"/>
+    <arguments ordered-nodelist="Expression"/>
+  </ConstructorInvocation>
+  <ContinueStatement>
+    <label optional="true" node="SimpleName"/>
+  </ContinueStatement>
+  <DoStatement>
+    <body node="Statement"/>
+    <expression node="Expression"/>
+  </DoStatement>
+  <EmptyStatement/>
+  <ExpressionStatement>
+    <expression node="Expression"/>
+  </ExpressionStatement>
+  <FieldAccess>
+    <expression optional="true" node="Expression"/>
+    <name node="SimpleName"/>
+  </FieldAccess>
+  <FieldDeclaration>
+    <javadoc optional="true" node="Javadoc"/>
+    <modifiers optional="true" ordered-nodelist="IExtendedModifier"/>
+    <type node="Type"/>
+    <fragments unordered-nodelist="VariableDeclarationFragment"/>
+  </FieldDeclaration>
+  <ForStatement>
+    <initializers optional="true" unordered-nodelist="Expression"/>
+    <expression optional="true" node="Expression"/>
+    <updaters optional="true" unordered-nodelist="Expression"/>
+    <body optional="true" node="Statement"/>
+  </ForStatement>
+  <IfStatement>
+    <expression node="Expression"/>
+    <thenStatement optional="true" node="Statement"/>
+    <elseStatement optional="true" node="Statement"/>
+  </IfStatement>
+  <ImportDeclaration>
+    <static simplevalue="boolean"/>
+    <name node="Name"/>
+    <onDemand simplevalue="boolean"/>
+  </ImportDeclaration>
+  <InfixExpression>
+    <leftOperand optional="true" node="Expression"/>
+    <operator simplevalue="Operator"/>
+    <rightOperand optional="true" node="Expression"/>
+    <extendedOperands optional="true" unordered-nodelist="Expression"/>
+  </InfixExpression>
+  <Initializer>
+    <javadoc optional="true" node="Javadoc"/>
+    <modifiers optional="true" ordered-nodelist="IExtendedModifier"/>
+    <body node="Block"/>
+  </Initializer>
+  <Javadoc>
+    <tags unordered-nodelist="TagElement"/>
+  </Javadoc>
+  <LabeledStatement>
+    <label node="SimpleName"/>
+    <body node="Statement"/>
+  </LabeledStatement>
+  <MethodDeclaration>
+    <javadoc optional="true" node="Javadoc"/>
+    <modifiers optional="true" ordered-nodelist="IExtendedModifier"/>
+    <constructor simplevalue="boolean"/>
+    <typeParameters optional="true" unordered-nodelist="TypeParameter"/>
+    <returnType2 optional="true" node="Type"/>
+    <name node="SimpleName"/>
+    <receiverType optional="true" node="Type"/>
+    <receiverQualifier optional="true" node="SimpleName"/>
+    <parameters optional="true" ordered-nodelist="SingleVariableDeclaration"/>
+    <extraDimensions2 optional="true" unordered-nodelist="Dimension"/>
+    <thrownExceptionTypes optional="true" unordered-nodelist="Type"/>
+    <body optional="true" node="Block"/>
+  </MethodDeclaration>
+  <MethodInvocation>
+    <expression optional="true" node="Expression"/>
+    <typeArguments optional="true" ordered-nodelist="Type"/>
+    <name node="SimpleName"/>
+    <arguments optional="true" ordered-nodelist="Expression"/>
+  </MethodInvocation>
+  <NullLiteral>
+    <token simplevalue="String"/>
+  </NullLiteral>
+  <NumberLiteral>
+    <token simplevalue="String"/>
+  </NumberLiteral>
+  <PackageDeclaration>
+    <javadoc optional="true" node="Javadoc"/>
+    <annotations optional="true" unordered-nodelist="Annotation"/>
+    <name node="Name"/>
+  </PackageDeclaration>
+  <ParenthesizedExpression>
+    <expression node="Expression"/>
+  </ParenthesizedExpression>
+  <PostfixExpression>
+    <operand node="Expression"/>
+    <operator simplevalue="Operator"/>
+  </PostfixExpression>
+  <PrefixExpression>
+    <operator simplevalue="Operator"/>
+    <operand node="Expression"/>
+  </PrefixExpression>
+  <PrimitiveType>
+    <annotations optional="true" unordered-nodelist="Annotation"/>
+    <primitiveTypeCode simplevalue="Code"/>
+  </PrimitiveType>
+  <QualifiedName>
+    <qualifier node="Name"/>
+    <name node="SimpleName"/>
+  </QualifiedName>
+  <ReturnStatement>
+    <expression optional="true" node="Expression"/>
+  </ReturnStatement>
+  <SimpleName>
+    <identifier simplevalue="String"/>
+    <var simplevalue="boolean"/>
+  </SimpleName>
+  <SimpleType>
+    <annotations optional="true" unordered-nodelist="Annotation"/>
+    <name node="Name"/>
+  </SimpleType>
+  <SingleVariableDeclaration>
+    <modifiers optional="true" ordered-nodelist="IExtendedModifier"/>
+    <type node="Type"/>
+    <varargsAnnotations optional="true" unordered-nodelist="Annotation"/>
+    <varargs simplevalue="boolean"/>
+    <name node="SimpleName"/>
+    <extraDimensions2 optional="true" unordered-nodelist="Dimension"/>
+    <initializer optional="true" node="Expression"/>
+  </SingleVariableDeclaration>
+  <StringLiteral>
+    <escapedValue simplevalue="String"/>
+  </StringLiteral>
+  <SuperConstructorInvocation>
+    <expression optional="true" node="Expression"/>
+    <typeArguments optional="true" ordered-nodelist="Type"/>
+    <arguments optional="true" ordered-nodelist="Expression"/>
+  </SuperConstructorInvocation>
+  <SuperFieldAccess>
+    <qualifier optional="true" node="Name"/>
+    <name node="SimpleName"/>
+  </SuperFieldAccess>
+  <SuperMethodInvocation>
+    <qualifier optional="true" node="Name"/>
+    <typeArguments optional="true" ordered-nodelist="Type"/>
+    <name node="SimpleName"/>
+    <arguments optional="true" ordered-nodelist="Expression"/>
+  </SuperMethodInvocation>
+  <SwitchCase>
+    <expression optional="true" node="Expression"/>
+  </SwitchCase>
+  <SwitchStatement>
+    <expression node="Expression"/>
+    <statements ordered-nodelist="Statement"/>
+  </SwitchStatement>
+  <SynchronizedStatement>
+    <expression node="Expression"/>
+    <body node="Block"/>
+  </SynchronizedStatement>
+  <ThisExpression>
+    <qualifier optional="true" node="Name"/>
+  </ThisExpression>
+  <ThrowStatement>
+    <expression node="Expression"/>
+  </ThrowStatement>
+  <TryStatement>
+    <resources optional="true" unordered-nodelist="Expression"/>
+    <body node="Block"/>
+    <catchClauses optional="true" unordered-nodelist="CatchClause"/>
+    <finally optional="true" node="Block"/>
+  </TryStatement>
+  <TypeDeclaration>
+    <javadoc optional="true" node="Javadoc"/>
+    <modifiers optional="true" ordered-nodelist="IExtendedModifier"/>
+    <interface simplevalue="boolean"/>
+    <name node="SimpleName"/>
+    <typeParameters optional="true" unordered-nodelist="TypeParameter"/>
+    <superclassType optional="true" node="Type"/>
+    <superInterfaceTypes optional="true" unordered-nodelist="Type"/>
+    <bodyDeclarations optional="true" unordered-nodelist="BodyDeclaration"/>
+  </TypeDeclaration>
+  <TypeDeclarationStatement>
+    <declaration node="AbstractTypeDeclaration"/>
+  </TypeDeclarationStatement>
+  <TypeLiteral>
+    <type node="Type"/>
+  </TypeLiteral>
+  <VariableDeclarationExpression>
+    <modifiers optional="true" ordered-nodelist="IExtendedModifier"/>
+    <type node="Type"/>
+    <fragments unordered-nodelist="VariableDeclarationFragment"/>
+  </VariableDeclarationExpression>
+  <VariableDeclarationFragment>
+    <name node="SimpleName"/>
+    <extraDimensions2 optional="true" unordered-nodelist="Dimension"/>
+    <initializer optional="true" node="Expression"/>
+  </VariableDeclarationFragment>
+  <VariableDeclarationStatement>
+    <modifiers optional="true" ordered-nodelist="IExtendedModifier"/>
+    <type node="Type"/>
+    <fragments unordered-nodelist="VariableDeclarationFragment"/>
+  </VariableDeclarationStatement>
+  <WhileStatement>
+    <expression node="Expression"/>
+    <body optional="true" node="Statement"/>
+  </WhileStatement>
+  <InstanceofExpression>
+    <leftOperand node="Expression"/>
+    <rightOperand node="Type"/>
+  </InstanceofExpression>
+  <LineComment/>
+  <BlockComment/>
+  <TagElement>
+    <tagName simplevalue="String"/>
+    <fragments unordered-nodelist="IDocElement"/>
+  </TagElement>
+  <TextElement>
+    <text simplevalue="String"/>
+  </TextElement>
+  <MemberRef>
+    <qualifier optional="true" node="Name"/>
+    <name node="SimpleName"/>
+  </MemberRef>
+  <MethodRef>
+    <qualifier optional="true" node="Name"/>
+    <name node="SimpleName"/>
+    <parameters unordered-nodelist="MethodRefParameter"/>
+  </MethodRef>
+  <MethodRefParameter>
+    <type node="Type"/>
+    <varargs simplevalue="boolean"/>
+    <name optional="true" node="SimpleName"/>
+  </MethodRefParameter>
+  <EnhancedForStatement>
+    <parameter node="SingleVariableDeclaration"/>
+    <expression optional="true" node="Expression"/>
+    <body optional="true" node="Statement"/>
+  </EnhancedForStatement>
+  <EnumDeclaration>
+    <javadoc optional="true" node="Javadoc"/>
+    <modifiers ordered-nodelist="IExtendedModifier"/>
+    <name node="SimpleName"/>
+    <superInterfaceTypes unordered-nodelist="Type"/>
+    <enumConstants unordered-nodelist="EnumConstantDeclaration"/>
+    <bodyDeclarations unordered-nodelist="BodyDeclaration"/>
+  </EnumDeclaration>
+  <EnumConstantDeclaration>
+    <javadoc optional="true" node="Javadoc"/>
+    <modifiers ordered-nodelist="IExtendedModifier"/>
+    <name node="SimpleName"/>
+    <arguments ordered-nodelist="Expression"/>
+    <anonymousClassDeclaration optional="true" node="AnonymousClassDeclaration"/>
+  </EnumConstantDeclaration>
+  <TypeParameter>
+    <modifiers optional="true" ordered-nodelist="IExtendedModifier"/>
+    <name node="SimpleName"/>
+    <typeBounds optional="true" unordered-nodelist="Type"/>
+  </TypeParameter>
+  <ParameterizedType>
+    <type node="Type"/>
+    <typeArguments ordered-nodelist="Type"/>
+  </ParameterizedType>
+  <QualifiedType>
+    <qualifier node="Type"/>
+    <annotations optional="true" unordered-nodelist="Annotation"/>
+    <name node="SimpleName"/>
+  </QualifiedType>
+  <WildcardType>
+    <annotations optional="true" unordered-nodelist="Annotation"/>
+    <bound optional="true" node="Type"/>
+    <upperBound simplevalue="boolean"/>
+  </WildcardType>
+  <NormalAnnotation>
+    <typeName node="Name"/>
+    <values unordered-nodelist="MemberValuePair"/>
+  </NormalAnnotation>
+  <MarkerAnnotation>
+    <typeName node="Name"/>
+  </MarkerAnnotation>
+  <SingleMemberAnnotation>
+    <typeName node="Name"/>
+    <value node="Expression"/>
+  </SingleMemberAnnotation>
+  <MemberValuePair>
+    <name node="SimpleName"/>
+    <value node="Expression"/>
+  </MemberValuePair>
+  <AnnotationTypeDeclaration>
+    <javadoc optional="true" node="Javadoc"/>
+    <modifiers ordered-nodelist="IExtendedModifier"/>
+    <name node="SimpleName"/>
+    <bodyDeclarations unordered-nodelist="BodyDeclaration"/>
+  </AnnotationTypeDeclaration>
+  <AnnotationTypeMemberDeclaration>
+    <javadoc optional="true" node="Javadoc"/>
+    <modifiers ordered-nodelist="IExtendedModifier"/>
+    <type node="Type"/>
+    <name node="SimpleName"/>
+    <default optional="true" node="Expression"/>
+  </AnnotationTypeMemberDeclaration>
+  <Modifier>
+    <keyword simplevalue="ModifierKeyword"/>
+  </Modifier>
+  <UnionType>
+    <types unordered-nodelist="Type"/>
+  </UnionType>
+  <Dimension>
+    <annotations optional="true" unordered-nodelist="Annotation"/>
+  </Dimension>
+  <LambdaExpression>
+    <parentheses simplevalue="boolean"/>
+    <parameters unordered-nodelist="VariableDeclaration"/>
+    <body node="ASTNode"/>
+  </LambdaExpression>
+  <IntersectionType>
+    <types unordered-nodelist="Type"/>
+  </IntersectionType>
+  <NameQualifiedType>
+    <qualifier node="Name"/>
+    <annotations optional="true" unordered-nodelist="Annotation"/>
+    <name node="SimpleName"/>
+  </NameQualifiedType>
+  <CreationReference>
+    <type node="Type"/>
+    <typeArguments ordered-nodelist="Type"/>
+  </CreationReference>
+  <ExpressionMethodReference>
+    <expression node="Expression"/>
+    <typeArguments ordered-nodelist="Type"/>
+    <name node="SimpleName"/>
+  </ExpressionMethodReference>
+  <SuperMethodReference>
+    <qualifier optional="true" node="Name"/>
+    <typeArguments ordered-nodelist="Type"/>
+    <name node="SimpleName"/>
+  </SuperMethodReference>
+  <TypeMethodReference>
+    <type node="Type"/>
+    <typeArguments ordered-nodelist="Type"/>
+    <name node="SimpleName"/>
+  </TypeMethodReference>
+  <ModuleDeclaration>
+    <javadoc optional="true" node="Javadoc"/>
+    <annotations optional="true" unordered-nodelist="Annotation"/>
+    <open simplevalue="boolean"/>
+    <name node="Name"/>
+    <moduleDirectives unordered-nodelist="ModuleDirective"/>
+  </ModuleDeclaration>
+  <RequiresDirective>
+    <modifiers unordered-nodelist="ModuleModifier"/>
+    <name optional="true" node="Name"/>
+  </RequiresDirective>
+  <ExportsDirective>
+    <name node="Name"/>
+    <modules unordered-nodelist="Name"/>
+  </ExportsDirective>
+  <OpensDirective>
+    <name node="Name"/>
+    <modules unordered-nodelist="Name"/>
+  </OpensDirective>
+  <UsesDirective>
+    <name node="Name"/>
+  </UsesDirective>
+  <ProvidesDirective>
+    <name node="Name"/>
+    <implementations unordered-nodelist="Name"/>
+  </ProvidesDirective>
+  <ModuleModifier>
+    <keyword simplevalue="ModuleModifierKeyword"/>
+  </ModuleModifier>
+  <Operator abstract="true">
+    <RIGHT_SHIFT_UNSIGNED image="&gt;&gt;&gt;"/>
+  </Operator>
+  <Operator abstract="true">
+    <BIT_XOR_ASSIGN image="^="/>
+  </Operator>
+  <Operator abstract="true">
+    <COMPLEMENT image="~"/>
+  </Operator>
+  <Operator abstract="true">
+    <LEFT_SHIFT image="&lt;&lt;"/>
+  </Operator>
+  <Operator abstract="true">
+    <LEFT_SHIFT_ASSIGN image="&lt;&lt;="/>
+  </Operator>
+  <Operator abstract="true">
+    <LESS_EQUALS image="&lt;="/>
+  </Operator>
+  <Operator abstract="true">
+    <CONDITIONAL_OR image="||"/>
+  </Operator>
+  <Operator abstract="true">
+    <ASSIGN image="="/>
+  </Operator>
+  <Operator abstract="true">
+    <RIGHT_SHIFT_UNSIGNED_ASSIGN image="&gt;&gt;&gt;="/>
+  </Operator>
+  <Operator abstract="true">
+    <DECREMENT image="--"/>
+  </Operator>
+  <Operator abstract="true">
+    <DIVIDE image="/"/>
+  </Operator>
+  <Operator abstract="true">
+    <MINUS image="-"/>
+  </Operator>
+  <Operator abstract="true">
+    <RIGHT_SHIFT_SIGNED image="&gt;&gt;"/>
+  </Operator>
+  <Operator abstract="true">
+    <DIVIDE_ASSIGN image="/="/>
+  </Operator>
+  <Operator abstract="true">
+    <BIT_AND_ASSIGN image="&amp;="/>
+  </Operator>
+  <Operator abstract="true">
+    <GREATER_EQUALS image="&gt;="/>
+  </Operator>
+  <Operator abstract="true">
+    <RIGHT_SHIFT_SIGNED_ASSIGN image="&gt;&gt;="/>
+  </Operator>
+  <Operator abstract="true">
+    <OR image="|"/>
+  </Operator>
+  <Operator abstract="true">
+    <TIMES image="*"/>
+  </Operator>
+  <Operator abstract="true">
+    <EQUALS image="=="/>
+  </Operator>
+  <Operator abstract="true">
+    <PLUS_ASSIGN image="+="/>
+  </Operator>
+  <Operator abstract="true">
+    <NOT_EQUALS image="!="/>
+  </Operator>
+  <Operator abstract="true">
+    <GREATER image="&gt;"/>
+  </Operator>
+  <Operator abstract="true">
+    <CONDITIONAL_AND image="&amp;&amp;"/>
+  </Operator>
+  <Operator abstract="true">
+    <MINUS_ASSIGN image="-="/>
+  </Operator>
+  <Operator abstract="true">
+    <INCREMENT image="++"/>
+  </Operator>
+  <Operator abstract="true">
+    <NOT image="!"/>
+  </Operator>
+  <Operator abstract="true">
+    <BIT_OR_ASSIGN image="|="/>
+  </Operator>
+  <Operator abstract="true">
+    <REMAINDER image="%"/>
+  </Operator>
+  <Operator abstract="true">
+    <TIMES_ASSIGN image="*="/>
+  </Operator>
+  <Operator abstract="true">
+    <AND image="&amp;"/>
+  </Operator>
+  <Operator abstract="true">
+    <LESS image="&lt;"/>
+  </Operator>
+  <Operator abstract="true">
+    <XOR image="^"/>
+  </Operator>
+  <Operator abstract="true">
+    <REMAINDER_ASSIGN image="%="/>
+  </Operator>
+  <Operator abstract="true">
+    <PLUS image="+"/>
+  </Operator>
+  <Comment abstract="true">
+    <Javadoc/>
+  </Comment>
+  <Comment abstract="true">
+    <BlockComment/>
+  </Comment>
+  <Comment abstract="true">
+    <LineComment/>
+  </Comment>
+  <ModuleModifierKeyword abstract="true">
+    <TRANSITIVE_KEYWORD image="transitive"/>
+  </ModuleModifierKeyword>
+  <ModuleModifierKeyword abstract="true">
+    <STATIC_KEYWORD image="static"/>
+  </ModuleModifierKeyword>
+  <Statement abstract="true">
+    <DoStatement/>
+  </Statement>
+  <Statement abstract="true">
+    <EmptyStatement/>
+  </Statement>
+  <Statement abstract="true">
+    <WhileStatement/>
+  </Statement>
+  <Statement abstract="true">
+    <SynchronizedStatement/>
+  </Statement>
+  <Statement abstract="true">
+    <BreakStatement/>
+  </Statement>
+  <Statement abstract="true">
+    <IfStatement/>
+  </Statement>
+  <Statement abstract="true">
+    <SwitchCase/>
+  </Statement>
+  <Statement abstract="true">
+    <SwitchStatement/>
+  </Statement>
+  <Statement abstract="true">
+    <LabeledStatement/>
+  </Statement>
+  <Statement abstract="true">
+    <ConstructorInvocation/>
+  </Statement>
+  <Statement abstract="true">
+    <TryStatement/>
+  </Statement>
+  <Statement abstract="true">
+    <TypeDeclarationStatement/>
+  </Statement>
+  <Statement abstract="true">
+    <ExpressionStatement/>
+  </Statement>
+  <Statement abstract="true">
+    <AssertStatement/>
+  </Statement>
+  <Statement abstract="true">
+    <ReturnStatement/>
+  </Statement>
+  <Statement abstract="true">
+    <Block/>
+  </Statement>
+  <Statement abstract="true">
+    <VariableDeclarationStatement/>
+  </Statement>
+  <Statement abstract="true">
+    <EnhancedForStatement/>
+  </Statement>
+  <Statement abstract="true">
+    <SuperConstructorInvocation/>
+  </Statement>
+  <Statement abstract="true">
+    <ThrowStatement/>
+  </Statement>
+  <Statement abstract="true">
+    <ForStatement/>
+  </Statement>
+  <Statement abstract="true">
+    <ContinueStatement/>
+  </Statement>
+  <AnnotatableType abstract="true">
+    <SimpleType/>
+  </AnnotatableType>
+  <AnnotatableType abstract="true">
+    <PrimitiveType/>
+  </AnnotatableType>
+  <AnnotatableType abstract="true">
+    <WildcardType/>
+  </AnnotatableType>
+  <AnnotatableType abstract="true">
+    <QualifiedType/>
+  </AnnotatableType>
+  <AnnotatableType abstract="true">
+    <NameQualifiedType/>
+  </AnnotatableType>
+  <ModuleDirective abstract="true">
+    <RequiresDirective/>
+  </ModuleDirective>
+  <ModuleDirective abstract="true">
+    <ProvidesDirective/>
+  </ModuleDirective>
+  <ModuleDirective abstract="true">
+    <ModulePackageAccess/>
+  </ModuleDirective>
+  <ModuleDirective abstract="true">
+    <UsesDirective/>
+  </ModuleDirective>
+  <Annotation abstract="true">
+    <NormalAnnotation/>
+  </Annotation>
+  <Annotation abstract="true">
+    <SingleMemberAnnotation/>
+  </Annotation>
+  <Annotation abstract="true">
+    <MarkerAnnotation/>
+  </Annotation>
+  <Name abstract="true">
+    <QualifiedName/>
+  </Name>
+  <Name abstract="true">
+    <SimpleName/>
+  </Name>
+  <IExtendedModifier abstract="true">
+    <Modifier/>
+  </IExtendedModifier>
+  <IExtendedModifier abstract="true">
+    <Annotation/>
+  </IExtendedModifier>									 			  
+  <Type abstract="true">
+    <ArrayType/>
+  </Type>
+  <Type abstract="true">
+    <ParameterizedType/>
+  </Type>
+  <Type abstract="true">
+    <AnnotatableType/>
+  </Type>
+  <Type abstract="true">
+    <UnionType/>
+  </Type>
+  <Type abstract="true">
+    <IntersectionType/>
+  </Type>
+  <ModifierKeyword abstract="true">
+    <FINAL_KEYWORD image="final"/>
+  </ModifierKeyword>
+  <ModifierKeyword abstract="true">
+    <PROTECTED_KEYWORD image="protected"/>
+  </ModifierKeyword>
+  <ModifierKeyword abstract="true">
+    <VOLATILE_KEYWORD image="volatile"/>
+  </ModifierKeyword>
+  <ModifierKeyword abstract="true">
+    <NATIVE_KEYWORD image="native"/>
+  </ModifierKeyword>
+  <ModifierKeyword abstract="true">
+    <ABSTRACT_KEYWORD image="abstract"/>
+  </ModifierKeyword>
+  <ModifierKeyword abstract="true">
+    <DEFAULT_KEYWORD image="default"/>
+  </ModifierKeyword>
+  <ModifierKeyword abstract="true">
+    <STATIC_KEYWORD image="static"/>
+  </ModifierKeyword>
+  <ModifierKeyword abstract="true">
+    <SYNCHRONIZED_KEYWORD image="synchronized"/>
+  </ModifierKeyword>
+  <ModifierKeyword abstract="true">
+    <PRIVATE_KEYWORD image="private"/>
+  </ModifierKeyword>
+  <ModifierKeyword abstract="true">
+    <PUBLIC_KEYWORD image="public"/>
+  </ModifierKeyword>
+  <ModifierKeyword abstract="true">
+    <STRICTFP_KEYWORD image="strictfp"/>
+  </ModifierKeyword>
+  <ModifierKeyword abstract="true">
+    <TRANSIENT_KEYWORD image="transient"/>
+  </ModifierKeyword>
+  <Expression abstract="true">
+    <BooleanLiteral/>
+  </Expression>
+  <Expression abstract="true">
+    <MethodInvocation/>
+  </Expression>
+  <Expression abstract="true">
+    <SuperMethodInvocation/>
+  </Expression>
+  <Expression abstract="true">
+    <Name/>
+  </Expression>
+  <Expression abstract="true">
+    <Assignment/>
+  </Expression>
+  <Expression abstract="true">
+    <ThisExpression/>
+  </Expression>
+  <Expression abstract="true">
+    <ArrayAccess/>
+  </Expression>
+  <Expression abstract="true">
+    <TypeLiteral/>
+  </Expression>
+  <Expression abstract="true">
+    <InstanceofExpression/>
+  </Expression>
+  <Expression abstract="true">
+    <InfixExpression/>
+  </Expression>
+  <Expression abstract="true">
+    <ClassInstanceCreation/>
+  </Expression>
+  <Expression abstract="true">
+    <ParenthesizedExpression/>
+  </Expression>
+  <Expression abstract="true">
+    <ConditionalExpression/>
+  </Expression>
+  <Expression abstract="true">
+    <VariableDeclarationExpression/>
+  </Expression>
+  <Expression abstract="true">
+    <SuperFieldAccess/>
+  </Expression>
+  <Expression abstract="true">
+    <Annotation/>
+  </Expression>
+  <Expression abstract="true">
+    <StringLiteral/>
+  </Expression>
+  <Expression abstract="true">
+    <PrefixExpression/>
+  </Expression>
+  <Expression abstract="true">
+    <ArrayCreation/>
+  </Expression>
+  <Expression abstract="true">
+    <PostfixExpression/>
+  </Expression>
+  <Expression abstract="true">
+    <MethodReference/>
+  </Expression>
+  <Expression abstract="true">
+    <CastExpression/>
+  </Expression>
+  <Expression abstract="true">
+    <FieldAccess/>
+  </Expression>
+  <Expression abstract="true">
+    <NullLiteral/>
+  </Expression>
+  <Expression abstract="true">
+    <LambdaExpression/>
+  </Expression>
+  <Expression abstract="true">
+    <NumberLiteral/>
+  </Expression>
+  <Expression abstract="true">
+    <ArrayInitializer/>
+  </Expression>
+  <Expression abstract="true">
+    <CharacterLiteral/>
+  </Expression>
+  <IDocElement abstract="true">
+    <TagElement/>
+  </IDocElement>
+  <IDocElement abstract="true">
+    <TextElement/>
+  </IDocElement>
+  <IDocElement abstract="true">
+    <MemberRef/>
+  </IDocElement>
+  <IDocElement abstract="true">
+    <MethodRef/>
+  </IDocElement>
+  <BodyDeclaration abstract="true">
+    <EnumConstantDeclaration/>
+  </BodyDeclaration>
+  <BodyDeclaration abstract="true">
+    <AnnotationTypeMemberDeclaration/>
+  </BodyDeclaration>
+  <BodyDeclaration abstract="true">
+    <Initializer/>
+  </BodyDeclaration>
+  <BodyDeclaration abstract="true">
+    <FieldDeclaration/>
+  </BodyDeclaration>
+  <BodyDeclaration abstract="true">
+    <MethodDeclaration/>
+  </BodyDeclaration>
+  <BodyDeclaration abstract="true">
+    <AbstractTypeDeclaration/>
+  </BodyDeclaration>
+  <VariableDeclaration abstract="true">
+    <SingleVariableDeclaration/>
+  </VariableDeclaration>
+  <VariableDeclaration abstract="true">
+    <VariableDeclarationFragment/>
+  </VariableDeclaration>
+  <MethodReference abstract="true">
+    <CreationReference/>
+  </MethodReference>
+  <MethodReference abstract="true">
+    <ExpressionMethodReference/>
+  </MethodReference>
+  <MethodReference abstract="true">
+    <TypeMethodReference/>
+  </MethodReference>
+  <MethodReference abstract="true">
+    <SuperMethodReference/>
+  </MethodReference>
+  <ModulePackageAccess abstract="true">
+    <OpensDirective/>
+  </ModulePackageAccess>
+  <ModulePackageAccess abstract="true">
+    <ExportsDirective/>
+  </ModulePackageAccess>
+  <AbstractTypeDeclaration abstract="true">
+    <TypeDeclaration/>
+  </AbstractTypeDeclaration>
+  <AbstractTypeDeclaration abstract="true">
+    <AnnotationTypeDeclaration/>
+  </AbstractTypeDeclaration>
+  <AbstractTypeDeclaration abstract="true">
+    <EnumDeclaration/>
+  </AbstractTypeDeclaration>
+</node>

@@ -1,0 +1,13 @@
+#list of black children
+
+#TypeDeclaration [unordered, 8, javadoc¥false, modifiers¥true, interface¥true, name¥true, typeParameters¥false, superclassType¥false, superInterfaceTypes¥false, bodyDeclarations¥true]
+TypeDeclaration javadoc modifiers interface name typeParameters superclassType superInterfaceTypes
+
+#bodyDeclarations [unordered, 1..*, BodyDeclaration¥*]
+bodyDeclarations FieldDeclaration TypeDeclaration
+
+#MethodDeclaration [unordered, 12, javadoc¥false, modifiers¥true, constructor¥true, typeParameters¥false, returnType2¥false, name¥true, receiverType¥false, receiverQualifier¥false, parameters¥false, extraDimensions2¥false, thrownExceptionTypes¥false, body¥false]
+MethodDeclaration javadoc modifiers constructor typeParameters returnType2 receiverType receiverQualifier parameters extraDimensions2 thrownExceptionTypes body
+
+#SimpleName [unordered, 2, identifier¥true, var¥true]
+SimpleName var
