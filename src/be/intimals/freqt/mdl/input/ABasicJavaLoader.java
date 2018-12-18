@@ -48,12 +48,12 @@ public abstract class ABasicJavaLoader<T> implements IDatabaseLoader<T> {
             LOGGER.info("loadFile : " + f.getName());
             Node root = XMLUtil.getXMLRoot(f);
 
-            //IDatabaseNode<T> newTreeRoot = traverse(root, null);
-            IDatabaseNode<T> transactionRoot = DatabaseNode.create(currentTID, getKeyForRoot(), null);
-            IDatabaseNode<T> newTreeRoot = DatabaseNode.create(currentTID, getKeyForNode(root), transactionRoot);
-            transactionRoot.addChild(newTreeRoot);
+            //IDatabaseNode<T> transactionRoot = DatabaseNode.create(currentTID, getKeyForRoot(), null);
+            //IDatabaseNode<T> newTreeRoot = DatabaseNode.create(currentTID, getKeyForNode(root), transactionRoot);
+            //transactionRoot.addChild(newTreeRoot);
+            IDatabaseNode<T> newTreeRoot = DatabaseNode.create(currentTID, getKeyForNode(root), null);
             traverseHybrid(root, newTreeRoot);
-            db.addTransaction(transactionRoot);
+            db.addTransaction(newTreeRoot);
 
             ++currentTID;
             newTreeRoot.resetID();
@@ -111,8 +111,6 @@ public abstract class ABasicJavaLoader<T> implements IDatabaseLoader<T> {
     }
 
     protected abstract T getKeyForNode(Node current);
-
-    protected abstract T getKeyForRoot();
 
     protected void init() {
         currentTID = 0;

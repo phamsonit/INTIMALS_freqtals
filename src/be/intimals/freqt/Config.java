@@ -86,5 +86,9 @@ public class Config {
         return Integer.valueOf(prop.getProperty("maxrepeatlabel"));
     }
 
+    public int getBeamSize() {
+        return Integer.valueOf(prop.getProperty("beamsize"));
+    }
+
 
 }

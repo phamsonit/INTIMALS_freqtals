@@ -12,13 +12,8 @@ public class BasicStrJavaLoader extends ABasicJavaLoader<String> {
 
     @Override
     protected String getKeyForNode(Node current) {
-        String key = current.getNodeType() == Node.ELEMENT_NODE ? current.getNodeName() : current.getNodeValue();
+        String key = current.getNodeType() == Node.ELEMENT_NODE ? current.getNodeName() : current.getNodeValue().replaceAll("\\s", "");
         assert (key != null);
         return key;
-    }
-
-    @Override
-    protected String getKeyForRoot() {
-        return "ROOT";
     }
 }

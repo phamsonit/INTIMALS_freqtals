@@ -3,6 +3,7 @@ package be.intimals.freqt.mdl.tsg;
 import be.intimals.freqt.mdl.common.ITreeNode;
 import be.intimals.freqt.util.PeekableIterator;
 import be.intimals.freqt.util.Util;
+import javafx.util.Pair;
 
 import java.util.*;
 import java.util.stream.Collectors;
@@ -19,9 +20,11 @@ public class TSGRule<T> {
     private T delimiter;
     private ITSGNode<T> root = null;
     private int count = 0;
-    //private int initialCount = 0;
     private Map<Integer, List<TreeOccurrence<T>>> occurrencesPerTID = new HashMap<>();
-    private List<ITSGNode<T>> addedRoots = null;
+    private List<Pair<ITSGNode<T>, ITSGNode<T>>> addedRoots = null;
+    private boolean isInBetween = false;
+    private List<ITSGNode<T>> cachedWithBacktrack = null;
+    private List<ITSGNode<T>> cachedNoBacktrack = null;
 
     private TSGRule(T delimiter) {
         this.delimiter = delimiter;
@@ -35,12 +38,14 @@ public class TSGRule<T> {
         return root;
     }
 
-    public void setRoot(ITSGNode<T> root) {
-        this.root = root;
-    }
 
     public int getCount() {
         return count;
+    }
+    public void setRoot(ITSGNode<T> root) {
+        this.cachedWithBacktrack = null;
+        this.cachedNoBacktrack = null;
+        this.root = root;
     }
 
     public void setCount(int count) {
@@ -52,11 +57,11 @@ public class TSGRule<T> {
         assert (this.count >= 0);
     }
 
-    public List<ITSGNode<T>> getAddedRoots() {
+    public List<Pair<ITSGNode<T>, ITSGNode<T>>> getAddedRoots() {
         return addedRoots;
     }
 
-    public void setAddedRoots(List<ITSGNode<T>> addedRoots) {
+    public void setAddedRoots(List<Pair<ITSGNode<T>, ITSGNode<T>>> addedRoots) {
         this.addedRoots = addedRoots;
     }
 
@@ -102,27 +107,39 @@ public class TSGRule<T> {
         return delimiter;
     }
 
-    public void addCreatedRoot(ITSGNode<T> root) {
+    public void addCreatedRoot(ITSGNode<T> parent, ITSGNode<T> root) {
         if (this.addedRoots == null) this.addedRoots = new ArrayList<>();
-        this.addedRoots.add(root);
+        this.addedRoots.add(new Pair<>(parent, root));
     }
 
-    public List<ITSGNode<T>> getCreatedRoots() {
+    public List<Pair<ITSGNode<T>, ITSGNode<T>>> getCreatedRoots() {
         return this.addedRoots;
+    }
+
+    public boolean isInBetween() {
+        return isInBetween;
+    }
+
+    public void setInBetween(boolean inBetween) {
+        isInBetween = inBetween;
     }
 
     public List<T> toPreOrderList() {
         if (root == null) return new ArrayList<>();
 
-        return toPreOrderNodeList().stream().map(ITreeNode::getLabel).collect(Collectors.toList());
+        return toPreOrderNodeListBuilder(true).stream().map(ITreeNode::getLabel).collect(Collectors.toList());
     }
 
-    public List<ITSGNode<T>> toPreOrderNodeList() {
+    private List<ITSGNode<T>> toPreOrderNodeListBuilder(boolean showBacktrack) {
         if (root == null) return new ArrayList<>();
+        if (cachedNoBacktrack != null && !showBacktrack) return cachedNoBacktrack;
+        if (cachedWithBacktrack != null && showBacktrack) return cachedWithBacktrack;
         ITSGNode<T> backtrack = TSGNode.create(delimiter);
 
-        PeekableIterator<ITSGNode<T>> dfsIterator = Util.asPreOrderIteratorWithBacktrack(
-                Util.asSingleIterator(root), (ITSGNode<T> node) -> node.getChildren().iterator(), backtrack);
+        PeekableIterator<ITSGNode<T>> dfsIterator = showBacktrack ? Util.asPreOrderIteratorWithBacktrack(
+                Util.asSingleIterator(root), (ITSGNode<T> node) -> node.getChildren().iterator(), backtrack) :
+                Util.asPreOrderIterator(
+                        Util.asSingleIterator(root), (ITSGNode<T> node) -> node.getChildren().iterator());
         dfsIterator.next();
         List<ITSGNode<T>> res = new ArrayList<>();
         while (dfsIterator.hasNext()) {
@@ -130,7 +147,21 @@ public class TSGRule<T> {
             res.add(next);
             dfsIterator.next();
         }
+        if (cachedNoBacktrack == null && !showBacktrack) {
+            cachedNoBacktrack = res;
+        } else if (cachedWithBacktrack == null && showBacktrack) {
+            cachedWithBacktrack = res;
+        }
+
         return res;
+    }
+
+    //public List<ITSGNode<T>> toPreOrderNodeList() {
+    //    return toPreOrderNodeListBuilder(true);
+    //}
+
+    public List<ITSGNode<T>> toPreOrderFilteredNodeList() {
+        return toPreOrderNodeListBuilder(false);
     }
 
     @Override

@@ -7,10 +7,7 @@ import be.intimals.freqt.constraints.IClosed;
 import be.intimals.freqt.core.*;
 import be.intimals.freqt.mdl.input.Database;
 import be.intimals.freqt.mdl.input.IDatabaseNode;
-import be.intimals.freqt.mdl.tsg.ATSG;
-import be.intimals.freqt.mdl.tsg.ITSGNode;
-import be.intimals.freqt.mdl.tsg.TSGNode;
-import be.intimals.freqt.mdl.tsg.TSGRule;
+import be.intimals.freqt.mdl.tsg.*;
 import be.intimals.freqt.output.AOutputFormatter;
 import be.intimals.freqt.output.LineOutput;
 import be.intimals.freqt.output.XMLOutput;
@@ -25,37 +22,87 @@ import java.nio.file.Files;
 import java.nio.file.Paths;
 import java.util.*;
 import java.util.logging.Logger;
+import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
 
 public class BeamFreqT {
+    public class CandidateRule {
+        private Double length;
+        private Map.Entry<String, Projected> patternProject;
+        private TSGRule<String> rule;
+
+        public CandidateRule() {
+            this.length = Double.MAX_VALUE;
+            this.patternProject = null;
+            this.rule = null;
+        }
+
+        public CandidateRule(Double length, Map.Entry<String, Projected> patternProject, TSGRule<String> rule) {
+            this.length = length;
+            this.patternProject = patternProject;
+            this.rule = rule;
+        }
+
+        public Double getLength() {
+            return length;
+        }
+
+        public void setLength(Double length) {
+            this.length = length;
+        }
+
+        public Map.Entry<String, Projected> getPatternProject() {
+            return patternProject;
+        }
+
+        public void setPatternProject(Map.Entry<String, Projected> patternProject) {
+            this.patternProject = patternProject;
+        }
+
+        public TSGRule<String> getRule() {
+            return rule;
+        }
+
+        public void setRule(TSGRule<String> rule) {
+            this.rule = rule;
+        }
+
+        @Override
+        public String toString() {
+            return "{" + length + "; " + patternProject + "; " + rule + '}';
+        }
+    }
     private static final Logger LOGGER = Logger.getLogger(BeamFreqT.class.getName());
     public static char uniChar = '\u00a5';// Japanese Yen symbol
 
     private static Config config;
     private AOutputFormatter output;
-    private Vector<String> pattern;
+   // private Vector<String> pattern;
     private Vector<Vector<NodeFreqT>> transactions = new Vector<>();
     private ATSG<String> tsg;
     private Set<String> listRootLabel = new HashSet<>(); // Possible roots of trees
     private Set<String> listNodeList = new HashSet<>(); // Which nodes should be modeled as lists (not fixed N children)
     private IClosed closed;
     private Map<Integer, Set<Integer>> coveredByTid = new HashMap<>(); // Which nodes are already explained by a tree rule
-    private int BEAM_SIZE;
-    private double bestLength;
+    private double lengthToBeat;
+    private Map<String, Projected> freq1;
+
+    private double bestLengthFound = Double.MAX_VALUE;
+    private List<CandidateRule> bestRulesFound = new ArrayList<>();
+    private List<CandidateRule> addedToTsg = new ArrayList<>();
 
     public SearchStatistics stats;
 
-    private BeamFreqT(Database<String> db, ATSG<String> tsg, int beamSize) {
+    private BeamFreqT(Database<String> db, ATSG<String> tsg) {
         loadDatabase(db);
         assertDBConsistent(db);
         this.tsg = tsg;
-        this.BEAM_SIZE = beamSize;
-        this.bestLength = tsg.getCodingLength();
+        this.lengthToBeat = tsg.getCodingLength();
     }
 
-    public static BeamFreqT create(Database<String> db, ATSG<String> tsg, int beamSize) {
-        return new BeamFreqT(db, tsg, beamSize);
+    public static BeamFreqT create(Database<String> db, ATSG<String> tsg) {
+        return new BeamFreqT(db, tsg);
     }
 
     /**
@@ -86,8 +133,8 @@ public class BeamFreqT {
                     if (covered.contains(val)) {
                         // This node is already covered by another rule, we don't allow overlap, remove
                         projected.removeLocation(i);
-                        LOGGER.info("REMOVED location, already covered: "
-                                + transactions.get(loc.getLocationId()).get(val).getNodeLabel() + " - " + val);
+                        //LOGGER.info("REMOVED location, already covered: "
+                        //        + transactions.get(loc.getLocationId()).get(val).getNodeLabel() + " - " + val);
                         // No longer enough support, remove from candidates
                         if (projected.getProjectLocationSize() < config.getMinSupport()) {
                             iter.remove();
@@ -101,49 +148,47 @@ public class BeamFreqT {
         return false;
     }
 
-    private void report(Vector<String> pat, Projected projected, Set<Extension> blanket) {
-        boolean isClosed = blanket == null || closed.compareSupportMatch(projected, blanket);
-        // closed if null blanket, closedness disabled or actually closed when enabled
-        if (isClosed) {
-            output.report(pat, projected);
-            //addPatternToTSG(pat, projected);
-            //double modelLength = tsg.getModelCodingLength();
-            //double dataLength = tsg.getDataCodingLength();
-            //System.out.println("Model: " + tsg.getModelCodingLength());
-            //System.out.println("Data : " + tsg.getDataCodingLength());
-            //System.out.println("Sum : " + (modelLength + dataLength));
-            stats.incClosed();
-        } else {
-            stats.incNotClosed();
-        }
-    }
+    //private void report(Vector<String> pat, Projected projected, Set<Extension> blanket) {
+    //    boolean isClosed = blanket == null || closed.compareSupportMatch(projected, blanket);
+    //    // closed if null blanket, closedness disabled or actually closed when enabled
+    //    if (isClosed) {
+    //        output.report(pat, projected);
+    //        stats.incClosed();
+    //    } else {
+    //        stats.incNotClosed();
+    //    }
+    //}
 
-    private Pair<Double, TSGRule<String>> addPatternToTSG(boolean tryAndRemove, Vector<String> pat, Projected projected) {
-        TSGRule<String> rule = buildRuleFromPattern(pat, projected, !tryAndRemove);
+    //private Pair<Double, TSGRule<String>> addPatternToTSG(boolean tryAndRemove, Vector<String> pat, Projected projected) {
+    //    TSGRule<String> rule = buildRuleFromPattern(pat, projected);
+    //    if (rule.getCount() == 0) return null;
+    //    tsg.addRule(rule);
+    //    double res = tsg.getCodingLength();
+    //    if (tryAndRemove) {
+    //        tsg.removeRule(rule);
+    //    }
+    //    return new Pair<>(res, rule);
+    //}
+
+    private Pair<Double, TSGRule<String>> tryPatternInTSG(Vector<String> pat, Projected projected) {
+        TSGRule<String> rule = buildRuleFromPattern(pat, projected);
         if (rule.getCount() == 0) return null;
         tsg.addRule(rule);
         double res = tsg.getCodingLength();
-        if (tryAndRemove) {
-            tsg.removeRule(rule);
-        }
+        tsg.removeRule(rule);
         return new Pair<>(res, rule);
     }
 
-    private TSGRule<String> buildRuleFromPattern(Vector<String> pat, Projected projected, boolean updateCovered) {
-        assert (pat.size() >= 3);
-        ITSGNode<String> patternParentRoot = TSGNode.buildFromList(pat.toArray(new String[]{}), ")");
-        ITSGNode<String> patternRoot = patternParentRoot.getChildAt(0);
+    private TSGRule<String> buildRuleFromPattern(Vector<String> pat, Projected projected) {
+        ITSGNode<String> patternRoot = TSGNode.buildFromList(pat.toArray(new String[]{}), ")");
         TSGRule<String> rule = TSGRule.create(tsg.getDelimiter());
         rule.setRoot(patternRoot);
         Map<Integer, Set<Integer>> tempCovered = new HashMap<>();
         for (int i = 0; i < projected.getProjectLocationSize(); i++) {
             Location loc = projected.getProjectLocation(i);
-            // First element in occurrence is parent position that we don't need
-            List<Integer> occurrence = new ArrayList<>(loc.getLocationList().subList(1, loc.getLocationList().size()));
-            // If we add a rule definitively, we should update the covered nodes. Otherwise, we keep a temp copy and
-            // update it on-demand
-            Set<Integer> covered = updateCovered ? coveredByTid.getOrDefault(loc.getLocationId(), new HashSet<>()) :
-                    tempCovered.getOrDefault(loc.getLocationId(),
+            List<Integer> occurrence = loc.getLocationList();
+            // Keep a temp copy as we add occurrences, we need to add them to the new temp cover
+            Set<Integer> covered = tempCovered.getOrDefault(loc.getLocationId(),
                             new HashSet<>(coveredByTid.getOrDefault(loc.getLocationId(), new HashSet<>())));
             // NO overlap, remove overlapping locations
             // (Note: IF relaxing this constraint, need to change how rules are added as after handling one occurrence,
@@ -161,100 +206,144 @@ public class BeamFreqT {
             if (!removed) {
                 rule.addOccurrence(loc.getLocationId(), occurrence);
                 covered.addAll(occurrence);
-                if (updateCovered) {
-                    coveredByTid.putIfAbsent(loc.getLocationId(), covered);
-                } else {
-                    tempCovered.putIfAbsent(loc.getLocationId(), covered);
-                }
+                tempCovered.putIfAbsent(loc.getLocationId(), covered);
             }
         }
         return rule;
     }
 
 
-    private void project(Projected projected, boolean shouldReport) {
+    private void project(Vector<String> pattern, Projected projected, CandidateRule currentBest) {
         try {
             stats.incProject();
-            debugPrintStats(projected);
+            debugPrintStats(pattern, projected, currentBest);
 
-            // Closed: check if can prune & keep blanket for closed check
-            Set<Pair<Integer, String>> rightExtensions = new HashSet<>();
-            Set<Extension> blanket = closed.buildBlanket(listRootLabel, new HashMap<>(),
-                    projected, rightExtensions);
-            // Build B^SM_t and B^OM_t which define if t is a closed subtree and if we can prune the whole branch
-            boolean canPrune = closed.pruneOccurrenceMatchSet(projected, blanket, rightExtensions);
-            // Closed pruning condition (see buildBlanket for explanations)
-            if (canPrune) {
-                stats.incPruned();
-                return;
-            }
+            //// Closed: check if can prune & keep blanket for closed check
+            //Set<Pair<Integer, String>> rightExtensions = new HashSet<>();
+            //Set<Extension> blanket = closed.buildBlanket(listRootLabel, new HashMap<>(),
+            //        projected, rightExtensions);
+            //// Build B^SM_t and B^OM_t which define if t is a closed subtree and if we can prune the whole branch
+            //boolean canPrune = closed.pruneOccurrenceMatchSet(projected, blanket, rightExtensions);
+            //// Closed pruning condition (see buildBlanket for explanations)
+            //if (canPrune) {
+            //    stats.incPruned();
+            //    return;
+            //}
 
             Map<String, Projected> candidates = generateCandidates(projected);
 
             prune(candidates);
 
-            if (pattern.size() < 3) {
-                for (Map.Entry<String, Projected> entry : candidates.entrySet()) {
-                    int oldSize = pattern.size();
-                    expandCandidate(entry, false);
-                    pattern.setSize(oldSize);
-                }
-            } else {
-                if (shouldReport) {
-                    report(pattern, projected, blanket);
-                }
+            // Out of all candidates, keep only a best limited subset of them
+            KBest<CandidateRule> kbest = KBest.create(config.getBeamSize() == -1 ? Integer.MAX_VALUE
+                    : config.getBeamSize());
+            for (Map.Entry<String, Projected> entry : candidates.entrySet()) {
+                Vector<String> testPattern = expandPattern(pattern, entry.getKey());
 
-                // Out of all candidates, keep only a best limited subset of them
-                KBest<Map.Entry<String, Projected>> kbest = KBest.create(BEAM_SIZE);
-                for (Map.Entry<String, Projected> entry : candidates.entrySet()) {
-                    Vector<String> testPattern = expandPattern(entry.getKey());
-
-                    Pair<Double, TSGRule<String>> lengthRule = addPatternToTSG(true, testPattern, entry.getValue());
-                    if (lengthRule != null) {
-                        kbest.add(lengthRule.getKey(), entry);
+                Pair<Double, TSGRule<String>> lengthRule = tryPatternInTSG(testPattern, entry.getValue());
+                if (lengthRule != null) {
+                    Double candidateLength = lengthRule.getKey();
+                    // If found an improvement to coding length, only consider next candidate if improves even further
+                    if (candidateLength <= currentBest.getLength()) { // improvedLength is MAX_VALUE by default
+                        kbest.add(candidateLength, new CandidateRule(candidateLength, entry, lengthRule.getValue()));
                     }
                 }
+            }
 
-                // Expand the candidates remaining
-                for (Pair<Double, Map.Entry<String, Projected>> entry : kbest.getKBest()) {
-                    int oldSize = pattern.size();
-                    double oldLength = bestLength;
+            List<Pair<Double, CandidateRule>> kBestList = kbest.getKBest();
+            if (kBestList.isEmpty() && currentBest.getLength() != Double.MAX_VALUE) {
+                // Found compressing pattern but no candidates improve it further
+                // Add to tsg & restart from freq1
+                double oldLength = lengthToBeat;
+                lengthToBeat = currentBest.getLength();
+                tsg.addRule(currentBest.getRule());
+                addedToTsg.add(currentBest);
+                assert (Util.equalsFuzzy(tsg.getCodingLength(), currentBest.getLength(), 1e-6));
+                LOGGER.info("ADDING :" + currentBest.getRule().toPreOrderList() + " Old: " + oldLength + " New:" + lengthToBeat);
 
-                    Map.Entry<String, Projected> currentCandidate = entry.getValue();
-                    double length = entry.getKey();
-
-                    Pair<Double, TSGRule<String>> lengthRule = null;
-                    if (length < bestLength) {
-                        Vector<String> addPattern = expandPattern(currentCandidate.getKey());
-                        lengthRule = addPatternToTSG(false, addPattern,
-                                currentCandidate.getValue());
-                        if (lengthRule != null) {
-                            LOGGER.info("Better than initial " + addPattern.toString()
-                                    + " Before: " + bestLength + " After: " + length);
-                            bestLength = length;
-                        } else {
-                            LOGGER.info("Better than initial but pruned " + addPattern.toString()
-                                    + " Before: " + bestLength + " After: " + length);
-                        }
-                    }
-
-                    expandCandidate(currentCandidate, lengthRule != null);
-
-                    pattern.setSize(oldSize);
-                    bestLength = oldLength;
-                    if (lengthRule != null) {
-                        tsg.removeRule(lengthRule.getValue());
-                    }
+                if (currentBest.getLength() < bestLengthFound) {
+                    bestLengthFound = currentBest.getLength();
+                    bestRulesFound = new ArrayList<>(addedToTsg);
                 }
+
+                Map<Integer, Set<Integer>> oldCover = coveredByTid;
+                Map<Integer, Set<Integer>> tempCovered = new HashMap<>();
+                for (TreeOccurrence<String> ruleOccurrence : currentBest.getRule().getAllOccurrences()) {
+                    Set<Integer> covered = tempCovered.getOrDefault(ruleOccurrence.getTID(),
+                            new HashSet<>(coveredByTid.getOrDefault(ruleOccurrence.getTID(), new HashSet<>())));
+                    covered.addAll(ruleOccurrence.getOccurrence());
+                    tempCovered.putIfAbsent(ruleOccurrence.getTID(), covered);
+                }
+                coveredByTid = tempCovered;
+
+                expandFreq1Set();
+
+                addedToTsg.remove(addedToTsg.size() - 1);
+                tsg.removeRule(currentBest.getRule());
+                coveredByTid = oldCover;
+                lengthToBeat = oldLength;
+            }
+
+            // Expand the candidates remaining if any
+            for (Pair<Double, CandidateRule> entryPair : kBestList) {
+                //int oldSize = pattern.size();
+                //double oldLength = bestLength;
+                CandidateRule candidateRule = entryPair.getValue();
+                Map.Entry<String, Projected> currentCandidate = candidateRule.getPatternProject();
+                //TSGRule<String> currentRule = candidateRule.getRule();
+                double length = candidateRule.getLength();
+
+                CandidateRule nextCandidateRule = currentBest;
+                if (length < lengthToBeat) {
+                    nextCandidateRule = candidateRule;
+                }
+
+                //Pair<Double, TSGRule<String>> lengthRule = null;
+                //if (length < bestLength) {
+                //    Vector<String> addPattern = expandPattern(pattern, currentCandidate.getKey());
+                //    lengthRule = addPatternToTSG(false, addPattern,
+                //            currentCandidate.getValue());
+                //    if (lengthRule != null) {
+                //        LOGGER.info("Better than initial " + addPattern.toString()
+                //                + " Before: " + bestLength + " After: " + length);
+                //        bestLength = length;
+                //    } else {
+                //        LOGGER.info("Better than initial but pruned " + addPattern.toString()
+                //                + " Before: " + bestLength + " After: " + length);
+                //    }
+                //}
+
+                Vector<String> nextPattern = expandPattern(pattern, currentCandidate.getKey());
+
+                project(nextPattern, currentCandidate.getValue(), nextCandidateRule);
+
+                //pattern.setSize(oldSize);
+                //bestLength = oldLength;
+                //if (lengthRule != null) {
+                //    // TODO removing rule but cover still old
+                //    tsg.removeRule(lengthRule.getValue());
+                //}
             }
         } catch (Exception e) {
             System.out.println("expanding error " + e);
         }
     }
 
-    private Vector<String> expandPattern(String added) {
+    private void expandFreq1Set() {
+        Vector<String> pattern = new Vector<>();
+        for (Map.Entry<String, Projected> entry : freq1.entrySet()) {
+            entry.getValue().setProjectedDepth(0);
+            pattern.addElement(entry.getKey());
+
+            project(pattern, entry.getValue(), new CandidateRule());
+
+            pattern.setSize(pattern.size() - 1);
+        }
+    }
+
+    private Vector<String> expandPattern(Vector<String> currentPattern, String added) {
         // Add new candidate to current pattern
-        Vector<String> res = new Vector<>(pattern);
+        Vector<String> res = new Vector<>(currentPattern);
         String[] p = added.split(String.valueOf(uniChar));
         for (int i = 0; i < p.length; ++i) {
             if (!p[i].isEmpty()) {
@@ -264,17 +353,17 @@ public class BeamFreqT {
         return res;
     }
 
-    private void expandCandidate(Map.Entry<String, Projected> entry, boolean shouldReport) {
-        // Add new candidate to current pattern
-        // TODO refactor with expandPattern
-        String[] p = entry.getKey().split(String.valueOf(uniChar));
-        for (int i = 0; i < p.length; ++i) {
-            if (!p[i].isEmpty()) {
-                pattern.addElement(p[i]);
-            }
-        }
-        project(entry.getValue(), shouldReport);
-    }
+    //private void expandCandidate(Vector<String> pattern, Map.Entry<String, Projected> entry, boolean shouldReport) {
+    //    // Add new candidate to current pattern
+    //    // TODO refactor with expandPattern
+    //    String[] p = entry.getKey().split(String.valueOf(uniChar));
+    //    for (int i = 0; i < p.length; ++i) {
+    //        if (!p[i].isEmpty()) {
+    //            pattern.addElement(p[i]);
+    //        }
+    //    }
+    //    project(pattern, entry.getValue(), shouldReport);
+    //}
 
     private Map<String, Projected> generateCandidates(Projected projected) {
         // Find all candidates of the current subtree
@@ -285,7 +374,6 @@ public class BeamFreqT {
             int pos = projected.getProjectLocation(i).getLocationPos();
             // Add to keep all occurrences --> problem: memory consumption
             List<Integer> occurrences = projected.getProjectLocation(i).getLocationList();
-            int parentId = occurrences.get(0);
 
             String prefix = "";
             for (int d = -1; d < depth && pos != -1; ++d) {
@@ -295,7 +383,6 @@ public class BeamFreqT {
                 for (int l = start; l != -1;
                      l = transactions.get(id).get(l).getNodeSibling()) {
                     // Limit root of pattern to have 1 child (size must be >2 to allow the first child candidate)
-                    if (occurrences.size() > 2 && transactions.get(id).get(l).getNodeParent() == parentId) continue;
                     String item = prefix + uniChar + transactions.get(id).get(l).getNodeLabel();
 
                     // TODO don't add if covered
@@ -344,7 +431,7 @@ public class BeamFreqT {
             System.out.println("find subtrees ... ");
 
             // Find 1-subtree
-            Map<String, Projected> freq1 = buildFreq1Set();
+            freq1 = buildFreq1Set();
 
             // Prune 1-subtree
             prune(freq1);
@@ -352,23 +439,14 @@ public class BeamFreqT {
             closed.pruneClosedFreq1(listRootLabel, freq1);
             System.out.println("all candidates after closed pruning " + freq1.keySet());
             // Grammar constraint: root pattern in listRootLabel
-            //freq1.entrySet().removeIf(e -> !listRootLabel.contains(e.getKey()));
+            if (!listRootLabel.isEmpty()) {
+                freq1.entrySet().removeIf(e -> !listRootLabel.contains(e.getKey()));
+            }
             System.out.println("all candidates after root config pruning " + freq1.keySet());
 
             // Expansion every 1-subtree to find larger subtrees
             // Using root whitelist so expand everything regardless of beam size initially
-            pattern = new Vector<>();
-            for (Map.Entry<String, Projected> entry : freq1.entrySet()) {
-                if (entry.getKey() != null && entry.getKey().charAt(0) != '*') {
-                    entry.getValue().setProjectedDepth(0);
-                    pattern.addElement(entry.getKey());
-
-                    project(entry.getValue(), false);
-
-                    pattern.setSize(pattern.size() - 1);
-                }
-
-            }
+            expandFreq1Set();
             output.close();
         } catch (Exception e) {
             System.out.println("running error");
@@ -485,9 +563,18 @@ public class BeamFreqT {
         }
     }
 
-    private void debugPrintStats(Projected projected) throws IOException {
+    public double getBestLength() {
+        return this.bestLengthFound;
+    }
+
+    public List<CandidateRule> getBestRules() {
+        return this.bestRulesFound;
+    }
+
+    private void debugPrintStats(Vector<String> pattern, Projected projected, CandidateRule currentBest) throws IOException {
         if (stats.getProject() % 1000 == 0) {
             System.out.println(stats + " " + projected.getProjectLocation(0).getLocationList().size());
+            System.out.println(this.addedToTsg.stream().map(e -> e.getRule()).collect(Collectors.toList()));
             System.out.println(pattern);
             output.flush();
         }

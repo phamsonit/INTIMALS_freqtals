@@ -23,6 +23,7 @@ public class TSGNode<T> implements ITSGNode<T> {
         return new TSGNode<>(label);
     }
 
+    /*
     public static <T> TSGNode<T> clone(ITSGNode<T> root) {
         if (root == null) return null;
 
@@ -35,10 +36,21 @@ public class TSGNode<T> implements ITSGNode<T> {
         assert (res.size() == 1);
         return res.get(0);
     }
+    */
+
+    public static <T> TSGNode<T> clone(ITSGNode<T> root) {
+        if (root == null) return null;
+
+        // TODO remove one param from cloneSingle
+        List<TSGNode<T>> res = new ArrayList<>();
+        cloneSingle(root, root, null, res);
+        assert (res.size() == 1);
+        return res.get(0);
+    }
 
     private static <T> TSGNode<T> cloneSingle(ITSGNode<T> root, ITSGNode<T> current,
                                               ITSGNode<T> parent, List<TSGNode<T>> out) {
-        TSGNode<T> res = new TSGNode<>(current.getLabel());
+        TSGNode<T> res = create(current.getLabel());
         if (current == root) {
             out.add(res);
         }
@@ -50,6 +62,7 @@ public class TSGNode<T> implements ITSGNode<T> {
         return res;
     }
 
+    /*
     public static <T> TSGNode<T> createFromWithParent(ITreeNode<T, ? extends ITreeNode<T, ?>> node,
                                                        ITreeNode<T, ? extends ITreeNode<T, ?>> parent) {
         TSGNode<T> res = new TSGNode<>(node.getLabel());
@@ -65,10 +78,13 @@ public class TSGNode<T> implements ITSGNode<T> {
         }
         return res;
     }
+    */
 
+    // TODO remove param
     public static <T> TSGNode<T> createFromWithChildren(ITreeNode<T, ? extends ITreeNode<T, ?>> dbNode,
                                                         ITreeNode<T, ? extends ITreeNode<T, ?>> dbNodeParent) {
-        TSGNode<T> res = createFromWithParent(dbNode, dbNodeParent);
+        //TSGNode<T> res = createFromWithParent(dbNode, dbNodeParent);
+        TSGNode<T> res = create(dbNode.getLabel());
         res.setChildren(dbNode.getChildren().stream()
                 .map(n -> {
                     TSGNode<T> r = TSGNode.create(n.getLabel());
@@ -163,4 +179,8 @@ public class TSGNode<T> implements ITSGNode<T> {
         return stack.poll();
     }
 
+    @Override
+    public String toString() {
+        return label.toString();
+    }
 }

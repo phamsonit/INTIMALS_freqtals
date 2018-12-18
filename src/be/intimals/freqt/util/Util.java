@@ -19,9 +19,7 @@ public class Util {
     }
 
     public static <T> Iterator<T> asSingleIterator(final T item) {
-        Set<T> res = new HashSet<>();
-        res.add(item);
-        return res.iterator();
+        return Collections.singleton(item).iterator();
     }
 
     public interface ChildNodes<T> {
@@ -163,5 +161,10 @@ public class Util {
             }
         }
         return parentPos;
+    }
+
+    public static boolean equalsFuzzy(final double a, final double b, final double epsilon) {
+        if (a == b) return true;
+        return Math.abs(a - b) < epsilon;
     }
 }

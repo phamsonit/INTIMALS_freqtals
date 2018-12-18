@@ -5,6 +5,7 @@ import be.intimals.freqt.util.DoubleUtil;
 import be.intimals.freqt.util.PeekableIterator;
 import be.intimals.freqt.util.Util;
 
+import java.util.List;
 import java.util.Map;
 import java.util.logging.Logger;
 
@@ -24,18 +25,11 @@ public class BasicTSG extends ATSG<String> {
     private static final String PARENT_ANNOTATION = "^";
 
     protected String getGrammarKey(ITreeNode<String, ? extends ITreeNode<String, ?>> child) {
-        ITreeNode<String, ?> parent = child.getParent();
-        String parentLabel = parent != null ? parent.getLabel() : "";
-        return (child.getLabel() + PARENT_ANNOTATION + parentLabel).toLowerCase();
-    }
-
-    @Override
-    protected String getUnannotatedGrammarKey(ITreeNode<String, ? extends ITreeNode<String, ?>> child) {
         return child.getLabel().toLowerCase();
     }
 
     @Override
-    protected String getPatternRuleKey(ITSGNode<String> newRoot, int patternId, Integer posInTree, int i) {
+    protected String getPatternRuleKey(int patternId, Integer posInTree, int i) {
         return "(" + patternId + " " + posInTree + " " + i + ")";
     }
 
@@ -57,6 +51,7 @@ public class BasicTSG extends ATSG<String> {
             res += entryCodingLength;
             LOGGER.info(entryCodingLength + " bits for " + grammarEntries.getKey() + " -> " + entry);
         }
+        LOGGER.info("TOTAL MODEL: " + " bits for " + res);
         return res;
     }
 
@@ -77,29 +72,27 @@ public class BasicTSG extends ATSG<String> {
             // Productions are in a tree format i.e. X -> (X(A_1(...))...(A_n(...)))
             // Traverse the tree in pre order and, at each node, compute the probability
             // of applying this specific production at this node
-            PeekableIterator<ITSGNode<String>> dfsIterator = Util.asPreOrderIterator(
-                    Util.asSingleIterator(rule.getRoot()), (ITSGNode<String> node) -> node.getChildren().iterator());
-            dfsIterator.next();
-            while (dfsIterator.hasNext()) {
-                ITSGNode<String> currentNode = dfsIterator.peek();
-                if (!currentNode.isLeaf() && !currentNode.isRoot()) { // Only consider productions
+            List<ITSGNode<String>> nodes = rule.toPreOrderFilteredNodeList();
+            for (ITSGNode<String> currentNode : nodes) {
+                if (!currentNode.isLeaf()) { // Only consider productions
                     // For each node A_i, get count(X->A_i) and count(X) based on the distribution in the data
                     String key = getGrammarKey(currentNode);
-                    String parentKey = getUnannotatedGrammarKey(currentNode.getParent());
-                    assert (parentKey != null);
-                    MapCounter<String> parentCounter = childrenCount.get(parentKey);
-                    assert (parentCounter != null);
-                    Integer prodCount = parentCounter.getCountFor(key);
-                    assert (prodCount != 0);
-                    // Asserts: if counts are properly done, those vars shouldn't be null
-                    Integer parentCount = parentCounter.getTotal();
+                    MapCounter<String> counter = childrenCount.get(key);
+                    assert (counter != null);
+                    // Assert: if counts are properly done, those vars shouldn't be null
+                    Integer parentCount = counter.getTotal();
 
-                    double productionP = -(DoubleUtil.log2(prodCount)
-                            - DoubleUtil.log2(parentCount));
-                    res += productionP;
-                    assert (!Double.isNaN(res));
+                    for (ITSGNode<String> child : currentNode.getChildren()) {
+                        String childKey = getGrammarKey(child);
+                        Integer prodCount = counter.getCountFor(childKey);
+                        assert (prodCount != 0);
+
+                        double productionP = -(DoubleUtil.log2(prodCount)
+                                - DoubleUtil.log2(parentCount));
+                        res += productionP;
+                        assert (!Double.isNaN(res));
+                    }
                 }
-                dfsIterator.next();
             }
         }
         return res;
@@ -118,6 +111,7 @@ public class BasicTSG extends ATSG<String> {
             }
 
         }
+        LOGGER.info("TOTAL DATA: " + res);
         return res;
     }
 }

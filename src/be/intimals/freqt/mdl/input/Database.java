@@ -45,6 +45,7 @@ public class Database<T> {
     }
 
     private IDatabaseNode<T> search(IDatabaseNode<T> current, int searchId) {
+        if (current.getID() == searchId) return current;
         int lower = current.getChildren().get(0).getID();
         int upper = current.getChildren().get(current.getChildrenCount() - 1).getID();
         if (searchId >= lower && searchId <= upper) {

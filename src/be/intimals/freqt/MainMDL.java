@@ -9,6 +9,7 @@ import be.intimals.freqt.mdl.tsg.*;
 
 import java.io.IOException;
 import java.util.Arrays;
+import java.util.stream.Collectors;
 
 public class MainMDL {
     public static void main(String[] args) {
@@ -21,7 +22,7 @@ public class MainMDL {
 
             IDatabaseLoader<String> loader = new BasicStrJavaLoader();
             Database<String> db = loader.loadDirectory(config.getInputFiles());
-            //Database<String> db = loader.loadFile(".\\out\\FD_debug_dataset.xml");
+            System.out.println(db.getSize() + " transactions");
             ATSG<String> tsg = new BasicTSG();
             tsg.loadDatabase(db);
 
@@ -31,13 +32,16 @@ public class MainMDL {
             System.out.println("Data : " + tsg.getDataCodingLength());
             System.out.println("Sum : " + (modelLength + dataLength));
 
-            BeamFreqT miner = BeamFreqT.create(db, tsg, Integer.MAX_VALUE);
+            BeamFreqT miner = BeamFreqT.create(db, tsg);
             miner.run(config);
 
-            // TODO debug
+            System.out.println("Best coding length: " + miner.getBestLength());
+            System.out.println("Best rules: " + miner.getBestRules().stream()
+                    .map(e -> e.getRule()).collect(Collectors.toList()));
 
-            ITSGNode<String> fakeRoot = TSGNode.buildFromList(new String[]{"SourceFile", "FieldDeclaration", "type", "INTEGER_TYPE", "$", "$", "name"}, "$");
-            fakeRoot = fakeRoot.getChildAt(0); // FieldDeclaration
+            /*
+            // TODO debug
+            ITSGNode<String> fakeRoot = TSGNode.buildFromList(new String[]{"FieldDeclaration", "type", "INTEGER_TYPE", "$", "$", "name"}, "$");
             TSGRule<String> rule = TSGRule.create(tsg.getDelimiter());
             rule.setRoot(fakeRoot);
             rule.addOccurrence(0, Arrays.asList(1, 3, 8, 7));
@@ -45,19 +49,18 @@ public class MainMDL {
 
             tsg.removeRule(rule);
 
-            ITSGNode<String> fakeRoot2 = TSGNode.buildFromList(new String[]{"SourceFile", "FieldDeclaration", "annotation", "$", "modifiers"}, "$");
-            fakeRoot2 = fakeRoot2.getChildAt(0);
+            ITSGNode<String> fakeRoot2 = TSGNode.buildFromList(new String[]{"FieldDeclaration", "annotation", "$", "modifiers"}, "$");
             TSGRule<String> rule2 = TSGRule.create(tsg.getDelimiter());
             rule2.setRoot(fakeRoot2);
             rule2.addOccurrence(0, Arrays.asList(1, 4, 6));
             rule2.addOccurrence(0, Arrays.asList(2, 13, 14));
-            //tsg.addRule(rule2);
+            tsg.addRule(rule2);
 
             //tsg.removeRule(rule2);
 
             System.out.println("Model: " + tsg.getModelCodingLength());
             System.out.println("Data : " + tsg.getDataCodingLength());
-
+            */
 
             /*
             PCFG pcfg = new PCFG();
