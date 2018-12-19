@@ -36,7 +36,7 @@ public abstract class AOutputFormatter {
 
         if(Pattern.countLeafNode(pat) < config.getMinLeaf()) result = true;
 
-        //if(FreqT.checkMissedLeafNode(pat)) result = true;
+        if(Pattern.checkMissedLeafNode(pat)) result = true;
 
         return result;
 

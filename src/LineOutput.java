@@ -41,6 +41,7 @@ public class LineOutput extends AOutputFormatter {
                 int size = Pattern.getPatternSize(pat);
                 int sup = projected.getProjectedSupport();
                 int wsup = projected.getProjectLocationSize();
+                int rsup = FreqT.rootSupport(projected);
 
                 List<Integer> allOccurrences = getSizeAllOccurrences(projected);
 
@@ -49,8 +50,8 @@ public class LineOutput extends AOutputFormatter {
                 //System.out.println(FreqT.getPatternString(pat));
                 //printAllOccurrence(projected);
 
-                //out.write("occurrences:"+allOccurrences.size()+" supp:"+sup + " wsupp:" + wsup +" size:" + size + "\t");
-                out.write("supp:"+ sup  +" size:" + size + "\t");
+                out.write("occurrences:"+allOccurrences.size()+" supp:"+sup + " rsupp:" + rsup +" size:" + size + "\t");
+                //out.write("supp:"+ sup  +" size:" + size + "\t");
             }
 
             if(config.outputAsENC()){

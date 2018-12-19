@@ -34,7 +34,7 @@ public class Main {
 
         try{
 
-            String configPath = args.length == 0 ? "conf/synthetic/config.properties" : args[0];
+            String configPath = args.length == 0 ? "conf/cobol/config.properties" : args[0];
 
             Config config = new Config(configPath);
 

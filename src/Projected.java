@@ -7,9 +7,73 @@ public class Projected {
     //private Vector<Location> rootLocations = new Vector<Location>();
     private List<Location> locations = new  ArrayList<>();
     private List<Location> rootLocations = new ArrayList<>();
-
     private List<List<Integer>> lineNr = new ArrayList<>();
 
+    //////////////////////////////////////////////////////////
+    public void Projected(){}
+
+    public void setProjectedDepth(int d)
+    {
+        this.depth = d;
+    }
+    public int getProjectedDepth() {
+        return this.depth;
+    }
+
+    public void setProjectedSupport(int s) {
+        this.support = s;
+    }
+    public int getProjectedSupport(){
+        return this.support;
+    }
+
+    //////////////locations////////////////////
+    //keep right most position
+    public void setProjectLocation(int i, int j) {
+        Location l = new Location();
+        l.setLocationId(i);
+        l.addLocationPos(j);
+        this.locations.add(l);
+    }
+
+    public Location getProjectLocation(int i){
+        return this.locations.get(i);
+    }
+
+    public int getProjectLocationSize(){
+        return this.locations.size();
+    }
+
+    //keep positions of all occurrences
+    public void addProjectLocation(int i, int j, List<Integer> occurrences) {
+        Location l = new Location(occurrences);
+        l.setLocationId(i);
+        l.addLocationPos(j);
+        this.locations.add(l);
+    }
+
+    public void removeProjectLocation(Location location){
+        this.locations.remove(location);
+    }
+
+    /////////////root locations ///////////////
+    //add a position to root locations
+    public void setProjectRootLocation(int i, int j) {
+        Location l = new Location();
+        l.setLocationId(i);
+        l.addLocationPos(j);
+        this.rootLocations.add(l);
+    }
+
+    public Location getProjectRootLocation(int i){
+        return this.rootLocations.get(i);
+    }
+
+    public int getProjectRootLocationSize(){
+        return this.rootLocations.size();
+    }
+
+    /////////////lineNr//////////////////////
     //add 1 line number
     public void setProjectLineNr(int a){
         List<Integer> l = new ArrayList<>();
@@ -22,108 +86,9 @@ public class Projected {
         l.add(a);
         this.lineNr.add(l);
     }
-
-
-
     //get a list of line numbers
     public List<Integer> getProjectLineNr(int a){
         return this.lineNr.get(a);
     }
-
-
-    public void Projected(){}
-
-
-    public void setProjectedDepth(int d)
-    {
-        this.depth = d;
-    }
-
-    public void setProjectedSupport(int s) {
-        this.support = s;
-    }
-
-    //add a location to locations
-    public void setProjectLocation(int i, int j) {
-        Location l = new Location();
-        l.setLocationId(i);
-        l.addLocationPos(j);
-        this.locations.add(l);
-    }
-
-    //add a location to locations: for right-most extension
-    public void setProjectRootLocation(int i, int j) {
-        Location l = new Location();
-        l.setLocationId(i);
-        l.addLocationPos(j);
-        this.rootLocations.add(l);
-    }
-
-    public int getProjectedDepth() {
-        return this.depth;
-    }
-
-    public int getProjectedSupport(){
-        return this.support;
-    }
-
-    public Location getProjectLocation(int i){
-        return this.locations.get(i);
-    }
-
-    public Location getProjectRootLocation(int i){
-        return this.rootLocations.get(i);
-    }
-
-    public int getProjectLocationSize(){
-        return this.locations.size();
-    }
-
-    //keep all occurences for all position extension
-    public void addProjectLocation(int i, int j, List<Integer> occurrences) {
-        Location l = new Location(occurrences);
-        l.setLocationId(i);
-        l.addLocationPos(j);
-        this.locations.add(l);
-    }
-
-    //keep all occurences for all position extension
-    public void addProjectRootLocation(int i, int j, List<Integer> occurrences) {
-        Location l = new Location(occurrences);
-        l.setLocationId(i);
-        l.addLocationPos(j);
-        this.rootLocations.add(l);
-    }
-
-
-    public void removeProjectLocation(int i){
-        this.locations.remove(i);
-    }
-
-    public void removeProjectLocation(Location location){
-        this.locations.remove(location);
-    }
-
-    public void addProjectLocation(Location location){
-        this.locations.add(location);
-    }
-    /*
-    public int getProjectedSupport() {
-        if(this.support == -1) computeSupport();
-        return this.support;
-    }
-
-    private void computeSupport(){
-        int old = 0xffffffff;
-        int size = 0;
-        for(int i=0; i<getProjectLocationSize(); ++i) {
-            if (getProjectLocation(i).getLocationId() != old) ++size;
-            old = getProjectLocation(i).getLocationId();
-        }
-        this.support = size;
-    }
-    */
-
-
 
 }

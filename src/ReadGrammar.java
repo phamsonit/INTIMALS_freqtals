@@ -533,7 +533,7 @@ public class ReadGrammar extends ReadXML {
     }
 
     public static void printGrammar(Map<String,Vector<String> > grammar) {
-
+        System.out.println("INPUT GRAMMAR");
         Iterator<Map.Entry<String, Vector<String>>> iter1 = grammar.entrySet().iterator();
         while (iter1.hasNext()) {
             Map.Entry<String, Vector<String>> entry = iter1.next();
