@@ -128,11 +128,7 @@ public class FreqT {
     private void project(Projected projected) {
         try {
             stats.incProject();
-            if (stats.getProject() % 1000 == 0) {
-                System.out.println(stats + " " + projected.getProjectLocation(0).getLocationList().size());
-                System.out.println(pattern);
-                output.flush();
-            }
+            debugPrintStats(pattern, projected);
 
             Set<Pair<Integer, String>> rightExtensions = new HashSet<>();
             Set<Extension> blanket = closed.buildBlanket(listRootLabel, listBlackLabel,
@@ -381,7 +377,7 @@ public class FreqT {
             closed.pruneClosedFreq1(listRootLabel, freq1);
             System.out.println("all candidates after closed pruning " + freq1.keySet());
             // Grammar constraint: root pattern in listRootLabel
-            freq1.entrySet().removeIf(e -> !listRootLabel.contains(e.getKey()));
+            freq1.entrySet().removeIf(e -> !listRootLabel.isEmpty() && !listRootLabel.contains(e.getKey()));
             System.out.println("all candidates after root config pruning " + freq1.keySet());
 
             // Expansion every 1-subtree to find larger subtrees
@@ -509,6 +505,14 @@ public class FreqT {
             System.out.println("Reading listBlackLabel file error ");
         }
 
+    }
+
+    private void debugPrintStats(Vector<String> pattern, Projected projected) throws IOException {
+        if (stats.getProject() % 1000 == 0) {
+            System.out.println(stats + " " + projected.getProjectLocation(0).getLocationList().size());
+            System.out.println(pattern);
+            output.flush();
+        }
     }
 
 

@@ -9,11 +9,15 @@ import be.intimals.freqt.mdl.tsg.*;
 
 import java.io.IOException;
 import java.util.Arrays;
+import java.util.List;
+import java.util.Map;
+import java.util.logging.LogManager;
 import java.util.stream.Collectors;
 
 public class MainMDL {
     public static void main(String[] args) {
         try {
+            //LogManager.getLogManager().reset();
             String configPath = args.length == 0 ? "conf/mdl/config.properties" : args[0];
 
             Config config = new Config(configPath);
@@ -26,11 +30,14 @@ public class MainMDL {
             ATSG<String> tsg = new BasicTSG();
             tsg.loadDatabase(db);
 
-            double modelLength = tsg.getModelCodingLength();
-            double dataLength = tsg.getDataCodingLength();
-            System.out.println("Model: " + tsg.getModelCodingLength());
-            System.out.println("Data : " + tsg.getDataCodingLength());
-            System.out.println("Sum : " + (modelLength + dataLength));
+            //debugPrintCodingLength(tsg);
+            //ITSGNode<String> fakeRoot = TSGNode.buildFromList(new String[]{"s", "a", "a0", "$", "$", "b"}, "$");
+            //TSGRule<String> rule = TSGRule.create(tsg.getDelimiter());
+            //rule.setRoot(fakeRoot);
+            //rule.addOccurrence(0, Arrays.asList(0, 1, 6, 5));
+            //tsg.addRule(rule);
+
+            debugPrintCodingLength(tsg);
 
             BeamFreqT miner = BeamFreqT.create(db, tsg);
             miner.run(config);
@@ -38,6 +45,9 @@ public class MainMDL {
             System.out.println("Best coding length: " + miner.getBestLength());
             System.out.println("Best rules: " + miner.getBestRules().stream()
                     .map(e -> e.getRule()).collect(Collectors.toList()));
+            debugPrintCodingLength(tsg);
+            miner.getBestRules().forEach(best -> tsg.addRule(best.getRule()));
+            debugPrintCodingLength(tsg);
 
             /*
             // TODO debug
@@ -62,14 +72,6 @@ public class MainMDL {
             System.out.println("Data : " + tsg.getDataCodingLength());
             */
 
-            /*
-            PCFG pcfg = new PCFG();
-            pcfg.loadGrammar(config.getGrammarFile());
-            Parser parser = new Parser(pcfg,"ClassBodyDeclaration");
-            parser.parseDirectory(".\\out\\test_temp");
-            System.out.println(pcfg.getDataCodingLength());
-            */
-
             long end = System.currentTimeMillis();
             long diff = end - start;
             System.out.println("running time : " + diff + " ms");
@@ -80,5 +82,13 @@ public class MainMDL {
             System.err.println("Exception: ");
             e.printStackTrace();
         }
+    }
+
+    private static void debugPrintCodingLength(ATSG<String> tsg) {
+        double modelLength = tsg.getModelCodingLength();
+        double dataLength = tsg.getDataCodingLength();
+        System.out.println("Model: " + tsg.getModelCodingLength());
+        System.out.println("Data : " + tsg.getDataCodingLength());
+        System.out.println("Sum : " + (modelLength + dataLength));
     }
 }

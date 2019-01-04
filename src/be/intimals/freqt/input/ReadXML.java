@@ -78,6 +78,7 @@ public class ReadXML {
 
     //read tree by breadth first traversal
     private void readTreeDepthFirst(Node node, Vector<NodeFreqT> trans) {
+        if (node.getNodeName().equals("package") || node.getNodeName().equals("imports")) return;
         try {
             // make sure it's element node.
             if (node.getNodeType() == Node.ELEMENT_NODE) {

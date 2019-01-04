@@ -11,9 +11,9 @@ import java.util.stream.IntStream;
 
 /**
  * This class represents the RHS of a rule in our TSG. It contains the root of the tree rule along with it's occurrences
- * in the data. It keeps two counters, the initial count which is initialized when the database is first loaded
- * (should not change afterwards) and the count which is the current number of occurrences of this rule
- * (should change when TSG changes).
+ * in the data.
+ * Important: the hash is based on a preorder traversal with backtrack indicators which make it unique. Some of the
+ * traversals (and hashcode) are cached and invalidated only on root change (NOT if the tree is modified).
  * @param <T>
  */
 public class TSGRule<T> {
@@ -25,6 +25,8 @@ public class TSGRule<T> {
     private boolean isInBetween = false;
     private List<ITSGNode<T>> cachedWithBacktrack = null;
     private List<ITSGNode<T>> cachedNoBacktrack = null;
+    private int patternId = -1;
+    private Integer cachedHashCode = null;
 
     private TSGRule(T delimiter) {
         this.delimiter = delimiter;
@@ -44,6 +46,7 @@ public class TSGRule<T> {
     }
     public void setRoot(ITSGNode<T> root) {
         this.cachedWithBacktrack = null;
+        this.cachedHashCode = null;
         this.cachedNoBacktrack = null;
         this.root = root;
     }
@@ -112,10 +115,6 @@ public class TSGRule<T> {
         this.addedRoots.add(new Pair<>(parent, root));
     }
 
-    public List<Pair<ITSGNode<T>, ITSGNode<T>>> getCreatedRoots() {
-        return this.addedRoots;
-    }
-
     public boolean isInBetween() {
         return isInBetween;
     }
@@ -130,6 +129,13 @@ public class TSGRule<T> {
         return toPreOrderNodeListBuilder(true).stream().map(ITreeNode::getLabel).collect(Collectors.toList());
     }
 
+    /**
+     * Build the preorder traversal of the rule tree. This traversal can be cached & is invalidated on .set.
+     * The parameter controls if indicate going up one level after all children are expanded. If set to true, this
+     * traversal can be used as unique key.
+     * @param showBacktrack
+     * @return
+     */
     private List<ITSGNode<T>> toPreOrderNodeListBuilder(boolean showBacktrack) {
         if (root == null) return new ArrayList<>();
         if (cachedNoBacktrack != null && !showBacktrack) return cachedNoBacktrack;
@@ -156,10 +162,22 @@ public class TSGRule<T> {
         return res;
     }
 
-    //public List<ITSGNode<T>> toPreOrderNodeList() {
-    //    return toPreOrderNodeListBuilder(true);
-    //}
+    public boolean hasAddedRoots() {
+        return addedRoots != null && !addedRoots.isEmpty();
+    }
 
+    public int getPatternId() {
+        return patternId;
+    }
+
+    public void setPatternId(int patternId) {
+        this.patternId = patternId;
+    }
+
+    /**
+     * Build the preorder traversal without showing backtracking nodes.
+     * @return
+     */
     public List<ITSGNode<T>> toPreOrderFilteredNodeList() {
         return toPreOrderNodeListBuilder(false);
     }
@@ -180,7 +198,10 @@ public class TSGRule<T> {
 
     @Override
     public int hashCode() {
-        return Objects.hash(toPreOrderList().toArray());
+        if (cachedHashCode == null) {
+            cachedHashCode = Objects.hash(toPreOrderList().toArray());
+        }
+        return cachedHashCode;
     }
 
     @Override

@@ -541,4 +541,71 @@ public class PCFG {
         }
         return prod.toString() + "\n" + terminals.toString();
     }
+
+    public String toPrettyStringDebug() {
+        Map<String, String> names = new HashMap<>();
+        names.put(Symbol.EPSILON.getName(), "EPSILON");
+        int i = 1;
+        StringBuilder prod = new StringBuilder();
+        prod.append("Productions: \n");
+        StringBuilder terminals = new StringBuilder();
+        terminals.append("Terminals: \n");
+        for (Map.Entry<String, Symbol> e : this.cfg.entrySet()) {
+            Symbol symbol = e.getValue();
+            if (symbol.getRules().isEmpty() || symbol.getName().equals(Symbol.EPSILON.getName())) {
+                terminals.append(symbol.toPrettyString());
+                terminals.append(" ");
+            } else if (symbol.getRules().size() >= 1 && !symbol.getRules().get(0).getRhs().isEmpty()) {
+
+                String prepend;
+                if (symbol.getName().equals(Symbol.EPSILON.getName())) {
+                    prepend = "";
+                } else {
+                    prepend = symbol.getName().split("\\^")[0] + " ";
+                }
+
+                String symbolName = symbol.getName();
+
+                //String symbolName;
+                //if (names.containsKey(symbol.getName())) {
+                //    symbolName = names.get(symbol.getName());
+                //} else {
+                //    symbolName = "P" + String.valueOf(i);
+                //    names.put(symbol.getName(), symbolName);
+                //    ++i;
+                //}
+                prod.append(prepend).append(symbolName);
+                prod.append(" -> ");
+                for (SymbolsRHS rhs : symbol.getRules()) {
+                    StringBuilder current = new StringBuilder();
+                    Symbol last = null;
+                    for (Symbol x : rhs.getRhs()) {
+                        String newName = x.getName();
+                        //String newName = "";
+                        //if (names.containsKey(x.getName())) {
+                        //    newName += names.get(x.getName());
+                        //} else {
+                        //    newName += "P" + String.valueOf(i);
+                        //    names.put(x.getName(), newName);
+                        //    ++i;
+                        //}
+                        current.append(newName.toUpperCase()).append(" ");
+                        last = x;
+                    }
+                    //if (last.getName().endsWith(PCFG.getListAnnotatedName(""))
+                    //        && !symbol.getName().endsWith(PCFG.getListAnnotatedName(""))) {
+                    //    // Production X -> L where L is a recursive list production
+                    //    int debug = 0;
+                    //    current.append("END ");
+                    //}
+                    current.deleteCharAt(current.length() - 1);
+                    prod.append(current);
+                    prod.append(" | ");
+                }
+                prod.delete(prod.length() - 3, prod.length() - 1);
+                prod.append("\n");
+            }
+        }
+        return prod.toString() + "\n" + terminals.toString() + "\n" + names.toString();
+    }
 }

@@ -83,9 +83,7 @@ public class Parser {
                 XMLUtil.asIterator(e.getChildNodes()));
         this.dfsIterator.next();
 
-        int debug = 0;
         while (dfsIterator.hasNext()) {
-            ++debug;
             Pair<Symbol, Symbol> item = stack.peek();
             Symbol currentSymbol = item.getKey();
             Symbol parentSymbol = item.getValue();

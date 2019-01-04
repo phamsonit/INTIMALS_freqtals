@@ -21,8 +21,12 @@ public class ParserMain {
 
             PCFG pcfg = new PCFG();
             pcfg.loadGrammar(config.getGrammarFile());
+            pcfg.getCfg().values().stream().filter(s -> !s.getRules().isEmpty() && (s.getRules().size() > 1 || !s.getRules().get(0).getRhs().isEmpty())).forEach(s -> s.getRulesMap());
+            pcfg.toPrettyStringDebug();
             Parser parser = new Parser(pcfg,"CompilationUnit");
             parser.parseDirectory(".\\data\\java_AST\\jhotdrawParser");
+            //parser.parseDirectory(".\\out\\parser_debug");
+            //parser.parseDirectory(".\\data\\java_AST\\jhotdrawParser\\org\\jhotdraw\\draw\\action");
 
             long end = System.currentTimeMillis();
             long diff = end - start;

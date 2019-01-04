@@ -29,6 +29,9 @@ public class MapCounter<T> {
 
     private Map<T, Counter> counts = new HashMap<>();
     private Counter sum = new Counter(0);
+    // Estimation of geometric distribution for epsilon
+    private int nbSuccess = 0;
+    private int nbAttempts = 0;
 
     private MapCounter() {
     }
@@ -64,6 +67,26 @@ public class MapCounter<T> {
         assert (checkConsistency());
     }
 
+    public void incNbSuccessBy(Integer val) {
+        nbSuccess += val;
+    }
+
+    public void incNbAttemptsBy(Integer val) {
+        nbAttempts += val;
+    }
+
+    public int getNbSuccess() {
+        return nbSuccess;
+    }
+
+    public int getNbAttempts() {
+        return nbAttempts;
+    }
+
+    public double getGeometricEstimator() {
+        return nbSuccess / (double) nbAttempts;
+    }
+
     private boolean checkConsistency() {
         int sum = 0;
         for (Counter c : this.counts.values()) {
@@ -78,6 +101,7 @@ public class MapCounter<T> {
     public String toString() {
         String map = counts.entrySet().stream()
                 .map(e -> e.getKey() + " " + e.getValue().getCount()).collect(Collectors.joining(", "));
-        return "T: " + sum + " | " + map;
+        return "p(stop): " + getGeometricEstimator() + "(" + nbSuccess + "/" + nbAttempts + ")"
+                + ", T: " + sum + " | " + map;
     }
 }

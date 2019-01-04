@@ -272,4 +272,21 @@ public class Pattern {
 
         return true;
     }
+
+    public static int getPatternHeight(Vector<String> pat) {
+        int height = -1;
+        int res = -1;
+        for (int i = 0; i < pat.size(); ++i) {
+            if (pat.elementAt(i).equals(")")) {
+                --height;
+            } else {
+                ++height;
+                if (res < height) {
+                    res = height;
+                }
+            }
+        }
+        return res;
+    }
+
 }

@@ -90,5 +90,11 @@ public class Config {
         return Integer.valueOf(prop.getProperty("beamsize"));
     }
 
+    public int getNoImproveMaxIter() {
+        return Integer.valueOf(prop.getProperty("noImproveMaxIter"));
+    }
 
+    public int getTabuTenure() {
+        return Integer.valueOf(prop.getProperty("tabuTenure"));
+    }
 }
