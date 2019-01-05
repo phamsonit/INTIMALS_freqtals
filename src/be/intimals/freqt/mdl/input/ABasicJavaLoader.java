@@ -76,8 +76,13 @@ public abstract class ABasicJavaLoader<T> implements IDatabaseLoader<T> {
 
                 List<IDatabaseNode<T>> treeChildren = new ArrayList<>();
                 NodeList nodeList = currentNode.getChildNodes();
+                List<Node> actualList = new ArrayList<>();
                 for (int i = 0; i < nodeList.getLength(); i++) {
                     Node child = nodeList.item(i);
+                    if (child.getNodeName().equals("package") || child.getNodeName().equals("imports")) {
+                        continue;
+                    }
+                    actualList.add(child);
                     IDatabaseNode<T> newChildNode = DatabaseNode.create(currentTID, getKeyForNode(child), current);
                     treeChildren.add(newChildNode);
                 }
@@ -85,8 +90,11 @@ public abstract class ABasicJavaLoader<T> implements IDatabaseLoader<T> {
                 statsTree.addFanout(current.getChildrenCount());
                 statsTree.updateMaxFanout(current.getChildrenCount());
 
-                for (int i = 0; i < nodeList.getLength(); i++) {
-                    Node child = nodeList.item(i);
+                for (int i = 0; i < actualList.size(); i++) {
+                    Node child = actualList.get(i);
+                    //if (child.getNodeName().equals("package") || child.getNodeName().equals("imports")) {
+                    //    continue;
+                    //}
                     traverseHybrid(child, treeChildren.get(i));
                 }
             } else {
