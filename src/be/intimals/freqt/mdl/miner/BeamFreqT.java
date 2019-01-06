@@ -279,12 +279,12 @@ public class BeamFreqT {
 
                 Vector<String> nextPattern = expandPattern(pattern, currentCandidate.getKey());
 
-                //if (Util.noDuplicateChildren(nextPattern, ")")) {
+                if (Util.noDuplicateChildren(nextPattern, ")")) {
                     project(nextPattern, currentCandidate.getValue(), nextCandidateRule);
-                //} else {
-                //    System.out.println("Repeat ");
-                //}
-                //project(nextPattern, currentCandidate.getValue(), nextCandidateRule);
+                } else {
+                    System.out.println("Repeat ");
+                }
+                project(nextPattern, currentCandidate.getValue(), nextCandidateRule);
             }
         } catch (Exception e) {
             System.out.println("expanding error " + e);
