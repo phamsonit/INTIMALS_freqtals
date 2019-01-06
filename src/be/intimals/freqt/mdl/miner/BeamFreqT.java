@@ -20,7 +20,9 @@ import javafx.util.Pair;
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Paths;
+import java.text.SimpleDateFormat;
 import java.util.*;
+import java.util.function.Function;
 import java.util.logging.Logger;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
@@ -47,18 +49,21 @@ public class BeamFreqT {
     private int noImprovementCount = 0;
     private int iteration = 0;
     private TabuMoves tabu;
+    private Set<TSGRule<String>> uniqueRules;
 
+    private Function<SearchStatistics, Boolean> stopCondition;
     public SearchStatistics stats;
 
-    private BeamFreqT(Database<String> db, ATSG<String> tsg) {
+    private BeamFreqT(Database<String> db, ATSG<String> tsg, Function<SearchStatistics, Boolean> stopCondition) {
         loadDatabase(db);
         assertDBConsistent(db);
         this.tsg = tsg;
         this.lengthToBeat = tsg.getCodingLength();
+        this.stopCondition = stopCondition;
     }
 
-    public static BeamFreqT create(Database<String> db, ATSG<String> tsg) {
-        return new BeamFreqT(db, tsg);
+    public static BeamFreqT create(Database<String> db, ATSG<String> tsg, Function<SearchStatistics, Boolean> stopCondition) {
+        return new BeamFreqT(db, tsg, stopCondition);
     }
 
     /**
@@ -165,13 +170,14 @@ public class BeamFreqT {
 
     private void project(Vector<String> pattern, Projected projected, CandidateRule currentBest) {
         try {
+            if (stopCondition.apply(stats)) return;
             stats.incProject();
             ++iteration;
             ++noImprovementCount;
             debugPrintStats(pattern, projected, currentBest);
 
             if (noImprovementCount > config.getNoImproveMaxIter()) {
-                System.out.println("NO IMPROVEMENT");
+                //System.out.println("NO IMPROVEMENT");
                 return;
             }
             Map<String, Projected> candidates = generateCandidates(projected);
@@ -181,6 +187,7 @@ public class BeamFreqT {
 
             List<Pair<Double, CandidateRule>> kBestList;
             // Only try patterns with height > 1 because tsg is built on patterns of height 1
+            //if (Pattern.getPatternHeight(pattern) > 1 || projected.getProjectLocationSize() > 5000) {
             if (Pattern.getPatternHeight(pattern) > 1) {
                 // Out of all candidates, keep only a best limited subset of them
                 KBest<CandidateRule> kbest = KBest.create(config.getBeamSize() == -1 ? Integer.MAX_VALUE
@@ -219,6 +226,7 @@ public class BeamFreqT {
                     // Local search heuristics update
                     this.noImprovementCount = 0;
                     tabu.add(currentBest.getRule().getRoot().getLabel().hashCode(), iteration);
+                    uniqueRules.add(currentBest.getRule());
 
                     if (currentBest.getLength() < bestLengthFound) {
                         bestLengthFound = currentBest.getLength();
@@ -244,6 +252,7 @@ public class BeamFreqT {
                     lengthToBeat = oldLength;
                 }
             } else {
+                // Too small of a pattern to be interesting, to try to add to TSG
                 kBestList = new ArrayList<>();
                 for (Map.Entry<String, Projected> projectedEntry : candidates.entrySet()) {
                     kBestList.add(new Pair<>(Double.MAX_VALUE,
@@ -253,7 +262,7 @@ public class BeamFreqT {
             }
 
             if (stats.getProject() % 1000 == 0) {
-                System.out.println("To beat: " + lengthToBeat + " candidates: " + String.join(", ",
+                LOGGER.info("To beat: " + lengthToBeat + " candidates: " + String.join(", ",
                         kBestList.stream().map(e -> e.getValue().toString()).collect(Collectors.toList())));
             }
 
@@ -270,7 +279,12 @@ public class BeamFreqT {
 
                 Vector<String> nextPattern = expandPattern(pattern, currentCandidate.getKey());
 
-                project(nextPattern, currentCandidate.getValue(), nextCandidateRule);
+                //if (Util.noDuplicateChildren(nextPattern, ")")) {
+                    project(nextPattern, currentCandidate.getValue(), nextCandidateRule);
+                //} else {
+                //    System.out.println("Repeat ");
+                //}
+                //project(nextPattern, currentCandidate.getValue(), nextCandidateRule);
             }
         } catch (Exception e) {
             System.out.println("expanding error " + e);
@@ -361,11 +375,18 @@ public class BeamFreqT {
             //readNodeList();
 
             tabu = TabuMoves.create(config.getTabuTenure());
+            uniqueRules = new HashSet<>();
 
             // TODO useless grammar in output formats?
             output = config.outputAsXML() ? new XMLOutput(config, new HashMap<>()) : new LineOutput(config, new HashMap<>());
 
             System.out.println("find subtrees ... ");
+            Thread.sleep(1000);
+            SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss.SSS");
+            Date start = new Date();
+            String startDate = sdf.format(start);
+            System.out.println(startDate);
+            long startRun = System.currentTimeMillis();
 
             // Find 1-subtree
             freq1 = buildFreq1Set();
@@ -388,6 +409,15 @@ public class BeamFreqT {
                 this.bestRulesFound.forEach(e -> output.report(e.pattern, e.getPatternProject().getValue()));
             }
             output.close();
+
+            long endRun = System.currentTimeMillis();
+            long diff = endRun - startRun;
+            System.out.println("MINING running time : " + diff + " ms");
+
+            Date end = new Date();
+            System.out.println("Start: " + startDate + "End: " + sdf.format(end));
+            System.gc();
+            Thread.sleep(1000);
         } catch (Exception e) {
             System.out.println("running error");
         }
@@ -519,8 +549,12 @@ public class BeamFreqT {
         return this.bestRulesFound;
     }
 
+    public Set<TSGRule<String>> getUniqueRules() {
+        return uniqueRules;
+    }
+
     private void debugPrintStats(Vector<String> pattern, Projected projected, CandidateRule currentBest) throws IOException {
-        if (stats.getProject() % 1000 == 0) {
+        if (stats.getProject() % 50 == 0) {
             System.out.println(stats + " " + projected.getProjectLocation(0).getLocationList().size() + " improve: " + noImprovementCount);
             System.out.println(this.addedToTsg.stream().map(e -> e.getRule()).collect(Collectors.toList()));
             System.out.println(pattern);

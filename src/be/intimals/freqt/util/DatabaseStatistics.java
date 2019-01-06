@@ -128,7 +128,7 @@ public class DatabaseStatistics {
 
     public void write() {
         try {
-            CSVWriter writer = new CSVWriter(new FileWriter("out/data.csv"));
+            CSVWriter writer = new CSVWriter(new FileWriter("out/stats_dCobol40.csv"));
             String[] vertices = this.verticesList.stream().map(e -> e.toString()).toArray(String[]::new);
             String[] maxFanout = this.maxFanoutList.stream().map(e -> e.toString()).toArray(String[]::new);
             String[] fanout = this.fanoutList.stream().map(e -> e.toString()).toArray(String[]::new);

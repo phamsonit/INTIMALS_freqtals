@@ -163,6 +163,31 @@ public class Util {
         return parentPos;
     }
 
+    public static <U> boolean noDuplicateChildren(List<U> preorder, U delimiter) {
+        //List<Integer> parentPos = new ArrayList<>();
+        Deque<Integer> stack = new ArrayDeque<>();
+        Map<Integer, Set<U>> map = new HashMap<>();
+        stack.push(-1);
+        int countSymbols = 0;
+        for (int i = 0; i < preorder.size(); i++) {
+            U val = preorder.get(i);
+            if (val.equals(delimiter)) {
+                stack.poll();
+            } else {
+                //parentPos.add(stack.peek());
+                Set<U> set = map.getOrDefault(stack.peek(), new HashSet<>());
+                if (set.contains(val)) {
+                    return false;
+                }
+                set.add(val);
+                map.putIfAbsent(stack.peek(), set);
+                stack.push(countSymbols);
+                countSymbols++;
+            }
+        }
+        return true;
+    }
+
     public static boolean equalsFuzzy(final double a, final double b, final double epsilon) {
         if (a == b) return true;
         return Math.abs(a - b) < epsilon;
