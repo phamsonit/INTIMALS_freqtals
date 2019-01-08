@@ -191,7 +191,7 @@ public class Pattern {
 
 
     /**
-     * check if candidate occurs more than n times in an node-list ?
+     * check if label occurs more than n times in a node-list ?
      * @param pat
      * @param candidate
      * @param n
@@ -258,65 +258,7 @@ public class Pattern {
     }
 
 
-    //checkLineDistance(pattern, candidate, projected, threshold)
-    public static boolean checkLineDistance(Vector<String> pat,
-                                      String candidate,
-                                      Projected projected,
-                                      int threshold){
 
-        if(Pattern.checkMissedLeafNode(pat)) return false;
-
-        //System.out.println("check line distance");
-
-        //find LineNr of two repeated labels
-        String p = Pattern.getPotentialCandidateLabel(candidate);
-        //System.out.println("pattern "+pattern );
-
-        List<List<Integer>> lines = new LinkedList<>();
-        int index = 0;
-        for (int i = 0; i < pat.size(); ++i) {
-            List<Integer> temp = new LinkedList<>();
-            if (pat.elementAt(i).equals(p)) {
-                for (int j = 0; j < projected.getProjectLocationSize(); ++j) {
-                    //System.out.print(projected.getProjectLineNr(j).get(index)+" ");
-                    temp.add(projected.getProjectLineNr(j).get(index));
-                }
-                ++index;
-                lines.add(temp);
-                //System.out.println();
-            } else if (!pat.elementAt(i).equals(")"))
-                ++index;
-        }
-/*
-        System.out.println("occurrences ");
-        for(int i=0; i<projected.getProjectLocationSize();i++)
-            System.out.println(projected.getProjectLocation(i).getLocationList());
-
-        System.out.println("lines of "+ p);
-        for(int i=0; i<lines.size();++i)
-            System.out.println(lines.get(i));
-*/
-        //calculate the largest distance
-        int maxDistance = 0;
-
-        if (lines.size() > 1) {
-            //System.out.println("number of line occurrences "+lines.get(0).size());
-            int pos = 0;
-            for (int i = 0; i < lines.get(0).size(); ++i) {
-                int distance = lines.get(lines.size() - 1).get(i) - lines.get(lines.size() - 2).get(i);
-                if(maxDistance < distance) maxDistance = distance;
-                //remove occurrence having distance less than threshold
-                if(distance < threshold) {
-                    projected.removeProjectLocation(projected.getProjectLocation(i - pos));
-                    ++pos;
-                }
-            }
-            //System.out.println();
-        }
-        //System.out.println("max line distance " + maxDistance);
-        if(maxDistance >= threshold || maxDistance == 0) return true;
-        else return false;
-    }
 
 
     /**
@@ -327,7 +269,7 @@ public class Pattern {
      * @param whiteChildrenList
      * @return
      */
-    public static boolean checkMissMandatoryChild(Vector<String> childrenInPattern,
+    public static boolean checkMissedMandatoryChild(Vector<String> childrenInPattern,
                                                    Vector<String> childrenInGrammar,
                                                    Set<String> blackChildrenList,
                                                    Set<String> whiteChildrenList){
@@ -379,4 +321,94 @@ public class Pattern {
         }
         return childrenTemp;
     }
+
+    //checkLineDistance(pattern, candidate, projected, threshold)
+    public static boolean checkLineDistance(Vector<String> pat,
+                                      String candidate,
+                                      Projected projected,
+                                      int _minLineDistance,
+                                      int _maxLineDistance){
+
+        if(Pattern.checkMissedLeafNode(pat)) return false;
+
+        //System.out.println("check line distance");
+
+        //find LineNr of two repeated labels
+        String p = Pattern.getPotentialCandidateLabel(candidate);
+        //System.out.println("pattern "+pattern );
+
+        List<List<Integer>> lines = new LinkedList<>();
+        int index = 0;
+        for (int i = 0; i < pat.size(); ++i) {
+            List<Integer> temp = new LinkedList<>();
+            if (pat.elementAt(i).equals(p)) {
+                for (int j = 0; j < projected.getProjectLocationSize(); ++j) {
+                    //System.out.print(projected.getProjectLineNr(j).get(index)+" ");
+                    temp.add(projected.getProjectLineNr(j).get(index));
+                }
+                ++index;
+                lines.add(temp);
+                //System.out.println();
+            } else if (!pat.elementAt(i).equals(")"))
+                ++index;
+        }
+/*
+        System.out.println("occurrences ");
+        for(int i=0; i<projected.getProjectLocationSize();i++)
+            System.out.println(projected.getProjectLocation(i).getLocationList());
+
+        System.out.println("lines of "+ p);
+        for(int i=0; i<lines.size();++i)
+            System.out.println(lines.get(i));
+*/
+        //calculate the largest distance
+        int maxDistance = 0;
+
+        if (lines.size() > 1) {
+            //System.out.println("number of line occurrences "+lines.get(0).size());
+            int pos = 0;
+            for (int i = 0; i < lines.get(0).size(); ++i) {
+                int distance = lines.get(lines.size() - 1).get(i) - lines.get(lines.size() - 2).get(i);
+                if(maxDistance < distance) maxDistance = distance;
+                //remove occurrence having distance less than threshold
+                if((distance < _minLineDistance) && (distance > _maxLineDistance)) {
+                    projected.removeProjectLocation(projected.getProjectLocation(i - pos));
+                    ++pos;
+                }
+            }
+            //System.out.println();
+        }
+        //System.out.println("max line distance " + maxDistance);
+        if( ((maxDistance >= _minLineDistance) && (maxDistance <= _maxLineDistance)) || maxDistance == 0) return true;
+        else return false;
+    }
+
+
+    /**
+     * check combination of constraints
+     * @param pat
+     * @param maxLeaf
+     * @param maxTimeLabel
+     * @return
+     */
+    public static boolean checkConstraints(Vector<String> pat, int maxLeaf, int maxTimeLabel) {
+        boolean result = false;
+
+        if( countLeafNode(pat)  >  maxLeaf ){
+            //System.out.println("max leaf pruning");
+            result = true;
+        }
+        if( checkNumberLabel(pat,maxTimeLabel) ){
+            //System.out.println("repeated label pruning");
+            result = true;
+        }
+        if( checkMissedLeafNode(pat) ){
+            //System.out.println("missed leaf pruning");
+            result = true;
+        }
+
+        return result;
+    }
+
+
 }

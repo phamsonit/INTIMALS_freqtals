@@ -32,14 +32,13 @@ public abstract class AOutputFormatter {
 
         boolean result = false;
 
-        if(Pattern.getPatternSize(pat) < config.getMinPatternSize()) result = true;
-
-        if(Pattern.countLeafNode(pat) < config.getMinLeaf()) result = true;
-
-        if(Pattern.checkMissedLeafNode(pat)) result = true;
+        if(Pattern.getPatternSize(pat) <= config.getMaxPatternSize()){
+            if(Pattern.getPatternSize(pat) < config.getMinPatternSize()) result = true;
+            if(Pattern.checkMissedLeafNode(pat)) result = true;
+            if(Pattern.countLeafNode(pat) < config.getMinLeaf()) result = true;
+        }
 
         return result;
-
     }
 
 

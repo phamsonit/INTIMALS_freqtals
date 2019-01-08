@@ -34,24 +34,24 @@ public class LineOutput extends AOutputFormatter {
                 String patTemp = Pattern.getPatternString(pat);
                 String[] sup = patSupMap.get(patTemp).split(" ");
                 //out.write("supp:"+sup[0]+" wsupp:"+sup[1]+" size:"+sup[2]+"\t");
-                out.write("supp:"+sup[0]+ " size:"+sup[2]+"\t");
+                out.write("fileIds:\t "+sup[0] +"\t supp:"+sup[1]+ " size:"+sup[3]+"\t");
             }
-            else
-            {
+            else{
                 int size = Pattern.getPatternSize(pat);
                 int sup = projected.getProjectedSupport();
-                int wsup = projected.getProjectLocationSize();
+                //int wsup = projected.getProjectLocationSize();
+                int wsup = FreqT.rootSupport(projected);
                 int rsup = FreqT.rootSupport(projected);
 
-                List<Integer> allOccurrences = getSizeAllOccurrences(projected);
+                //List<Integer> allOccurrences = getSizeAllOccurrences(projected);
 
                 assert(size == projected.getProjectLocation(0).getLocationList().size());
 
                 //System.out.println(FreqT.getPatternString(pat));
                 //printAllOccurrence(projected);
 
-                out.write("occurrences:"+allOccurrences.size()+" supp:"+sup + " rsupp:" + rsup +" size:" + size + "\t");
-                //out.write("supp:"+ sup  +" size:" + size + "\t");
+                //out.write("occurrences:"+allOccurrences.size()+" supp:"+sup + " rsupp:" + rsup +" size:" + size + "\t");
+                out.write("supp:"+ sup  +" size:" + size + "\t");
             }
 
             if(config.outputAsENC()){
@@ -77,18 +77,17 @@ public class LineOutput extends AOutputFormatter {
                     out.write(")");
                 }
                 out.write("\n");
+
             }
             //output locations
             if(config.addLocations()){
                 out.write("Locations : ");
                 out.write(projected.getProjectLocation(0).getLocationId()+" ");
-                for(int i=0; i<projected.getProjectLocationSize()-1; ++i)
-                {
+                for(int i=0; i<projected.getProjectLocationSize()-1; ++i){
                     Location tmp1 = projected.getProjectLocation(i);
                     Location tmp2 = projected.getProjectLocation(i+1);
                     if(tmp1.getLocationId() != tmp2.getLocationId())
                         out.write(tmp2.getLocationId()+" ");
-
                 }
                 out.write("\n");
             }

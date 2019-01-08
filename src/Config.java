@@ -48,23 +48,23 @@ public class Config {
     }
 
     public int getMinSupport() {
-        return Integer.valueOf(prop.getProperty("minsup"));
+        return Integer.valueOf(prop.getProperty("minSupport"));
     }
 
     public int getMinPatternSize() {
-        return Integer.valueOf(prop.getProperty("minpat"));
+        return Integer.valueOf(prop.getProperty("minPatternSize"));
     }
 
     public int getMaxPatternSize() {
-        return Integer.valueOf(prop.getProperty("maxpat"));
+        return Integer.valueOf(prop.getProperty("maxPatternSize"));
     }
 
     public int getMinLeaf() {
-        return Integer.valueOf(prop.getProperty("minleaf"));
+        return Integer.valueOf(prop.getProperty("minLeafSize"));
     }
 
     public int getMaxLeaf() {
-        return Integer.valueOf(prop.getProperty("maxleaf"));
+        return Integer.valueOf(prop.getProperty("maxLeafSize"));
     }
 
     public boolean addLocations() {
@@ -82,16 +82,22 @@ public class Config {
     public boolean postProcess(){return Boolean.valueOf(prop.getProperty("post"));}
 
     public  int getMaxTimeLabel(){
-        return Integer.valueOf(prop.getProperty("maxtimelabel"));
+        return Integer.valueOf(prop.getProperty("maxTimeLabel"));
     }
 
     public  int getMaxRepeatLabel(){
-        return Integer.valueOf(prop.getProperty("maxrepeatlabel"));
+        return Integer.valueOf(prop.getProperty("maxRepeatLabel"));
     }
 
-    public  int getLineDistance(){
-        return Integer.valueOf(prop.getProperty("linedistance"));
+    public  int getMinLineDistance(){
+        return Integer.valueOf(prop.getProperty("minLineDistance"));
     }
+
+    public  int getMaxLineDistance(){
+        return Integer.valueOf(prop.getProperty("maxLineDistance"));
+    }
+
+
 
 
 }

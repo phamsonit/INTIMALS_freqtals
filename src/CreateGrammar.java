@@ -44,7 +44,7 @@ public class CreateGrammar extends ReadXML {
                     //==> can not apply this to new grammar which has no nodes include empty
                     boolean mandatory = true;
                     if(!childrenList.item(i).hasChildNodes()) {
-                        System.out.println(childrenList.item(i).getNodeName() + " : optional");
+                        //System.out.println(childrenList.item(i).getNodeName() + " : optional");
                         mandatory = false;
                     }
                     //============================
@@ -334,8 +334,8 @@ public class CreateGrammar extends ReadXML {
                 String[] split = fi.getName().split("\\.");
                 String ext = split[split.length - 1];
                 if(ext.toLowerCase().equals("xml")){
-                    System.out.print("reading file ----------------");
-                    System.out.println(f+"/"+fi.getName());
+                    //System.out.print("reading file ----------------");
+                    //System.out.println(f+"/"+fi.getName());
                     File fXmlFile = new File(f+"/"+fi.getName());
                     DocumentBuilderFactory dbFactory = DocumentBuilderFactory.newInstance();
                     DocumentBuilder dBuilder = dbFactory.newDocumentBuilder();

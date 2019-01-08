@@ -25,7 +25,7 @@ public class XMLOutput extends AOutputFormatter {
     }
 
     /**
-     * Represent subtrees with XML format + Ekeko
+     * Represent subtrees in XML format + Ekeko
      * @param pat
      * @param projected
      */
@@ -41,14 +41,14 @@ public class XMLOutput extends AOutputFormatter {
             if(config.postProcess()){
                 String patTemp = Pattern.getPatternString(pat);
                 String[] sup = patSupMap.get(patTemp).split(" ");
-                out.write("<subtree id=\""+ nbPattern+ "\" support=\"" + sup[0] +
-                        "\" wsupport=\"" + sup[1] + "\" size=\"" + sup[2] + "\">\n");
+                out.write("<subtree id=\""+ nbPattern+ "\" support=\"" + sup[1] +
+                        "\" wsupport=\"" + sup[2] + "\" size=\"" + sup[3] + "\">\n");
             }
-            else
-            {
-                int size = Pattern.getPatternSize(pat);
+            else{
                 int sup = projected.getProjectedSupport();
-                int wsup = projected.getProjectLocationSize();
+                //int wsup = projected.getProjectLocationSize();
+                int wsup = FreqT.rootSupport(projected);
+                int size = Pattern.getPatternSize(pat);
 
                 out.write("<subtree id=\""+ nbPattern+ "\" support=\"" + sup +
                         "\" wsupport=\"" + wsup + "\" size=\"" + size + "\">\n");

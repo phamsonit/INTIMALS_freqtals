@@ -5,21 +5,21 @@
 
 
 #TypeDeclaration [unordered, 8, javadoc¥false, modifiers¥true, interface¥true, name¥true, typeParameters¥false, superclassType¥false, superInterfaceTypes¥false, bodyDeclarations¥true]
-TypeDeclaration name bodyDeclarations
+#TypeDeclaration name bodyDeclarations
 
 #bodyDeclarations [unordered, 1..*, ...]
 bodyDeclarations MethodDeclaration
 
 #MethodDeclaration [unordered, 12, javadoc¥false, modifiers¥true, constructor¥true, typeParameters¥false, returnType2¥false, name¥true, receiverType¥false, receiverQualifier¥false, parameters¥false, extraDimensions2¥false, thrownExceptionTypes¥false, body¥false]
-MethodDeclaration name
+MethodDeclaration name body
 
 #SimpleName [unordered, 2, identifier¥true, var¥true]
 SimpleName identifier
 
 #ClassInstanceCreation [unordered, 5, expression¥false, typeArguments¥true, type¥true, arguments¥true, anonymousClassDeclaration¥false]
-ClassInstanceCreation type anonymousClassDeclaration
+#ClassInstanceCreation type anonymousClassDeclaration
 
-statements ExpressionStatement
+#statements ExpressionStatement
 
 #SuperMethodInvocation [unordered, 4, qualifier¥false, typeArguments¥true, name¥true, arguments¥true]
-SuperMethodInvocation name
+#SuperMethodInvocation name

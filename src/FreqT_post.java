@@ -19,7 +19,7 @@ public class FreqT_post extends FreqT {
     private Vector < String > maximalPattern;
     private Vector < Vector<NodeFreqT> > newTransaction = new Vector<>();
 
-    //store mapping of old (sup, wsup, size) and pattern
+    //store mapping of old {sup, wsup, size} and pattern
     private Map<String,String> patSupMap = new LinkedHashMap<>();
 
     //store root labels of input patterns
@@ -52,7 +52,9 @@ public class FreqT_post extends FreqT {
 
             //System.out.println(getPatternString(maximalPattern));
 
-            if( Pattern.checkMissedLeafNode(maximalPattern) ) return;
+            //if(Pattern.getPatternSize(maximalPattern) <= config.getMaxPatternSize())
+                if( Pattern.checkMissedLeafNode(maximalPattern) )
+                    return;
 
             //find all candidates of the current subtree
             int depth = projected.getProjectedDepth();
@@ -140,6 +142,7 @@ public class FreqT_post extends FreqT {
             xmlCharacters = _xmlChar;
             //os = new FileWriter(config.getOutputFile());
             /*  ==============================  */
+            //System.out.println("# patterns : "+ newTransaction.size());
             System.out.println("==============================");
             System.out.println("running FreqT post-processing");
             System.out.println("==============================");
@@ -149,8 +152,8 @@ public class FreqT_post extends FreqT {
             output = config.outputAsXML() ? new XMLOutput(config, grammar, xmlCharacters, patSupMap) :
                                             new LineOutput(config, grammar, xmlCharacters, patSupMap, uniChar);
 
-            System.out.println("mining maximal subtrees ... "+ newTransaction.size());
 
+            System.out.println("mining maximal subtrees ...");
             //find 1-subtree
             Map < String , Projected > freq1 = buildFreq1Set();
 

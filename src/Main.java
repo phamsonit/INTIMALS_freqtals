@@ -28,15 +28,17 @@ import java.util.LinkedHashMap;
 import java.util.Map;
 import java.util.Vector;
 
+
 public class Main {
 
     static public void main(String[] args) {
 
         try{
 
-            String configPath = args.length == 0 ? "conf/cobol/config.properties" : args[0];
+            String configPath = args.length == 0 ? "conf/java/config.properties" : args[0];
 
             Config config = new Config(configPath);
+
 
             //run Freqt
             long start = System.currentTimeMillis( );
@@ -44,7 +46,7 @@ public class Main {
             FreqT t = new FreqT();
 
             t.run(config); //-> outPatterns
-            //System.out.println("number of subtrees: " + t.getOutputPatterns().size());
+            System.out.println("number of subtrees: " + t.getOutputPatterns().size());
             //System.out.println("frequent patterns: "+t.getOutputPatterns().size());
             long end = System.currentTimeMillis( );
             long diff = end - start;
@@ -62,6 +64,9 @@ public class Main {
                 System.out.println("post-processing time : " + diff +" ms");
             }
 
+            //Util.createTransaction(config.getOutputFile(),"eclat-input-java-draw-action-39files.txt");
+
+
             /*
             //call forestmatcher
             System.out.println("Running matcher ...");
@@ -75,12 +80,14 @@ public class Main {
             */
 
 
+            /*
             //group patterns by leaf label sets
             System.out.println("finding pattern groups ...");
             String patternsInput = config.getOutputFile();
             String patternGroupOutput = "cobol_output/pattern-group-filter.txt";
             Analyse analyse = new Analyse();
-            analyse.analysePattern(patternsInput,patternGroupOutput);
+            Ulti.groupPattern(patternsInput,patternGroupOutput);
+            */
 
         }
         catch (Exception e){System.out.println(e);}
