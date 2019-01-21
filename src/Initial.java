@@ -13,10 +13,9 @@ public class Initial {
      */
     public static void initDatabase(String path, Map<String,Vector<String>> gram, Vector < Vector<NodeFreqT> > trans) {
 
-        System.out.println("reading data ...");
+        //System.out.println("reading data ...");
         ReadXML readXML = new ReadXML();
         readXML.createTransaction(new File(path),gram,trans);
-        //System.out.println("total files: "+transaction.size());
 
         //create transaction from single input file
         //ReadFile r = new ReadFile();
@@ -29,7 +28,7 @@ public class Initial {
     public static void initGrammar(String path, Map<String, Vector<String>> gram, boolean _buildGrammar) throws Exception {
         //read grammar from grammarFile
         try{
-            System.out.println("generating grammar ... ");
+            //System.out.println("generating grammar ... ");
             if(_buildGrammar) {
                 CreateGrammar createGrammar = new CreateGrammar();
                 createGrammar.createGrammar(path, gram);

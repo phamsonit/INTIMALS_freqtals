@@ -46,8 +46,7 @@ public class XMLOutput extends AOutputFormatter {
             }
             else{
                 int sup = projected.getProjectedSupport();
-                //int wsup = projected.getProjectLocationSize();
-                int wsup = FreqT.rootSupport(projected);
+                int wsup = projected.getProjectedRootSupport();
                 int size = Pattern.getPatternSize(pat);
 
                 out.write("<subtree id=\""+ nbPattern+ "\" support=\"" + sup +

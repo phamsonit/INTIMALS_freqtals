@@ -23,6 +23,11 @@ public abstract class AOutputFormatter {
         out = new FileWriter(config.getOutputFile());
     }
 
+
+    public int getNbPattern(){
+        return this.nbPattern;
+    }
+
     /**
      * check if a pattern satisfies output constraints
      * @param pat
@@ -30,15 +35,13 @@ public abstract class AOutputFormatter {
      */
     public boolean checkOutputConstraint(Vector<String> pat){
 
-        boolean result = false;
 
-        if(Pattern.getPatternSize(pat) <= config.getMaxPatternSize()){
-            if(Pattern.getPatternSize(pat) < config.getMinPatternSize()) result = true;
-            if(Pattern.checkMissedLeafNode(pat)) result = true;
-            if(Pattern.countLeafNode(pat) < config.getMinLeaf()) result = true;
-        }
+        if(Pattern.checkMissedLeafNode(pat) || (Pattern.countLeafNode(pat) < config.getMinLeaf()) )
+            return true;
+        else
+            return false;
 
-        return result;
+
     }
 
 

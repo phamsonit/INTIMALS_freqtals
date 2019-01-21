@@ -15,6 +15,16 @@ public class Config {
         input.close();
     }
 
+
+    public int getConfigID(){
+        return Integer.valueOf(prop.getProperty("configID"));
+    }
+
+    public Properties getProp(){
+        return this.prop;
+    }
+
+
     public boolean buildGrammar() {
         return Boolean.valueOf(prop.getProperty("buildGrammar"));
     }
@@ -25,10 +35,6 @@ public class Config {
 
     public String getRootLabelFile() {
         return prop.getProperty("rootLabelFile");
-    }
-
-    public String getBlackLabelFile() {
-        return prop.getProperty("blackLabelFile");
     }
 
     public String getWhiteLabelFile() {
@@ -80,10 +86,6 @@ public class Config {
     }
 
     public boolean postProcess(){return Boolean.valueOf(prop.getProperty("post"));}
-
-    public  int getMaxTimeLabel(){
-        return Integer.valueOf(prop.getProperty("maxTimeLabel"));
-    }
 
     public  int getMaxRepeatLabel(){
         return Integer.valueOf(prop.getProperty("maxRepeatLabel"));

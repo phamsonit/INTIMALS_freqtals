@@ -388,26 +388,17 @@ public class Pattern {
      * check combination of constraints
      * @param pat
      * @param maxLeaf
-     * @param maxTimeLabel
      * @return
      */
-    public static boolean checkConstraints(Vector<String> pat, int maxLeaf, int maxTimeLabel) {
-        boolean result = false;
+    public static boolean checkConstraints(Vector<String> pat, int maxLeaf) {
 
-        if( countLeafNode(pat)  >  maxLeaf ){
-            //System.out.println("max leaf pruning");
-            result = true;
-        }
-        if( checkNumberLabel(pat,maxTimeLabel) ){
-            //System.out.println("repeated label pruning");
-            result = true;
-        }
-        if( checkMissedLeafNode(pat) ){
-            //System.out.println("missed leaf pruning");
-            result = true;
-        }
+        if(checkMissedLeafNode(pat) ||
+                (countLeafNode(pat)  >  maxLeaf) )
+            return true;
+        else
+            return false;
 
-        return result;
+
     }
 
 

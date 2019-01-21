@@ -29,19 +29,18 @@ public class LineOutput extends AOutputFormatter {
         try{
 
             if(checkOutputConstraint(pat)) return;
+            ++nbPattern;
 
             if(config.postProcess()){
                 String patTemp = Pattern.getPatternString(pat);
                 String[] sup = patSupMap.get(patTemp).split(" ");
                 //out.write("supp:"+sup[0]+" wsupp:"+sup[1]+" size:"+sup[2]+"\t");
-                out.write("fileIds:\t "+sup[0] +"\t supp:"+sup[1]+ " size:"+sup[3]+"\t");
+                out.write("fileIds:\t "+sup[0] +"\t supp:"+sup[1]+ "\t wsup:" +sup[2] + " size:"+sup[3]+"\t");
             }
             else{
                 int size = Pattern.getPatternSize(pat);
                 int sup = projected.getProjectedSupport();
-                //int wsup = projected.getProjectLocationSize();
-                int wsup = FreqT.rootSupport(projected);
-                int rsup = FreqT.rootSupport(projected);
+                int wsup = projected.getProjectedRootSupport();
 
                 //List<Integer> allOccurrences = getSizeAllOccurrences(projected);
 
@@ -51,7 +50,7 @@ public class LineOutput extends AOutputFormatter {
                 //printAllOccurrence(projected);
 
                 //out.write("occurrences:"+allOccurrences.size()+" supp:"+sup + " rsupp:" + rsup +" size:" + size + "\t");
-                out.write("supp:"+ sup  +" size:" + size + "\t");
+                out.write("supp:"+ sup  + " wsup:" + wsup +" size:" + size + "\t");
             }
 
             if(config.outputAsENC()){

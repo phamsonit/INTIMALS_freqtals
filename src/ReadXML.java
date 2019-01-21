@@ -311,7 +311,7 @@ public class ReadXML {
                         createTransaction(fi , grammar, transaction );
                     }
             }
-
+            //System.out.println("input : "+nbFiles);
         } catch (Exception e) { System.out.println("input error");}
 
     }
@@ -347,7 +347,6 @@ public class ReadXML {
 
 
     }
-
 
     public static void printTransaction(Vector < Vector<NodeFreqT> > trans){
         for(int i=0; i<trans.size(); ++i){
