@@ -139,7 +139,7 @@ public class FreqT_max extends FreqT {
      * run Freqt with file config.properties
      * @param _config
      */
-    public void run(Config _config, Set<String> inPatterns, Map <String,Vector<String> > _grammar, Map <String,String > _xmlChar) {
+    public void run(Config _config, Map<String,String> inPatterns, Map <String,Vector<String> > _grammar, Map <String,String > _xmlChar) {
         try{
             config = _config;
             grammar = _grammar;
@@ -151,9 +151,8 @@ public class FreqT_max extends FreqT {
             //System.out.println("running FreqT post-processing");
             //System.out.println("==============================");
 
+            //initDatabase(inPatterns);
             initDatabase(inPatterns);
-
-
 
             output = config.outputAsXML() ? new XMLOutput(config, grammar, xmlCharacters, patSupMap) :
                                             new LineOutput(config, grammar, xmlCharacters, patSupMap, uniChar);
@@ -198,11 +197,11 @@ public class FreqT_max extends FreqT {
                 //if node_label exists
                 if(freq1.containsKey(node_label)) {
                     freq1.get(node_label).setProjectLocation(i,j);
-                    //freq1.get(node_label).setProjectRootLocation(i,j);
+                    freq1.get(node_label).setProjectRootLocation(i,j);
                 }
                 else {
                     projected.setProjectLocation(i,j);
-                    //projected.setProjectRootLocation(i,j);
+                    projected.setProjectRootLocation(i,j);
                     freq1.put(node_label, projected);
                 }
             }
@@ -210,13 +209,10 @@ public class FreqT_max extends FreqT {
         return freq1;
     }
 
-    /**
-     * Loads data from folders
-     */
-    private void initDatabase(Set<String> patternSet) {
+    private void initDatabase(Map<String,String> patternMap) {
         //System.out.println("reading input subtrees ...");
         ReadFile readFile = new ReadFile();
-        readFile.createTransactionNew(patternSet,newTransaction,patSupMap,rootLabel);
+        readFile.createTransactionFromMap(patternMap,newTransaction,patSupMap,rootLabel);
     }
 
 }

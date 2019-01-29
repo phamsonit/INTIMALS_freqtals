@@ -36,122 +36,137 @@ public class Main {
 
         try{
 
-            //load basic configuration
-            String configPathBasic = args.length == 0 ? "conf/java/config.properties" : args[0];
-            Config configBasic = new Config(configPathBasic);
+            for(int minsup=10; minsup >= 5; minsup-- ) {
 
-            String inputMinSup = args.length == 0 ? String.valueOf(configBasic.getMinSupport()) : args[1];
-            String inputFold   = args.length == 0 ? "6" : args[2];
-            int time = args.length == 0 ? 15 : Integer.valueOf(args[3]);
+                //load basic configuration
+                String configPathBasic = args.length == 0 ? "conf/java/config.properties" : args[0];
+                Config configBasic = new Config(configPathBasic);
 
-            TimeOut timeOut = new TimeOut();
-            timeOut.setTimes(time*60*1000);
-            Thread timeOutThread = new Thread(timeOut);
-            timeOutThread.start();
+                String inputMinSup = args.length == 0 ? String.valueOf(configBasic.getMinSupport()) : args[1];
+                String inputFold = args.length == 0 ? "draw/action" : args[2];
+                int time = args.length == 0 ? 60 : Integer.valueOf(args[3]);
 
-            //create temporary configuration
-            Properties prop;
-            OutputStream output = null;
+                //set time out for program
+                TimeOut timeOut = new TimeOut();
+                timeOut.setTimes(time * 60 * 1000);
+                Thread timeOutThread = new Thread(timeOut);
+                timeOutThread.start();
 
-            String rootDir = "";
+                //create temporary configuration
+                Properties prop;
+                OutputStream output = null;
+                String configPathTemp = "";
 
-            String configPathTemp="";
-            String inputPath = "";
-            String outputPath = "";
+                String inputPath = "";
+                String outputPath = "";
 
-            String sourceMatcher = "";
-            String inputPatterns = "";
-            String outputMatches = "";
+                String sourceMatcher = "";
+                String inputPatterns = "";
+                String outputMatches = "";
 
-            try {
-                prop = configBasic.getProp();
+                String reportFile = "";
 
-                rootDir = configBasic.getInputFiles().replace("\"","")+inputFold;
-                //update input dir path
-                inputPath = rootDir + "/sources";
-                //update output file path
-                outputPath = rootDir +"/patterns"+inputMinSup+".xml";
-                //delete output file if if exists
-                Files.deleteIfExists(Paths.get(outputPath));
+                try {
+                    prop = configBasic.getProp();
 
-                //create parameters for forest matcher
-                sourceMatcher = inputPath;
-                inputPatterns = outputPath;
-                outputMatches = rootDir +"/matches"+inputMinSup+".xml";
-                Files.deleteIfExists(Paths.get(outputMatches));
+                    inputMinSup = String.valueOf(minsup);
 
-                //update path of temporary configuration
-                configPathTemp = rootDir + "/config"+inputMinSup+".properties";
-                Files.deleteIfExists(Paths.get(configPathTemp));
+                    //update input dir path
+                    inputPath = configBasic.getInputFiles().replace("\"", "") + "/"+inputFold;
+                    //update output file path
+                    outputPath = configBasic.getOutputFile().replace("\"","") +
+                            "/"+inputFold.replaceAll("\\/","-")+"-" + inputMinSup +"-patterns.xml";
+                    //delete output file if if exists
+                    Files.deleteIfExists(Paths.get(outputPath));
 
-                prop.replace("minSupport",inputMinSup);
-                prop.replace("inFiles",inputPath);
-                prop.replace("outFile",outputPath);
-                // save new properties
-                output = new FileOutputStream(configPathTemp);
-                prop.store(output, null);
+                    //create parameters for forest matcher
+                    sourceMatcher = inputPath;
+                    inputPatterns = outputPath;
+                    outputMatches = configBasic.getOutputFile().replace("\"","") +
+                            "/"+inputFold.replaceAll("\\/","-")+"-" +inputMinSup + "-matches.xml";
+                    Files.deleteIfExists(Paths.get(outputMatches));
 
-            } catch (IOException io) {
-                io.printStackTrace();
-            } finally {
-                if (output != null) {
-                    try {
-                        output.close();
-                    } catch (IOException e) {
-                        e.printStackTrace();
+                    //update path of temporary configuration
+                    configPathTemp = configBasic.getOutputFile().replace("\"","")
+                            + "/"+ inputFold.replaceAll("\\/","-")+"-"+ inputMinSup + "-config.properties";
+                    Files.deleteIfExists(Paths.get(configPathTemp));
+
+                    //create report path
+                    reportFile = configBasic.getOutputFile().replaceAll("\"","") +
+                            "/"+inputFold.replaceAll("\\/","-")+"-"+ inputMinSup + "-report.txt";
+
+
+                    //update properties
+                    prop.replace("minSupport", inputMinSup);
+                    prop.replace("inFiles", inputPath);
+                    prop.replace("outFile", outputPath);
+                    // save new properties
+                    output = new FileOutputStream(configPathTemp);
+                    prop.store(output, null);
+
+                } catch (IOException io) {
+                    io.printStackTrace();
+                } finally {
+                    if (output != null) {
+                        try {
+                            output.close();
+                        } catch (IOException e) {
+                            e.printStackTrace();
+                        }
                     }
                 }
-            }
 
-           //load new configuration;
-            Config config = new Config(configPathTemp);
+                //load new configuration;
+                Config config = new Config(configPathTemp);
 
-            //run Freqt
-            long start = System.currentTimeMillis( );
+                //run Freqt
+                long start = System.currentTimeMillis();
 
-            //find frequent subtrees
-            FreqT freqt = new FreqT();
-            freqt.run(config);
-            //create report for each sub-dataset
-            FileWriter report = new FileWriter(rootDir+"/report"+inputMinSup+".txt");
+                //find frequent subtrees
+                FreqT freqt = new FreqT();
+                freqt.run(config);
+                //create report for each sub-dataset
 
-            report.write("data sources : "+config.getInputFiles()+"\n");
-            System.out.println("data sources : "+config.getInputFiles());
 
-            report.write("input files : "+freqt.getNbInputFiles()+"\n");
-            System.out.println("input files : "+freqt.getNbInputFiles());
+                FileWriter report = new FileWriter(reportFile);
 
-            report.write("minSupport : "+config.getMinSupport()+"\n");
-            System.out.println("minSupport : "+config.getMinSupport());
+                report.write("data sources : " + config.getInputFiles() + "\n");
+                System.out.println("data sources : " + config.getInputFiles());
 
-            report.write("frequent patterns : "+freqt.getNbOutputFrequentPatterns()+"\n");
-            System.out.println("frequent patterns : "+freqt.getNbOutputFrequentPatterns());
+                report.write("input files : " + freqt.getNbInputFiles() + "\n");
+                System.out.println("input files : " + freqt.getNbInputFiles());
 
-            report.write("maximal patterns : "+ freqt.getNbOutputMaximalPatterns()+"\n");
-            System.out.println("maximal patterns : "+ freqt.getNbOutputMaximalPatterns());
+                report.write("minSupport : " + config.getMinSupport() + "\n");
+                System.out.println("minSupport : " + config.getMinSupport());
 
-            long end = System.currentTimeMillis( );
-            long diff = end - start;
-            System.out.println("mining time : " + diff +" ms");
-            report.write("running time : "+diff+" ms \n");
-            //close report file
-            report.close();
-            System.exit(3);
+                report.write("frequent patterns : " + freqt.getNbOutputFrequentPatterns() + "\n");
+                System.out.println("frequent patterns : " + freqt.getNbOutputFrequentPatterns());
 
-            //create transaction data for itemset mining
-            //if(!config.outputAsXML())
-            //Util.createTransaction(config.getOutputFile(),"eclat-"+config.getOutputFile());
+                report.write("maximal patterns : " + freqt.getNbOutputMaximalPatterns() + "\n");
+                System.out.println("maximal patterns : " + freqt.getNbOutputMaximalPatterns());
 
-            /*
-            //run forestmatcher
-            //System.out.println("Running forestmatcher ...");
-            if(config.outputAsXML()){
-                String command = "java -jar forestmatcher.jar " +
-                        sourceMatcher + " " + inputPatterns +" " + outputMatches;
-                Process proc = Runtime.getRuntime().exec(command);
-            }
-            */
+                long end = System.currentTimeMillis();
+                long diff = end - start;
+                System.out.println("mining time : " + diff + " ms");
+                report.write("running time : " + diff + " ms \n");
+                //close report file
+                report.close();
 
+
+                //create transaction data for itemset mining
+                //if(!config.outputAsXML())
+                //Util.createTransaction(config.getOutputFile(),"eclat-"+config.getOutputFile());
+
+
+                //run forestmatcher
+                //System.out.println("Running forestmatcher ...");
+                if(config.outputAsXML()){
+                    String command = "java -jar forestmatcher.jar " +
+                            sourceMatcher + " " + inputPatterns +" " + outputMatches;
+                    Process proc = Runtime.getRuntime().exec(command);
+                }
+
+                System.out.println("===========================================================");
 
             /*
             //group patterns by leaf label sets
@@ -161,6 +176,11 @@ public class Main {
             Analyse analyse = new Analyse();
             Ulti.groupPattern(patternsInput,patternGroupOutput);
             */
+            }//end for
+            System.out.println("finish");
+            System.exit(3);
+
+
 
         }
         catch (Exception e){System.out.println("Error: main "+e);}

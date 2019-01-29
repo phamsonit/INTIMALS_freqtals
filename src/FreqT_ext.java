@@ -10,188 +10,23 @@ public class FreqT_ext extends FreqT {
     private  static  char uniChar = '\u00a5';// Japanese Yen symbol
     private static Config config;
     private AOutputFormatter output;
+
     private Vector <String> largestPattern;
     private Vector <Vector<NodeFreqT> >  transaction = new Vector<>();
     private Map <String,Vector<String> > grammar     = new LinkedHashMap<>();
     private Map <String,Vector<String> > blackLabels = new LinkedHashMap<>();
     private Map <String,Vector<String> > whiteLabels = new LinkedHashMap<>();
-    public Set<String>                  outputFrequentPatterns = new LinkedHashSet<>(); //store patterns for post-processing
+    private Map <String,String>          xmlCharacters  = new LinkedHashMap<>();
+    private Map<String,String>           outputLargestPatternsMap = new LinkedHashMap<>();
 
+    private int nbOutputLargestPatterns;
     private int largestMinSup;
 
-    public Set<String> getOutputFrequentPatterns(){ return this.outputFrequentPatterns; }
-
-    /**
-     * add a pattern into outPatterns which is used for post-process
-     * @param pat
-     * @param projected
-     * @param _outputPatterns
-     */
-    private void addPattern(Vector<String> pat, Projected projected,
-                            Set<String> _outputPatterns){
-
-
-        if(Pattern.countLeafNode(pat) < 2) return;
-
-        int support = projected.getProjectedSupport();
-        int wsupport = projected.getProjectedRootSupport(); //=> root location
-        int size = Pattern.getPatternSize(pat);
-        //keep fileIds for itemset mining algorithm
-        String fileIds = String.valueOf(projected.getProjectLocation(0).getLocationId());
-        int oldId = projected.getProjectLocation(0).getLocationId();
-        for(int i=1;i<projected.getProjectLocationSize(); ++i)
-            if(oldId != projected.getProjectLocation(i).getLocationId() ) {
-                fileIds = fileIds+","+ String.valueOf(projected.getProjectLocation(i).getLocationId());
-                oldId = projected.getProjectLocation(i).getLocationId();
-            }
-
-        String patternString = Pattern.getPatternString1(pat); //filter out the right part of pattern which misses leaf nodes
-
-        String patStr =
-                fileIds + " " +
-                String.valueOf(support)+" "+
-                String.valueOf(wsupport)+" "+
-                String.valueOf(size)+"\t"+
-                        patternString;
-
-        _outputPatterns.add(patStr);
+    public int getNbOutputLargestPatterns(){
+        return this.nbOutputLargestPatterns;
     }
 
-
-
-    /**
-     * prune candidates based on blacklist children
-     * blacklist is created in the readWhiteLabel procedure
-     * @param candidate
-     */
-    private void pruneBlackList(Map <String, Projected > candidate){
-        Iterator < Map.Entry<String,Projected> > iterTemp = candidate.entrySet().iterator();
-        while (iterTemp.hasNext()) {
-            Map.Entry<String, Projected> entry = iterTemp.next();
-            Set<String> blackListChildren = Pattern.getChildrenLabels(blackLabels,largestPattern,entry.getKey());
-            //System.out.println("blackListChildren "+ blackListChildren);
-            String candidateLabel = Pattern.getPotentialCandidateLabel(entry.getKey());
-            //System.out.println("candidateLabel "+ candidateLabel);
-            if(     blackListChildren.contains(candidateLabel) ||
-                    candidateLabel.equals("*get") ||
-                    candidateLabel.equals("*set") ||
-                    candidateLabel.equals("*RETURN-CODE") ||
-                    candidateLabel.equals("*SORT-RETURN") ||
-                    candidateLabel.equals("*SORT-CORE-SIZE") ||
-                    candidateLabel.equals("*TALLY") ||
-                    candidateLabel.equals("*XML-CODE") ){
-                //System.out.println(candidateLabel+" in black list");
-                iterTemp.remove();
-            }
-        }
-    }
-
-    /**
-     * calculate the support of a pattern
-     * @param projected
-     * @return
-     */
-    public int support(Projected projected){
-        //if(weighted) return projected.getProjectLocationSize();
-        int old = 0xffffffff;
-        int sup = 0;
-        for(int i=0; i<projected.getProjectLocationSize(); ++i) {
-            if (projected.getProjectLocation(i).getLocationId() != old)
-                ++sup;
-            old = projected.getProjectLocation(i).getLocationId();
-        }
-        return sup;
-    }
-
-
-    /**
-     * prune candidates based on minimal support
-     * @param candidate
-     */
-    private void prune (Map <String, Projected > candidate){
-
-        Iterator < Map.Entry<String,Projected> > iter = candidate.entrySet().iterator();
-        while (iter.hasNext()) {
-            Map.Entry<String,Projected> entry = iter.next();
-            int sup = support(entry.getValue());
-            int wsup = rootSupport(entry.getValue());
-            if(sup < largestMinSup){
-                iter.remove();
-            }
-            else {
-                entry.getValue().setProjectedSupport(sup);
-                entry.getValue().setProjectedRootSupport(wsup);
-            }
-        }
-    }
-
-
-    ////Procedures to expand pattern ///////
-
-    /**
-     *right most path extension
-     * @param projected
-     * @return
-     */
-    public Map<String, Projected> generateCandidates(Projected projected) {
-        Map<String, Projected> candidate = new LinkedHashMap<>(); //keep the order of elements
-        try{
-            // Find all candidates of the current subtree
-            int depth = projected.getProjectedDepth();
-            for (int i = 0; i < projected.getProjectLocationSize(); ++i) {
-                int id = projected.getProjectLocation(i).getLocationId();
-                int pos = projected.getProjectLocation(i).getLocationPos();
-                // Add to keep all occurrences --> problem: memory consumption
-                // keep root location and right-most location
-                List<Integer> occurrences = projected.getProjectLocation(i).getLocationList().subList(0,1);
-
-                //List<Integer> lines = projected.getProjectLineNr(i);
-
-                String prefix = "";
-                for (int d = -1; d < depth && pos != -1; ++d) {
-                    int start = (d == -1) ? transaction.elementAt(id).elementAt(pos).getNodeChild() :
-                            transaction.elementAt(id).elementAt(pos).getNodeSibling();
-                    int newDepth = depth - d;
-                    for (int l = start; l != -1;
-                         l = transaction.elementAt(id).elementAt(l).getNodeSibling()) {
-                        String item = prefix + uniChar + transaction.elementAt(id).elementAt(l).getNodeLabel();
-                        //String lineNrTemp = transaction.elementAt(id).elementAt(l).getLineNr();
-
-                        Projected tmp;
-                        if (candidate.containsKey(item)) {
-                            //candidate.get(item).setProjectLocation(id, l); //keep right most position
-                            candidate.get(item).addProjectLocation(id, l, occurrences);//keeping all locations
-                            //candidate.get(item).addProjectLineNr(Integer.valueOf(lineNrTemp),lines);
-                            //rootId = id, rootPos = ?
-                            int rootPos = projected.getProjectLocation(i).getLocationList().get(0);
-                            //if (id, rootPos) exists in root ???
-                            candidate.get(item).setProjectRootLocation(id, rootPos);//keeping root locations
-
-
-                        } else {
-                            tmp = new Projected();
-                            tmp.setProjectedDepth(newDepth);
-                            //tmp.setProjectLocation(id, l); //keep right most position
-                            tmp.addProjectLocation(id, l, occurrences); //keeping all locations
-                            //tmp.addProjectLineNr(Integer.valueOf(lineNrTemp),lines);
-                            int rootPos = projected.getProjectLocation(i).getLocationList().get(0);
-                            tmp.setProjectRootLocation(id, rootPos); //keeping root locations
-
-                            candidate.put(item, tmp);
-                        }
-                    }
-                    if (d != -1) {
-                        pos = transaction.elementAt(id).elementAt(pos).getNodeParent();
-                    }
-                    prefix += uniChar + ")";
-                }
-            }
-
-        }
-        catch (Exception e){System.out.println("Error: generate candidates " + e);}
-        return candidate;
-    }
-
+    public Map<String,String> getOutputLargestPatterns(){ return this.outputLargestPatternsMap; }
 
     //expand candidate based on grammar
     private void grammarExpand(Map.Entry<String, Projected> entry){
@@ -214,12 +49,15 @@ public class FreqT_ext extends FreqT {
                     case "1..*"://node-list
                         if(parentOrdered.equals("unordered")) {
                             //grammar constraint: don't allow N children of an unordered node to have the same label
-                            if (Pattern.checkRepeatedLabel(largestPattern, entry.getKey(), 5))
+                            if (Pattern.checkRepeatedLabel(largestPattern, entry.getKey(), config.getMaxRepeatLabel()))
                                 //check line distance of 2 nodes which have the same label
                                 //if(Pattern.checkLineDistance(pattern, entry.getKey(), entry.getValue(), config.getMinLineDistance(), config.getMaxLineDistance()))
                                     project(entry.getValue());
                                 else{//output the current pattern
-                                    addPattern(largestPattern,entry.getValue(),outputFrequentPatterns);
+                                    if(config.postProcess())
+                                        addPattern(largestPattern,entry.getValue(),outputLargestPatternsMap);
+                                    else
+                                        output.report(largestPattern,entry.getValue());
                                     return;
                                 }
                         }else
@@ -259,7 +97,7 @@ public class FreqT_ext extends FreqT {
      * expand a pattern
      * @param entry
      */
-    public void expandCandidate(Map.Entry<String, Projected> entry) {
+    private void expandCandidate(Map.Entry<String, Projected> entry) {
         try{
 
             // add a candidate to the current pattern
@@ -268,7 +106,7 @@ public class FreqT_ext extends FreqT {
                 if (!p[i].isEmpty())
                     largestPattern.addElement(p[i]);
             }
-
+            //TODO don't check full leaf constraint
             if(!Pattern.checkMissedLeafNode(largestPattern))
                 grammarExpand(entry);
 
@@ -282,20 +120,22 @@ public class FreqT_ext extends FreqT {
      */
     private void project(Projected projected) {
         try{
-            //System.out.println(pattern);
+
             //find candidates
-            Map<String, Projected> candidates = generateCandidates(projected);
+            Map<String, Projected> candidates = generateCandidates(projected,transaction);
             //System.out.println("all candidates     " + candidates.keySet());
-            prune(candidates);
+            prune(candidates,largestMinSup);
             //System.out.println("after support pruning " + candidates.keySet());
             //pruning based on blacklist: for each candidate if it occurs in the blacklist --> remove
-            pruneBlackList(candidates);
+            pruneBlackList(largestPattern,candidates,blackLabels);
             //System.out.println("after blacklist pruning " + candidates.keySet());
 
             //if there is no candidate then report pattern --> stop
             if( candidates.isEmpty() ){
-                addPattern(largestPattern, projected, outputFrequentPatterns);
-                //System.out.println(largestPattern);
+                if(config.postProcess())
+                    addPattern(largestPattern,projected,outputLargestPatternsMap);
+                else
+                    output.report(largestPattern,projected);
                 return;
             }
 
@@ -314,49 +154,57 @@ public class FreqT_ext extends FreqT {
     }
 
     public void run(Map <String, String > _rootIDs,
-                              Vector <Vector<NodeFreqT> > _transaction,
+                              Config _config,
+                              Vector <Vector<NodeFreqT>  > _transaction,
                               Map <String,Vector<String> > _grammar,
                               Map <String,Vector<String> > _blackLabels,
-                              Map <String,Vector<String> > _whiteLabels){
+                              Map <String,Vector<String> > _whiteLabels,
+                              Map <String,String>          _xmlCharacters
+                    ){
 
+        config = _config;
         transaction = _transaction;
         grammar = _grammar;
         blackLabels = _blackLabels;
         whiteLabels = _whiteLabels;
+        xmlCharacters = _xmlCharacters;
 
-        System.out.println("the largest patterns according to rootIDs");
+        try{
+            if(!config.postProcess()) output = new XMLOutput(config, grammar, xmlCharacters);
 
-        largestPattern = new Vector<>();
-        Iterator < Map.Entry<String,String> > rootId = _rootIDs.entrySet().iterator();
-        while(rootId.hasNext()){
-            Map.Entry<String,String> entry = rootId.next();
+            largestPattern = new Vector<>();
+            Iterator < Map.Entry<String,String> > rootId = _rootIDs.entrySet().iterator();
+            while(rootId.hasNext()){
+                Map.Entry<String,String> entry = rootId.next();
+                //System.out.println(entry.getKey()+"\t"+entry.getValue());
+                //String rootLabel = entry.getValue().split(String.valueOf("\\("))[1];
+                String rootLabel = entry.getValue();
+                //System.out.println(root);
+                largestPattern.add(rootLabel);
 
-            System.out.println(entry.getKey()+"\t"+entry.getValue());
+                Projected projected = new Projected();
+                projected.setProjectedDepth(0);
+                //set locations for projected
+                String[] temp = entry.getKey().split(";");
+                for(int i=0; i<temp.length; ++i){
+                    String[] pos = temp[i].split(",");
+                    projected.setProjectLocation(Integer.valueOf(pos[0]),Integer.valueOf(pos[1]));
+                    projected.setProjectRootLocation(Integer.valueOf(pos[0]),Integer.valueOf(pos[1]));
+                }
+                largestMinSup = support(projected);
+                project(projected);
+                largestPattern.setSize(largestPattern.size() - 1);
 
-            String rootLabel = entry.getValue().split(String.valueOf("\\("))[1];
-            //System.out.println(root);
-            largestPattern.add(rootLabel);
-
-            Projected projected = new Projected();
-            projected.setProjectedDepth(0);
-            //set locations for projected
-            String[] temp = entry.getKey().split(";");
-            for(int i=0; i<temp.length; ++i){
-                String[] pos = temp[i].split(",");
-                projected.setProjectLocation(Integer.valueOf(pos[0]),Integer.valueOf(pos[1]));
-                projected.setProjectRootLocation(Integer.valueOf(pos[0]),Integer.valueOf(pos[1]));
             }
 
-            largestMinSup = support(projected);
-            project(projected);
-            largestPattern.setSize(largestPattern.size() - 1);
+            if(! config.postProcess()) {
+                nbOutputLargestPatterns = output.nbPattern;
+                output.close();
+            }else nbOutputLargestPatterns = outputLargestPatternsMap.size();
 
-        }
+        }catch (Exception e){}
+
 
     }
-
-
-
-
 
 }

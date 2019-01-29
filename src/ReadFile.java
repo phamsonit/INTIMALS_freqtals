@@ -27,8 +27,40 @@ public class ReadFile {
 
     }
 
+    //create transaction from Map < pattern, supports>
+    public void createTransactionFromMap(Map<String, String > inPatterns,
+                                     Vector<Vector<NodeFreqT>> trans,
+                                     Map<String,String> patSup,
+                                     Set<String> rootLabel){
+
+        Iterator <Map.Entry<String,String> > iterMap = inPatterns.entrySet().iterator();
+        while(iterMap.hasNext()){
+            for(int i=0; i<inPatterns.size(); ++i){
+                Map.Entry<String,String> temp = iterMap.next();
+
+                String str_pattern = temp.getKey();
+                String str_sup = temp.getValue();
+
+                patSup.put(str_pattern,str_sup);
+
+                String root = "";
+                for(int j=1;j<str_pattern.length();++j) {
+                    if (str_pattern.charAt(j)=='(')
+                        break;
+                    else
+                        root += str_pattern.charAt(j);
+                }
+                rootLabel.add(root);
+
+                Vector <NodeFreqT> tran_tmp = new Vector<>();
+                str2node(str_pattern,tran_tmp);
+                trans.addElement(tran_tmp);
+            }
+        }
+    }
+
     //create transaction for freqt-post
-    public void createTransactionNew(Set< String > inPatterns,
+    public void createTransactionFromSet(Set< String > inPatterns,
                                      Vector<Vector<NodeFreqT>> trans,
                                      Map<String,String> patSup,
                                      Set<String> rootLabel){

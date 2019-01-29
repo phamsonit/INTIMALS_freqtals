@@ -4,7 +4,20 @@ import java.util.*;
 public class Pattern {
     private  static  char uniChar = '\u00a5';// Japanese Yen symbol
 
-    //all leaf nodes of patterns are also the leaf node in ASTs
+
+    public static int countIdentifiers(Vector<String> pat){
+        int count=0;
+
+        for(int i=0; i<pat.size(); ++i){
+            if(pat.elementAt(i).equals("identifier"))
+                ++count;
+        }
+
+        return count;
+    }
+
+
+    //all leaf nodes of patterns are also the real leaf nodes in ASTs
     public static String getPatternString1(Vector<String> pat){
         String result="";
 
