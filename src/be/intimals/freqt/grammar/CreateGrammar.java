@@ -1,6 +1,9 @@
 /*
 create grammar for ASTs
  */
+package be.intimals.freqt.grammar;
+
+import be.intimals.freqt.input.*;
 
 import java.util.*;
 import java.io.BufferedReader;

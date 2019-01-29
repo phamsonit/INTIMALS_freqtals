@@ -2,9 +2,18 @@
 find subtrees:
  */
 
+
+package be.intimals.freqt.core;
+
+import be.intimals.freqt.structure.*;
+import be.intimals.freqt.config.*;
+import be.intimals.freqt.util.*;
+
+
 import java.io.*;
 import java.util.*;
 
+import be.intimals.freqt.output.*;
 
 public class FreqT {
     private  static  char uniChar = '\u00a5';// Japanese Yen symbol
@@ -126,26 +135,84 @@ public class FreqT {
      * @param projected
      */
     private void addRootIDs(Vector<String> pat, Projected projected){
-        if(checkOutput(pat)) return;
-        //find rootID of pattern
-        String rootOccurrences = "";
-        for(int i=0; i<projected.getProjectRootLocationSize(); ++i) {
-            rootOccurrences = rootOccurrences +
-                    projected.getProjectRootLocation(i).getLocationId() + (",") +
-                    projected.getProjectRootLocation(i).getLocationPos() + ";";
-        }
-        //find root label of this pattern
-        String rootLabel = pat.firstElement();
-        rootIDs.put(rootOccurrences,rootLabel);
+        try {
+            if (checkOutput(pat)) return;
+            //find rootID of pattern
+            String rootOccurrences = "";
+            for (int i = 0; i < projected.getProjectRootLocationSize(); ++i) {
+                rootOccurrences = rootOccurrences +
+                        projected.getProjectRootLocation(i).getLocationId() + (",") +
+                        projected.getProjectRootLocation(i).getLocationPos() + ";";
+            }
+            //find root label of this pattern
+            //String rootLabel = Pattern.getPatternString1(pat);
+            String rootLabel = pat.elementAt(0);
+
+            rootIDs.put(rootOccurrences, rootLabel);
+        }catch (Exception e){System.out.println("Error: adding root IDs "+e);}
+    }
+
+    private void filterRootOccurrences(Map<String, String> _rootIDs){
+        //for each element of rootIDs check
+        //if rootOcc is a subset of an element of rootIDs then replace
+        Iterator<Map.Entry<String, String>> iter1 = _rootIDs.entrySet().iterator();
+        Iterator<Map.Entry<String, String>> iter2 = _rootIDs.entrySet().iterator();
+
+        List<String> ttt = new LinkedList(_rootIDs.keySet());
+
+        for(int i=0; i<ttt.size()-1; ++i)
+            for(int j=i+1; j<ttt.size();++j){
+                if(ttt.get(i).length() < ttt.get(j).length()){
+                    if (compareTwoString(ttt.get(i), ttt.get(j)))
+                        ttt.remove(j);
+                }else{
+                     if (compareTwoString(ttt.get(j), ttt.get(i)))
+                        ttt.remove(i);
+                }
+            }
+
+        Map<String, String> _newRootIDs = new LinkedHashMap<>();
+         for(int i=0;i<ttt.size();++i)
+             if(_rootIDs.containsKey(ttt.get(i))) {
+                 _newRootIDs.put(ttt.get(i), _rootIDs.get(ttt.get(i)));
+                 //System.out.println(ttt.get(i));
+                 //System.out.println("hhhh");
+             }
+
+         rootIDs = _newRootIDs;
+
+    }
+
+    private boolean compareTwoString(String str1, String str2){
+        boolean result = true;
+        try {
+            String[] strings1 = str1.split(";");
+            String[] strings2 = str2.split(";");
+            int n1 = 0;
+            int n2 = 0;
+            while (n1 < strings1.length && n2 < strings2.length) {
+                if (strings1[n1].equals(strings2[n2])) {
+                    ++n1;
+                    ++n2;
+                } else {
+                    ++n1;
+                }
+            }
+        if(n2==strings2.length) result = true;
+
+        }catch (Exception e){System.out.println("Compare ");}
+
+        return  result;
+
     }
 
     private void chooseOutput(Vector<String> pat, Projected projected){
         if(threeSteps){
-            addRootIDs(pattern, projected);
+            addRootIDs(pat, projected);
         }else{
             if (config.postProcess())
-                addPattern(pattern,projected,outputFrequentPatternsMap);
-            else output.report(pattern, projected);
+                addPattern(pat,projected,outputFrequentPatternsMap);
+            else output.report(pat, projected);
         }
 
     }
@@ -339,14 +406,7 @@ public class FreqT {
                                 //if(Pattern.checkLineDistance(pattern, entry.getKey(), entry.getValue(), config.getMinLineDistance(), config.getMaxLineDistance()))
                                     project(entry.getValue());
                                 else{//output the current pattern
-                                    if(threeSteps){
-                                        addRootIDs(pattern,entry.getValue());
-                                        //addFileIDs(pattern,entry.getValue());
-                                     }else{
-                                        if( config.postProcess() )
-                                            addPattern(pattern,entry.getValue(),outputFrequentPatternsMap);
-                                        else output.report(pattern,entry.getValue());
-                                    }
+                                    chooseOutput(pattern,entry.getValue());
                                     return;
                                 }
                         }else
@@ -406,7 +466,7 @@ public class FreqT {
 
                 }else grammarExpand(entry);
             }
-            else{ //check root occurrences
+            else{ //if don't use the second step then expand patterns by root occurrences
                 if(!threeSteps){
                     int newRootSupport = rootSupport(entry.getValue());
                     if (oldRootSupport == newRootSupport){
@@ -417,6 +477,7 @@ public class FreqT {
                     }
                     else{
                         chooseOutput(pattern,entry.getValue());
+                        return;
                     }
                 }
             }
@@ -497,7 +558,6 @@ public class FreqT {
             Initial.readWhiteLabel(config.getWhiteLabelFile(), grammar, whiteLabels, blackLabels); //read white labels and create black labels
             Initial.readRootLabel(config.getRootLabelFile(), rootLabels);  //read root labels (AST Nodes)
             Initial.readXMLCharacter(config.getXmlCharacterFile(), xmlCharacters); //read list of special XML characters
-            //initDatabase(config.getInputFiles(),grammar,transaction);
             Initial.initDatabase(config.getInputFiles(),grammar,transaction);
 
             nbInputFiles = transaction.size();
@@ -508,7 +568,7 @@ public class FreqT {
                 output = config.outputAsXML() ? new XMLOutput(config, grammar, xmlCharacters) :
                                            new LineOutput(config, grammar, xmlCharacters, uniChar);
 
-            //long start = System.currentTimeMillis( );
+            long start = System.currentTimeMillis( );
 
             //find 1-subtree
             Map < String , Projected > freq1 = buildFreq1Set(transaction);
@@ -518,34 +578,42 @@ public class FreqT {
             //System.out.println("all candidates after pruning " + freq1.keySet());
             //expand 1-subtree to find frequent subtrees
             expandFreq1(freq1);
-            //long end = System.currentTimeMillis( );
-            //long diff = end - start;
-            //System.out.println("FREQT: frequent patterns = "+nbOutputFrequentPatterns+", groups = "+rootIDs.size()+", time = "+ diff);
+            long end = System.currentTimeMillis( );
+            long diff = end - start;
 
+
+            long end2,diff2,end3,diff3;
 
             if(threeSteps){
                 //expand the largest patterns according to root occurrences
+                filterRootOccurrences(rootIDs);
+                System.out.println("FREQT: frequent patterns = "+ "..." + ", groups = "+rootIDs.size()+", time = "+ diff);
                 FreqT_ext freqT_ext = new FreqT_ext();
                 freqT_ext.run(rootIDs,config,transaction,grammar,blackLabels,whiteLabels,xmlCharacters);
-                //long end2 = System.currentTimeMillis( );
-                //long diff2 = end2 - end;
-                //System.out.println("FREQT_EXT: frequent patterns "+freqT_ext.getOutputFrequentPatterns().size()+", time "+ diff2);
+                end2 = System.currentTimeMillis( );
+                diff2 = end2 - end;
+                System.out.println("FREQT_EXT: largest patterns "+freqT_ext.getOutputLargestPatterns().size()+", time "+ diff2);
+
                 nbOutputFrequentPatterns = freqT_ext.getNbOutputLargestPatterns();
                 FreqT_max post = new FreqT_max();
                 post.run(config,freqT_ext.getOutputLargestPatterns(),grammar,xmlCharacters);
                 nbOutputMaximalPatterns = post.getNbMaximalPattern();
+                end3 = System.currentTimeMillis( );
+                diff3 = end3 - end2;
+                System.out.println("FREQT_MAX: maximal patterns "+post.getNbMaximalPattern()+", time "+ diff3);
             }else{
                 if(config.postProcess()){
+                    end2 = System.currentTimeMillis();
                     nbOutputFrequentPatterns = outputFrequentPatternsMap.size();
                     FreqT_max post = new FreqT_max();
                     post.run(config,outputFrequentPatternsMap,grammar,xmlCharacters);
                     nbOutputMaximalPatterns = post.getNbMaximalPattern();
-                    //long end3 = System.currentTimeMillis( );
-                    //long diff3 = end3 - end2;
-                    //System.out.println("FREQT_MAX: maximal patterns "+post.getNbMaximalPattern()+", time "+ diff3);
+                    end3 = System.currentTimeMillis( );
+                    diff3 = end3 - end2;
+                    System.out.println("FREQT_MAX: maximal patterns "+post.getNbMaximalPattern()+", time "+ diff3);
                 }else
                 {
-                    nbOutputFrequentPatterns = output.nbPattern;
+                    nbOutputFrequentPatterns = output.getNbPattern();
                     output.close();
                 }
 
@@ -614,10 +682,5 @@ public class FreqT {
         }
         return freq1;
     }
-
-
-
-
-
 
 }

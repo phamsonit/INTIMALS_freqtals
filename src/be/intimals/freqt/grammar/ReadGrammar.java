@@ -1,3 +1,7 @@
+package be.intimals.freqt.grammar;
+
+import be.intimals.freqt.input.*;
+
 import java.io.BufferedReader;
 import java.io.FileReader;
 import java.io.IOException;

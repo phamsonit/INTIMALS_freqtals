@@ -2,11 +2,21 @@
 find subtrees:
  */
 
+package be.intimals.freqt.core;
+
+import be.intimals.freqt.structure.*;
+import be.intimals.freqt.output.*;
+import be.intimals.freqt.input.*;
+
+
 import java.io.BufferedReader;
 import java.io.File;
 import java.io.FileReader;
 import java.io.IOException;
 import java.util.*;
+
+import be.intimals.freqt.output.*;
+import be.intimals.freqt.config.*;
 
 public class FreqT_max extends FreqT {
 
@@ -180,7 +190,7 @@ public class FreqT_max extends FreqT {
                     maximalPattern.setSize(maximalPattern.size()-1);
                 }
             }
-            nbMaximalPatterns = output.nbPattern;
+            nbMaximalPatterns = output.getNbPattern();
             output.close();
         }
         catch (Exception e) {System.out.println("running post-processing error "+e);}

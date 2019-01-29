@@ -1,3 +1,5 @@
+package be.intimals.freqt.structure;
+
 import java.util.*;
 
 public class Projected {

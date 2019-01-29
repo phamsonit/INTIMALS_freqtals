@@ -1,3 +1,5 @@
+package be.intimals.freqt.structure;
+
 public class NodeFreqT { //can extends from Node of Ekeko ???
 
     private String node_label;

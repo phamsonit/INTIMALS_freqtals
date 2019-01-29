@@ -1,3 +1,5 @@
+package be.intimals.freqt.util;
+
 import java.lang.InterruptedException;
 
 public class TimeOut implements Runnable {

@@ -2,9 +2,15 @@
 find subtrees:
  */
 
+package be.intimals.freqt.core;
+
+import be.intimals.freqt.structure.*;
+import be.intimals.freqt.config.*;
+
 import java.io.*;
 import java.util.*;
 
+import be.intimals.freqt.output.*;
 
 public class FreqT_ext extends FreqT {
     private  static  char uniChar = '\u00a5';// Japanese Yen symbol
@@ -106,7 +112,7 @@ public class FreqT_ext extends FreqT {
                 if (!p[i].isEmpty())
                     largestPattern.addElement(p[i]);
             }
-            //TODO don't check full leaf constraint
+            //TODO: don't check full leaf constraint ==> result: time consuming!!!
             if(!Pattern.checkMissedLeafNode(largestPattern))
                 grammarExpand(entry);
 
@@ -198,7 +204,7 @@ public class FreqT_ext extends FreqT {
             }
 
             if(! config.postProcess()) {
-                nbOutputLargestPatterns = output.nbPattern;
+                nbOutputLargestPatterns = output.getNbPattern();
                 output.close();
             }else nbOutputLargestPatterns = outputLargestPatternsMap.size();
 

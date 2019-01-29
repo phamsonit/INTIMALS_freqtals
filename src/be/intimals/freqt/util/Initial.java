@@ -1,3 +1,10 @@
+package be.intimals.freqt.util;
+
+import be.intimals.freqt.input.*;
+import be.intimals.freqt.structure.*;
+import be.intimals.freqt.grammar.*;
+
+
 import java.io.BufferedReader;
 import java.io.File;
 import java.io.FileReader;

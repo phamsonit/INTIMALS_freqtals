@@ -22,6 +22,9 @@
    java implementation: 16 May 2018
    by PHAM Hoang Son
 */
+import be.intimals.freqt.util.*;
+import be.intimals.freqt.core.*;
+import be.intimals.freqt.config.*;
 
 import java.io.*;
 import java.nio.file.Files;
@@ -36,7 +39,7 @@ public class Main {
 
         try{
 
-            for(int minsup=10; minsup >= 5; minsup-- ) {
+            for(int minsup = 10; minsup >= 5; minsup-- ) {
 
                 //load basic configuration
                 String configPathBasic = args.length == 0 ? "conf/java/config.properties" : args[0];
