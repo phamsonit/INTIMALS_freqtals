@@ -160,16 +160,21 @@ public class FreqT {
 
         List<String> ttt = new LinkedList(_rootIDs.keySet());
 
-        for(int i=0; i<ttt.size()-1; ++i)
-            for(int j=i+1; j<ttt.size();++j){
-                if(ttt.get(i).length() < ttt.get(j).length()){
-                    if (compareTwoString(ttt.get(i), ttt.get(j)))
-                        ttt.remove(j);
-                }else{
-                     if (compareTwoString(ttt.get(j), ttt.get(i)))
-                        ttt.remove(i);
-                }
+        Collections.sort(ttt, new Comparator<>() {
+            @Override
+            public int compare(String o1, String o2) {
+                return (Integer.valueOf(o1.length()).compareTo(o2.length()));
             }
+        });
+
+        //System.out.println(ttt);
+        for(int i=0; i<ttt.size()-1; ++i) {
+            for (int j = i + 1; j < ttt.size(); ++j) {
+                if (compareTwoRootOccurrences(ttt.get(i), ttt.get(j)))
+                    ttt.remove(j);
+            }
+        }
+        //System.out.println(ttt);
 
         Map<String, String> _newRootIDs = new LinkedHashMap<>();
          for(int i=0;i<ttt.size();++i)
@@ -183,27 +188,14 @@ public class FreqT {
 
     }
 
-    private boolean compareTwoString(String str1, String str2){
-        boolean result = true;
-        try {
-            String[] strings1 = str1.split(";");
-            String[] strings2 = str2.split(";");
-            int n1 = 0;
-            int n2 = 0;
-            while (n1 < strings1.length && n2 < strings2.length) {
-                if (strings1[n1].equals(strings2[n2])) {
-                    ++n1;
-                    ++n2;
-                } else {
-                    ++n1;
-                }
-            }
-        if(n2==strings2.length) result = true;
+    private boolean compareTwoRootOccurrences(String str1, String str2){
+        Collection<String> l1 = Arrays.asList(str1.split(";"));
+        Collection<String> l2 = Arrays.asList(str2.split(";"));
 
-        }catch (Exception e){System.out.println("Compare ");}
-
-        return  result;
-
+        if(l2.containsAll(l1))
+            return true;
+        else
+            return false;
     }
 
     private void chooseOutput(Vector<String> pat, Projected projected){
@@ -441,9 +433,6 @@ public class FreqT {
 
     }
 
-
-
-
     /**
      * expand a pattern
      * @param entry
@@ -463,7 +452,6 @@ public class FreqT {
                 if (Pattern.checkMissedLeafNode(pattern)){
                     chooseOutput(pattern,entry.getValue());
                     return;
-
                 }else grammarExpand(entry);
             }
             else{ //if don't use the second step then expand patterns by root occurrences
@@ -581,7 +569,6 @@ public class FreqT {
             long end = System.currentTimeMillis( );
             long diff = end - start;
 
-
             long end2,diff2,end3,diff3;
 
             if(threeSteps){
@@ -594,6 +581,7 @@ public class FreqT {
                 diff2 = end2 - end;
                 System.out.println("FREQT_EXT: largest patterns "+freqT_ext.getOutputLargestPatterns().size()+", time "+ diff2);
 
+                //maximality check
                 nbOutputFrequentPatterns = freqT_ext.getNbOutputLargestPatterns();
                 FreqT_max post = new FreqT_max();
                 post.run(config,freqT_ext.getOutputLargestPatterns(),grammar,xmlCharacters);
