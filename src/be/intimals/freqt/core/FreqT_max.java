@@ -1,7 +1,3 @@
-/*
-find subtrees:
- */
-
 package be.intimals.freqt.core;
 
 import be.intimals.freqt.structure.*;
@@ -15,17 +11,12 @@ import java.io.FileReader;
 import java.io.IOException;
 import java.util.*;
 
-import be.intimals.freqt.output.*;
-import be.intimals.freqt.config.*;
 
 public class FreqT_max extends FreqT {
 
-    //input : string subtrees
-    //output: XML maximal subtrees
 
-    private static Config config;
+
     private AOutputFormatter output;
-
     private Vector < String > maximalPattern;
     private Vector < Vector<NodeFreqT> > newTransaction = new Vector<>();
 
@@ -35,12 +26,8 @@ public class FreqT_max extends FreqT {
     //store root labels of input patterns
     private Set<String> rootLabel = new LinkedHashSet<>();
 
-    private Map <String,Vector<String> > grammar = new LinkedHashMap<>();
-    private Map <String,String> xmlCharacters = new LinkedHashMap<>();
-
-    private  static  char uniChar = '\u00a5';// Japanese Yen symbol
-
     private int nbMaximalPatterns;
+    ////////////////////////////////////////////////////////////////////////////////
 
     public int getNbMaximalPattern(){
         return  this.nbMaximalPatterns;
@@ -147,13 +134,11 @@ public class FreqT_max extends FreqT {
 
     /**
      * run Freqt with file config.properties
-     * @param _config
+     *
      */
-    public void run(Config _config, Map<String,String> inPatterns, Map <String,Vector<String> > _grammar, Map <String,String > _xmlChar) {
+    public void run(Map<String,String> inPatterns) {
         try{
-            config = _config;
-            grammar = _grammar;
-            xmlCharacters = _xmlChar;
+
             //os = new FileWriter(config.getOutputFile());
             /*  ==============================  */
             //System.out.println("# patterns : "+ newTransaction.size());
@@ -161,7 +146,6 @@ public class FreqT_max extends FreqT {
             //System.out.println("running FreqT post-processing");
             //System.out.println("==============================");
 
-            //initDatabase(inPatterns);
             initDatabase(inPatterns);
 
             output = config.outputAsXML() ? new XMLOutput(config, grammar, xmlCharacters, patSupMap) :

@@ -1,8 +1,3 @@
-/*
-find subtrees:
- */
-
-
 package be.intimals.freqt.core;
 
 import be.intimals.freqt.structure.*;
@@ -16,16 +11,19 @@ import java.util.*;
 import be.intimals.freqt.output.*;
 
 public class FreqT {
-    private  static  char uniChar = '\u00a5';// Japanese Yen symbol
-    private static Config config;
+    static char uniChar = '\u00a5';// Japanese Yen symbol
+    static Config config;
+
     private AOutputFormatter output;
-    public  Vector <String> pattern;
+    private Vector <String> pattern;
     private Vector <Vector<NodeFreqT> >  transaction = new Vector<>();
-    private Map <String,Vector<String> > grammar     = new LinkedHashMap<>();
-    private Map <String,Vector<String> > blackLabels = new LinkedHashMap<>();
-    private Map <String,Vector<String> > whiteLabels = new LinkedHashMap<>();
+
+    static Map <String,Vector<String> > grammar     = new LinkedHashMap<>();
+    static Map <String,Vector<String> > blackLabels = new LinkedHashMap<>();
+    static Map <String,Vector<String> > whiteLabels = new LinkedHashMap<>();
+    static Map <String,String>          xmlCharacters  = new LinkedHashMap<>();
+
     private Set <String>                 rootLabels  = new LinkedHashSet<>();
-    private Map <String,String>          xmlCharacters  = new LinkedHashMap<>();
     private Map<String,String>           outputFrequentPatternsMap = new LinkedHashMap<>(); //store patterns for post-processing
 
     private int oldRootSupport;
@@ -43,7 +41,7 @@ public class FreqT {
     private boolean threeSteps = true;
     private int nbIdentifiers = 2;
 
-    ///////Implementations//////
+    ////////////////////////////////////////////////////////////////////////////////
 
     public int getNbInputFiles(){
         return this.nbInputFiles;
@@ -221,6 +219,8 @@ public class FreqT {
             Map.Entry<String, Projected> entry = iterTemp.next();
             Set<String> blackListChildren = Pattern.getChildrenLabels(_blackLabels,pat,entry.getKey());
             //System.out.println("blackListChildren "+ blackListChildren);
+
+
             String candidateLabel = Pattern.getPotentialCandidateLabel(entry.getKey());
             //System.out.println("candidateLabel "+ candidateLabel);
             if(     blackListChildren.contains(candidateLabel) ||
@@ -304,7 +304,8 @@ public class FreqT {
      */
     public Map<String, Projected> generateCandidates(Projected projected,
                                                      Vector <Vector<NodeFreqT> >  _transaction) {
-        Map<String, Projected> candidates = new LinkedHashMap<>(); //keep the order of elements
+        Map<String, Projected> candidates = new LinkedHashMap<>();
+        //keep the order of elements
         try{
             // Find all candidates of the current subtree
             int depth = projected.getProjectedDepth();
@@ -312,9 +313,12 @@ public class FreqT {
                 int id = projected.getProjectLocation(i).getLocationId();
                 int pos = projected.getProjectLocation(i).getLocationPos();
                 // Add to keep all occurrences --> problem: memory consumption
-                // keep root location and right-most location
-                List<Integer> occurrences = projected.getProjectLocation(i).getLocationList().subList(0,1);
+                List<Integer> occurrences = projected.getProjectLocation(i).getLocationList();
 
+                //only keep root location and right-most location
+                //List<Integer> occurrences = projected.getProjectLocation(i).getLocationList().subList(0,1);
+
+                //keep lineNr to calculate distance of two nodes
                 //List<Integer> lines = projected.getProjectLineNr(i);
 
                 String prefix = "";
@@ -375,6 +379,7 @@ public class FreqT {
     //expand candidate based on grammar
     private void grammarExpand(Map.Entry<String, Projected> entry){
         //get the current candidate label
+
         String potentialCandidate = Pattern.getPotentialCandidateLabel(entry.getKey());
         if ( potentialCandidate.charAt(0) == '*' ) { //potentialCandidate is a leaf node
             project( entry.getValue() );
@@ -440,14 +445,13 @@ public class FreqT {
     private void expandCandidate(Map.Entry<String, Projected> entry) {
         try{
 
-            // add a candidate to the current pattern
+            //add a candidate to the current pattern
             String[] p = entry.getKey().split(String.valueOf(uniChar));
             for (int i = 0; i < p.length; ++i) {
                 if (!p[i].isEmpty())
                     pattern.addElement(p[i]);
             }
 
-            //if number of leaf > max leaf then consider rootOccurrences
             if(Pattern.countLeafNode(pattern) <= config.getMaxLeaf()){
                 if (Pattern.checkMissedLeafNode(pattern)){
                     chooseOutput(pattern,entry.getValue());
@@ -539,8 +543,10 @@ public class FreqT {
             //System.out.println("==============================");
             //System.out.println("running FreqT");
             //System.out.println("==============================");
-            if(config.buildGrammar()) Initial.initGrammar(config.getInputFiles(),grammar,config.buildGrammar());
-            else Initial.initGrammar(config.getGrammarFile(),grammar,config.buildGrammar()) ;
+            if(config.buildGrammar())
+                Initial.initGrammar(config.getInputFiles(),grammar,config.buildGrammar());
+            else
+                Initial.initGrammar(config.getGrammarFile(),grammar,config.buildGrammar()) ;
 
             //ReadGrammar.printGrammar(grammar);
             Initial.readWhiteLabel(config.getWhiteLabelFile(), grammar, whiteLabels, blackLabels); //read white labels and create black labels
@@ -549,8 +555,6 @@ public class FreqT {
             Initial.initDatabase(config.getInputFiles(),grammar,transaction);
 
             nbInputFiles = transaction.size();
-
-            //don't output pattern in this step
 
             if(!config.postProcess() && !threeSteps)
                 output = config.outputAsXML() ? new XMLOutput(config, grammar, xmlCharacters) :
@@ -576,7 +580,8 @@ public class FreqT {
                 filterRootOccurrences(rootIDs);
                 System.out.println("FREQT: frequent patterns = "+ "..." + ", groups = "+rootIDs.size()+", time = "+ diff);
                 FreqT_ext freqT_ext = new FreqT_ext();
-                freqT_ext.run(rootIDs,config,transaction,grammar,blackLabels,whiteLabels,xmlCharacters);
+                //freqT_ext.run(rootIDs,config,transaction,grammar,blackLabels,whiteLabels,xmlCharacters);
+                freqT_ext.run(rootIDs,transaction);
                 end2 = System.currentTimeMillis( );
                 diff2 = end2 - end;
                 System.out.println("FREQT_EXT: largest patterns "+freqT_ext.getOutputLargestPatterns().size()+", time "+ diff2);
@@ -584,7 +589,7 @@ public class FreqT {
                 //maximality check
                 nbOutputFrequentPatterns = freqT_ext.getNbOutputLargestPatterns();
                 FreqT_max post = new FreqT_max();
-                post.run(config,freqT_ext.getOutputLargestPatterns(),grammar,xmlCharacters);
+                post.run(freqT_ext.getOutputLargestPatterns());
                 nbOutputMaximalPatterns = post.getNbMaximalPattern();
                 end3 = System.currentTimeMillis( );
                 diff3 = end3 - end2;
@@ -594,7 +599,7 @@ public class FreqT {
                     end2 = System.currentTimeMillis();
                     nbOutputFrequentPatterns = outputFrequentPatternsMap.size();
                     FreqT_max post = new FreqT_max();
-                    post.run(config,outputFrequentPatternsMap,grammar,xmlCharacters);
+                    post.run(outputFrequentPatternsMap);
                     nbOutputMaximalPatterns = post.getNbMaximalPattern();
                     end3 = System.currentTimeMillis( );
                     diff3 = end3 - end2;

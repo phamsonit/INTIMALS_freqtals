@@ -1,11 +1,6 @@
-/*
-find subtrees:
- */
-
 package be.intimals.freqt.core;
 
 import be.intimals.freqt.structure.*;
-import be.intimals.freqt.config.*;
 
 import java.io.*;
 import java.util.*;
@@ -13,20 +8,18 @@ import java.util.*;
 import be.intimals.freqt.output.*;
 
 public class FreqT_ext extends FreqT {
-    private  static  char uniChar = '\u00a5';// Japanese Yen symbol
-    private static Config config;
-    private AOutputFormatter output;
 
+    private AOutputFormatter output;
     private Vector <String> largestPattern;
     private Vector <Vector<NodeFreqT> >  transaction = new Vector<>();
-    private Map <String,Vector<String> > grammar     = new LinkedHashMap<>();
-    private Map <String,Vector<String> > blackLabels = new LinkedHashMap<>();
-    private Map <String,Vector<String> > whiteLabels = new LinkedHashMap<>();
-    private Map <String,String>          xmlCharacters  = new LinkedHashMap<>();
-    private Map<String,String>           outputLargestPatternsMap = new LinkedHashMap<>();
+
+
+
+    private Map<String,String> outputLargestPatternsMap = new LinkedHashMap<>();
 
     private int nbOutputLargestPatterns;
     private int largestMinSup;
+    ////////////////////////////////////////////////////////////////////////////////
 
     public int getNbOutputLargestPatterns(){
         return this.nbOutputLargestPatterns;
@@ -159,21 +152,22 @@ public class FreqT_ext extends FreqT {
         }catch (Exception e){System.out.println("Error: projected " + e);}
     }
 
+
     public void run(Map <String, String > _rootIDs,
-                              Config _config,
-                              Vector <Vector<NodeFreqT>  > _transaction,
-                              Map <String,Vector<String> > _grammar,
-                              Map <String,Vector<String> > _blackLabels,
-                              Map <String,Vector<String> > _whiteLabels,
-                              Map <String,String>          _xmlCharacters
+                              //Config _config,
+                              Vector <Vector<NodeFreqT>  > _transaction
+                              //Map <String,Vector<String> > _grammar,
+                              //Map <String,Vector<String> > _blackLabels,
+                              //Map <String,Vector<String> > _whiteLabels,
+                              //Map <String,String>          _xmlCharacters
                     ){
 
-        config = _config;
+        //config = _config;
         transaction = _transaction;
-        grammar = _grammar;
-        blackLabels = _blackLabels;
-        whiteLabels = _whiteLabels;
-        xmlCharacters = _xmlCharacters;
+        //grammar = _grammar;
+        //blackLabels = _blackLabels;
+        //whiteLabels = _whiteLabels;
+        //xmlCharacters = _xmlCharacters;
 
         try{
             if(!config.postProcess()) output = new XMLOutput(config, grammar, xmlCharacters);

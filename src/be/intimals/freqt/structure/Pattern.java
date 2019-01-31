@@ -6,7 +6,6 @@ import java.util.*;
 public class Pattern {
     private  static  char uniChar = '\u00a5';// Japanese Yen symbol
 
-
     public static int countIdentifiers(Vector<String> pat){
         int count=0;
 
@@ -192,7 +191,7 @@ public class Pattern {
      * @param listOfChildrenGrammar
      * @return
      */
-    private static String findTheFirstMandatoryChild(Vector<String> listOfChildrenGrammar){
+    private String findTheFirstMandatoryChild(Vector<String> listOfChildrenGrammar){
         String firstMandatoryChildGrammar = "";
         for (int i = 0; i < listOfChildrenGrammar.size(); ++i) {
             String[] tmpChild = listOfChildrenGrammar.elementAt(i).split(String.valueOf(uniChar));
@@ -216,8 +215,8 @@ public class Pattern {
 
         String[] Temp = candidate.split( String.valueOf(uniChar) );
         String label = Temp[Temp.length-1];
-        int parentPos = Pattern.findParentPosition(pat,candidate);
-        Vector<String> children = Pattern.findChildren(pat,parentPos);
+        int parentPos = findParentPosition(pat,candidate);
+        Vector<String> children = findChildren(pat,parentPos);
 
         int count=0;
         for(int i=0; i<children.size();++i){
@@ -328,7 +327,7 @@ public class Pattern {
                 patternTemp.addElement(candidateTemp[i]);
         }
         //find parent's position of potentialCandidate in patternTemp
-        int parentPos = Pattern.findParentPosition(patternTemp, candidate);
+        int parentPos = findParentPosition(patternTemp, candidate);
         String parentLabel = patternTemp.elementAt(parentPos).split(String.valueOf(uniChar))[0];
         //find children of the parentLabel
         if(ListNode.containsKey(parentLabel)){
@@ -338,18 +337,18 @@ public class Pattern {
     }
 
     //checkLineDistance(pattern, candidate, projected, threshold)
-    public static boolean checkLineDistance(Vector<String> pat,
+    public boolean checkLineDistance(Vector<String> pat,
                                       String candidate,
                                       Projected projected,
                                       int _minLineDistance,
                                       int _maxLineDistance){
 
-        if(Pattern.checkMissedLeafNode(pat)) return false;
+        if(checkMissedLeafNode(pat)) return false;
 
         //System.out.println("check line distance");
 
         //find LineNr of two repeated labels
-        String p = Pattern.getPotentialCandidateLabel(candidate);
+        String p = getPotentialCandidateLabel(candidate);
         //System.out.println("pattern "+pattern );
 
         List<List<Integer>> lines = new LinkedList<>();
@@ -405,7 +404,7 @@ public class Pattern {
      * @param maxLeaf
      * @return
      */
-    public static boolean checkConstraints(Vector<String> pat, int maxLeaf) {
+    public  boolean checkConstraints(Vector<String> pat, int maxLeaf) {
 
         if(checkMissedLeafNode(pat) ||
                 (countLeafNode(pat)  >  maxLeaf) )
