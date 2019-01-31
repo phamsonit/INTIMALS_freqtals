@@ -578,13 +578,13 @@ public class FreqT {
             if(threeSteps){
                 //expand the largest patterns according to root occurrences
                 filterRootOccurrences(rootIDs);
-                System.out.println("FREQT: frequent patterns = "+ "..." + ", groups = "+rootIDs.size()+", time = "+ diff);
+                //System.out.println("FREQT: frequent patterns = "+ "..." + ", groups = "+rootIDs.size()+", time = "+ diff);
                 FreqT_ext freqT_ext = new FreqT_ext();
                 //freqT_ext.run(rootIDs,config,transaction,grammar,blackLabels,whiteLabels,xmlCharacters);
                 freqT_ext.run(rootIDs,transaction);
                 end2 = System.currentTimeMillis( );
                 diff2 = end2 - end;
-                System.out.println("FREQT_EXT: largest patterns "+freqT_ext.getOutputLargestPatterns().size()+", time "+ diff2);
+                //System.out.println("FREQT_EXT: largest patterns "+freqT_ext.getOutputLargestPatterns().size()+", time "+ diff2);
 
                 //maximality check
                 nbOutputFrequentPatterns = freqT_ext.getNbOutputLargestPatterns();
@@ -593,7 +593,7 @@ public class FreqT {
                 nbOutputMaximalPatterns = post.getNbMaximalPattern();
                 end3 = System.currentTimeMillis( );
                 diff3 = end3 - end2;
-                System.out.println("FREQT_MAX: maximal patterns "+post.getNbMaximalPattern()+", time "+ diff3);
+                //System.out.println("FREQT_MAX: maximal patterns "+post.getNbMaximalPattern()+", time "+ diff3);
             }else{
                 if(config.postProcess()){
                     end2 = System.currentTimeMillis();
@@ -603,7 +603,7 @@ public class FreqT {
                     nbOutputMaximalPatterns = post.getNbMaximalPattern();
                     end3 = System.currentTimeMillis( );
                     diff3 = end3 - end2;
-                    System.out.println("FREQT_MAX: maximal patterns "+post.getNbMaximalPattern()+", time "+ diff3);
+                    //System.out.println("FREQT_MAX: maximal patterns "+post.getNbMaximalPattern()+", time "+ diff3);
                 }else
                 {
                     nbOutputFrequentPatterns = output.getNbPattern();
