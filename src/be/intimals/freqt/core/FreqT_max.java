@@ -16,7 +16,7 @@ public class FreqT_max extends FreqT {
 
 
 
-    private AOutputFormatter output;
+    private AOutputFormatter outputMaximal;
     private Vector < String > maximalPattern;
     private Vector < Vector<NodeFreqT> > newTransaction = new Vector<>();
 
@@ -121,7 +121,7 @@ public class FreqT_max extends FreqT {
                     if( entry.getValue().getProjectedSupport()==1)
                         //collect leaves of maximalPattern
                         //if leaves exists in
-                        output.report(maximalPattern, entry.getValue());
+                        outputMaximal.report(maximalPattern, entry.getValue());
                 }
 
                 project(entry.getValue());
@@ -148,7 +148,7 @@ public class FreqT_max extends FreqT {
 
             initDatabase(inPatterns);
 
-            output = config.outputAsXML() ? new XMLOutput(config, grammar, xmlCharacters, patSupMap) :
+            outputMaximal = config.outputAsXML() ? new XMLOutput(config, grammar, xmlCharacters, patSupMap) :
                                             new LineOutput(config, grammar, xmlCharacters, patSupMap, uniChar);
 
 
@@ -174,8 +174,8 @@ public class FreqT_max extends FreqT {
                     maximalPattern.setSize(maximalPattern.size()-1);
                 }
             }
-            nbMaximalPatterns = output.getNbPattern();
-            output.close();
+            nbMaximalPatterns = outputMaximal.getNbPattern();
+            outputMaximal.close();
         }
         catch (Exception e) {System.out.println("running post-processing error "+e);}
 

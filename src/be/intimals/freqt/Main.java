@@ -41,14 +41,13 @@ public class Main {
     static public void main(String[] args) {
 
         try{
-
                 //load basic configuration
                 String configPathBasic = args.length == 0 ? "conf/java/config.properties" : args[0];
                 Config configBasic = new Config(configPathBasic);
 
                 String inputMinSup = args.length == 0 ? String.valueOf(configBasic.getMinSupport()) : args[1];
-                String inputFold = args.length == 0 ? "draw/action" : args[2];
-                int time = args.length == 0 ? 60 : Integer.valueOf(args[3]);
+                String inputFold = args.length == 0 ? "" : args[2];
+                int time = args.length == 0 ? 30 : Integer.valueOf(args[3]);
 
                 //set time out for program
                 TimeOut timeOut = new TimeOut();
@@ -130,8 +129,6 @@ public class Main {
                 FreqT freqt = new FreqT();
                 freqt.run(config);
                 //create report for each sub-dataset
-
-
                 FileWriter report = new FileWriter(reportFile);
 
                 report.write("data sources : " + config.getInputFiles() + "\n");
@@ -169,7 +166,6 @@ public class Main {
                             sourceMatcher + " " + inputPatterns +" " + outputMatches;
                     Process proc = Runtime.getRuntime().exec(command);
 
-
                 System.out.println("===========================================================");
                 }
             /*
@@ -180,10 +176,8 @@ public class Main {
             Analyse analyse = new Analyse();
             Ulti.groupPattern(patternsInput,patternGroupOutput);
             */
-
             System.out.println("finish");
             System.exit(3);
-
 
 
         }

@@ -6,12 +6,13 @@ import be.intimals.freqt.config.*;
 import java.io.FileWriter;
 import java.io.IOException;
 import java.util.HashMap;
+import java.util.LinkedHashMap;
 import java.util.Map;
 import java.util.Vector;
 
 public class XMLOutput extends AOutputFormatter {
 
-    Map<String,String> patSupMap;
+    Map<String,String> patSupMap = new LinkedHashMap<>();
 
     public XMLOutput(Config _config, Map<String, Vector<String>> _grammar, Map<String,String> _xmlCharacters) throws IOException {
         super(_config, _grammar, _xmlCharacters);
@@ -44,22 +45,30 @@ public class XMLOutput extends AOutputFormatter {
             ++nbPattern;
 
             if(config.postProcess()){
-                String patTemp = Pattern.getPatternString(pat);
-                String[] sup = patSupMap.get(patTemp).split(" ");
-                out.write("<subtree id=\""+ nbPattern+ "\" support=\"" + sup[1] +
-                        "\" wsupport=\"" + sup[2] + "\" size=\"" + sup[3] + "\">\n");
+                if(patSupMap.isEmpty()){
+                    int sup = projected.getProjectedSupport();
+                    int wsup = projected.getProjectedRootSupport();
+                    int size = Pattern.getPatternSize(pat);
+                    out.write("<subtree id=\""+ nbPattern+ "\" support=\"" + sup +
+                            "\" wsupport=\"" + wsup + "\" size=\"" + size + "\">\n");
+
+                }else {
+                    String patTemp = Pattern.getPatternString(pat);
+                    String[] sup = patSupMap.get(patTemp).split(" ");
+                    out.write("<subtree id=\"" + nbPattern + "\" support=\"" + sup[1] +
+                            "\" wsupport=\"" + sup[2] + "\" size=\"" + sup[3] + "\">\n");
+                }
             }
             else{
                 int sup = projected.getProjectedSupport();
                 int wsup = projected.getProjectedRootSupport();
                 int size = Pattern.getPatternSize(pat);
-
                 out.write("<subtree id=\""+ nbPattern+ "\" support=\"" + sup +
                         "\" wsupport=\"" + wsup + "\" size=\"" + size + "\">\n");
             }
 
-
             //System.out.println(nbPattern);
+
             int n = 0;
             Vector < String > tmp = new Vector<>();
             //number of meta-variable ???

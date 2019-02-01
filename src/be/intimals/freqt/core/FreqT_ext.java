@@ -9,14 +9,10 @@ import be.intimals.freqt.output.*;
 
 public class FreqT_ext extends FreqT {
 
-    private AOutputFormatter output;
+    private AOutputFormatter outputLargest;
     private Vector <String> largestPattern;
     private Vector <Vector<NodeFreqT> >  transaction = new Vector<>();
-
-
-
     private Map<String,String> outputLargestPatternsMap = new LinkedHashMap<>();
-
     private int nbOutputLargestPatterns;
     private int largestMinSup;
     ////////////////////////////////////////////////////////////////////////////////
@@ -53,10 +49,11 @@ public class FreqT_ext extends FreqT {
                                 //if(Pattern.checkLineDistance(pattern, entry.getKey(), entry.getValue(), config.getMinLineDistance(), config.getMaxLineDistance()))
                                     project(entry.getValue());
                                 else{//output the current pattern
-                                    if(config.postProcess())
-                                        addPattern(largestPattern,entry.getValue(),outputLargestPatternsMap);
-                                    else
-                                        output.report(largestPattern,entry.getValue());
+                                    if(config.postProcess()) {
+                                        addPattern(largestPattern, entry.getValue(), outputLargestPatternsMap);
+                                        outputLargest.report(largestPattern,entry.getValue());
+                                    }else
+                                        outputLargest.report(largestPattern,entry.getValue());
                                     return;
                                 }
                         }else
@@ -98,7 +95,6 @@ public class FreqT_ext extends FreqT {
      */
     private void expandCandidate(Map.Entry<String, Projected> entry) {
         try{
-
             // add a candidate to the current pattern
             String[] p = entry.getKey().split(String.valueOf(uniChar));
             for (int i = 0; i < p.length; ++i) {
@@ -131,10 +127,12 @@ public class FreqT_ext extends FreqT {
 
             //if there is no candidate then report pattern --> stop
             if( candidates.isEmpty() ){
-                if(config.postProcess())
-                    addPattern(largestPattern,projected,outputLargestPatternsMap);
+                if(config.postProcess()) {
+                    addPattern(largestPattern, projected, outputLargestPatternsMap);
+                    outputLargest.report(largestPattern,projected);
+                }
                 else
-                    output.report(largestPattern,projected);
+                    outputLargest.report(largestPattern,projected);
                 return;
             }
 
@@ -154,23 +152,12 @@ public class FreqT_ext extends FreqT {
 
 
     public void run(Map <String, String > _rootIDs,
-                              //Config _config,
-                              Vector <Vector<NodeFreqT>  > _transaction
-                              //Map <String,Vector<String> > _grammar,
-                              //Map <String,Vector<String> > _blackLabels,
-                              //Map <String,Vector<String> > _whiteLabels,
-                              //Map <String,String>          _xmlCharacters
-                    ){
-
-        //config = _config;
-        transaction = _transaction;
-        //grammar = _grammar;
-        //blackLabels = _blackLabels;
-        //whiteLabels = _whiteLabels;
-        //xmlCharacters = _xmlCharacters;
+                              Vector <Vector<NodeFreqT>  > _transaction){
 
         try{
-            if(!config.postProcess()) output = new XMLOutput(config, grammar, xmlCharacters);
+            transaction = _transaction;
+            outputLargest = config.outputAsXML() ? new XMLOutput(config, grammar, xmlCharacters) :
+                    new LineOutput(config, grammar, xmlCharacters, uniChar);
 
             largestPattern = new Vector<>();
             Iterator < Map.Entry<String,String> > rootId = _rootIDs.entrySet().iterator();
@@ -196,11 +183,8 @@ public class FreqT_ext extends FreqT {
                 largestPattern.setSize(largestPattern.size() - 1);
 
             }
-
-            if(! config.postProcess()) {
-                nbOutputLargestPatterns = output.getNbPattern();
-                output.close();
-            }else nbOutputLargestPatterns = outputLargestPatternsMap.size();
+            nbOutputLargestPatterns = outputLargest.getNbPattern();
+            outputLargest.close();
 
         }catch (Exception e){}
 

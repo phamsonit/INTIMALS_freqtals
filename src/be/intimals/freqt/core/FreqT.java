@@ -14,7 +14,7 @@ public class FreqT {
     static char uniChar = '\u00a5';// Japanese Yen symbol
     static Config config;
 
-    private AOutputFormatter output;
+    private AOutputFormatter outputFrequent;
     private Vector <String> pattern;
     private Vector <Vector<NodeFreqT> >  transaction = new Vector<>();
 
@@ -33,6 +33,7 @@ public class FreqT {
 
     private int nbInputFiles;
     private int nbOutputFrequentPatterns;
+    private int nbOutputLagestPatterns;
     private int nbOutputMaximalPatterns;
 
     private Map<String,String> fileIDs = new LinkedHashMap<>();
@@ -41,6 +42,9 @@ public class FreqT {
     private boolean threeSteps = true;
     private int nbIdentifiers = 2;
 
+
+    Set<String> trackCandidates = new LinkedHashSet<>();
+
     ////////////////////////////////////////////////////////////////////////////////
 
     public int getNbInputFiles(){
@@ -48,6 +52,9 @@ public class FreqT {
     }
     public int getNbOutputFrequentPatterns(){
         return this.nbOutputFrequentPatterns;
+    }
+    public int getNbOutputLagestPatterns(){
+        return this.nbOutputLagestPatterns;
     }
     public int getNbOutputMaximalPatterns(){
         return this.nbOutputMaximalPatterns;
@@ -135,6 +142,7 @@ public class FreqT {
     private void addRootIDs(Vector<String> pat, Projected projected){
         try {
             if (checkOutput(pat)) return;
+            nbOutputFrequentPatterns++;
             //find rootID of pattern
             String rootOccurrences = "";
             for (int i = 0; i < projected.getProjectRootLocationSize(); ++i) {
@@ -145,7 +153,6 @@ public class FreqT {
             //find root label of this pattern
             //String rootLabel = Pattern.getPatternString1(pat);
             String rootLabel = pat.elementAt(0);
-
             rootIDs.put(rootOccurrences, rootLabel);
         }catch (Exception e){System.out.println("Error: adding root IDs "+e);}
     }
@@ -153,11 +160,7 @@ public class FreqT {
     private void filterRootOccurrences(Map<String, String> _rootIDs){
         //for each element of rootIDs check
         //if rootOcc is a subset of an element of rootIDs then replace
-        Iterator<Map.Entry<String, String>> iter1 = _rootIDs.entrySet().iterator();
-        Iterator<Map.Entry<String, String>> iter2 = _rootIDs.entrySet().iterator();
-
         List<String> ttt = new LinkedList(_rootIDs.keySet());
-
         Collections.sort(ttt, new Comparator<>() {
             @Override
             public int compare(String o1, String o2) {
@@ -178,12 +181,9 @@ public class FreqT {
          for(int i=0;i<ttt.size();++i)
              if(_rootIDs.containsKey(ttt.get(i))) {
                  _newRootIDs.put(ttt.get(i), _rootIDs.get(ttt.get(i)));
-                 //System.out.println(ttt.get(i));
-                 //System.out.println("hhhh");
              }
 
          rootIDs = _newRootIDs;
-
     }
 
     private boolean compareTwoRootOccurrences(String str1, String str2){
@@ -199,10 +199,11 @@ public class FreqT {
     private void chooseOutput(Vector<String> pat, Projected projected){
         if(threeSteps){
             addRootIDs(pat, projected);
+            outputFrequent.report(pat, projected);
         }else{
             if (config.postProcess())
                 addPattern(pat,projected,outputFrequentPatternsMap);
-            else output.report(pat, projected);
+            else outputFrequent.report(pat, projected);
         }
 
     }
@@ -313,11 +314,9 @@ public class FreqT {
                 int id = projected.getProjectLocation(i).getLocationId();
                 int pos = projected.getProjectLocation(i).getLocationPos();
                 // Add to keep all occurrences --> problem: memory consumption
-                List<Integer> occurrences = projected.getProjectLocation(i).getLocationList();
-
+                //List<Integer> occurrences = projected.getProjectLocation(i).getLocationList();
                 //only keep root location and right-most location
-                //List<Integer> occurrences = projected.getProjectLocation(i).getLocationList().subList(0,1);
-
+                List<Integer> occurrences = projected.getProjectLocation(i).getLocationList().subList(0,1);
                 //keep lineNr to calculate distance of two nodes
                 //List<Integer> lines = projected.getProjectLineNr(i);
 
@@ -456,7 +455,8 @@ public class FreqT {
                 if (Pattern.checkMissedLeafNode(pattern)){
                     chooseOutput(pattern,entry.getValue());
                     return;
-                }else grammarExpand(entry);
+                }else
+                    grammarExpand(entry);
             }
             else{ //if don't use the second step then expand patterns by root occurrences
                 if(!threeSteps){
@@ -465,7 +465,8 @@ public class FreqT {
                         if (Pattern.checkMissedLeafNode(pattern)){
                             chooseOutput(pattern,entry.getValue());
                             return;
-                        }else grammarExpand(entry);
+                        }else
+                            grammarExpand(entry);
                     }
                     else{
                         chooseOutput(pattern,entry.getValue());
@@ -494,10 +495,6 @@ public class FreqT {
 
             oldRootSupport = rootSupport(projected);
 
-            if(Pattern.checkMissedLeafNode(pattern)){
-                chooseOutput(pattern,projected);
-            }
-
             //System.out.println(pattern);
             //find candidates
             Map<String, Projected> candidates = generateCandidates(projected,transaction);
@@ -511,8 +508,11 @@ public class FreqT {
             //if there is no candidate then report pattern --> stop
             if( candidates.isEmpty() ){
                 chooseOutput(pattern,projected);
+                //outputFrequent.report(pattern,projected);
                 return;
             }
+
+            trackCandidates.add("each candidate of candidate");
 
             //expand the current pattern with each candidate
             Iterator < Map.Entry<String,Projected> > iter = candidates.entrySet().iterator();
@@ -521,7 +521,14 @@ public class FreqT {
 
                 Map.Entry<String, Projected> entry = iter.next();
 
+
+                //TODO don't allow extend a node without it previous sibling
+
                 expandCandidate(entry);
+
+
+                trackCandidates.remove("expanded candidate");
+
 
                 oldRootSupport = rootSupport(entry.getValue());
 
@@ -556,12 +563,9 @@ public class FreqT {
 
             nbInputFiles = transaction.size();
 
-            if(!config.postProcess() && !threeSteps)
-                output = config.outputAsXML() ? new XMLOutput(config, grammar, xmlCharacters) :
-                                           new LineOutput(config, grammar, xmlCharacters, uniChar);
-
             long start = System.currentTimeMillis( );
-
+            outputFrequent = config.outputAsXML() ? new XMLOutput(config, grammar, xmlCharacters) :
+                                           new LineOutput(config, grammar, xmlCharacters, uniChar);
             //find 1-subtree
             Map < String , Projected > freq1 = buildFreq1Set(transaction);
             //System.out.println("all candidates " + freq1.keySet());
@@ -570,46 +574,41 @@ public class FreqT {
             //System.out.println("all candidates after pruning " + freq1.keySet());
             //expand 1-subtree to find frequent subtrees
             expandFreq1(freq1);
-            long end = System.currentTimeMillis( );
-            long diff = end - start;
+            outputFrequent.close();
 
-            long end2,diff2,end3,diff3;
+            /*long end1 = System.currentTimeMillis( );
+            long diff1 = end1 - start;
+            System.out.print("FREQT: frequent patterns = "+ nbOutputFrequentPatterns+", time = "+ diff1+" ,");*/
 
             if(threeSteps){
-                //expand the largest patterns according to root occurrences
+                //only keep subset rootIDs
                 filterRootOccurrences(rootIDs);
-                //System.out.println("FREQT: frequent patterns = "+ "..." + ", groups = "+rootIDs.size()+", time = "+ diff);
+                System.out.println("rootIDs = "+rootIDs.size());
+                //find largest patterns according to rootIDs groups
                 FreqT_ext freqT_ext = new FreqT_ext();
-                //freqT_ext.run(rootIDs,config,transaction,grammar,blackLabels,whiteLabels,xmlCharacters);
                 freqT_ext.run(rootIDs,transaction);
-                end2 = System.currentTimeMillis( );
-                diff2 = end2 - end;
-                //System.out.println("FREQT_EXT: largest patterns "+freqT_ext.getOutputLargestPatterns().size()+", time "+ diff2);
+                nbOutputFrequentPatterns= freqT_ext.getNbOutputLargestPatterns();
+                /*long end2 = System.currentTimeMillis( );
+                long diff2 = end2 - end1;
+                System.out.println("FREQT_EXT: largest patterns "+nbOutputFrequentPatterns+", time "+ diff2);*/
+                //output freqT_ext.getOutputLargestPatterns
 
                 //maximality check
-                nbOutputFrequentPatterns = freqT_ext.getNbOutputLargestPatterns();
                 FreqT_max post = new FreqT_max();
                 post.run(freqT_ext.getOutputLargestPatterns());
                 nbOutputMaximalPatterns = post.getNbMaximalPattern();
-                end3 = System.currentTimeMillis( );
-                diff3 = end3 - end2;
-                //System.out.println("FREQT_MAX: maximal patterns "+post.getNbMaximalPattern()+", time "+ diff3);
+                /*long end3 = System.currentTimeMillis( );
+                long diff3 = end3 - end2;
+                System.out.println("FREQT_MAX: maximal patterns = "+nbOutputMaximalPatterns+", time = "+ diff3);*/
             }else{
                 if(config.postProcess()){
-                    end2 = System.currentTimeMillis();
-                    nbOutputFrequentPatterns = outputFrequentPatternsMap.size();
                     FreqT_max post = new FreqT_max();
                     post.run(outputFrequentPatternsMap);
                     nbOutputMaximalPatterns = post.getNbMaximalPattern();
-                    end3 = System.currentTimeMillis( );
-                    diff3 = end3 - end2;
-                    //System.out.println("FREQT_MAX: maximal patterns "+post.getNbMaximalPattern()+", time "+ diff3);
-                }else
-                {
-                    nbOutputFrequentPatterns = output.getNbPattern();
-                    output.close();
+                    /*long end3 = System.currentTimeMillis( );
+                    long diff3 = end3 - end1;
+                    System.out.println("FREQT_MAX: maximal patterns "+post.getNbMaximalPattern()+", time "+ diff3);*/
                 }
-
             }
 
             //System.out.println(maxSize+" "+maxPattern);
