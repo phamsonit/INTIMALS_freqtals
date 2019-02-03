@@ -147,7 +147,10 @@ public class FreqT_ext extends FreqT {
 
                 largestPattern.setSize(oldSize);
             }
-        }catch (Exception e){System.out.println("Error: projected " + e);}
+        }catch (Exception e){
+            System.out.println("Error: projected " + e);
+            e.printStackTrace();
+        }
     }
 
 

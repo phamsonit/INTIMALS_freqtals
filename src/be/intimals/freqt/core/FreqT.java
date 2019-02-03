@@ -161,7 +161,7 @@ public class FreqT {
         //for each element of rootIDs check
         //if rootOcc is a subset of an element of rootIDs then replace
         List<String> ttt = new LinkedList(_rootIDs.keySet());
-        Collections.sort(ttt, new Comparator<>() {
+        Collections.sort(ttt, new Comparator<String>() {
             @Override
             public int compare(String o1, String o2) {
                 return (Integer.valueOf(o1.length()).compareTo(o2.length()));

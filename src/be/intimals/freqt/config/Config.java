@@ -3,6 +3,9 @@ package be.intimals.freqt.config;
 import java.io.FileInputStream;
 import java.io.IOException;
 import java.io.InputStream;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.List;
 import java.util.Properties;
 
 public class Config {
@@ -102,7 +105,27 @@ public class Config {
     }
 
 
+    /**
+     * Returns a list of minimum-support values (only used when executing multiple Freq-T runs in parallel)
+     * @return
+     */
+    public List<Integer> getMinSupportList() {
+        String msList = prop.getProperty("minSupportList");
+        List<Integer> result = new ArrayList<>();
+        for(String ms: msList.split(",")) {
+            result.add(Integer.valueOf(ms));
+        }
+        return result;
+    }
 
+    /**
+     * Returns a list of input folders (only used when executing multiple Freq-T runs in parallel)
+     * @return
+     */
+    public List<String> getInputFilesList() {
+        String ifList = prop.getProperty("inFilesList");
+        return Arrays.asList(ifList.split(","));
+    }
 
 }
 
