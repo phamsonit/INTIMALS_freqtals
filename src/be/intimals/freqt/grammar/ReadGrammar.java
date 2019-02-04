@@ -703,6 +703,7 @@ public class ReadGrammar extends ReadXML {
             }
         } catch (Exception e) {
             System.out.println("read grammar file error "+e);
+            e.printStackTrace();
         }
     }
 

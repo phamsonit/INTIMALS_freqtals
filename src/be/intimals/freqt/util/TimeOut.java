@@ -26,7 +26,10 @@ public class TimeOut implements Runnable {
                 System.exit(2);
 
             }
-        }catch (Exception e){System.out.println(e);}
+        }catch (Exception e){
+            System.out.println("Timeout:" + e);
+            e.printStackTrace();
+        }
     }
 
 }

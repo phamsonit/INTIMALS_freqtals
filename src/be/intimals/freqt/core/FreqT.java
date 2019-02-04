@@ -617,6 +617,7 @@ public class FreqT {
         }
         catch (Exception e) {
             System.out.println("Error: running freqt");
+            e.printStackTrace();
         }
     }
 
