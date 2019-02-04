@@ -18,8 +18,14 @@ public class FreqT_ext extends FreqT {
     private int largestMinSup;
     ////////////////////////////////////////////////////////////////////////////////
 
-    public FreqT_ext(Config config) {
+    public FreqT_ext(Config config, Map<String,Vector<String>> grammar,
+                     Map<String,Vector<String>> blackLabels, Map<String,Vector<String>> whiteLabels,
+                     Map<String,String> xmlCharacters) {
         super(config);
+        this.grammar = grammar;
+        this.blackLabels = blackLabels;
+        this.whiteLabels = whiteLabels;
+        this.xmlCharacters = xmlCharacters;
     }
 
     public int getNbOutputLargestPatterns(){

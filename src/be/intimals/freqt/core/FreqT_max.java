@@ -30,8 +30,14 @@ public class FreqT_max extends FreqT {
     private int nbMaximalPatterns;
     ////////////////////////////////////////////////////////////////////////////////
 
-    public FreqT_max(Config config) {
+    public FreqT_max(Config config, Map<String,Vector<String>> grammar,
+                     Map<String,Vector<String>> blackLabels, Map<String,Vector<String>> whiteLabels,
+                     Map<String,String> xmlCharacters) {
         super(config);
+        this.grammar = grammar;
+        this.blackLabels = blackLabels;
+        this.whiteLabels = whiteLabels;
+        this.xmlCharacters = xmlCharacters;
     }
 
     public int getNbMaximalPattern(){

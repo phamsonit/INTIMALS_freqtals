@@ -18,10 +18,10 @@ public class FreqT {
     private Vector <String> pattern;
     private Vector <Vector<NodeFreqT> >  transaction = new Vector<>();
 
-    static Map <String,Vector<String> > grammar     = new LinkedHashMap<>();
-    static Map <String,Vector<String> > blackLabels = new LinkedHashMap<>();
-    static Map <String,Vector<String> > whiteLabels = new LinkedHashMap<>();
-    static Map <String,String>          xmlCharacters  = new LinkedHashMap<>();
+    protected Map <String,Vector<String> > grammar     = new LinkedHashMap<>();
+    protected Map <String,Vector<String> > blackLabels = new LinkedHashMap<>();
+    protected Map <String,Vector<String> > whiteLabels = new LinkedHashMap<>();
+    protected Map <String,String>          xmlCharacters  = new LinkedHashMap<>();
 
     private Set <String>                 rootLabels  = new LinkedHashSet<>();
     private Map<String,String>           outputFrequentPatternsMap = new LinkedHashMap<>(); //store patterns for post-processing
@@ -587,7 +587,7 @@ public class FreqT {
                 filterRootOccurrences(rootIDs);
                 System.out.println("rootIDs = "+rootIDs.size());
                 //find largest patterns according to rootIDs groups
-                FreqT_ext freqT_ext = new FreqT_ext(config);
+                FreqT_ext freqT_ext = new FreqT_ext(config, this.grammar, this.blackLabels,this.whiteLabels,this.xmlCharacters);
                 freqT_ext.run(rootIDs,transaction);
                 nbOutputFrequentPatterns= freqT_ext.getNbOutputLargestPatterns();
                 /*long end2 = System.currentTimeMillis( );
@@ -596,7 +596,7 @@ public class FreqT {
                 //output freqT_ext.getOutputLargestPatterns
 
                 //maximality check
-                FreqT_max post = new FreqT_max(this.config);
+                FreqT_max post = new FreqT_max(this.config, this.grammar, this.blackLabels, this.whiteLabels, this.xmlCharacters);
                 post.run(freqT_ext.getOutputLargestPatterns());
                 nbOutputMaximalPatterns = post.getNbMaximalPattern();
                 /*long end3 = System.currentTimeMillis( );
@@ -604,7 +604,7 @@ public class FreqT {
                 System.out.println("FREQT_MAX: maximal patterns = "+nbOutputMaximalPatterns+", time = "+ diff3);*/
             }else{
                 if(config.postProcess()){
-                    FreqT_max post = new FreqT_max(this.config);
+                    FreqT_max post = new FreqT_max(this.config, this.grammar, this.blackLabels, this.whiteLabels, this.xmlCharacters);
                     post.run(outputFrequentPatternsMap);
                     nbOutputMaximalPatterns = post.getNbMaximalPattern();
                     /*long end3 = System.currentTimeMillis( );
