@@ -39,7 +39,7 @@ public abstract class AOutputFormatter {
      */
     public boolean checkOutputConstraint(Vector<String> pat){
 
-        if(Pattern.checkMissedLeafNode(pat) ||
+        if(//Pattern.checkMissedLeafNode(pat) ||
                 (Pattern.countLeafNode(pat) < config.getMinLeaf()) )
             return true;
         else

@@ -362,6 +362,58 @@ public class FreqT {
         return candidates;
     }
 
+
+    //input: String nodeLabel, Projected projected
+    //output: previous sibling nodeLabels always occurred with the input nodeLabel
+    //pseudo code
+    //for each position, find its parent position
+    //for each parent position find all previous sibling positions
+    //if existing a previous sibling which has the same number of ... --> prune nodeLabel
+    //problem: we cannot guarantee the previous sibling nodeLabel include the pruning nodeLabel
+
+    public Set<String> getPreviousSibling(Projected projected,
+                                                     Vector <Vector<NodeFreqT> >  _transaction) {
+
+
+        Set<String> listSibling = new LinkedHashSet<>();
+        try{
+            //System.out.println("find sibling==============================");
+            List<String> siblingList = new LinkedList<>();
+
+            for (int i = 0; i < projected.getProjectLocationSize(); ++i) {
+                int id = projected.getProjectLocation(i).getLocationId();
+                int pos = projected.getProjectLocation(i).getLocationPos();
+                //System.out.println(_transaction.elementAt(id).elementAt(pos).getNodeLabel());
+                //find parent of id,pos
+                int parent = _transaction.elementAt(id).elementAt(pos).getNodeParent();
+                //System.out.println(_transaction.elementAt(id).elementAt(parent).getNodeLabel());
+                //find list of sibling
+                String tmp="";
+                int start1 = _transaction.elementAt(id).elementAt(parent).getNodeChild();
+                for(int sibling = start1; sibling < pos;
+                    sibling=_transaction.elementAt(id).elementAt(sibling).getNodeSibling()){
+                    tmp = tmp+","+_transaction.elementAt(id).elementAt(sibling).getNodeLabel();
+                }
+                //System.out.println(tmp);
+                siblingList.add(tmp);
+            }
+            //find intersection of all sibling list
+            //if it is not empty return true
+            if(siblingList.size()>0) {
+                Collection<String> s0 = Arrays.asList(siblingList.get(0).split(","));
+                for (int i = 1; i < siblingList.size(); ++i) {
+                    Collection<String> si = Arrays.asList(siblingList.get(0).split(","));
+                    s0.retainAll(si);
+                }
+                if(s0.size()>0)
+                    //System.out.println(s0);
+                    listSibling.addAll(s0);
+            }
+        }catch (Exception e){System.out.println("Error: find sibling labels" + e);}
+        return  listSibling;
+
+    }
+
     //TODO: expanding all locations for unordered children
     public Map<String, Projected> generateUnorderedCandidates(Projected projected) {
         int depth = projected.getProjectedDepth();
@@ -396,15 +448,27 @@ public class FreqT {
                         break;
                     case "1..*"://node-list
                         if(parentOrdered.equals("unordered")) {
+                            //check previous siblings
+                            Set<String> previousSiblings = getPreviousSibling(entry.getValue(), transaction);
+                            //System.out.println(previousSiblings);
+                            Set<String> currentChildren = new HashSet<>(Pattern.findChildren(pattern,parentPos));
+                            //System.out.println(currentChildren);
+                            previousSiblings.retainAll(currentChildren);
+                            if(previousSiblings.size()>0){//output the current pattern
+                                chooseOutput(pattern,entry.getValue());
+                                return;
+                            }
+
                             //grammar constraint: don't allow N children of an unordered node to have the same label
-                            if (Pattern.checkRepeatedLabel(pattern, entry.getKey(), config.getMaxRepeatLabel()))
-                                //check line distance of 2 nodes which have the same label
-                                //if(Pattern.checkLineDistance(pattern, entry.getKey(), entry.getValue(), config.getMinLineDistance(), config.getMaxLineDistance()))
-                                    project(entry.getValue());
-                                else{//output the current pattern
+                            if (Pattern.checkRepeatedLabel(pattern, entry.getKey(), config.getMaxRepeatLabel())){
+                            //check line distance of 2 nodes which have the same label
+                            //if(Pattern.checkLineDistance(pattern, entry.getKey(), entry.getValue(), config.getMinLineDistance(), config.getMaxLineDistance()))
+                                project(entry.getValue());
+                            }else{//output the current pattern
                                     chooseOutput(pattern,entry.getValue());
                                     return;
-                                }
+                            }
+
                         }else
                             if(parentOrdered.equals("ordered")){
                                 project(entry.getValue());
@@ -450,6 +514,9 @@ public class FreqT {
                 if (!p[i].isEmpty())
                     pattern.addElement(p[i]);
             }
+
+            /*if(Pattern.countLeafNode(pattern) <= config.getMaxLeaf())
+                grammarExpand(entry);*/
 
             if(Pattern.countLeafNode(pattern) <= config.getMaxLeaf()){
                 if (Pattern.checkMissedLeafNode(pattern)){
@@ -576,30 +643,30 @@ public class FreqT {
             expandFreq1(freq1);
             outputFrequent.close();
 
-            /*long end1 = System.currentTimeMillis( );
+            long end1 = System.currentTimeMillis( );
             long diff1 = end1 - start;
-            System.out.print("FREQT: frequent patterns = "+ nbOutputFrequentPatterns+", time = "+ diff1+" ,");*/
+            System.out.print("FREQT: frequent patterns = "+ nbOutputFrequentPatterns+", time = "+ diff1+" ,");
 
             if(threeSteps){
                 //only keep subset rootIDs
                 filterRootOccurrences(rootIDs);
-                System.out.println("rootIDs = "+rootIDs.size());
+                System.out.println("rootIDs groups = "+rootIDs.size());
                 //find largest patterns according to rootIDs groups
                 FreqT_ext freqT_ext = new FreqT_ext();
                 freqT_ext.run(rootIDs,transaction);
                 nbOutputFrequentPatterns= freqT_ext.getNbOutputLargestPatterns();
-                /*long end2 = System.currentTimeMillis( );
+                long end2 = System.currentTimeMillis( );
                 long diff2 = end2 - end1;
-                System.out.println("FREQT_EXT: largest patterns "+nbOutputFrequentPatterns+", time "+ diff2);*/
+                System.out.println("FREQT_EXT: largest patterns "+nbOutputFrequentPatterns+", time "+ diff2);
                 //output freqT_ext.getOutputLargestPatterns
 
                 //maximality check
                 FreqT_max post = new FreqT_max();
                 post.run(freqT_ext.getOutputLargestPatterns());
                 nbOutputMaximalPatterns = post.getNbMaximalPattern();
-                /*long end3 = System.currentTimeMillis( );
+                long end3 = System.currentTimeMillis( );
                 long diff3 = end3 - end2;
-                System.out.println("FREQT_MAX: maximal patterns = "+nbOutputMaximalPatterns+", time = "+ diff3);*/
+                System.out.println("FREQT_MAX: maximal patterns = "+nbOutputMaximalPatterns+", time = "+ diff3);
             }else{
                 if(config.postProcess()){
                     FreqT_max post = new FreqT_max();

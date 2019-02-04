@@ -46,7 +46,7 @@ public class Main {
                 Config configBasic = new Config(configPathBasic);
 
                 String inputMinSup = args.length == 0 ? String.valueOf(configBasic.getMinSupport()) : args[1];
-                String inputFold = args.length == 0 ? "" : args[2];
+                String inputFold = args.length == 0 ? "draw/action" : args[2];
                 int time = args.length == 0 ? 30 : Integer.valueOf(args[3]);
 
                 //set time out for program
