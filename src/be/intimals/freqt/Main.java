@@ -144,8 +144,8 @@ public class Main {
                 long start = System.currentTimeMillis();
 
                 //find frequent subtrees
-                FreqT freqt = new FreqT();
-                freqt.run(config);
+                FreqT freqt = new FreqT(config);
+                freqt.run();
                 //create report for each sub-dataset
                 FileWriter report = new FileWriter(reportFile);
 
@@ -222,7 +222,6 @@ public class Main {
             String[] runArgs = {args[1], run.minSupport.toString(), run.inFolder, "60"};
             singleRun(runArgs);
             System.out.println("Finished run " + runDescr);
-            System.out.println("================================");
         });
     }
 
