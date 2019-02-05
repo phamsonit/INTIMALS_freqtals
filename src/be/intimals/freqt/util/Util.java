@@ -9,7 +9,10 @@ import java.util.*;
 public class Util {
 
     static  Vector<String> pattern = new Vector<>();
+    // TODO (The method that uses this field is currently unused.) This field is error-prone though because it's static and we're running Freq-T in parallel!
+
     private static Vector<String> trans = new Vector<>();
+    // TODO (The method that uses this field is currently unused.) This field is error-prone though because it's static and we're running Freq-T in parallel!
 
     //create transaction for item set mining algorithm
     public static void createTransaction(String inputPath, String outputPath){

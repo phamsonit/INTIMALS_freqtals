@@ -46,7 +46,7 @@ public class Main {
                     "java -jar freqt_java.jar CONFIG_FILE [MIN_SUPPORT] [INPUT_FOLDER] [TIMEOUT]\n" +
                     "\n" +
                     "Multi-run Freq-T usage:\n" +
-                    "java -jar freqt_java.jar -multi CONFIG_FILE");
+                    "java -jar freqt_java.jar -multi CONFIG_FILE TIME_OUT");
         } else if (args[0].equals("-multi")) {
             m.multiRun(args);
         } else {
@@ -61,13 +61,15 @@ public class Main {
         try{
                 //load basic configuration
                 String configPathBasic = args.length == 0 ? "conf/java/config.properties" : args[0];
+
                 Config configBasic = new Config(configPathBasic);
 
                 String inputMinSup = args.length == 0 ? String.valueOf(configBasic.getMinSupport()) : args[1];
-                String inputFold = args.length == 0 ? "draw/action" : args[2];
-                int time = args.length == 0 ? 30 : Integer.valueOf(args[3]);
+                String inputFold = args.length == 0 ? "" : args[2];
+                int time = args.length == 0 ? 60 : Integer.valueOf(args[3]);
 
                 //set time out for program
+
                 TimeOut timeOut = new TimeOut();
                 timeOut.setTimes(time * 60 * 1000);
                 Thread timeOutThread = new Thread(timeOut);
@@ -89,9 +91,6 @@ public class Main {
 
                 try {
                     prop = configBasic.getProp();
-
-                    //inputMinSup = String.valueOf(minsup);
-
                     //update input dir path
                     inputPath = configBasic.getInputFiles().replace("\"", "") + "/"+inputFold;
                     //update output file path
@@ -116,12 +115,11 @@ public class Main {
                     reportFile = configBasic.getOutputFile().replaceAll("\"","") +
                             "/"+inputFold.replaceAll("\\/","-")+"-"+ inputMinSup + "-report.txt";
 
-
                     //update properties
                     prop.replace("minSupport", inputMinSup);
                     prop.replace("inFiles", inputPath);
                     prop.replace("outFile", outputPath);
-                    // save new properties
+                    //save new properties
                     output = new FileOutputStream(configPathTemp);
                     prop.store(output, null);
 
@@ -140,9 +138,8 @@ public class Main {
                 //load new configuration;
                 Config config = new Config(configPathTemp);
 
-                //run Freqt
+                //start running Freqt
                 long start = System.currentTimeMillis();
-
                 //find frequent subtrees
                 FreqT freqt = new FreqT(config);
                 freqt.run();
@@ -160,7 +157,6 @@ public class Main {
                 log(report,"mining time : " + diff + " ms");
                 //close report file
                 report.close();
-
 
                 //create transaction data for itemset mining
                 //if(!config.outputAsXML())
@@ -200,6 +196,7 @@ public class Main {
 
     private void multiRun(String[] args) throws IOException {
         String configPathBasic = args[1];
+        String timeOut = args[2];
 
         Config conf = new Config(configPathBasic);
         List<Integer> minSupports = conf.getMinSupportList();
@@ -219,7 +216,7 @@ public class Main {
         runs.parallelStream().forEach((run) -> {
             String runDescr = "(minimum support:" + run.minSupport + " ; input:" + run.inFolder + ")";
             System.out.println("Starting run " + runDescr);
-            String[] runArgs = {args[1], run.minSupport.toString(), run.inFolder, "60"};
+            String[] runArgs = {args[1], run.minSupport.toString(), run.inFolder, timeOut};
             singleRun(runArgs);
             System.out.println("Finished run " + runDescr);
         });

@@ -321,7 +321,10 @@ public class CreateGrammar extends ReadXML {
                     }
                 }
             }
-        }catch (Exception e){System.out.println(e);}
+        }catch (Exception e){
+            System.out.println("Grammar error:" + e);
+            e.printStackTrace();
+        }
 
     }
 

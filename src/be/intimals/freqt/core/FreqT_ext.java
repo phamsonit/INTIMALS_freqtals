@@ -18,8 +18,16 @@ public class FreqT_ext extends FreqT {
     private int largestMinSup;
     ////////////////////////////////////////////////////////////////////////////////
 
-    public FreqT_ext(Config config) {
+    public FreqT_ext(Config config,
+                     Map<String,Vector<String>> grammar,
+                     Map<String,Vector<String>> blackLabels,
+                     Map<String,Vector<String>> whiteLabels,
+                     Map<String,String> xmlCharacters) {
         super(config);
+        this.grammar = grammar;
+        this.blackLabels = blackLabels;
+        this.whiteLabels = whiteLabels;
+        this.xmlCharacters = xmlCharacters;
     }
 
     public int getNbOutputLargestPatterns(){
@@ -48,7 +56,7 @@ public class FreqT_ext extends FreqT {
                         break;
                     case "1..*"://node-list
                         if(parentOrdered.equals("unordered")) {
-                            //check previous sibling
+                            /*//check previous sibling
                             Set<String> previousSiblings = getPreviousSibling(entry.getValue(), transaction);
                             Set<String> currentChildren = new HashSet<>(Pattern.findChildren(largestPattern,parentPos));
                             previousSiblings.retainAll(currentChildren);
@@ -59,13 +67,11 @@ public class FreqT_ext extends FreqT {
                                 } else
                                     outputLargest.report(largestPattern, entry.getValue());
                                 return;
-                            }
-
+                            }*/
                             //grammar constraint: don't allow N children of an unordered node to have the same label
                             if (Pattern.checkRepeatedLabel(largestPattern, entry.getKey(), config.getMaxRepeatLabel()))
                                 //check line distance of 2 nodes which have the same label
                                 //if(Pattern.checkLineDistance(pattern, entry.getKey(), entry.getValue(), config.getMinLineDistance(), config.getMaxLineDistance()))
-
                                 project(entry.getValue());
                                 else{//output the current pattern
                                     if(config.postProcess()) {
@@ -134,7 +140,6 @@ public class FreqT_ext extends FreqT {
      */
     private void project(Projected projected) {
         try{
-
             //find candidates
             Map<String, Projected> candidates = generateCandidates(projected,transaction);
             //System.out.println("all candidates     " + candidates.keySet());

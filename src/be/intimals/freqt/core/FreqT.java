@@ -18,10 +18,10 @@ public class FreqT {
     private Vector <String> pattern;
     private Vector <Vector<NodeFreqT> >  transaction = new Vector<>();
 
-    static Map <String,Vector<String> > grammar     = new LinkedHashMap<>();
-    static Map <String,Vector<String> > blackLabels = new LinkedHashMap<>();
-    static Map <String,Vector<String> > whiteLabels = new LinkedHashMap<>();
-    static Map <String,String>          xmlCharacters  = new LinkedHashMap<>();
+    protected Map <String,Vector<String> > grammar     = new LinkedHashMap<>();
+    protected Map <String,Vector<String> > blackLabels = new LinkedHashMap<>();
+    protected Map <String,Vector<String> > whiteLabels = new LinkedHashMap<>();
+    protected Map <String,String>          xmlCharacters  = new LinkedHashMap<>();
 
     private Set <String>                 rootLabels  = new LinkedHashSet<>();
     private Map<String,String>           outputFrequentPatternsMap = new LinkedHashMap<>(); //store patterns for post-processing
@@ -452,7 +452,7 @@ public class FreqT {
                         break;
                     case "1..*"://node-list
                         if(parentOrdered.equals("unordered")) {
-                            //check previous siblings
+                            /*//check previous siblings
                             Set<String> previousSiblings = getPreviousSibling(entry.getValue(), transaction);
                             //System.out.println(previousSiblings);
                             Set<String> currentChildren = new HashSet<>(Pattern.findChildren(pattern,parentPos));
@@ -461,8 +461,7 @@ public class FreqT {
                             if(previousSiblings.size()>0){//output the current pattern
                                 chooseOutput(pattern,entry.getValue());
                                 return;
-                            }
-
+                            }*/
                             //grammar constraint: don't allow N children of an unordered node to have the same label
                             if (Pattern.checkRepeatedLabel(pattern, entry.getKey(), config.getMaxRepeatLabel())){
                             //check line distance of 2 nodes which have the same label
@@ -583,8 +582,6 @@ public class FreqT {
                 return;
             }
 
-            trackCandidates.add("each candidate of candidate");
-
             //expand the current pattern with each candidate
             Iterator < Map.Entry<String,Projected> > iter = candidates.entrySet().iterator();
             while (iter.hasNext()) {
@@ -592,14 +589,7 @@ public class FreqT {
 
                 Map.Entry<String, Projected> entry = iter.next();
 
-
-                //TODO don't allow extend a node without it previous sibling
-
                 expandCandidate(entry);
-
-
-                trackCandidates.remove("expanded candidate");
-
 
                 oldRootSupport = rootSupport(entry.getValue());
 
@@ -614,7 +604,7 @@ public class FreqT {
      */
     public void run() {
         try{
-            //os = new FileWriter(config.getOutputFile());
+
             /*  ==============================  */
             //System.out.println("==============================");
             //System.out.println("running FreqT");
@@ -639,7 +629,7 @@ public class FreqT {
             Map < String , Projected > freq1 = buildFreq1Set(transaction);
             //System.out.println("all candidates " + freq1.keySet());
             //prune 1-subtree
-            prune( freq1, config.getMinSupport() );
+            prune(freq1, config.getMinSupport() );
             //System.out.println("all candidates after pruning " + freq1.keySet());
             //expand 1-subtree to find frequent subtrees
             expandFreq1(freq1);
@@ -654,7 +644,7 @@ public class FreqT {
                 filterRootOccurrences(rootIDs);
                 System.out.println("rootIDs groups = "+rootIDs.size());
                 //find largest patterns according to rootIDs groups
-                FreqT_ext freqT_ext = new FreqT_ext(config);
+                FreqT_ext freqT_ext = new FreqT_ext(config, this.grammar, this.blackLabels,this.whiteLabels,this.xmlCharacters);
                 freqT_ext.run(rootIDs,transaction);
                 nbOutputFrequentPatterns= freqT_ext.getNbOutputLargestPatterns();
                 long end2 = System.currentTimeMillis( );
@@ -663,7 +653,7 @@ public class FreqT {
                 //output freqT_ext.getOutputLargestPatterns
 
                 //maximality check
-                FreqT_max post = new FreqT_max(this.config);
+                FreqT_max post = new FreqT_max(this.config, this.grammar, this.blackLabels, this.whiteLabels, this.xmlCharacters);
                 post.run(freqT_ext.getOutputLargestPatterns());
                 nbOutputMaximalPatterns = post.getNbMaximalPattern();
                 long end3 = System.currentTimeMillis( );
@@ -671,7 +661,7 @@ public class FreqT {
                 System.out.println("FREQT_MAX: maximal patterns = "+nbOutputMaximalPatterns+", time = "+ diff3);
             }else{
                 if(config.postProcess()){
-                    FreqT_max post = new FreqT_max(this.config);
+                    FreqT_max post = new FreqT_max(this.config, this.grammar, this.blackLabels, this.whiteLabels, this.xmlCharacters);
                     post.run(outputFrequentPatternsMap);
                     nbOutputMaximalPatterns = post.getNbMaximalPattern();
                     /*long end3 = System.currentTimeMillis( );
@@ -684,6 +674,7 @@ public class FreqT {
         }
         catch (Exception e) {
             System.out.println("Error: running freqt");
+            e.printStackTrace();
         }
     }
 
@@ -716,7 +707,7 @@ public class FreqT {
      * Return all frequent subtrees of size 1
      * @return
      */
-    private Map<String, Projected> buildFreq1Set(Vector < Vector<NodeFreqT> > trans) {
+    public Map<String, Projected> buildFreq1Set(Vector < Vector<NodeFreqT> > trans) {
         Map<String, Projected> freq1 = new LinkedHashMap<>();
         for(int i = 0; i < trans.size(); ++i) {
             for (int j = 0; j < trans.elementAt(i).size(); ++j) {
@@ -729,12 +720,12 @@ public class FreqT {
                     //if node_label already exists
                     if(freq1.containsKey(node_label)) {
                         freq1.get(node_label).setProjectLocation(i,j);
-                        freq1.get(node_label).setProjectLineNr(Integer.valueOf(lineNr)); //add to keep the line number
+                        //freq1.get(node_label).setProjectLineNr(Integer.valueOf(lineNr)); //add to keep the line number
                         freq1.get(node_label).setProjectRootLocation(i,j);
                     }
                     else {
                         projected.setProjectLocation(i,j);
-                        projected.setProjectLineNr(Integer.valueOf(lineNr)); //add to keep the line number
+                        //projected.setProjectLineNr(Integer.valueOf(lineNr)); //add to keep the line number
                         projected.setProjectRootLocation(i,j);
                         freq1.put(node_label, projected);
                     }

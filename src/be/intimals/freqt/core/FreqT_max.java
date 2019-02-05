@@ -5,16 +5,10 @@ import be.intimals.freqt.structure.*;
 import be.intimals.freqt.output.*;
 import be.intimals.freqt.input.*;
 
-
-import java.io.BufferedReader;
-import java.io.File;
-import java.io.FileReader;
-import java.io.IOException;
 import java.util.*;
 
 
 public class FreqT_max extends FreqT {
-
 
 
     private AOutputFormatter outputMaximal;
@@ -30,27 +24,22 @@ public class FreqT_max extends FreqT {
     private int nbMaximalPatterns;
     ////////////////////////////////////////////////////////////////////////////////
 
-    public FreqT_max(Config config) {
+    public FreqT_max(Config config,
+                     Map<String,Vector<String>> grammar,
+                     Map<String,Vector<String>> blackLabels,
+                     Map<String,Vector<String>> whiteLabels,
+                     Map<String,String> xmlCharacters) {
         super(config);
+        this.grammar = grammar;
+        this.blackLabels = blackLabels;
+        this.whiteLabels = whiteLabels;
+        this.xmlCharacters = xmlCharacters;
     }
 
     public int getNbMaximalPattern(){
         return  this.nbMaximalPatterns;
     }
 
-    private void prune (Map <String, Projected > candidate){
-        Iterator < Map.Entry<String,Projected> > iter = candidate.entrySet().iterator();
-
-        while (iter.hasNext()) {
-            Map.Entry<String,Projected> entry = iter.next();
-            int sup = support(entry.getValue());
-            //int sup = entry.getValue().getProjectedSupport();
-            if(sup < 1){//actually don't prune any candidate !
-                iter.remove();
-            }
-            else entry.getValue().setProjectedSupport(sup);
-        }
-    }
     /**
      * expand a subtree
      * @param projected
@@ -103,7 +92,7 @@ public class FreqT_max extends FreqT {
                 }
             }
 
-            prune(candidate);
+            prune(candidate,1);
             //System.out.println("after support pruning " + candidate.keySet());
 
             //expand the current pattern with each candidate
@@ -119,7 +108,7 @@ public class FreqT_max extends FreqT {
                     if (!p[i].isEmpty())
                         maximalPattern.addElement(p[i]);
                 }
-                //check before reporting
+                //check pattern before reporting
                 String patStr = Pattern.getPatternString(maximalPattern);
                 if(patSupMap.containsKey(patStr)){
                     //System.out.println("max pattern "+ entry.getValue().getProjectedSupport()+" " + patStr);
@@ -143,8 +132,6 @@ public class FreqT_max extends FreqT {
      */
     public void run(Map<String,String> inPatterns) {
         try{
-
-            //os = new FileWriter(config.getOutputFile());
             /*  ==============================  */
             //System.out.println("# patterns : "+ newTransaction.size());
             //System.out.println("==============================");
@@ -156,12 +143,11 @@ public class FreqT_max extends FreqT {
             outputMaximal = config.outputAsXML() ? new XMLOutput(config, grammar, xmlCharacters, patSupMap) :
                                             new LineOutput(config, grammar, xmlCharacters, patSupMap, uniChar);
 
-
             //find 1-subtree
-            Map < String , Projected > freq1 = buildFreq1Set();
+            Map < String , Projected > freq1 = buildFreq1Set(newTransaction);
 
             //prune 1-subtree
-            prune( freq1 );
+            prune( freq1 , 1 );
 
             //System.out.println("root label candidates " + freq1.keySet());
 
@@ -184,28 +170,6 @@ public class FreqT_max extends FreqT {
         }
         catch (Exception e) {System.out.println("running post-processing error "+e);}
 
-    }
-
-    private Map<String, Projected> buildFreq1Set() {
-        Map<String, Projected> freq1 = new LinkedHashMap<>();
-        for(int i = 0; i < newTransaction.size(); ++i) {
-            for (int j = 0; j < newTransaction.elementAt(i).size(); ++j) {
-                String node_label = newTransaction.elementAt(i).elementAt(j).getNodeLabel();
-                //find a list of location then add to freq1[node_label].locations
-                Projected projected = new Projected();
-                //if node_label exists
-                if(freq1.containsKey(node_label)) {
-                    freq1.get(node_label).setProjectLocation(i,j);
-                    freq1.get(node_label).setProjectRootLocation(i,j);
-                }
-                else {
-                    projected.setProjectLocation(i,j);
-                    projected.setProjectRootLocation(i,j);
-                    freq1.put(node_label, projected);
-                }
-            }
-        }
-        return freq1;
     }
 
     private void initDatabase(Map<String,String> patternMap) {
