@@ -1,5 +1,6 @@
 package be.intimals.freqt.core;
 
+import be.intimals.freqt.config.Config;
 import be.intimals.freqt.structure.*;
 import be.intimals.freqt.output.*;
 import be.intimals.freqt.input.*;
@@ -28,6 +29,10 @@ public class FreqT_max extends FreqT {
 
     private int nbMaximalPatterns;
     ////////////////////////////////////////////////////////////////////////////////
+
+    public FreqT_max(Config config) {
+        super(config);
+    }
 
     public int getNbMaximalPattern(){
         return  this.nbMaximalPatterns;

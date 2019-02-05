@@ -1,5 +1,6 @@
 package be.intimals.freqt.core;
 
+import be.intimals.freqt.config.Config;
 import be.intimals.freqt.structure.*;
 
 import java.io.*;
@@ -16,6 +17,10 @@ public class FreqT_ext extends FreqT {
     private int nbOutputLargestPatterns;
     private int largestMinSup;
     ////////////////////////////////////////////////////////////////////////////////
+
+    public FreqT_ext(Config config) {
+        super(config);
+    }
 
     public int getNbOutputLargestPatterns(){
         return this.nbOutputLargestPatterns;
@@ -161,7 +166,10 @@ public class FreqT_ext extends FreqT {
 
                 largestPattern.setSize(oldSize);
             }
-        }catch (Exception e){System.out.println("Error: projected " + e);}
+        }catch (Exception e){
+            System.out.println("Error: projected " + e);
+            e.printStackTrace();
+        }
     }
 
 

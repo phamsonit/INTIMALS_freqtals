@@ -38,7 +38,25 @@ import java.lang.String;
 
 public class Main {
 
-    static public void main(String[] args) {
+    static public void main(String[] args) throws IOException {
+        Main m = new Main();
+
+        if (args.length==0) {
+            System.out.println("Single-run Freq-T usage:\n" +
+                    "java -jar freqt_java.jar CONFIG_FILE [MIN_SUPPORT] [INPUT_FOLDER] [TIMEOUT]\n" +
+                    "\n" +
+                    "Multi-run Freq-T usage:\n" +
+                    "java -jar freqt_java.jar -multi CONFIG_FILE");
+        } else if (args[0].equals("-multi")) {
+            m.multiRun(args);
+        } else {
+            m.singleRun(args);
+        }
+
+        System.exit(3);
+    }
+
+    private void singleRun(String[] args) {
 
         try{
                 //load basic configuration
@@ -126,30 +144,20 @@ public class Main {
                 long start = System.currentTimeMillis();
 
                 //find frequent subtrees
-                FreqT freqt = new FreqT();
-                freqt.run(config);
+                FreqT freqt = new FreqT(config);
+                freqt.run();
                 //create report for each sub-dataset
                 FileWriter report = new FileWriter(reportFile);
 
-                report.write("data sources : " + config.getInputFiles() + "\n");
-                System.out.println("data sources : " + config.getInputFiles());
-
-                report.write("input files : " + freqt.getNbInputFiles() + "\n");
-                System.out.println("input files : " + freqt.getNbInputFiles());
-
-                report.write("minSupport : " + config.getMinSupport() + "\n");
-                System.out.println("minSupport : " + config.getMinSupport());
-
-                report.write("frequent patterns : " + freqt.getNbOutputFrequentPatterns() + "\n");
-                System.out.println("frequent patterns : " + freqt.getNbOutputFrequentPatterns());
-
-                report.write("maximal patterns : " + freqt.getNbOutputMaximalPatterns() + "\n");
-                System.out.println("maximal patterns : " + freqt.getNbOutputMaximalPatterns());
+                log(report, "data sources : " + config.getInputFiles());
+                log(report, "input files : " + freqt.getNbInputFiles());
+                log(report,"minSupport : " + config.getMinSupport());
+                log(report,"frequent patterns : " + freqt.getNbOutputFrequentPatterns());
+                log(report,"maximal patterns : " + freqt.getNbOutputMaximalPatterns());
 
                 long end = System.currentTimeMillis();
                 long diff = end - start;
-                System.out.println("mining time : " + diff + " ms");
-                report.write("running time : " + diff + " ms \n");
+                log(report,"mining time : " + diff + " ms");
                 //close report file
                 report.close();
 
@@ -176,11 +184,49 @@ public class Main {
             Analyse analyse = new Analyse();
             Ulti.groupPattern(patternsInput,patternGroupOutput);
             */
-            System.out.println("finish");
-            System.exit(3);
 
 
         }
-        catch (Exception e){System.out.println("Error: main "+e);}
+        catch (Exception e){
+            System.out.println("!!! Error: main "+e);
+            e.printStackTrace();
+        }
+    }
+
+    private class MultiRunConfig{
+        public Integer minSupport;
+        public String inFolder;
+    }
+
+    private void multiRun(String[] args) throws IOException {
+        String configPathBasic = args[1];
+
+        Config conf = new Config(configPathBasic);
+        List<Integer> minSupports = conf.getMinSupportList();
+        List<String> folders = conf.getInputFilesList();
+
+        // Create the list of all runs
+        List<MultiRunConfig> runs = new ArrayList<>();
+        for (Integer minSupport: minSupports) {
+            for(String folder: folders) {
+                MultiRunConfig run = new MultiRunConfig();
+                run.minSupport = minSupport;
+                run.inFolder = folder;
+                runs.add(run);
+            }
+        }
+
+        runs.parallelStream().forEach((run) -> {
+            String runDescr = "(minimum support:" + run.minSupport + " ; input:" + run.inFolder + ")";
+            System.out.println("Starting run " + runDescr);
+            String[] runArgs = {args[1], run.minSupport.toString(), run.inFolder, "60"};
+            singleRun(runArgs);
+            System.out.println("Finished run " + runDescr);
+        });
+    }
+
+    private void log(FileWriter report, String msg) throws IOException {
+        report.write(msg + "\n");
+        System.out.println(msg);
     }
 }

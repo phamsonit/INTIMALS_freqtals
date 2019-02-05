@@ -12,7 +12,7 @@ import be.intimals.freqt.output.*;
 
 public class FreqT {
     static char uniChar = '\u00a5';// Japanese Yen symbol
-    static Config config;
+    protected Config config;
 
     private AOutputFormatter outputFrequent;
     private Vector <String> pattern;
@@ -46,6 +46,10 @@ public class FreqT {
     Set<String> trackCandidates = new LinkedHashSet<>();
 
     ////////////////////////////////////////////////////////////////////////////////
+
+    public FreqT(Config config) {
+        this.config = config;
+    }
 
     public int getNbInputFiles(){
         return this.nbInputFiles;
@@ -161,7 +165,7 @@ public class FreqT {
         //for each element of rootIDs check
         //if rootOcc is a subset of an element of rootIDs then replace
         List<String> ttt = new LinkedList(_rootIDs.keySet());
-        Collections.sort(ttt, new Comparator<>() {
+        Collections.sort(ttt, new Comparator<String>() {
             @Override
             public int compare(String o1, String o2) {
                 return (Integer.valueOf(o1.length()).compareTo(o2.length()));
@@ -607,11 +611,9 @@ public class FreqT {
 
     /**
      * run Freqt with file config.properties
-     * @param _config
      */
-    public void run(Config _config) {
+    public void run() {
         try{
-            config = _config;
             //os = new FileWriter(config.getOutputFile());
             /*  ==============================  */
             //System.out.println("==============================");
@@ -652,7 +654,7 @@ public class FreqT {
                 filterRootOccurrences(rootIDs);
                 System.out.println("rootIDs groups = "+rootIDs.size());
                 //find largest patterns according to rootIDs groups
-                FreqT_ext freqT_ext = new FreqT_ext();
+                FreqT_ext freqT_ext = new FreqT_ext(config);
                 freqT_ext.run(rootIDs,transaction);
                 nbOutputFrequentPatterns= freqT_ext.getNbOutputLargestPatterns();
                 long end2 = System.currentTimeMillis( );
@@ -661,7 +663,7 @@ public class FreqT {
                 //output freqT_ext.getOutputLargestPatterns
 
                 //maximality check
-                FreqT_max post = new FreqT_max();
+                FreqT_max post = new FreqT_max(this.config);
                 post.run(freqT_ext.getOutputLargestPatterns());
                 nbOutputMaximalPatterns = post.getNbMaximalPattern();
                 long end3 = System.currentTimeMillis( );
@@ -669,7 +671,7 @@ public class FreqT {
                 System.out.println("FREQT_MAX: maximal patterns = "+nbOutputMaximalPatterns+", time = "+ diff3);
             }else{
                 if(config.postProcess()){
-                    FreqT_max post = new FreqT_max();
+                    FreqT_max post = new FreqT_max(this.config);
                     post.run(outputFrequentPatternsMap);
                     nbOutputMaximalPatterns = post.getNbMaximalPattern();
                     /*long end3 = System.currentTimeMillis( );
