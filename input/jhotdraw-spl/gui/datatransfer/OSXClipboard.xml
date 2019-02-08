@@ -1,0 +1,729 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<SourceFile ColNr="0" EndColNr="1" EndLineNr="51" FullName="/home/ddinucci/qualitas_refined/jhotdraw/src/org/jhotdraw/gui/datatransfer/OSXClipboard.java" ID="1" Language="Java" LineNr="1">
+  <CompilationUnit ColNr="0" EndColNr="1" EndLineNr="51" ID="1" LineNr="1">
+    <package ColNr="0" EndColNr="1" EndLineNr="51" ID="2" LineNr="1">
+      <PackageDeclaration ColNr="0" EndColNr="37" EndLineNr="14" ID="6" LineNr="14">
+        <name ColNr="0" EndColNr="37" EndLineNr="14" ID="9" LineNr="14">
+          <QualifiedName ColNr="8" EndColNr="36" EndLineNr="14" ID="27" LineNr="14">
+            <qualifier ColNr="8" EndColNr="36" EndLineNr="14" ID="28" LineNr="14">
+              <QualifiedName ColNr="8" EndColNr="23" EndLineNr="14" ID="70" LineNr="14">
+                <qualifier ColNr="8" EndColNr="23" EndLineNr="14" ID="71" LineNr="14">
+                  <QualifiedName ColNr="8" EndColNr="19" EndLineNr="14" ID="126" LineNr="14">
+                    <qualifier ColNr="8" EndColNr="19" EndLineNr="14" ID="127" LineNr="14">
+                      <SimpleName ColNr="8" EndColNr="10" EndLineNr="14" ID="177" LineNr="14">
+                        <identifier ColNr="8" EndColNr="10" EndLineNr="14" ID="178" LineNr="14">
+                          <token ColNr="8" EndColNr="10" EndLineNr="14" ID="178.0" LineNr="14">org</token>
+                        </identifier>
+                        <var ColNr="8" EndColNr="10" EndLineNr="14" ID="179" LineNr="14">false</var>
+                      </SimpleName>
+                    </qualifier>
+                    <name ColNr="8" EndColNr="19" EndLineNr="14" ID="128" LineNr="14">
+                      <SimpleName ColNr="12" EndColNr="19" EndLineNr="14" ID="180" LineNr="14">
+                        <identifier ColNr="12" EndColNr="19" EndLineNr="14" ID="181" LineNr="14">
+                          <token ColNr="12" EndColNr="19" EndLineNr="14" ID="181.0" LineNr="14">jhotdraw</token>
+                        </identifier>
+                        <var ColNr="12" EndColNr="19" EndLineNr="14" ID="182" LineNr="14">false</var>
+                      </SimpleName>
+                    </name>
+                  </QualifiedName>
+                </qualifier>
+                <name ColNr="8" EndColNr="23" EndLineNr="14" ID="72" LineNr="14">
+                  <SimpleName ColNr="21" EndColNr="23" EndLineNr="14" ID="129" LineNr="14">
+                    <identifier ColNr="21" EndColNr="23" EndLineNr="14" ID="130" LineNr="14">
+                      <token ColNr="21" EndColNr="23" EndLineNr="14" ID="130.0" LineNr="14">gui</token>
+                    </identifier>
+                    <var ColNr="21" EndColNr="23" EndLineNr="14" ID="131" LineNr="14">false</var>
+                  </SimpleName>
+                </name>
+              </QualifiedName>
+            </qualifier>
+            <name ColNr="8" EndColNr="36" EndLineNr="14" ID="29" LineNr="14">
+              <SimpleName ColNr="25" EndColNr="36" EndLineNr="14" ID="73" LineNr="14">
+                <identifier ColNr="25" EndColNr="36" EndLineNr="14" ID="74" LineNr="14">
+                  <token ColNr="25" EndColNr="36" EndLineNr="14" ID="74.0" LineNr="14">datatransfer</token>
+                </identifier>
+                <var ColNr="25" EndColNr="36" EndLineNr="14" ID="75" LineNr="14">false</var>
+              </SimpleName>
+            </name>
+          </QualifiedName>
+        </name>
+      </PackageDeclaration>
+    </package>
+    <imports ColNr="0" EndColNr="1" EndLineNr="51" ID="3" LineNr="1">
+      <ImportDeclaration ColNr="0" EndColNr="38" EndLineNr="16" ID="10" LineNr="16">
+        <static ColNr="0" EndColNr="38" EndLineNr="16" ID="11" LineNr="16">false</static>
+        <name ColNr="0" EndColNr="38" EndLineNr="16" ID="12" LineNr="16">
+          <QualifiedName ColNr="7" EndColNr="37" EndLineNr="16" ID="30" LineNr="16">
+            <qualifier ColNr="7" EndColNr="37" EndLineNr="16" ID="31" LineNr="16">
+              <QualifiedName ColNr="7" EndColNr="27" EndLineNr="16" ID="76" LineNr="16">
+                <qualifier ColNr="7" EndColNr="27" EndLineNr="16" ID="77" LineNr="16">
+                  <QualifiedName ColNr="7" EndColNr="14" EndLineNr="16" ID="132" LineNr="16">
+                    <qualifier ColNr="7" EndColNr="14" EndLineNr="16" ID="133" LineNr="16">
+                      <SimpleName ColNr="7" EndColNr="10" EndLineNr="16" ID="183" LineNr="16">
+                        <identifier ColNr="7" EndColNr="10" EndLineNr="16" ID="184" LineNr="16">
+                          <token ColNr="7" EndColNr="10" EndLineNr="16" ID="184.0" LineNr="16">java</token>
+                        </identifier>
+                        <var ColNr="7" EndColNr="10" EndLineNr="16" ID="185" LineNr="16">false</var>
+                      </SimpleName>
+                    </qualifier>
+                    <name ColNr="7" EndColNr="14" EndLineNr="16" ID="134" LineNr="16">
+                      <SimpleName ColNr="12" EndColNr="14" EndLineNr="16" ID="186" LineNr="16">
+                        <identifier ColNr="12" EndColNr="14" EndLineNr="16" ID="187" LineNr="16">
+                          <token ColNr="12" EndColNr="14" EndLineNr="16" ID="187.0" LineNr="16">awt</token>
+                        </identifier>
+                        <var ColNr="12" EndColNr="14" EndLineNr="16" ID="188" LineNr="16">false</var>
+                      </SimpleName>
+                    </name>
+                  </QualifiedName>
+                </qualifier>
+                <name ColNr="7" EndColNr="27" EndLineNr="16" ID="78" LineNr="16">
+                  <SimpleName ColNr="16" EndColNr="27" EndLineNr="16" ID="135" LineNr="16">
+                    <identifier ColNr="16" EndColNr="27" EndLineNr="16" ID="136" LineNr="16">
+                      <token ColNr="16" EndColNr="27" EndLineNr="16" ID="136.0" LineNr="16">datatransfer</token>
+                    </identifier>
+                    <var ColNr="16" EndColNr="27" EndLineNr="16" ID="137" LineNr="16">false</var>
+                  </SimpleName>
+                </name>
+              </QualifiedName>
+            </qualifier>
+            <name ColNr="7" EndColNr="37" EndLineNr="16" ID="32" LineNr="16">
+              <SimpleName ColNr="29" EndColNr="37" EndLineNr="16" ID="79" LineNr="16">
+                <identifier ColNr="29" EndColNr="37" EndLineNr="16" ID="80" LineNr="16">
+                  <token ColNr="29" EndColNr="37" EndLineNr="16" ID="80.0" LineNr="16">Clipboard</token>
+                </identifier>
+                <var ColNr="29" EndColNr="37" EndLineNr="16" ID="81" LineNr="16">false</var>
+              </SimpleName>
+            </name>
+          </QualifiedName>
+        </name>
+        <onDemand ColNr="0" EndColNr="38" EndLineNr="16" ID="13" LineNr="16">false</onDemand>
+      </ImportDeclaration>
+      <ImportDeclaration ColNr="0" EndColNr="41" EndLineNr="17" ID="14" LineNr="17">
+        <static ColNr="0" EndColNr="41" EndLineNr="17" ID="15" LineNr="17">false</static>
+        <name ColNr="0" EndColNr="41" EndLineNr="17" ID="16" LineNr="17">
+          <QualifiedName ColNr="7" EndColNr="40" EndLineNr="17" ID="33" LineNr="17">
+            <qualifier ColNr="7" EndColNr="40" EndLineNr="17" ID="34" LineNr="17">
+              <QualifiedName ColNr="7" EndColNr="27" EndLineNr="17" ID="82" LineNr="17">
+                <qualifier ColNr="7" EndColNr="27" EndLineNr="17" ID="83" LineNr="17">
+                  <QualifiedName ColNr="7" EndColNr="14" EndLineNr="17" ID="138" LineNr="17">
+                    <qualifier ColNr="7" EndColNr="14" EndLineNr="17" ID="139" LineNr="17">
+                      <SimpleName ColNr="7" EndColNr="10" EndLineNr="17" ID="189" LineNr="17">
+                        <identifier ColNr="7" EndColNr="10" EndLineNr="17" ID="190" LineNr="17">
+                          <token ColNr="7" EndColNr="10" EndLineNr="17" ID="190.0" LineNr="17">java</token>
+                        </identifier>
+                        <var ColNr="7" EndColNr="10" EndLineNr="17" ID="191" LineNr="17">false</var>
+                      </SimpleName>
+                    </qualifier>
+                    <name ColNr="7" EndColNr="14" EndLineNr="17" ID="140" LineNr="17">
+                      <SimpleName ColNr="12" EndColNr="14" EndLineNr="17" ID="192" LineNr="17">
+                        <identifier ColNr="12" EndColNr="14" EndLineNr="17" ID="193" LineNr="17">
+                          <token ColNr="12" EndColNr="14" EndLineNr="17" ID="193.0" LineNr="17">awt</token>
+                        </identifier>
+                        <var ColNr="12" EndColNr="14" EndLineNr="17" ID="194" LineNr="17">false</var>
+                      </SimpleName>
+                    </name>
+                  </QualifiedName>
+                </qualifier>
+                <name ColNr="7" EndColNr="27" EndLineNr="17" ID="84" LineNr="17">
+                  <SimpleName ColNr="16" EndColNr="27" EndLineNr="17" ID="141" LineNr="17">
+                    <identifier ColNr="16" EndColNr="27" EndLineNr="17" ID="142" LineNr="17">
+                      <token ColNr="16" EndColNr="27" EndLineNr="17" ID="142.0" LineNr="17">datatransfer</token>
+                    </identifier>
+                    <var ColNr="16" EndColNr="27" EndLineNr="17" ID="143" LineNr="17">false</var>
+                  </SimpleName>
+                </name>
+              </QualifiedName>
+            </qualifier>
+            <name ColNr="7" EndColNr="40" EndLineNr="17" ID="35" LineNr="17">
+              <SimpleName ColNr="29" EndColNr="40" EndLineNr="17" ID="85" LineNr="17">
+                <identifier ColNr="29" EndColNr="40" EndLineNr="17" ID="86" LineNr="17">
+                  <token ColNr="29" EndColNr="40" EndLineNr="17" ID="86.0" LineNr="17">Transferable</token>
+                </identifier>
+                <var ColNr="29" EndColNr="40" EndLineNr="17" ID="87" LineNr="17">false</var>
+              </SimpleName>
+            </name>
+          </QualifiedName>
+        </name>
+        <onDemand ColNr="0" EndColNr="41" EndLineNr="17" ID="17" LineNr="17">false</onDemand>
+      </ImportDeclaration>
+    </imports>
+    <types ColNr="0" EndColNr="1" EndLineNr="51" ID="4" LineNr="1">
+      <TypeDeclaration ColNr="0" EndColNr="0" EndLineNr="51" ID="18" LineNr="19">
+        <modifiers ColNr="0" EndColNr="0" EndLineNr="51" ID="20" LineNr="19">
+          <Modifier ColNr="0" EndColNr="5" EndLineNr="25" ID="36" LineNr="25">
+            <keyword ColNr="0" EndColNr="5" EndLineNr="25" ID="37" LineNr="25">public</keyword>
+          </Modifier>
+        </modifiers>
+        <interface ColNr="0" EndColNr="0" EndLineNr="51" ID="21" LineNr="19">false</interface>
+        <name ColNr="0" EndColNr="0" EndLineNr="51" ID="22" LineNr="19">
+          <SimpleName ColNr="13" EndColNr="24" EndLineNr="25" ID="38" LineNr="25">
+            <identifier ColNr="13" EndColNr="24" EndLineNr="25" ID="39" LineNr="25">
+              <token ColNr="13" EndColNr="24" EndLineNr="25" ID="39.0" LineNr="25">OSX</token>
+              <token ColNr="13" EndColNr="24" EndLineNr="25" ID="39.1" LineNr="25">Clipboard</token>
+            </identifier>
+            <var ColNr="13" EndColNr="24" EndLineNr="25" ID="40" LineNr="25">false</var>
+          </SimpleName>
+        </name>
+        <superclassType ColNr="0" EndColNr="0" EndLineNr="51" ID="24" LineNr="19">
+          <SimpleType ColNr="34" EndColNr="45" EndLineNr="25" ID="41" LineNr="25">
+            <name ColNr="34" EndColNr="45" EndLineNr="25" ID="43" LineNr="25">
+              <SimpleName ColNr="34" EndColNr="45" EndLineNr="25" ID="88" LineNr="25">
+                <identifier ColNr="34" EndColNr="45" EndLineNr="25" ID="89" LineNr="25">
+                  <token ColNr="34" EndColNr="45" EndLineNr="25" ID="89.0" LineNr="25">AWT</token>
+                  <token ColNr="34" EndColNr="45" EndLineNr="25" ID="89.1" LineNr="25">Clipboard</token>
+                </identifier>
+                <var ColNr="34" EndColNr="45" EndLineNr="25" ID="90" LineNr="25">false</var>
+              </SimpleName>
+            </name>
+          </SimpleType>
+        </superclassType>
+        <bodyDeclarations ColNr="0" EndColNr="0" EndLineNr="51" ID="26" LineNr="19">
+          <MethodDeclaration ColNr="4" EndColNr="4" EndLineNr="29" ID="44" LineNr="27">
+            <modifiers ColNr="4" EndColNr="4" EndLineNr="29" ID="46" LineNr="27">
+              <Modifier ColNr="4" EndColNr="9" EndLineNr="27" ID="91" LineNr="27">
+                <keyword ColNr="4" EndColNr="9" EndLineNr="27" ID="92" LineNr="27">public</keyword>
+              </Modifier>
+            </modifiers>
+            <constructor ColNr="4" EndColNr="4" EndLineNr="29" ID="47" LineNr="27">true</constructor>
+            <name ColNr="4" EndColNr="4" EndLineNr="29" ID="50" LineNr="27">
+              <SimpleName ColNr="11" EndColNr="22" EndLineNr="27" ID="93" LineNr="27">
+                <identifier ColNr="11" EndColNr="22" EndLineNr="27" ID="94" LineNr="27">
+                  <token ColNr="11" EndColNr="22" EndLineNr="27" ID="94.0" LineNr="27">OSX</token>
+                  <token ColNr="11" EndColNr="22" EndLineNr="27" ID="94.1" LineNr="27">Clipboard</token>
+                </identifier>
+                <var ColNr="11" EndColNr="22" EndLineNr="27" ID="95" LineNr="27">false</var>
+              </SimpleName>
+            </name>
+            <parameters ColNr="4" EndColNr="4" EndLineNr="29" ID="53" LineNr="27">
+              <SingleVariableDeclaration ColNr="24" EndColNr="39" EndLineNr="27" ID="96" LineNr="27">
+                <type ColNr="24" EndColNr="39" EndLineNr="27" ID="98" LineNr="27">
+                  <SimpleType ColNr="24" EndColNr="32" EndLineNr="27" ID="144" LineNr="27">
+                    <name ColNr="24" EndColNr="32" EndLineNr="27" ID="146" LineNr="27">
+                      <SimpleName ColNr="24" EndColNr="32" EndLineNr="27" ID="195" LineNr="27">
+                        <identifier ColNr="24" EndColNr="32" EndLineNr="27" ID="196" LineNr="27">
+                          <token ColNr="24" EndColNr="32" EndLineNr="27" ID="196.0" LineNr="27">Clipboard</token>
+                        </identifier>
+                        <var ColNr="24" EndColNr="32" EndLineNr="27" ID="197" LineNr="27">false</var>
+                      </SimpleName>
+                    </name>
+                  </SimpleType>
+                </type>
+                <varargs ColNr="24" EndColNr="39" EndLineNr="27" ID="100" LineNr="27">false</varargs>
+                <name ColNr="24" EndColNr="39" EndLineNr="27" ID="101" LineNr="27">
+                  <SimpleName ColNr="34" EndColNr="39" EndLineNr="27" ID="147" LineNr="27">
+                    <identifier ColNr="34" EndColNr="39" EndLineNr="27" ID="148" LineNr="27">
+                      <token ColNr="34" EndColNr="39" EndLineNr="27" ID="148.0" LineNr="27">target</token>
+                    </identifier>
+                    <var ColNr="34" EndColNr="39" EndLineNr="27" ID="149" LineNr="27">false</var>
+                  </SimpleName>
+                </name>
+              </SingleVariableDeclaration>
+            </parameters>
+            <body ColNr="4" EndColNr="4" EndLineNr="29" ID="56" LineNr="27">
+              <Block ColNr="42" EndColNr="4" EndLineNr="29" ID="104" LineNr="27">
+                <statements ColNr="42" EndColNr="4" EndLineNr="29" ID="105" LineNr="27">
+                  <SuperConstructorInvocation ColNr="8" EndColNr="21" EndLineNr="28" ID="150" LineNr="28">
+                    <arguments ColNr="8" EndColNr="21" EndLineNr="28" ID="153" LineNr="28">
+                      <SimpleName ColNr="14" EndColNr="19" EndLineNr="28" ID="198" LineNr="28">
+                        <identifier ColNr="14" EndColNr="19" EndLineNr="28" ID="199" LineNr="28">
+                          <token ColNr="14" EndColNr="19" EndLineNr="28" ID="199.0" LineNr="28">target</token>
+                        </identifier>
+                        <var ColNr="14" EndColNr="19" EndLineNr="28" ID="200" LineNr="28">false</var>
+                      </SimpleName>
+                    </arguments>
+                  </SuperConstructorInvocation>
+                </statements>
+              </Block>
+            </body>
+          </MethodDeclaration>
+          <MethodDeclaration ColNr="4" EndColNr="4" EndLineNr="50" ID="57" LineNr="31">
+            <modifiers ColNr="4" EndColNr="4" EndLineNr="50" ID="59" LineNr="31">
+              <MarkerAnnotation ColNr="4" EndColNr="12" EndLineNr="31" ID="106" LineNr="31">
+                <typeName ColNr="4" EndColNr="12" EndLineNr="31" ID="107" LineNr="31">
+                  <SimpleName ColNr="5" EndColNr="12" EndLineNr="31" ID="154" LineNr="31">
+                    <identifier ColNr="5" EndColNr="12" EndLineNr="31" ID="155" LineNr="31">
+                      <token ColNr="5" EndColNr="12" EndLineNr="31" ID="155.0" LineNr="31">Override</token>
+                    </identifier>
+                    <var ColNr="5" EndColNr="12" EndLineNr="31" ID="156" LineNr="31">false</var>
+                  </SimpleName>
+                </typeName>
+              </MarkerAnnotation>
+              <Modifier ColNr="4" EndColNr="9" EndLineNr="32" ID="108" LineNr="32">
+                <keyword ColNr="4" EndColNr="9" EndLineNr="32" ID="109" LineNr="32">public</keyword>
+              </Modifier>
+            </modifiers>
+            <constructor ColNr="4" EndColNr="4" EndLineNr="50" ID="60" LineNr="31">false</constructor>
+            <returnType2 ColNr="4" EndColNr="4" EndLineNr="50" ID="62" LineNr="31">
+              <SimpleType ColNr="11" EndColNr="22" EndLineNr="32" ID="110" LineNr="32">
+                <name ColNr="11" EndColNr="22" EndLineNr="32" ID="112" LineNr="32">
+                  <SimpleName ColNr="11" EndColNr="22" EndLineNr="32" ID="157" LineNr="32">
+                    <identifier ColNr="11" EndColNr="22" EndLineNr="32" ID="158" LineNr="32">
+                      <token ColNr="11" EndColNr="22" EndLineNr="32" ID="158.0" LineNr="32">Transferable</token>
+                    </identifier>
+                    <var ColNr="11" EndColNr="22" EndLineNr="32" ID="159" LineNr="32">false</var>
+                  </SimpleName>
+                </name>
+              </SimpleType>
+            </returnType2>
+            <name ColNr="4" EndColNr="4" EndLineNr="50" ID="63" LineNr="31">
+              <SimpleName ColNr="24" EndColNr="34" EndLineNr="32" ID="113" LineNr="32">
+                <identifier ColNr="24" EndColNr="34" EndLineNr="32" ID="114" LineNr="32">
+                  <token ColNr="24" EndColNr="34" EndLineNr="32" ID="114.0" LineNr="32">get</token>
+                  <token ColNr="24" EndColNr="34" EndLineNr="32" ID="114.1" LineNr="32">Contents</token>
+                </identifier>
+                <var ColNr="24" EndColNr="34" EndLineNr="32" ID="115" LineNr="32">false</var>
+              </SimpleName>
+            </name>
+            <parameters ColNr="4" EndColNr="4" EndLineNr="50" ID="66" LineNr="31">
+              <SingleVariableDeclaration ColNr="36" EndColNr="51" EndLineNr="32" ID="116" LineNr="32">
+                <type ColNr="36" EndColNr="51" EndLineNr="32" ID="118" LineNr="32">
+                  <SimpleType ColNr="36" EndColNr="41" EndLineNr="32" ID="160" LineNr="32">
+                    <name ColNr="36" EndColNr="41" EndLineNr="32" ID="162" LineNr="32">
+                      <SimpleName ColNr="36" EndColNr="41" EndLineNr="32" ID="201" LineNr="32">
+                        <identifier ColNr="36" EndColNr="41" EndLineNr="32" ID="202" LineNr="32">
+                          <token ColNr="36" EndColNr="41" EndLineNr="32" ID="202.0" LineNr="32">Object</token>
+                        </identifier>
+                        <var ColNr="36" EndColNr="41" EndLineNr="32" ID="203" LineNr="32">false</var>
+                      </SimpleName>
+                    </name>
+                  </SimpleType>
+                </type>
+                <varargs ColNr="36" EndColNr="51" EndLineNr="32" ID="120" LineNr="32">false</varargs>
+                <name ColNr="36" EndColNr="51" EndLineNr="32" ID="121" LineNr="32">
+                  <SimpleName ColNr="43" EndColNr="51" EndLineNr="32" ID="163" LineNr="32">
+                    <identifier ColNr="43" EndColNr="51" EndLineNr="32" ID="164" LineNr="32">
+                      <token ColNr="43" EndColNr="51" EndLineNr="32" ID="164.0" LineNr="32">requestor</token>
+                    </identifier>
+                    <var ColNr="43" EndColNr="51" EndLineNr="32" ID="165" LineNr="32">false</var>
+                  </SimpleName>
+                </name>
+              </SingleVariableDeclaration>
+            </parameters>
+            <body ColNr="4" EndColNr="4" EndLineNr="50" ID="69" LineNr="31">
+              <Block ColNr="54" EndColNr="4" EndLineNr="50" ID="124" LineNr="32">
+                <statements ColNr="54" EndColNr="4" EndLineNr="50" ID="125" LineNr="32">
+                  <VariableDeclarationStatement ColNr="8" EndColNr="53" EndLineNr="33" ID="166" LineNr="33">
+                    <type ColNr="8" EndColNr="53" EndLineNr="33" ID="168" LineNr="33">
+                      <SimpleType ColNr="8" EndColNr="19" EndLineNr="33" ID="204" LineNr="33">
+                        <name ColNr="8" EndColNr="19" EndLineNr="33" ID="206" LineNr="33">
+                          <SimpleName ColNr="8" EndColNr="19" EndLineNr="33" ID="219" LineNr="33">
+                            <identifier ColNr="8" EndColNr="19" EndLineNr="33" ID="220" LineNr="33">
+                              <token ColNr="8" EndColNr="19" EndLineNr="33" ID="220.0" LineNr="33">Transferable</token>
+                            </identifier>
+                            <var ColNr="8" EndColNr="19" EndLineNr="33" ID="221" LineNr="33">false</var>
+                          </SimpleName>
+                        </name>
+                      </SimpleType>
+                    </type>
+                    <fragments ColNr="8" EndColNr="53" EndLineNr="33" ID="169" LineNr="33">
+                      <VariableDeclarationFragment ColNr="21" EndColNr="52" EndLineNr="33" ID="207" LineNr="33">
+                        <name ColNr="21" EndColNr="52" EndLineNr="33" ID="208" LineNr="33">
+                          <SimpleName ColNr="21" EndColNr="21" EndLineNr="33" ID="222" LineNr="33">
+                            <identifier ColNr="21" EndColNr="21" EndLineNr="33" ID="223" LineNr="33">
+                              <token ColNr="21" EndColNr="21" EndLineNr="33" ID="223.0" LineNr="33">t</token>
+                            </identifier>
+                            <var ColNr="21" EndColNr="21" EndLineNr="33" ID="224" LineNr="33">false</var>
+                          </SimpleName>
+                        </name>
+                        <initializer ColNr="21" EndColNr="52" EndLineNr="33" ID="210" LineNr="33">
+                          <SuperMethodInvocation ColNr="25" EndColNr="52" EndLineNr="33" ID="225" LineNr="33">
+                            <name ColNr="25" EndColNr="52" EndLineNr="33" ID="228" LineNr="33">
+                              <SimpleName ColNr="31" EndColNr="41" EndLineNr="33" ID="252" LineNr="33">
+                                <identifier ColNr="31" EndColNr="41" EndLineNr="33" ID="253" LineNr="33">
+                                  <token ColNr="31" EndColNr="41" EndLineNr="33" ID="253.0" LineNr="33">get</token>
+                                  <token ColNr="31" EndColNr="41" EndLineNr="33" ID="253.1" LineNr="33">Contents</token>
+                                </identifier>
+                                <var ColNr="31" EndColNr="41" EndLineNr="33" ID="254" LineNr="33">false</var>
+                              </SimpleName>
+                            </name>
+                            <arguments ColNr="25" EndColNr="52" EndLineNr="33" ID="229" LineNr="33">
+                              <SimpleName ColNr="43" EndColNr="51" EndLineNr="33" ID="255" LineNr="33">
+                                <identifier ColNr="43" EndColNr="51" EndLineNr="33" ID="256" LineNr="33">
+                                  <token ColNr="43" EndColNr="51" EndLineNr="33" ID="256.0" LineNr="33">requestor</token>
+                                </identifier>
+                                <var ColNr="43" EndColNr="51" EndLineNr="33" ID="257" LineNr="33">false</var>
+                              </SimpleName>
+                            </arguments>
+                          </SuperMethodInvocation>
+                        </initializer>
+                      </VariableDeclarationFragment>
+                    </fragments>
+                  </VariableDeclarationStatement>
+                  <TryStatement ColNr="12" EndColNr="12" EndLineNr="47" ID="170" LineNr="35">
+                    <body ColNr="12" EndColNr="12" EndLineNr="47" ID="172" LineNr="35">
+                      <Block ColNr="16" EndColNr="12" EndLineNr="45" ID="211" LineNr="35">
+                        <statements ColNr="16" EndColNr="12" EndLineNr="45" ID="212" LineNr="35">
+                          <VariableDeclarationStatement ColNr="16" EndColNr="94" EndLineNr="36" ID="230" LineNr="36">
+                            <type ColNr="16" EndColNr="94" EndLineNr="36" ID="232" LineNr="36">
+                              <SimpleType ColNr="16" EndColNr="20" EndLineNr="36" ID="258" LineNr="36">
+                                <name ColNr="16" EndColNr="20" EndLineNr="36" ID="260" LineNr="36">
+                                  <SimpleName ColNr="16" EndColNr="20" EndLineNr="36" ID="286" LineNr="36">
+                                    <identifier ColNr="16" EndColNr="20" EndLineNr="36" ID="287" LineNr="36">
+                                      <token ColNr="16" EndColNr="20" EndLineNr="36" ID="287.0" LineNr="36">Class</token>
+                                    </identifier>
+                                    <var ColNr="16" EndColNr="20" EndLineNr="36" ID="288" LineNr="36">false</var>
+                                  </SimpleName>
+                                </name>
+                              </SimpleType>
+                            </type>
+                            <fragments ColNr="16" EndColNr="94" EndLineNr="36" ID="233" LineNr="36">
+                              <VariableDeclarationFragment ColNr="22" EndColNr="93" EndLineNr="36" ID="261" LineNr="36">
+                                <name ColNr="22" EndColNr="93" EndLineNr="36" ID="262" LineNr="36">
+                                  <SimpleName ColNr="22" EndColNr="22" EndLineNr="36" ID="289" LineNr="36">
+                                    <identifier ColNr="22" EndColNr="22" EndLineNr="36" ID="290" LineNr="36">
+                                      <token ColNr="22" EndColNr="22" EndLineNr="36" ID="290.0" LineNr="36">c</token>
+                                    </identifier>
+                                    <var ColNr="22" EndColNr="22" EndLineNr="36" ID="291" LineNr="36">false</var>
+                                  </SimpleName>
+                                </name>
+                                <initializer ColNr="22" EndColNr="93" EndLineNr="36" ID="264" LineNr="36">
+                                  <MethodInvocation ColNr="26" EndColNr="93" EndLineNr="36" ID="292" LineNr="36">
+                                    <expression ColNr="26" EndColNr="93" EndLineNr="36" ID="293" LineNr="36">
+                                      <SimpleName ColNr="26" EndColNr="30" EndLineNr="36" ID="321" LineNr="36">
+                                        <identifier ColNr="26" EndColNr="30" EndLineNr="36" ID="322" LineNr="36">
+                                          <token ColNr="26" EndColNr="30" EndLineNr="36" ID="322.0" LineNr="36">Class</token>
+                                        </identifier>
+                                        <var ColNr="26" EndColNr="30" EndLineNr="36" ID="323" LineNr="36">false</var>
+                                      </SimpleName>
+                                    </expression>
+                                    <name ColNr="26" EndColNr="93" EndLineNr="36" ID="295" LineNr="36">
+                                      <SimpleName ColNr="32" EndColNr="38" EndLineNr="36" ID="324" LineNr="36">
+                                        <identifier ColNr="32" EndColNr="38" EndLineNr="36" ID="325" LineNr="36">
+                                          <token ColNr="32" EndColNr="38" EndLineNr="36" ID="325.0" LineNr="36">for</token>
+                                          <token ColNr="32" EndColNr="38" EndLineNr="36" ID="325.1" LineNr="36">Name</token>
+                                        </identifier>
+                                        <var ColNr="32" EndColNr="38" EndLineNr="36" ID="326" LineNr="36">false</var>
+                                      </SimpleName>
+                                    </name>
+                                    <arguments ColNr="26" EndColNr="93" EndLineNr="36" ID="296" LineNr="36">
+                                      <StringLiteral ColNr="40" EndColNr="92" EndLineNr="36" ID="327" LineNr="36">
+                                        <escapedValue ColNr="40" EndColNr="92" EndLineNr="36" ID="328" LineNr="36">"ch.randelshofer.quaqua.osx.OSXClipboardTransferable"</escapedValue>
+                                      </StringLiteral>
+                                    </arguments>
+                                  </MethodInvocation>
+                                </initializer>
+                              </VariableDeclarationFragment>
+                            </fragments>
+                          </VariableDeclarationStatement>
+                          <VariableDeclarationStatement ColNr="16" EndColNr="97" EndLineNr="38" ID="234" LineNr="37">
+                            <modifiers ColNr="16" EndColNr="97" EndLineNr="38" ID="235" LineNr="37">
+                              <SingleMemberAnnotation ColNr="16" EndColNr="45" EndLineNr="37" ID="265" LineNr="37">
+                                <typeName ColNr="16" EndColNr="45" EndLineNr="37" ID="266" LineNr="37">
+                                  <SimpleName ColNr="17" EndColNr="32" EndLineNr="37" ID="297" LineNr="37">
+                                    <identifier ColNr="17" EndColNr="32" EndLineNr="37" ID="298" LineNr="37">
+                                      <token ColNr="17" EndColNr="32" EndLineNr="37" ID="298.0" LineNr="37">Suppress</token>
+                                      <token ColNr="17" EndColNr="32" EndLineNr="37" ID="298.1" LineNr="37">Warnings</token>
+                                    </identifier>
+                                    <var ColNr="17" EndColNr="32" EndLineNr="37" ID="299" LineNr="37">false</var>
+                                  </SimpleName>
+                                </typeName>
+                                <value ColNr="16" EndColNr="45" EndLineNr="37" ID="267" LineNr="37">
+                                  <StringLiteral ColNr="34" EndColNr="44" EndLineNr="37" ID="300" LineNr="37">
+                                    <escapedValue ColNr="34" EndColNr="44" EndLineNr="37" ID="301" LineNr="37">"unchecked"</escapedValue>
+                                  </StringLiteral>
+                                </value>
+                              </SingleMemberAnnotation>
+                            </modifiers>
+                            <type ColNr="16" EndColNr="97" EndLineNr="38" ID="236" LineNr="37">
+                              <PrimitiveType ColNr="16" EndColNr="22" EndLineNr="38" ID="268" LineNr="38">
+                                <primitiveTypeCode ColNr="16" EndColNr="22" EndLineNr="38" ID="270" LineNr="38">boolean</primitiveTypeCode>
+                              </PrimitiveType>
+                            </type>
+                            <fragments ColNr="16" EndColNr="97" EndLineNr="38" ID="237" LineNr="37">
+                              <VariableDeclarationFragment ColNr="24" EndColNr="96" EndLineNr="38" ID="271" LineNr="38">
+                                <name ColNr="24" EndColNr="96" EndLineNr="38" ID="272" LineNr="38">
+                                  <SimpleName ColNr="24" EndColNr="34" EndLineNr="38" ID="302" LineNr="38">
+                                    <identifier ColNr="24" EndColNr="34" EndLineNr="38" ID="303" LineNr="38">
+                                      <token ColNr="24" EndColNr="34" EndLineNr="38" ID="303.0" LineNr="38">is</token>
+                                      <token ColNr="24" EndColNr="34" EndLineNr="38" ID="303.1" LineNr="38">Available</token>
+                                    </identifier>
+                                    <var ColNr="24" EndColNr="34" EndLineNr="38" ID="304" LineNr="38">false</var>
+                                  </SimpleName>
+                                </name>
+                                <initializer ColNr="24" EndColNr="96" EndLineNr="38" ID="274" LineNr="38">
+                                  <CastExpression ColNr="38" EndColNr="96" EndLineNr="38" ID="305" LineNr="38">
+                                    <type ColNr="38" EndColNr="96" EndLineNr="38" ID="306" LineNr="38">
+                                      <SimpleType ColNr="39" EndColNr="45" EndLineNr="38" ID="329" LineNr="38">
+                                        <name ColNr="39" EndColNr="45" EndLineNr="38" ID="331" LineNr="38">
+                                          <SimpleName ColNr="39" EndColNr="45" EndLineNr="38" ID="358" LineNr="38">
+                                            <identifier ColNr="39" EndColNr="45" EndLineNr="38" ID="359" LineNr="38">
+                                              <token ColNr="39" EndColNr="45" EndLineNr="38" ID="359.0" LineNr="38">Boolean</token>
+                                            </identifier>
+                                            <var ColNr="39" EndColNr="45" EndLineNr="38" ID="360" LineNr="38">false</var>
+                                          </SimpleName>
+                                        </name>
+                                      </SimpleType>
+                                    </type>
+                                    <expression ColNr="38" EndColNr="96" EndLineNr="38" ID="307" LineNr="38">
+                                      <MethodInvocation ColNr="48" EndColNr="96" EndLineNr="38" ID="332" LineNr="38">
+                                        <expression ColNr="48" EndColNr="96" EndLineNr="38" ID="333" LineNr="38">
+                                          <MethodInvocation ColNr="48" EndColNr="83" EndLineNr="38" ID="361" LineNr="38">
+                                            <expression ColNr="48" EndColNr="83" EndLineNr="38" ID="362" LineNr="38">
+                                              <SimpleName ColNr="48" EndColNr="48" EndLineNr="38" ID="407" LineNr="38">
+                                                <identifier ColNr="48" EndColNr="48" EndLineNr="38" ID="408" LineNr="38">
+                                                  <token ColNr="48" EndColNr="48" EndLineNr="38" ID="408.0" LineNr="38">c</token>
+                                                </identifier>
+                                                <var ColNr="48" EndColNr="48" EndLineNr="38" ID="409" LineNr="38">false</var>
+                                              </SimpleName>
+                                            </expression>
+                                            <name ColNr="48" EndColNr="83" EndLineNr="38" ID="364" LineNr="38">
+                                              <SimpleName ColNr="50" EndColNr="58" EndLineNr="38" ID="410" LineNr="38">
+                                                <identifier ColNr="50" EndColNr="58" EndLineNr="38" ID="411" LineNr="38">
+                                                  <token ColNr="50" EndColNr="58" EndLineNr="38" ID="411.0" LineNr="38">get</token>
+                                                  <token ColNr="50" EndColNr="58" EndLineNr="38" ID="411.1" LineNr="38">Method</token>
+                                                </identifier>
+                                                <var ColNr="50" EndColNr="58" EndLineNr="38" ID="412" LineNr="38">false</var>
+                                              </SimpleName>
+                                            </name>
+                                            <arguments ColNr="48" EndColNr="83" EndLineNr="38" ID="365" LineNr="38">
+                                              <StringLiteral ColNr="60" EndColNr="82" EndLineNr="38" ID="413" LineNr="38">
+                                                <escapedValue ColNr="60" EndColNr="82" EndLineNr="38" ID="414" LineNr="38">"isNativeCodeAvailable"</escapedValue>
+                                              </StringLiteral>
+                                            </arguments>
+                                          </MethodInvocation>
+                                        </expression>
+                                        <name ColNr="48" EndColNr="96" EndLineNr="38" ID="335" LineNr="38">
+                                          <SimpleName ColNr="85" EndColNr="90" EndLineNr="38" ID="366" LineNr="38">
+                                            <identifier ColNr="85" EndColNr="90" EndLineNr="38" ID="367" LineNr="38">
+                                              <token ColNr="85" EndColNr="90" EndLineNr="38" ID="367.0" LineNr="38">invoke</token>
+                                            </identifier>
+                                            <var ColNr="85" EndColNr="90" EndLineNr="38" ID="368" LineNr="38">false</var>
+                                          </SimpleName>
+                                        </name>
+                                        <arguments ColNr="48" EndColNr="96" EndLineNr="38" ID="336" LineNr="38">
+                                          <NullLiteral ColNr="92" EndColNr="95" EndLineNr="38" ID="369" LineNr="38">
+                                            <token ColNr="92" EndColNr="95" EndLineNr="38" ID="370" LineNr="38">null</token>
+                                          </NullLiteral>
+                                        </arguments>
+                                      </MethodInvocation>
+                                    </expression>
+                                  </CastExpression>
+                                </initializer>
+                              </VariableDeclarationFragment>
+                            </fragments>
+                          </VariableDeclarationStatement>
+                          <IfStatement ColNr="16" EndColNr="16" EndLineNr="44" ID="238" LineNr="39">
+                            <expression ColNr="16" EndColNr="16" EndLineNr="44" ID="239" LineNr="39">
+                              <SimpleName ColNr="20" EndColNr="30" EndLineNr="39" ID="275" LineNr="39">
+                                <identifier ColNr="20" EndColNr="30" EndLineNr="39" ID="276" LineNr="39">
+                                  <token ColNr="20" EndColNr="30" EndLineNr="39" ID="276.0" LineNr="39">is</token>
+                                  <token ColNr="20" EndColNr="30" EndLineNr="39" ID="276.1" LineNr="39">Available</token>
+                                </identifier>
+                                <var ColNr="20" EndColNr="30" EndLineNr="39" ID="277" LineNr="39">false</var>
+                              </SimpleName>
+                            </expression>
+                            <thenStatement ColNr="16" EndColNr="16" EndLineNr="44" ID="240" LineNr="39">
+                              <Block ColNr="33" EndColNr="16" EndLineNr="44" ID="278" LineNr="39">
+                                <statements ColNr="33" EndColNr="16" EndLineNr="44" ID="279" LineNr="39">
+                                  <VariableDeclarationStatement ColNr="19" EndColNr="73" EndLineNr="40" ID="308" LineNr="40">
+                                    <type ColNr="19" EndColNr="73" EndLineNr="40" ID="310" LineNr="40">
+                                      <SimpleType ColNr="19" EndColNr="39" EndLineNr="40" ID="337" LineNr="40">
+                                        <name ColNr="19" EndColNr="39" EndLineNr="40" ID="339" LineNr="40">
+                                          <SimpleName ColNr="19" EndColNr="39" EndLineNr="40" ID="371" LineNr="40">
+                                            <identifier ColNr="19" EndColNr="39" EndLineNr="40" ID="372" LineNr="40">
+                                              <token ColNr="19" EndColNr="39" EndLineNr="40" ID="372.0" LineNr="40">Composite</token>
+                                              <token ColNr="19" EndColNr="39" EndLineNr="40" ID="372.1" LineNr="40">Transferable</token>
+                                            </identifier>
+                                            <var ColNr="19" EndColNr="39" EndLineNr="40" ID="373" LineNr="40">false</var>
+                                          </SimpleName>
+                                        </name>
+                                      </SimpleType>
+                                    </type>
+                                    <fragments ColNr="19" EndColNr="73" EndLineNr="40" ID="311" LineNr="40">
+                                      <VariableDeclarationFragment ColNr="41" EndColNr="72" EndLineNr="40" ID="340" LineNr="40">
+                                        <name ColNr="41" EndColNr="72" EndLineNr="40" ID="341" LineNr="40">
+                                          <SimpleName ColNr="41" EndColNr="42" EndLineNr="40" ID="374" LineNr="40">
+                                            <identifier ColNr="41" EndColNr="42" EndLineNr="40" ID="375" LineNr="40">
+                                              <token ColNr="41" EndColNr="42" EndLineNr="40" ID="375.0" LineNr="40">ct</token>
+                                            </identifier>
+                                            <var ColNr="41" EndColNr="42" EndLineNr="40" ID="376" LineNr="40">false</var>
+                                          </SimpleName>
+                                        </name>
+                                        <initializer ColNr="41" EndColNr="72" EndLineNr="40" ID="343" LineNr="40">
+                                          <ClassInstanceCreation ColNr="46" EndColNr="72" EndLineNr="40" ID="377" LineNr="40">
+                                            <type ColNr="46" EndColNr="72" EndLineNr="40" ID="380" LineNr="40">
+                                              <SimpleType ColNr="50" EndColNr="70" EndLineNr="40" ID="415" LineNr="40">
+                                                <name ColNr="50" EndColNr="70" EndLineNr="40" ID="417" LineNr="40">
+                                                  <SimpleName ColNr="50" EndColNr="70" EndLineNr="40" ID="426" LineNr="40">
+                                                    <identifier ColNr="50" EndColNr="70" EndLineNr="40" ID="427" LineNr="40">
+                                                      <token ColNr="50" EndColNr="70" EndLineNr="40" ID="427.0" LineNr="40">Composite</token>
+                                                      <token ColNr="50" EndColNr="70" EndLineNr="40" ID="427.1" LineNr="40">Transferable</token>
+                                                    </identifier>
+                                                    <var ColNr="50" EndColNr="70" EndLineNr="40" ID="428" LineNr="40">false</var>
+                                                  </SimpleName>
+                                                </name>
+                                              </SimpleType>
+                                            </type>
+                                          </ClassInstanceCreation>
+                                        </initializer>
+                                      </VariableDeclarationFragment>
+                                    </fragments>
+                                  </VariableDeclarationStatement>
+                                  <ExpressionStatement ColNr="19" EndColNr="28" EndLineNr="41" ID="312" LineNr="41">
+                                    <expression ColNr="19" EndColNr="28" EndLineNr="41" ID="313" LineNr="41">
+                                      <MethodInvocation ColNr="19" EndColNr="27" EndLineNr="41" ID="344" LineNr="41">
+                                        <expression ColNr="19" EndColNr="27" EndLineNr="41" ID="345" LineNr="41">
+                                          <SimpleName ColNr="19" EndColNr="20" EndLineNr="41" ID="383" LineNr="41">
+                                            <identifier ColNr="19" EndColNr="20" EndLineNr="41" ID="384" LineNr="41">
+                                              <token ColNr="19" EndColNr="20" EndLineNr="41" ID="384.0" LineNr="41">ct</token>
+                                            </identifier>
+                                            <var ColNr="19" EndColNr="20" EndLineNr="41" ID="385" LineNr="41">false</var>
+                                          </SimpleName>
+                                        </expression>
+                                        <name ColNr="19" EndColNr="27" EndLineNr="41" ID="347" LineNr="41">
+                                          <SimpleName ColNr="22" EndColNr="24" EndLineNr="41" ID="386" LineNr="41">
+                                            <identifier ColNr="22" EndColNr="24" EndLineNr="41" ID="387" LineNr="41">
+                                              <token ColNr="22" EndColNr="24" EndLineNr="41" ID="387.0" LineNr="41">add</token>
+                                            </identifier>
+                                            <var ColNr="22" EndColNr="24" EndLineNr="41" ID="388" LineNr="41">false</var>
+                                          </SimpleName>
+                                        </name>
+                                        <arguments ColNr="19" EndColNr="27" EndLineNr="41" ID="348" LineNr="41">
+                                          <SimpleName ColNr="26" EndColNr="26" EndLineNr="41" ID="389" LineNr="41">
+                                            <identifier ColNr="26" EndColNr="26" EndLineNr="41" ID="390" LineNr="41">
+                                              <token ColNr="26" EndColNr="26" EndLineNr="41" ID="390.0" LineNr="41">t</token>
+                                            </identifier>
+                                            <var ColNr="26" EndColNr="26" EndLineNr="41" ID="391" LineNr="41">false</var>
+                                          </SimpleName>
+                                        </arguments>
+                                      </MethodInvocation>
+                                    </expression>
+                                  </ExpressionStatement>
+                                  <ExpressionStatement ColNr="19" EndColNr="57" EndLineNr="42" ID="314" LineNr="42">
+                                    <expression ColNr="19" EndColNr="57" EndLineNr="42" ID="315" LineNr="42">
+                                      <MethodInvocation ColNr="19" EndColNr="56" EndLineNr="42" ID="349" LineNr="42">
+                                        <expression ColNr="19" EndColNr="56" EndLineNr="42" ID="350" LineNr="42">
+                                          <SimpleName ColNr="19" EndColNr="20" EndLineNr="42" ID="392" LineNr="42">
+                                            <identifier ColNr="19" EndColNr="20" EndLineNr="42" ID="393" LineNr="42">
+                                              <token ColNr="19" EndColNr="20" EndLineNr="42" ID="393.0" LineNr="42">ct</token>
+                                            </identifier>
+                                            <var ColNr="19" EndColNr="20" EndLineNr="42" ID="394" LineNr="42">false</var>
+                                          </SimpleName>
+                                        </expression>
+                                        <name ColNr="19" EndColNr="56" EndLineNr="42" ID="352" LineNr="42">
+                                          <SimpleName ColNr="22" EndColNr="24" EndLineNr="42" ID="395" LineNr="42">
+                                            <identifier ColNr="22" EndColNr="24" EndLineNr="42" ID="396" LineNr="42">
+                                              <token ColNr="22" EndColNr="24" EndLineNr="42" ID="396.0" LineNr="42">add</token>
+                                            </identifier>
+                                            <var ColNr="22" EndColNr="24" EndLineNr="42" ID="397" LineNr="42">false</var>
+                                          </SimpleName>
+                                        </name>
+                                        <arguments ColNr="19" EndColNr="56" EndLineNr="42" ID="353" LineNr="42">
+                                          <CastExpression ColNr="26" EndColNr="55" EndLineNr="42" ID="398" LineNr="42">
+                                            <type ColNr="26" EndColNr="55" EndLineNr="42" ID="399" LineNr="42">
+                                              <SimpleType ColNr="27" EndColNr="38" EndLineNr="42" ID="418" LineNr="42">
+                                                <name ColNr="27" EndColNr="38" EndLineNr="42" ID="420" LineNr="42">
+                                                  <SimpleName ColNr="27" EndColNr="38" EndLineNr="42" ID="429" LineNr="42">
+                                                    <identifier ColNr="27" EndColNr="38" EndLineNr="42" ID="430" LineNr="42">
+                                                      <token ColNr="27" EndColNr="38" EndLineNr="42" ID="430.0" LineNr="42">Transferable</token>
+                                                    </identifier>
+                                                    <var ColNr="27" EndColNr="38" EndLineNr="42" ID="431" LineNr="42">false</var>
+                                                  </SimpleName>
+                                                </name>
+                                              </SimpleType>
+                                            </type>
+                                            <expression ColNr="26" EndColNr="55" EndLineNr="42" ID="400" LineNr="42">
+                                              <MethodInvocation ColNr="41" EndColNr="55" EndLineNr="42" ID="421" LineNr="42">
+                                                <expression ColNr="41" EndColNr="55" EndLineNr="42" ID="422" LineNr="42">
+                                                  <SimpleName ColNr="41" EndColNr="41" EndLineNr="42" ID="432" LineNr="42">
+                                                    <identifier ColNr="41" EndColNr="41" EndLineNr="42" ID="433" LineNr="42">
+                                                      <token ColNr="41" EndColNr="41" EndLineNr="42" ID="433.0" LineNr="42">c</token>
+                                                    </identifier>
+                                                    <var ColNr="41" EndColNr="41" EndLineNr="42" ID="434" LineNr="42">false</var>
+                                                  </SimpleName>
+                                                </expression>
+                                                <name ColNr="41" EndColNr="55" EndLineNr="42" ID="424" LineNr="42">
+                                                  <SimpleName ColNr="43" EndColNr="53" EndLineNr="42" ID="435" LineNr="42">
+                                                    <identifier ColNr="43" EndColNr="53" EndLineNr="42" ID="436" LineNr="42">
+                                                      <token ColNr="43" EndColNr="53" EndLineNr="42" ID="436.0" LineNr="42">new</token>
+                                                      <token ColNr="43" EndColNr="53" EndLineNr="42" ID="436.1" LineNr="42">Instance</token>
+                                                    </identifier>
+                                                    <var ColNr="43" EndColNr="53" EndLineNr="42" ID="437" LineNr="42">false</var>
+                                                  </SimpleName>
+                                                </name>
+                                              </MethodInvocation>
+                                            </expression>
+                                          </CastExpression>
+                                        </arguments>
+                                      </MethodInvocation>
+                                    </expression>
+                                  </ExpressionStatement>
+                                  <ExpressionStatement ColNr="19" EndColNr="25" EndLineNr="43" ID="316" LineNr="43">
+                                    <expression ColNr="19" EndColNr="25" EndLineNr="43" ID="317" LineNr="43">
+                                      <Assignment ColNr="19" EndColNr="24" EndLineNr="43" ID="354" LineNr="43">
+                                        <leftHandSide ColNr="19" EndColNr="24" EndLineNr="43" ID="355" LineNr="43">
+                                          <SimpleName ColNr="19" EndColNr="19" EndLineNr="43" ID="401" LineNr="43">
+                                            <identifier ColNr="19" EndColNr="19" EndLineNr="43" ID="402" LineNr="43">
+                                              <token ColNr="19" EndColNr="19" EndLineNr="43" ID="402.0" LineNr="43">t</token>
+                                            </identifier>
+                                            <var ColNr="19" EndColNr="19" EndLineNr="43" ID="403" LineNr="43">false</var>
+                                          </SimpleName>
+                                        </leftHandSide>
+                                        <operator ColNr="19" EndColNr="24" EndLineNr="43" ID="356" LineNr="43">=</operator>
+                                        <rightHandSide ColNr="19" EndColNr="24" EndLineNr="43" ID="357" LineNr="43">
+                                          <SimpleName ColNr="23" EndColNr="24" EndLineNr="43" ID="404" LineNr="43">
+                                            <identifier ColNr="23" EndColNr="24" EndLineNr="43" ID="405" LineNr="43">
+                                              <token ColNr="23" EndColNr="24" EndLineNr="43" ID="405.0" LineNr="43">ct</token>
+                                            </identifier>
+                                            <var ColNr="23" EndColNr="24" EndLineNr="43" ID="406" LineNr="43">false</var>
+                                          </SimpleName>
+                                        </rightHandSide>
+                                      </Assignment>
+                                    </expression>
+                                  </ExpressionStatement>
+                                </statements>
+                              </Block>
+                            </thenStatement>
+                          </IfStatement>
+                        </statements>
+                      </Block>
+                    </body>
+                    <catchClauses ColNr="12" EndColNr="12" EndLineNr="47" ID="173" LineNr="35">
+                      <CatchClause ColNr="14" EndColNr="12" EndLineNr="47" ID="213" LineNr="45">
+                        <exception ColNr="14" EndColNr="12" EndLineNr="47" ID="214" LineNr="45">
+                          <SingleVariableDeclaration ColNr="21" EndColNr="32" EndLineNr="45" ID="242" LineNr="45">
+                            <type ColNr="21" EndColNr="32" EndLineNr="45" ID="244" LineNr="45">
+                              <SimpleType ColNr="21" EndColNr="29" EndLineNr="45" ID="280" LineNr="45">
+                                <name ColNr="21" EndColNr="29" EndLineNr="45" ID="282" LineNr="45">
+                                  <SimpleName ColNr="21" EndColNr="29" EndLineNr="45" ID="318" LineNr="45">
+                                    <identifier ColNr="21" EndColNr="29" EndLineNr="45" ID="319" LineNr="45">
+                                      <token ColNr="21" EndColNr="29" EndLineNr="45" ID="319.0" LineNr="45">Throwable</token>
+                                    </identifier>
+                                    <var ColNr="21" EndColNr="29" EndLineNr="45" ID="320" LineNr="45">false</var>
+                                  </SimpleName>
+                                </name>
+                              </SimpleType>
+                            </type>
+                            <varargs ColNr="21" EndColNr="32" EndLineNr="45" ID="246" LineNr="45">false</varargs>
+                            <name ColNr="21" EndColNr="32" EndLineNr="45" ID="247" LineNr="45">
+                              <SimpleName ColNr="31" EndColNr="32" EndLineNr="45" ID="283" LineNr="45">
+                                <identifier ColNr="31" EndColNr="32" EndLineNr="45" ID="284" LineNr="45">
+                                  <token ColNr="31" EndColNr="32" EndLineNr="45" ID="284.0" LineNr="45">ex</token>
+                                </identifier>
+                                <var ColNr="31" EndColNr="32" EndLineNr="45" ID="285" LineNr="45">false</var>
+                              </SimpleName>
+                            </name>
+                          </SingleVariableDeclaration>
+                        </exception>
+                      </CatchClause>
+                    </catchClauses>
+                  </TryStatement>
+                  <ReturnStatement ColNr="8" EndColNr="16" EndLineNr="49" ID="175" LineNr="49">
+                    <expression ColNr="8" EndColNr="16" EndLineNr="49" ID="176" LineNr="49">
+                      <SimpleName ColNr="15" EndColNr="15" EndLineNr="49" ID="216" LineNr="49">
+                        <identifier ColNr="15" EndColNr="15" EndLineNr="49" ID="217" LineNr="49">
+                          <token ColNr="15" EndColNr="15" EndLineNr="49" ID="217.0" LineNr="49">t</token>
+                        </identifier>
+                        <var ColNr="15" EndColNr="15" EndLineNr="49" ID="218" LineNr="49">false</var>
+                      </SimpleName>
+                    </expression>
+                  </ReturnStatement>
+                </statements>
+              </Block>
+            </body>
+          </MethodDeclaration>
+        </bodyDeclarations>
+      </TypeDeclaration>
+    </types>
+  </CompilationUnit>
+</SourceFile>

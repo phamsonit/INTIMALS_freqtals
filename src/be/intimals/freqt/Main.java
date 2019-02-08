@@ -43,10 +43,10 @@ public class Main {
 
         if (args.length==0) {
             System.out.println("Single-run Freq-T usage:\n" +
-                    "java -jar freqt_java.jar CONFIG_FILE [MIN_SUPPORT] [INPUT_FOLDER] [TIMEOUT]\n" +
+                    "java -jar freqt_java.jar CONFIG_FILE [MIN_SUPPORT] [INPUT_FOLDER]\n" +
                     "\n" +
                     "Multi-run Freq-T usage:\n" +
-                    "java -jar freqt_java.jar -multi CONFIG_FILE TIME_OUT");
+                    "java -jar freqt_java.jar -multi CONFIG_FILE");
         } else if (args[0].equals("-multi")) {
             m.multiRun(args);
         } else {
@@ -61,20 +61,10 @@ public class Main {
         try{
                 //load basic configuration
                 String configPathBasic = args.length == 0 ? "conf/java/config.properties" : args[0];
-
                 Config configBasic = new Config(configPathBasic);
-
+                //update minSup and sub folder name
                 String inputMinSup = args.length == 0 ? String.valueOf(configBasic.getMinSupport()) : args[1];
                 String inputFold = args.length == 0 ? "" : args[2];
-                int time = args.length == 0 ? 60 : Integer.valueOf(args[3]);
-
-                //set time out for program
-
-                TimeOut timeOut = new TimeOut();
-                timeOut.setTimes(time * 60 * 1000);
-                Thread timeOutThread = new Thread(timeOut);
-                timeOutThread.start();
-
                 //create temporary configuration
                 Properties prop;
                 OutputStream output = null;
@@ -86,8 +76,6 @@ public class Main {
                 String sourceMatcher = "";
                 String inputPatterns = "";
                 String outputMatches = "";
-
-                String reportFile = "";
 
                 try {
                     prop = configBasic.getProp();
@@ -111,10 +99,6 @@ public class Main {
                             + "/"+ inputFold.replaceAll("\\/","-")+"-"+ inputMinSup + "-config.properties";
                     Files.deleteIfExists(Paths.get(configPathTemp));
 
-                    //create report path
-                    reportFile = configBasic.getOutputFile().replaceAll("\"","") +
-                            "/"+inputFold.replaceAll("\\/","-")+"-"+ inputMinSup + "-report.txt";
-
                     //update properties
                     prop.replace("minSupport", inputMinSup);
                     prop.replace("inFiles", inputPath);
@@ -137,51 +121,18 @@ public class Main {
 
                 //load new configuration;
                 Config config = new Config(configPathTemp);
-
-                //start running Freqt
-                long start = System.currentTimeMillis();
-                //find frequent subtrees
+                //run Freqt
                 FreqT freqt = new FreqT(config);
                 freqt.run();
-                //create report for each sub-dataset
-                FileWriter report = new FileWriter(reportFile);
-
-                log(report, "data sources : " + config.getInputFiles());
-                log(report, "input files : " + freqt.getNbInputFiles());
-                log(report,"minSupport : " + config.getMinSupport());
-                log(report,"frequent patterns : " + freqt.getNbOutputFrequentPatterns());
-                log(report,"maximal patterns : " + freqt.getNbOutputMaximalPatterns());
-
-                long end = System.currentTimeMillis();
-                long diff = end - start;
-                log(report,"mining time : " + diff + " ms");
-                //close report file
-                report.close();
-
-                //create transaction data for itemset mining
-                //if(!config.outputAsXML())
-                //Util.createTransaction(config.getOutputFile(),"eclat-"+config.getOutputFile());
-
 
                 //run forestmatcher
-                //System.out.println("Running forestmatcher ...");
                 if(config.outputAsXML()){
                     String command = "java -jar forestmatcher.jar " +
                             sourceMatcher + " " + inputPatterns +" " + outputMatches;
                     Process proc = Runtime.getRuntime().exec(command);
 
-                System.out.println("===========================================================");
                 }
-            /*
-            //group patterns by leaf label sets
-            System.out.println("finding pattern groups ...");
-            String patternsInput = config.getOutputFile();
-            String patternGroupOutput = "cobol_output/pattern-group-filter.txt";
-            Analyse analyse = new Analyse();
-            Ulti.groupPattern(patternsInput,patternGroupOutput);
-            */
-
-
+                //System.out.println("===========================================================");
         }
         catch (Exception e){
             System.out.println("!!! Error: main "+e);
@@ -196,7 +147,7 @@ public class Main {
 
     private void multiRun(String[] args) throws IOException {
         String configPathBasic = args[1];
-        String timeOut = args[2];
+        //String timeOut = args[2];
 
         Config conf = new Config(configPathBasic);
         List<Integer> minSupports = conf.getMinSupportList();
@@ -216,14 +167,11 @@ public class Main {
         runs.parallelStream().forEach((run) -> {
             String runDescr = "(minimum support:" + run.minSupport + " ; input:" + run.inFolder + ")";
             System.out.println("Starting run " + runDescr);
-            String[] runArgs = {args[1], run.minSupport.toString(), run.inFolder, timeOut};
+            String[] runArgs = {args[1], run.minSupport.toString(), run.inFolder};
             singleRun(runArgs);
             System.out.println("Finished run " + runDescr);
         });
     }
 
-    private void log(FileWriter report, String msg) throws IOException {
-        report.write(msg + "\n");
-        System.out.println(msg);
-    }
+
 }

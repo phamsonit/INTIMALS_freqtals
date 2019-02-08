@@ -6,6 +6,8 @@ import be.intimals.freqt.util.*;
 
 
 import java.io.*;
+import java.nio.file.Files;
+import java.nio.file.Paths;
 import java.util.*;
 
 import be.intimals.freqt.output.*;
@@ -41,7 +43,6 @@ public class FreqT {
 
     private boolean threeSteps = true;
     private int nbIdentifiers = 2;
-
 
     Set<String> trackCandidates = new LinkedHashSet<>();
 
@@ -85,30 +86,29 @@ public class FreqT {
      */
     public void addPattern(Vector<String> pat, Projected projected,
                             Map<String,String> _outputFrequentPatternsMap){
+        try {
+            int support = projected.getProjectedSupport();
+            int wsupport = projected.getProjectedRootSupport(); //=> root location
+            int size = Pattern.getPatternSize(pat);
+            //keep fileIds for itemset mining algorithm
+            String fileIds = String.valueOf(projected.getProjectLocation(0).getLocationId());
+            int oldId = projected.getProjectLocation(0).getLocationId();
+            for (int i = 1; i < projected.getProjectLocationSize(); ++i)
+                if (oldId != projected.getProjectLocation(i).getLocationId()) {
+                    fileIds = fileIds + "," + String.valueOf(projected.getProjectLocation(i).getLocationId());
+                    oldId = projected.getProjectLocation(i).getLocationId();
+                }
 
-        if(checkOutput(pat)) return;
+            String patternString = Pattern.getPatternString1(pat); //filter out the right part of pattern which misses leaf nodes
 
-        int support = projected.getProjectedSupport();
-        int wsupport = projected.getProjectedRootSupport(); //=> root location
-        int size = Pattern.getPatternSize(pat);
-        //keep fileIds for itemset mining algorithm
-        String fileIds = String.valueOf(projected.getProjectLocation(0).getLocationId());
-        int oldId = projected.getProjectLocation(0).getLocationId();
-        for(int i=1;i<projected.getProjectLocationSize(); ++i)
-            if(oldId != projected.getProjectLocation(i).getLocationId() ) {
-                fileIds = fileIds+","+ String.valueOf(projected.getProjectLocation(i).getLocationId());
-                oldId = projected.getProjectLocation(i).getLocationId();
-            }
+            String patStr =
+                    fileIds + " " +
+                            String.valueOf(support) + " " +
+                            String.valueOf(wsupport) + " " +
+                            String.valueOf(size);
 
-        String patternString = Pattern.getPatternString1(pat); //filter out the right part of pattern which misses leaf nodes
-
-        String patStr =
-                fileIds + " " +
-                        String.valueOf(support)+" "+
-                        String.valueOf(wsupport)+" "+
-                        String.valueOf(size);
-
-        _outputFrequentPatternsMap.put(patternString,patStr);
+            _outputFrequentPatternsMap.put(patternString, patStr);
+        }catch (Exception e){}
     }
 
     /**
@@ -145,8 +145,6 @@ public class FreqT {
      */
     private void addRootIDs(Vector<String> pat, Projected projected){
         try {
-            if (checkOutput(pat)) return;
-            nbOutputFrequentPatterns++;
             //find rootID of pattern
             String rootOccurrences = "";
             for (int i = 0; i < projected.getProjectRootLocationSize(); ++i) {
@@ -201,12 +199,19 @@ public class FreqT {
     }
 
     private void chooseOutput(Vector<String> pat, Projected projected){
+
+        if (checkOutput(pat)) return;
+
+        nbOutputFrequentPatterns++;
+
         if(threeSteps){
             addRootIDs(pat, projected);
             outputFrequent.report(pat, projected);
         }else{
-            if (config.postProcess())
-                addPattern(pat,projected,outputFrequentPatternsMap);
+            if (config.postProcess()) {
+                addPattern(pat, projected, outputFrequentPatternsMap);
+                outputFrequent.report(pat, projected);
+            }
             else outputFrequent.report(pat, projected);
         }
 
@@ -224,7 +229,6 @@ public class FreqT {
             Map.Entry<String, Projected> entry = iterTemp.next();
             Set<String> blackListChildren = Pattern.getChildrenLabels(_blackLabels,pat,entry.getKey());
             //System.out.println("blackListChildren "+ blackListChildren);
-
 
             String candidateLabel = Pattern.getPotentialCandidateLabel(entry.getKey());
             //System.out.println("candidateLabel "+ candidateLabel);
@@ -605,6 +609,7 @@ public class FreqT {
     public void run() {
         try{
 
+
             /*  ==============================  */
             //System.out.println("==============================");
             //System.out.println("running FreqT");
@@ -613,18 +618,35 @@ public class FreqT {
                 Initial.initGrammar(config.getInputFiles(),grammar,config.buildGrammar());
             else
                 Initial.initGrammar(config.getGrammarFile(),grammar,config.buildGrammar()) ;
-
             //ReadGrammar.printGrammar(grammar);
             Initial.readWhiteLabel(config.getWhiteLabelFile(), grammar, whiteLabels, blackLabels); //read white labels and create black labels
             Initial.readRootLabel(config.getRootLabelFile(), rootLabels);  //read root labels (AST Nodes)
             Initial.readXMLCharacter(config.getXmlCharacterFile(), xmlCharacters); //read list of special XML characters
             Initial.initDatabase(config.getInputFiles(),grammar,transaction);
 
+            long start = System.currentTimeMillis( );
+
             nbInputFiles = transaction.size();
 
-            long start = System.currentTimeMillis( );
-            outputFrequent = config.outputAsXML() ? new XMLOutput(config, grammar, xmlCharacters) :
-                                           new LineOutput(config, grammar, xmlCharacters, uniChar);
+            String fileName = "phase1-"+config.getOutputFile().replaceAll("\\/","-");
+            outputFrequent = config.outputAsXML() ? new XMLOutput(fileName, config, grammar, xmlCharacters) :
+                                           new LineOutput(fileName, config, grammar, xmlCharacters, uniChar);
+
+            String reportFile = config.getOutputFile().replaceAll("\"","") +"-"
+                    + config.getMinSupport() + "-report.txt";
+
+            FileWriter report = new FileWriter(reportFile);
+
+            TimeOut timeOut = new TimeOut();
+            timeOut.setTimes(config.getTimeout() * 60 * 1000);
+            timeOut.setReport(report);
+            Thread timeOutThread = new Thread(timeOut);
+            timeOutThread.start();
+
+            log(report, "data sources : " + config.getInputFiles());
+            log(report, "input files : " + nbInputFiles);
+            log(report,"minSupport : " + config.getMinSupport());
+
             //find 1-subtree
             Map < String , Projected > freq1 = buildFreq1Set(transaction);
             //System.out.println("all candidates " + freq1.keySet());
@@ -637,20 +659,28 @@ public class FreqT {
 
             long end1 = System.currentTimeMillis( );
             long diff1 = end1 - start;
-            System.out.print("FREQT: frequent patterns = "+ nbOutputFrequentPatterns+", time = "+ diff1+" ,");
+
 
             if(threeSteps){
                 //only keep subset rootIDs
                 filterRootOccurrences(rootIDs);
-                System.out.println("rootIDs groups = "+rootIDs.size());
+                //report phase 1
+                String s1 = "FREQT: frequent patterns = "+ nbOutputFrequentPatterns +
+                                    ", rootIDs groups = "+rootIDs.size() +
+                                    ", time = "+ diff1;
+                log(report,s1);
+
                 //find largest patterns according to rootIDs groups
                 FreqT_ext freqT_ext = new FreqT_ext(config, this.grammar, this.blackLabels,this.whiteLabels,this.xmlCharacters);
                 freqT_ext.run(rootIDs,transaction);
                 nbOutputFrequentPatterns= freqT_ext.getNbOutputLargestPatterns();
                 long end2 = System.currentTimeMillis( );
                 long diff2 = end2 - end1;
-                System.out.println("FREQT_EXT: largest patterns "+nbOutputFrequentPatterns+", time "+ diff2);
-                //output freqT_ext.getOutputLargestPatterns
+                //report phase 2
+                String s2 = "FREQT_EXT: largest patterns "+nbOutputFrequentPatterns+", time "+ diff2;
+                log(report,s2);
+                //delete phase1 result
+                Files.deleteIfExists(Paths.get("phase1-"+config.getOutputFile().replaceAll("\\/","-")));
 
                 //maximality check
                 FreqT_max post = new FreqT_max(this.config, this.grammar, this.blackLabels, this.whiteLabels, this.xmlCharacters);
@@ -658,15 +688,35 @@ public class FreqT {
                 nbOutputMaximalPatterns = post.getNbMaximalPattern();
                 long end3 = System.currentTimeMillis( );
                 long diff3 = end3 - end2;
-                System.out.println("FREQT_MAX: maximal patterns = "+nbOutputMaximalPatterns+", time = "+ diff3);
+                //report phase 3
+                String s3 = "FREQT_MAX: maximal patterns = "+nbOutputMaximalPatterns+", time = "+ diff3;
+                log(report,s3);
+                //delete phase2 result
+                Files.deleteIfExists(Paths.get("phase2-"+config.getOutputFile().replaceAll("\\/","-")));
+
+                String s4 = "total times = "+(end3-start);
+                log(report,s4);
+                report.close();
+
             }else{
                 if(config.postProcess()){
+                    //System.out.print("FREQT: frequent patterns = "+ nbOutputFrequentPatterns+", time = "+ diff1);
+                    String s1 = "FREQT: frequent patterns = "+ nbOutputFrequentPatterns+", time = "+ diff1;
+                    log(report,s1);
+
                     FreqT_max post = new FreqT_max(this.config, this.grammar, this.blackLabels, this.whiteLabels, this.xmlCharacters);
                     post.run(outputFrequentPatternsMap);
                     nbOutputMaximalPatterns = post.getNbMaximalPattern();
-                    /*long end3 = System.currentTimeMillis( );
+                    long end3 = System.currentTimeMillis( );
                     long diff3 = end3 - end1;
-                    System.out.println("FREQT_MAX: maximal patterns "+post.getNbMaximalPattern()+", time "+ diff3);*/
+                    //System.out.println("FREQT_MAX: maximal patterns "+post.getNbMaximalPattern()+", time "+ diff3);
+                    String s2 = "FREQT_MAX: maximal patterns "+post.getNbMaximalPattern()+", time "+ diff3;
+                    log(report,s2);
+
+                    String s4 = "total times = "+(diff3-diff1);
+                    log(report,s4);
+
+                    report.close();
                 }
             }
 
@@ -678,6 +728,10 @@ public class FreqT {
         }
     }
 
+    private void log(FileWriter report, String msg) throws IOException {
+        report.write(msg + "\n");
+        //System.out.println(msg);
+    }
 
     private void expandFreq1(Map < String , Projected > freq1){
         pattern = new Vector<>();

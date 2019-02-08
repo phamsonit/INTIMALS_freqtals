@@ -9,15 +9,17 @@ import java.util.*;
 
 public abstract class AOutputFormatter {
     int nbPattern;
+    String fileName;
     FileWriter out;
     Config config;
     Map<String, Vector<String>> grammar;
     Map<String,String> xmlCharacters;
 
 
-    public AOutputFormatter(Config _config, Map<String, Vector<String>> _grammar, Map<String,String> _xmlCharacters)
+    public AOutputFormatter(String _fileName, Config _config, Map<String, Vector<String>> _grammar, Map<String,String> _xmlCharacters)
             throws IOException {
         nbPattern = 0;
+        fileName = _fileName;
         config = _config;
         grammar = _grammar;
         xmlCharacters = _xmlCharacters;
@@ -25,7 +27,8 @@ public abstract class AOutputFormatter {
     }
 
     protected void openOutputFile() throws IOException {
-        out = new FileWriter(config.getOutputFile());
+        //out = new FileWriter(config.getOutputFile());
+        out = new FileWriter(fileName);
     }
 
     public int getNbPattern(){

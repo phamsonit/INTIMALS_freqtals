@@ -25,6 +25,8 @@ public class Config {
         return Integer.valueOf(prop.getProperty("configID"));
     }
 
+    public int getTimeout(){return Integer.valueOf(prop.getProperty("timeout"));}
+
     public Properties getProp(){
         return this.prop;
     }

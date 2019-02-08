@@ -1,0 +1,1412 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<SourceFile ColNr="0" EndColNr="1" EndLineNr="114" FullName="/Users/dardin88/Documents/INTiMALS/reference-sources/qualitas_refined/jhotdraw/src/org/jhotdraw/color/ColorWheelChooser.java" ID="1" Language="Java" LineNr="1">
+  <CompilationUnit ColNr="0" EndColNr="1" EndLineNr="114" ID="1" LineNr="1">
+    <package ColNr="0" EndColNr="1" EndLineNr="114" ID="2" LineNr="1">
+      <PackageDeclaration ColNr="0" EndColNr="26" EndLineNr="15" ID="1014" LineNr="15">
+        <name ColNr="0" EndColNr="26" EndLineNr="15" ID="1017" LineNr="15">
+          <QualifiedName ColNr="8" EndColNr="25" EndLineNr="15" ID="1018" LineNr="15">
+            <qualifier ColNr="8" EndColNr="25" EndLineNr="15" ID="1019" LineNr="15">
+              <QualifiedName ColNr="8" EndColNr="19" EndLineNr="15" ID="1024" LineNr="15">
+                <qualifier ColNr="8" EndColNr="19" EndLineNr="15" ID="1025" LineNr="15">
+                  <SimpleName ColNr="8" EndColNr="10" EndLineNr="15" ID="1030" LineNr="15">
+                    <identifier ColNr="8" EndColNr="10" EndLineNr="15" ID="1031" LineNr="15">org</identifier>
+                    <var ColNr="8" EndColNr="10" EndLineNr="15" ID="1032" LineNr="15">false</var>
+                  </SimpleName>
+                </qualifier>
+                <name ColNr="8" EndColNr="19" EndLineNr="15" ID="1026" LineNr="15">
+                  <SimpleName ColNr="12" EndColNr="19" EndLineNr="15" ID="1027" LineNr="15">
+                    <identifier ColNr="12" EndColNr="19" EndLineNr="15" ID="1028" LineNr="15">jhotdraw</identifier>
+                    <var ColNr="12" EndColNr="19" EndLineNr="15" ID="1029" LineNr="15">false</var>
+                  </SimpleName>
+                </name>
+              </QualifiedName>
+            </qualifier>
+            <name ColNr="8" EndColNr="25" EndLineNr="15" ID="1020" LineNr="15">
+              <SimpleName ColNr="21" EndColNr="25" EndLineNr="15" ID="1021" LineNr="15">
+                <identifier ColNr="21" EndColNr="25" EndLineNr="15" ID="1022" LineNr="15">color</identifier>
+                <var ColNr="21" EndColNr="25" EndLineNr="15" ID="1023" LineNr="15">false</var>
+              </SimpleName>
+            </name>
+          </QualifiedName>
+        </name>
+      </PackageDeclaration>
+    </package>
+    <imports ColNr="0" EndColNr="1" EndLineNr="114" ID="3" LineNr="1">
+      <ImportDeclaration ColNr="0" EndColNr="25" EndLineNr="21" ID="931" LineNr="21">
+        <static ColNr="0" EndColNr="25" EndLineNr="21" ID="932" LineNr="21">false</static>
+        <name ColNr="0" EndColNr="25" EndLineNr="21" ID="933" LineNr="21">
+          <QualifiedName ColNr="7" EndColNr="22" EndLineNr="21" ID="935" LineNr="21">
+            <qualifier ColNr="7" EndColNr="22" EndLineNr="21" ID="936" LineNr="21">
+              <QualifiedName ColNr="7" EndColNr="17" EndLineNr="21" ID="941" LineNr="21">
+                <qualifier ColNr="7" EndColNr="17" EndLineNr="21" ID="942" LineNr="21">
+                  <SimpleName ColNr="7" EndColNr="11" EndLineNr="21" ID="947" LineNr="21">
+                    <identifier ColNr="7" EndColNr="11" EndLineNr="21" ID="948" LineNr="21">javax</identifier>
+                    <var ColNr="7" EndColNr="11" EndLineNr="21" ID="949" LineNr="21">false</var>
+                  </SimpleName>
+                </qualifier>
+                <name ColNr="7" EndColNr="17" EndLineNr="21" ID="943" LineNr="21">
+                  <SimpleName ColNr="13" EndColNr="17" EndLineNr="21" ID="944" LineNr="21">
+                    <identifier ColNr="13" EndColNr="17" EndLineNr="21" ID="945" LineNr="21">swing</identifier>
+                    <var ColNr="13" EndColNr="17" EndLineNr="21" ID="946" LineNr="21">false</var>
+                  </SimpleName>
+                </name>
+              </QualifiedName>
+            </qualifier>
+            <name ColNr="7" EndColNr="22" EndLineNr="21" ID="937" LineNr="21">
+              <SimpleName ColNr="19" EndColNr="22" EndLineNr="21" ID="938" LineNr="21">
+                <identifier ColNr="19" EndColNr="22" EndLineNr="21" ID="939" LineNr="21">plaf</identifier>
+                <var ColNr="19" EndColNr="22" EndLineNr="21" ID="940" LineNr="21">false</var>
+              </SimpleName>
+            </name>
+          </QualifiedName>
+        </name>
+        <onDemand ColNr="0" EndColNr="25" EndLineNr="21" ID="934" LineNr="21">true</onDemand>
+      </ImportDeclaration>
+      <ImportDeclaration ColNr="0" EndColNr="26" EndLineNr="20" ID="950" LineNr="20">
+        <static ColNr="0" EndColNr="26" EndLineNr="20" ID="951" LineNr="20">false</static>
+        <name ColNr="0" EndColNr="26" EndLineNr="20" ID="952" LineNr="20">
+          <QualifiedName ColNr="7" EndColNr="23" EndLineNr="20" ID="954" LineNr="20">
+            <qualifier ColNr="7" EndColNr="23" EndLineNr="20" ID="955" LineNr="20">
+              <QualifiedName ColNr="7" EndColNr="17" EndLineNr="20" ID="960" LineNr="20">
+                <qualifier ColNr="7" EndColNr="17" EndLineNr="20" ID="961" LineNr="20">
+                  <SimpleName ColNr="7" EndColNr="11" EndLineNr="20" ID="966" LineNr="20">
+                    <identifier ColNr="7" EndColNr="11" EndLineNr="20" ID="967" LineNr="20">javax</identifier>
+                    <var ColNr="7" EndColNr="11" EndLineNr="20" ID="968" LineNr="20">false</var>
+                  </SimpleName>
+                </qualifier>
+                <name ColNr="7" EndColNr="17" EndLineNr="20" ID="962" LineNr="20">
+                  <SimpleName ColNr="13" EndColNr="17" EndLineNr="20" ID="963" LineNr="20">
+                    <identifier ColNr="13" EndColNr="17" EndLineNr="20" ID="964" LineNr="20">swing</identifier>
+                    <var ColNr="13" EndColNr="17" EndLineNr="20" ID="965" LineNr="20">false</var>
+                  </SimpleName>
+                </name>
+              </QualifiedName>
+            </qualifier>
+            <name ColNr="7" EndColNr="23" EndLineNr="20" ID="956" LineNr="20">
+              <SimpleName ColNr="19" EndColNr="23" EndLineNr="20" ID="957" LineNr="20">
+                <identifier ColNr="19" EndColNr="23" EndLineNr="20" ID="958" LineNr="20">event</identifier>
+                <var ColNr="19" EndColNr="23" EndLineNr="20" ID="959" LineNr="20">false</var>
+              </SimpleName>
+            </name>
+          </QualifiedName>
+        </name>
+        <onDemand ColNr="0" EndColNr="26" EndLineNr="20" ID="953" LineNr="20">true</onDemand>
+      </ImportDeclaration>
+      <ImportDeclaration ColNr="0" EndColNr="33" EndLineNr="19" ID="969" LineNr="19">
+        <static ColNr="0" EndColNr="33" EndLineNr="19" ID="970" LineNr="19">false</static>
+        <name ColNr="0" EndColNr="33" EndLineNr="19" ID="971" LineNr="19">
+          <QualifiedName ColNr="7" EndColNr="30" EndLineNr="19" ID="973" LineNr="19">
+            <qualifier ColNr="7" EndColNr="30" EndLineNr="19" ID="974" LineNr="19">
+              <QualifiedName ColNr="7" EndColNr="17" EndLineNr="19" ID="979" LineNr="19">
+                <qualifier ColNr="7" EndColNr="17" EndLineNr="19" ID="980" LineNr="19">
+                  <SimpleName ColNr="7" EndColNr="11" EndLineNr="19" ID="985" LineNr="19">
+                    <identifier ColNr="7" EndColNr="11" EndLineNr="19" ID="986" LineNr="19">javax</identifier>
+                    <var ColNr="7" EndColNr="11" EndLineNr="19" ID="987" LineNr="19">false</var>
+                  </SimpleName>
+                </qualifier>
+                <name ColNr="7" EndColNr="17" EndLineNr="19" ID="981" LineNr="19">
+                  <SimpleName ColNr="13" EndColNr="17" EndLineNr="19" ID="982" LineNr="19">
+                    <identifier ColNr="13" EndColNr="17" EndLineNr="19" ID="983" LineNr="19">swing</identifier>
+                    <var ColNr="13" EndColNr="17" EndLineNr="19" ID="984" LineNr="19">false</var>
+                  </SimpleName>
+                </name>
+              </QualifiedName>
+            </qualifier>
+            <name ColNr="7" EndColNr="30" EndLineNr="19" ID="975" LineNr="19">
+              <SimpleName ColNr="19" EndColNr="30" EndLineNr="19" ID="976" LineNr="19">
+                <identifier ColNr="19" EndColNr="30" EndLineNr="19" ID="977" LineNr="19">colorchooser</identifier>
+                <var ColNr="19" EndColNr="30" EndLineNr="19" ID="978" LineNr="19">false</var>
+              </SimpleName>
+            </name>
+          </QualifiedName>
+        </name>
+        <onDemand ColNr="0" EndColNr="33" EndLineNr="19" ID="972" LineNr="19">true</onDemand>
+      </ImportDeclaration>
+      <ImportDeclaration ColNr="0" EndColNr="20" EndLineNr="18" ID="988" LineNr="18">
+        <static ColNr="0" EndColNr="20" EndLineNr="18" ID="989" LineNr="18">false</static>
+        <name ColNr="0" EndColNr="20" EndLineNr="18" ID="990" LineNr="18">
+          <QualifiedName ColNr="7" EndColNr="17" EndLineNr="18" ID="992" LineNr="18">
+            <qualifier ColNr="7" EndColNr="17" EndLineNr="18" ID="993" LineNr="18">
+              <SimpleName ColNr="7" EndColNr="11" EndLineNr="18" ID="998" LineNr="18">
+                <identifier ColNr="7" EndColNr="11" EndLineNr="18" ID="999" LineNr="18">javax</identifier>
+                <var ColNr="7" EndColNr="11" EndLineNr="18" ID="1000" LineNr="18">false</var>
+              </SimpleName>
+            </qualifier>
+            <name ColNr="7" EndColNr="17" EndLineNr="18" ID="994" LineNr="18">
+              <SimpleName ColNr="13" EndColNr="17" EndLineNr="18" ID="995" LineNr="18">
+                <identifier ColNr="13" EndColNr="17" EndLineNr="18" ID="996" LineNr="18">swing</identifier>
+                <var ColNr="13" EndColNr="17" EndLineNr="18" ID="997" LineNr="18">false</var>
+              </SimpleName>
+            </name>
+          </QualifiedName>
+        </name>
+        <onDemand ColNr="0" EndColNr="20" EndLineNr="18" ID="991" LineNr="18">true</onDemand>
+      </ImportDeclaration>
+      <ImportDeclaration ColNr="0" EndColNr="17" EndLineNr="17" ID="1001" LineNr="17">
+        <static ColNr="0" EndColNr="17" EndLineNr="17" ID="1002" LineNr="17">false</static>
+        <name ColNr="0" EndColNr="17" EndLineNr="17" ID="1003" LineNr="17">
+          <QualifiedName ColNr="7" EndColNr="14" EndLineNr="17" ID="1005" LineNr="17">
+            <qualifier ColNr="7" EndColNr="14" EndLineNr="17" ID="1006" LineNr="17">
+              <SimpleName ColNr="7" EndColNr="10" EndLineNr="17" ID="1011" LineNr="17">
+                <identifier ColNr="7" EndColNr="10" EndLineNr="17" ID="1012" LineNr="17">java</identifier>
+                <var ColNr="7" EndColNr="10" EndLineNr="17" ID="1013" LineNr="17">false</var>
+              </SimpleName>
+            </qualifier>
+            <name ColNr="7" EndColNr="14" EndLineNr="17" ID="1007" LineNr="17">
+              <SimpleName ColNr="12" EndColNr="14" EndLineNr="17" ID="1008" LineNr="17">
+                <identifier ColNr="12" EndColNr="14" EndLineNr="17" ID="1009" LineNr="17">awt</identifier>
+                <var ColNr="12" EndColNr="14" EndLineNr="17" ID="1010" LineNr="17">false</var>
+              </SimpleName>
+            </name>
+          </QualifiedName>
+        </name>
+        <onDemand ColNr="0" EndColNr="17" EndLineNr="17" ID="1004" LineNr="17">true</onDemand>
+      </ImportDeclaration>
+    </imports>
+    <types ColNr="0" EndColNr="1" EndLineNr="114" ID="4" LineNr="1">
+      <TypeDeclaration ColNr="0" EndColNr="0" EndLineNr="114" ID="6" LineNr="23">
+        <modifiers ColNr="0" EndColNr="0" EndLineNr="114" ID="8" LineNr="23">
+          <Modifier ColNr="0" EndColNr="5" EndLineNr="30" ID="929" LineNr="30">
+            <keyword ColNr="0" EndColNr="5" EndLineNr="30" ID="930" LineNr="30">public</keyword>
+          </Modifier>
+        </modifiers>
+        <interface ColNr="0" EndColNr="0" EndLineNr="114" ID="9" LineNr="23">false</interface>
+        <name ColNr="0" EndColNr="0" EndLineNr="114" ID="10" LineNr="23">
+          <SimpleName ColNr="13" EndColNr="29" EndLineNr="30" ID="926" LineNr="30">
+            <identifier ColNr="13" EndColNr="29" EndLineNr="30" ID="927" LineNr="30">ColorWheelChooser</identifier>
+            <var ColNr="13" EndColNr="29" EndLineNr="30" ID="928" LineNr="30">false</var>
+          </SimpleName>
+        </name>
+        <superclassType ColNr="0" EndColNr="0" EndLineNr="114" ID="12" LineNr="23">
+          <SimpleType ColNr="39" EndColNr="63" EndLineNr="30" ID="920" LineNr="30">
+            <name ColNr="39" EndColNr="63" EndLineNr="30" ID="922" LineNr="30">
+              <SimpleName ColNr="39" EndColNr="63" EndLineNr="30" ID="923" LineNr="30">
+                <identifier ColNr="39" EndColNr="63" EndLineNr="30" ID="924" LineNr="30">AbstractColorChooserPanel</identifier>
+                <var ColNr="39" EndColNr="63" EndLineNr="30" ID="925" LineNr="30">false</var>
+              </SimpleName>
+            </name>
+          </SimpleType>
+        </superclassType>
+        <superInterfaceTypes ColNr="0" EndColNr="0" EndLineNr="114" ID="13" LineNr="23">
+          <SimpleType ColNr="76" EndColNr="85" EndLineNr="30" ID="914" LineNr="30">
+            <name ColNr="76" EndColNr="85" EndLineNr="30" ID="916" LineNr="30">
+              <SimpleName ColNr="76" EndColNr="85" EndLineNr="30" ID="917" LineNr="30">
+                <identifier ColNr="76" EndColNr="85" EndLineNr="30" ID="918" LineNr="30">UIResource</identifier>
+                <var ColNr="76" EndColNr="85" EndLineNr="30" ID="919" LineNr="30">false</var>
+              </SimpleName>
+            </name>
+          </SimpleType>
+        </superInterfaceTypes>
+        <bodyDeclarations ColNr="0" EndColNr="0" EndLineNr="114" ID="14" LineNr="23">
+          <FieldDeclaration ColNr="4" EndColNr="48" EndLineNr="111" ID="15" LineNr="111">
+            <modifiers ColNr="4" EndColNr="48" EndLineNr="111" ID="17" LineNr="111">
+              <Modifier ColNr="4" EndColNr="10" EndLineNr="111" ID="45" LineNr="111">
+                <keyword ColNr="4" EndColNr="10" EndLineNr="111" ID="46" LineNr="111">private</keyword>
+              </Modifier>
+            </modifiers>
+            <type ColNr="4" EndColNr="48" EndLineNr="111" ID="18" LineNr="111">
+              <SimpleType ColNr="12" EndColNr="30" EndLineNr="111" ID="27" LineNr="111">
+                <name ColNr="12" EndColNr="30" EndLineNr="111" ID="29" LineNr="111">
+                  <QualifiedName ColNr="12" EndColNr="30" EndLineNr="111" ID="30" LineNr="111">
+                    <qualifier ColNr="12" EndColNr="30" EndLineNr="111" ID="31" LineNr="111">
+                      <QualifiedName ColNr="12" EndColNr="22" EndLineNr="111" ID="36" LineNr="111">
+                        <qualifier ColNr="12" EndColNr="22" EndLineNr="111" ID="37" LineNr="111">
+                          <SimpleName ColNr="12" EndColNr="16" EndLineNr="111" ID="42" LineNr="111">
+                            <identifier ColNr="12" EndColNr="16" EndLineNr="111" ID="43" LineNr="111">javax</identifier>
+                            <var ColNr="12" EndColNr="16" EndLineNr="111" ID="44" LineNr="111">false</var>
+                          </SimpleName>
+                        </qualifier>
+                        <name ColNr="12" EndColNr="22" EndLineNr="111" ID="38" LineNr="111">
+                          <SimpleName ColNr="18" EndColNr="22" EndLineNr="111" ID="39" LineNr="111">
+                            <identifier ColNr="18" EndColNr="22" EndLineNr="111" ID="40" LineNr="111">swing</identifier>
+                            <var ColNr="18" EndColNr="22" EndLineNr="111" ID="41" LineNr="111">false</var>
+                          </SimpleName>
+                        </name>
+                      </QualifiedName>
+                    </qualifier>
+                    <name ColNr="12" EndColNr="30" EndLineNr="111" ID="32" LineNr="111">
+                      <SimpleName ColNr="24" EndColNr="30" EndLineNr="111" ID="33" LineNr="111">
+                        <identifier ColNr="24" EndColNr="30" EndLineNr="111" ID="34" LineNr="111">JSlider</identifier>
+                        <var ColNr="24" EndColNr="30" EndLineNr="111" ID="35" LineNr="111">false</var>
+                      </SimpleName>
+                    </name>
+                  </QualifiedName>
+                </name>
+              </SimpleType>
+            </type>
+            <fragments ColNr="4" EndColNr="48" EndLineNr="111" ID="19" LineNr="111">
+              <VariableDeclarationFragment ColNr="32" EndColNr="47" EndLineNr="111" ID="20" LineNr="111">
+                <name ColNr="32" EndColNr="47" EndLineNr="111" ID="21" LineNr="111">
+                  <SimpleName ColNr="32" EndColNr="47" EndLineNr="111" ID="24" LineNr="111">
+                    <identifier ColNr="32" EndColNr="47" EndLineNr="111" ID="25" LineNr="111">brightnessSlider</identifier>
+                    <var ColNr="32" EndColNr="47" EndLineNr="111" ID="26" LineNr="111">false</var>
+                  </SimpleName>
+                </name>
+              </VariableDeclarationFragment>
+            </fragments>
+          </FieldDeclaration>
+          <MethodDeclaration ColNr="4" EndColNr="4" EndLineNr="108" ID="47" LineNr="104">
+            <modifiers ColNr="4" EndColNr="4" EndLineNr="108" ID="49" LineNr="104">
+              <Modifier ColNr="4" EndColNr="9" EndLineNr="104" ID="122" LineNr="104">
+                <keyword ColNr="4" EndColNr="9" EndLineNr="104" ID="123" LineNr="104">public</keyword>
+              </Modifier>
+            </modifiers>
+            <constructor ColNr="4" EndColNr="4" EndLineNr="108" ID="50" LineNr="104">false</constructor>
+            <returnType2 ColNr="4" EndColNr="4" EndLineNr="108" ID="52" LineNr="104">
+              <PrimitiveType ColNr="11" EndColNr="14" EndLineNr="104" ID="119" LineNr="104">
+                <primitiveTypeCode ColNr="11" EndColNr="14" EndLineNr="104" ID="121" LineNr="104">void</primitiveTypeCode>
+              </PrimitiveType>
+            </returnType2>
+            <name ColNr="4" EndColNr="4" EndLineNr="108" ID="53" LineNr="104">
+              <SimpleName ColNr="16" EndColNr="30" EndLineNr="104" ID="116" LineNr="104">
+                <identifier ColNr="16" EndColNr="30" EndLineNr="104" ID="117" LineNr="104">setColorToModel</identifier>
+                <var ColNr="16" EndColNr="30" EndLineNr="104" ID="118" LineNr="104">false</var>
+              </SimpleName>
+            </name>
+            <parameters ColNr="4" EndColNr="4" EndLineNr="108" ID="56" LineNr="104">
+              <SingleVariableDeclaration ColNr="32" EndColNr="42" EndLineNr="104" ID="99" LineNr="104">
+                <type ColNr="32" EndColNr="42" EndLineNr="104" ID="101" LineNr="104">
+                  <SimpleType ColNr="32" EndColNr="36" EndLineNr="104" ID="110" LineNr="104">
+                    <name ColNr="32" EndColNr="36" EndLineNr="104" ID="112" LineNr="104">
+                      <SimpleName ColNr="32" EndColNr="36" EndLineNr="104" ID="113" LineNr="104">
+                        <identifier ColNr="32" EndColNr="36" EndLineNr="104" ID="114" LineNr="104">Color</identifier>
+                        <var ColNr="32" EndColNr="36" EndLineNr="104" ID="115" LineNr="104">false</var>
+                      </SimpleName>
+                    </name>
+                  </SimpleType>
+                </type>
+                <varargs ColNr="32" EndColNr="42" EndLineNr="104" ID="103" LineNr="104">false</varargs>
+                <name ColNr="32" EndColNr="42" EndLineNr="104" ID="104" LineNr="104">
+                  <SimpleName ColNr="38" EndColNr="42" EndLineNr="104" ID="107" LineNr="104">
+                    <identifier ColNr="38" EndColNr="42" EndLineNr="104" ID="108" LineNr="104">color</identifier>
+                    <var ColNr="38" EndColNr="42" EndLineNr="104" ID="109" LineNr="104">false</var>
+                  </SimpleName>
+                </name>
+              </SingleVariableDeclaration>
+            </parameters>
+            <body ColNr="4" EndColNr="4" EndLineNr="108" ID="59" LineNr="104">
+              <Block ColNr="45" EndColNr="4" EndLineNr="108" ID="60" LineNr="104">
+                <statements ColNr="45" EndColNr="4" EndLineNr="108" ID="61" LineNr="104">
+                  <IfStatement ColNr="8" EndColNr="8" EndLineNr="107" ID="62" LineNr="105">
+                    <expression ColNr="8" EndColNr="8" EndLineNr="107" ID="63" LineNr="105">
+                      <InfixExpression ColNr="12" EndColNr="31" EndLineNr="105" ID="89" LineNr="105">
+                        <leftOperand ColNr="12" EndColNr="31" EndLineNr="105" ID="90" LineNr="105">
+                          <SimpleName ColNr="12" EndColNr="26" EndLineNr="105" ID="96" LineNr="105">
+                            <identifier ColNr="12" EndColNr="26" EndLineNr="105" ID="97" LineNr="105">updatingChooser</identifier>
+                            <var ColNr="12" EndColNr="26" EndLineNr="105" ID="98" LineNr="105">false</var>
+                          </SimpleName>
+                        </leftOperand>
+                        <operator ColNr="12" EndColNr="31" EndLineNr="105" ID="91" LineNr="105">==</operator>
+                        <rightOperand ColNr="12" EndColNr="31" EndLineNr="105" ID="92" LineNr="105">
+                          <NumberLiteral ColNr="31" EndColNr="31" EndLineNr="105" ID="94" LineNr="105">
+                            <token ColNr="31" EndColNr="31" EndLineNr="105" ID="95" LineNr="105">0</token>
+                          </NumberLiteral>
+                        </rightOperand>
+                      </InfixExpression>
+                    </expression>
+                    <thenStatement ColNr="8" EndColNr="8" EndLineNr="107" ID="64" LineNr="105">
+                      <Block ColNr="34" EndColNr="8" EndLineNr="107" ID="66" LineNr="105">
+                        <statements ColNr="34" EndColNr="8" EndLineNr="107" ID="67" LineNr="105">
+                          <ExpressionStatement ColNr="8" EndColNr="56" EndLineNr="106" ID="68" LineNr="106">
+                            <expression ColNr="8" EndColNr="56" EndLineNr="106" ID="69" LineNr="106">
+                              <MethodInvocation ColNr="8" EndColNr="55" EndLineNr="106" ID="70" LineNr="106">
+                                <expression ColNr="8" EndColNr="55" EndLineNr="106" ID="71" LineNr="106">
+                                  <MethodInvocation ColNr="8" EndColNr="31" EndLineNr="106" ID="81" LineNr="106">
+                                    <name ColNr="8" EndColNr="31" EndLineNr="106" ID="84" LineNr="106">
+                                      <SimpleName ColNr="8" EndColNr="29" EndLineNr="106" ID="86" LineNr="106">
+                                        <identifier ColNr="8" EndColNr="29" EndLineNr="106" ID="87" LineNr="106">getColorSelectionModel</identifier>
+                                        <var ColNr="8" EndColNr="29" EndLineNr="106" ID="88" LineNr="106">false</var>
+                                      </SimpleName>
+                                    </name>
+                                  </MethodInvocation>
+                                </expression>
+                                <name ColNr="8" EndColNr="55" EndLineNr="106" ID="73" LineNr="106">
+                                  <SimpleName ColNr="33" EndColNr="48" EndLineNr="106" ID="78" LineNr="106">
+                                    <identifier ColNr="33" EndColNr="48" EndLineNr="106" ID="79" LineNr="106">setSelectedColor</identifier>
+                                    <var ColNr="33" EndColNr="48" EndLineNr="106" ID="80" LineNr="106">false</var>
+                                  </SimpleName>
+                                </name>
+                                <arguments ColNr="8" EndColNr="55" EndLineNr="106" ID="74" LineNr="106">
+                                  <SimpleName ColNr="50" EndColNr="54" EndLineNr="106" ID="75" LineNr="106">
+                                    <identifier ColNr="50" EndColNr="54" EndLineNr="106" ID="76" LineNr="106">color</identifier>
+                                    <var ColNr="50" EndColNr="54" EndLineNr="106" ID="77" LineNr="106">false</var>
+                                  </SimpleName>
+                                </arguments>
+                              </MethodInvocation>
+                            </expression>
+                          </ExpressionStatement>
+                        </statements>
+                      </Block>
+                    </thenStatement>
+                  </IfStatement>
+                </statements>
+              </Block>
+            </body>
+          </MethodDeclaration>
+          <MethodDeclaration ColNr="4" EndColNr="4" EndLineNr="103" ID="124" LineNr="98">
+            <modifiers ColNr="4" EndColNr="4" EndLineNr="103" ID="126" LineNr="98">
+              <Modifier ColNr="4" EndColNr="9" EndLineNr="99" ID="182" LineNr="99">
+                <keyword ColNr="4" EndColNr="9" EndLineNr="99" ID="183" LineNr="99">public</keyword>
+              </Modifier>
+              <MarkerAnnotation ColNr="4" EndColNr="12" EndLineNr="98" ID="184" LineNr="98">
+                <typeName ColNr="4" EndColNr="12" EndLineNr="98" ID="185" LineNr="98">
+                  <SimpleName ColNr="5" EndColNr="12" EndLineNr="98" ID="186" LineNr="98">
+                    <identifier ColNr="5" EndColNr="12" EndLineNr="98" ID="187" LineNr="98">Override</identifier>
+                    <var ColNr="5" EndColNr="12" EndLineNr="98" ID="188" LineNr="98">false</var>
+                  </SimpleName>
+                </typeName>
+              </MarkerAnnotation>
+            </modifiers>
+            <constructor ColNr="4" EndColNr="4" EndLineNr="103" ID="127" LineNr="98">false</constructor>
+            <returnType2 ColNr="4" EndColNr="4" EndLineNr="103" ID="129" LineNr="98">
+              <PrimitiveType ColNr="11" EndColNr="14" EndLineNr="99" ID="179" LineNr="99">
+                <primitiveTypeCode ColNr="11" EndColNr="14" EndLineNr="99" ID="181" LineNr="99">void</primitiveTypeCode>
+              </PrimitiveType>
+            </returnType2>
+            <name ColNr="4" EndColNr="4" EndLineNr="103" ID="130" LineNr="98">
+              <SimpleName ColNr="16" EndColNr="28" EndLineNr="99" ID="176" LineNr="99">
+                <identifier ColNr="16" EndColNr="28" EndLineNr="99" ID="177" LineNr="99">updateChooser</identifier>
+                <var ColNr="16" EndColNr="28" EndLineNr="99" ID="178" LineNr="99">false</var>
+              </SimpleName>
+            </name>
+            <body ColNr="4" EndColNr="4" EndLineNr="103" ID="136" LineNr="98">
+              <Block ColNr="32" EndColNr="4" EndLineNr="103" ID="137" LineNr="99">
+                <statements ColNr="32" EndColNr="4" EndLineNr="103" ID="138" LineNr="99">
+                  <ExpressionStatement ColNr="8" EndColNr="25" EndLineNr="102" ID="139" LineNr="102">
+                    <expression ColNr="8" EndColNr="25" EndLineNr="102" ID="140" LineNr="102">
+                      <PostfixExpression ColNr="8" EndColNr="24" EndLineNr="102" ID="141" LineNr="102">
+                        <operand ColNr="8" EndColNr="24" EndLineNr="102" ID="142" LineNr="102">
+                          <SimpleName ColNr="8" EndColNr="22" EndLineNr="102" ID="144" LineNr="102">
+                            <identifier ColNr="8" EndColNr="22" EndLineNr="102" ID="145" LineNr="102">updatingChooser</identifier>
+                            <var ColNr="8" EndColNr="22" EndLineNr="102" ID="146" LineNr="102">false</var>
+                          </SimpleName>
+                        </operand>
+                        <operator ColNr="8" EndColNr="24" EndLineNr="102" ID="143" LineNr="102">--</operator>
+                      </PostfixExpression>
+                    </expression>
+                  </ExpressionStatement>
+                  <ExpressionStatement ColNr="8" EndColNr="45" EndLineNr="101" ID="147" LineNr="101">
+                    <expression ColNr="8" EndColNr="45" EndLineNr="101" ID="148" LineNr="101">
+                      <MethodInvocation ColNr="8" EndColNr="44" EndLineNr="101" ID="149" LineNr="101">
+                        <expression ColNr="8" EndColNr="44" EndLineNr="101" ID="150" LineNr="101">
+                          <SimpleName ColNr="8" EndColNr="14" EndLineNr="101" ID="165" LineNr="101">
+                            <identifier ColNr="8" EndColNr="14" EndLineNr="101" ID="166" LineNr="101">ccModel</identifier>
+                            <var ColNr="8" EndColNr="14" EndLineNr="101" ID="167" LineNr="101">false</var>
+                          </SimpleName>
+                        </expression>
+                        <name ColNr="8" EndColNr="44" EndLineNr="101" ID="152" LineNr="101">
+                          <SimpleName ColNr="16" EndColNr="23" EndLineNr="101" ID="162" LineNr="101">
+                            <identifier ColNr="16" EndColNr="23" EndLineNr="101" ID="163" LineNr="101">setColor</identifier>
+                            <var ColNr="16" EndColNr="23" EndLineNr="101" ID="164" LineNr="101">false</var>
+                          </SimpleName>
+                        </name>
+                        <arguments ColNr="8" EndColNr="44" EndLineNr="101" ID="153" LineNr="101">
+                          <MethodInvocation ColNr="25" EndColNr="43" EndLineNr="101" ID="154" LineNr="101">
+                            <name ColNr="25" EndColNr="43" EndLineNr="101" ID="157" LineNr="101">
+                              <SimpleName ColNr="25" EndColNr="41" EndLineNr="101" ID="159" LineNr="101">
+                                <identifier ColNr="25" EndColNr="41" EndLineNr="101" ID="160" LineNr="101">getColorFromModel</identifier>
+                                <var ColNr="25" EndColNr="41" EndLineNr="101" ID="161" LineNr="101">false</var>
+                              </SimpleName>
+                            </name>
+                          </MethodInvocation>
+                        </arguments>
+                      </MethodInvocation>
+                    </expression>
+                  </ExpressionStatement>
+                  <ExpressionStatement ColNr="8" EndColNr="25" EndLineNr="100" ID="168" LineNr="100">
+                    <expression ColNr="8" EndColNr="25" EndLineNr="100" ID="169" LineNr="100">
+                      <PostfixExpression ColNr="8" EndColNr="24" EndLineNr="100" ID="170" LineNr="100">
+                        <operand ColNr="8" EndColNr="24" EndLineNr="100" ID="171" LineNr="100">
+                          <SimpleName ColNr="8" EndColNr="22" EndLineNr="100" ID="173" LineNr="100">
+                            <identifier ColNr="8" EndColNr="22" EndLineNr="100" ID="174" LineNr="100">updatingChooser</identifier>
+                            <var ColNr="8" EndColNr="22" EndLineNr="100" ID="175" LineNr="100">false</var>
+                          </SimpleName>
+                        </operand>
+                        <operator ColNr="8" EndColNr="24" EndLineNr="100" ID="172" LineNr="100">++</operator>
+                      </PostfixExpression>
+                    </expression>
+                  </ExpressionStatement>
+                </statements>
+              </Block>
+            </body>
+          </MethodDeclaration>
+          <MethodDeclaration ColNr="4" EndColNr="4" EndLineNr="96" ID="189" LineNr="93">
+            <modifiers ColNr="4" EndColNr="4" EndLineNr="96" ID="191" LineNr="93">
+              <Modifier ColNr="4" EndColNr="9" EndLineNr="94" ID="223" LineNr="94">
+                <keyword ColNr="4" EndColNr="9" EndLineNr="94" ID="224" LineNr="94">public</keyword>
+              </Modifier>
+              <MarkerAnnotation ColNr="4" EndColNr="12" EndLineNr="93" ID="225" LineNr="93">
+                <typeName ColNr="4" EndColNr="12" EndLineNr="93" ID="226" LineNr="93">
+                  <SimpleName ColNr="5" EndColNr="12" EndLineNr="93" ID="227" LineNr="93">
+                    <identifier ColNr="5" EndColNr="12" EndLineNr="93" ID="228" LineNr="93">Override</identifier>
+                    <var ColNr="5" EndColNr="12" EndLineNr="93" ID="229" LineNr="93">false</var>
+                  </SimpleName>
+                </typeName>
+              </MarkerAnnotation>
+            </modifiers>
+            <constructor ColNr="4" EndColNr="4" EndLineNr="96" ID="192" LineNr="93">false</constructor>
+            <returnType2 ColNr="4" EndColNr="4" EndLineNr="96" ID="194" LineNr="93">
+              <SimpleType ColNr="11" EndColNr="14" EndLineNr="94" ID="217" LineNr="94">
+                <name ColNr="11" EndColNr="14" EndLineNr="94" ID="219" LineNr="94">
+                  <SimpleName ColNr="11" EndColNr="14" EndLineNr="94" ID="220" LineNr="94">
+                    <identifier ColNr="11" EndColNr="14" EndLineNr="94" ID="221" LineNr="94">Icon</identifier>
+                    <var ColNr="11" EndColNr="14" EndLineNr="94" ID="222" LineNr="94">false</var>
+                  </SimpleName>
+                </name>
+              </SimpleType>
+            </returnType2>
+            <name ColNr="4" EndColNr="4" EndLineNr="96" ID="195" LineNr="93">
+              <SimpleName ColNr="16" EndColNr="34" EndLineNr="94" ID="214" LineNr="94">
+                <identifier ColNr="16" EndColNr="34" EndLineNr="94" ID="215" LineNr="94">getSmallDisplayIcon</identifier>
+                <var ColNr="16" EndColNr="34" EndLineNr="94" ID="216" LineNr="94">false</var>
+              </SimpleName>
+            </name>
+            <body ColNr="4" EndColNr="4" EndLineNr="96" ID="201" LineNr="93">
+              <Block ColNr="38" EndColNr="4" EndLineNr="96" ID="202" LineNr="94">
+                <statements ColNr="38" EndColNr="4" EndLineNr="96" ID="203" LineNr="94">
+                  <ReturnStatement ColNr="8" EndColNr="36" EndLineNr="95" ID="204" LineNr="95">
+                    <expression ColNr="8" EndColNr="36" EndLineNr="95" ID="205" LineNr="95">
+                      <MethodInvocation ColNr="15" EndColNr="35" EndLineNr="95" ID="206" LineNr="95">
+                        <name ColNr="15" EndColNr="35" EndLineNr="95" ID="209" LineNr="95">
+                          <SimpleName ColNr="15" EndColNr="33" EndLineNr="95" ID="211" LineNr="95">
+                            <identifier ColNr="15" EndColNr="33" EndLineNr="95" ID="212" LineNr="95">getLargeDisplayIcon</identifier>
+                            <var ColNr="15" EndColNr="33" EndLineNr="95" ID="213" LineNr="95">false</var>
+                          </SimpleName>
+                        </name>
+                      </MethodInvocation>
+                    </expression>
+                  </ReturnStatement>
+                </statements>
+              </Block>
+            </body>
+          </MethodDeclaration>
+          <MethodDeclaration ColNr="4" EndColNr="4" EndLineNr="91" ID="230" LineNr="88">
+            <modifiers ColNr="4" EndColNr="4" EndLineNr="91" ID="232" LineNr="88">
+              <Modifier ColNr="4" EndColNr="9" EndLineNr="89" ID="281" LineNr="89">
+                <keyword ColNr="4" EndColNr="9" EndLineNr="89" ID="282" LineNr="89">public</keyword>
+              </Modifier>
+              <MarkerAnnotation ColNr="4" EndColNr="12" EndLineNr="88" ID="283" LineNr="88">
+                <typeName ColNr="4" EndColNr="12" EndLineNr="88" ID="284" LineNr="88">
+                  <SimpleName ColNr="5" EndColNr="12" EndLineNr="88" ID="285" LineNr="88">
+                    <identifier ColNr="5" EndColNr="12" EndLineNr="88" ID="286" LineNr="88">Override</identifier>
+                    <var ColNr="5" EndColNr="12" EndLineNr="88" ID="287" LineNr="88">false</var>
+                  </SimpleName>
+                </typeName>
+              </MarkerAnnotation>
+            </modifiers>
+            <constructor ColNr="4" EndColNr="4" EndLineNr="91" ID="233" LineNr="88">false</constructor>
+            <returnType2 ColNr="4" EndColNr="4" EndLineNr="91" ID="235" LineNr="88">
+              <SimpleType ColNr="11" EndColNr="26" EndLineNr="89" ID="263" LineNr="89">
+                <name ColNr="11" EndColNr="26" EndLineNr="89" ID="265" LineNr="89">
+                  <QualifiedName ColNr="11" EndColNr="26" EndLineNr="89" ID="266" LineNr="89">
+                    <qualifier ColNr="11" EndColNr="26" EndLineNr="89" ID="267" LineNr="89">
+                      <QualifiedName ColNr="11" EndColNr="21" EndLineNr="89" ID="272" LineNr="89">
+                        <qualifier ColNr="11" EndColNr="21" EndLineNr="89" ID="273" LineNr="89">
+                          <SimpleName ColNr="11" EndColNr="15" EndLineNr="89" ID="278" LineNr="89">
+                            <identifier ColNr="11" EndColNr="15" EndLineNr="89" ID="279" LineNr="89">javax</identifier>
+                            <var ColNr="11" EndColNr="15" EndLineNr="89" ID="280" LineNr="89">false</var>
+                          </SimpleName>
+                        </qualifier>
+                        <name ColNr="11" EndColNr="21" EndLineNr="89" ID="274" LineNr="89">
+                          <SimpleName ColNr="17" EndColNr="21" EndLineNr="89" ID="275" LineNr="89">
+                            <identifier ColNr="17" EndColNr="21" EndLineNr="89" ID="276" LineNr="89">swing</identifier>
+                            <var ColNr="17" EndColNr="21" EndLineNr="89" ID="277" LineNr="89">false</var>
+                          </SimpleName>
+                        </name>
+                      </QualifiedName>
+                    </qualifier>
+                    <name ColNr="11" EndColNr="26" EndLineNr="89" ID="268" LineNr="89">
+                      <SimpleName ColNr="23" EndColNr="26" EndLineNr="89" ID="269" LineNr="89">
+                        <identifier ColNr="23" EndColNr="26" EndLineNr="89" ID="270" LineNr="89">Icon</identifier>
+                        <var ColNr="23" EndColNr="26" EndLineNr="89" ID="271" LineNr="89">false</var>
+                      </SimpleName>
+                    </name>
+                  </QualifiedName>
+                </name>
+              </SimpleType>
+            </returnType2>
+            <name ColNr="4" EndColNr="4" EndLineNr="91" ID="236" LineNr="88">
+              <SimpleName ColNr="28" EndColNr="46" EndLineNr="89" ID="260" LineNr="89">
+                <identifier ColNr="28" EndColNr="46" EndLineNr="89" ID="261" LineNr="89">getLargeDisplayIcon</identifier>
+                <var ColNr="28" EndColNr="46" EndLineNr="89" ID="262" LineNr="89">false</var>
+              </SimpleName>
+            </name>
+            <body ColNr="4" EndColNr="4" EndLineNr="91" ID="242" LineNr="88">
+              <Block ColNr="50" EndColNr="4" EndLineNr="91" ID="243" LineNr="89">
+                <statements ColNr="50" EndColNr="4" EndLineNr="91" ID="244" LineNr="89">
+                  <ReturnStatement ColNr="8" EndColNr="63" EndLineNr="90" ID="245" LineNr="90">
+                    <expression ColNr="8" EndColNr="63" EndLineNr="90" ID="246" LineNr="90">
+                      <MethodInvocation ColNr="15" EndColNr="62" EndLineNr="90" ID="247" LineNr="90">
+                        <expression ColNr="15" EndColNr="62" EndLineNr="90" ID="248" LineNr="90">
+                          <SimpleName ColNr="15" EndColNr="23" EndLineNr="90" ID="257" LineNr="90">
+                            <identifier ColNr="15" EndColNr="23" EndLineNr="90" ID="258" LineNr="90">UIManager</identifier>
+                            <var ColNr="15" EndColNr="23" EndLineNr="90" ID="259" LineNr="90">false</var>
+                          </SimpleName>
+                        </expression>
+                        <name ColNr="15" EndColNr="62" EndLineNr="90" ID="250" LineNr="90">
+                          <SimpleName ColNr="25" EndColNr="31" EndLineNr="90" ID="254" LineNr="90">
+                            <identifier ColNr="25" EndColNr="31" EndLineNr="90" ID="255" LineNr="90">getIcon</identifier>
+                            <var ColNr="25" EndColNr="31" EndLineNr="90" ID="256" LineNr="90">false</var>
+                          </SimpleName>
+                        </name>
+                        <arguments ColNr="15" EndColNr="62" EndLineNr="90" ID="251" LineNr="90">
+                          <StringLiteral ColNr="33" EndColNr="61" EndLineNr="90" ID="252" LineNr="90">
+                            <escapedValue ColNr="33" EndColNr="61" EndLineNr="90" ID="253" LineNr="90">"ColorChooser.colorWheelIcon"</escapedValue>
+                          </StringLiteral>
+                        </arguments>
+                      </MethodInvocation>
+                    </expression>
+                  </ReturnStatement>
+                </statements>
+              </Block>
+            </body>
+          </MethodDeclaration>
+          <MethodDeclaration ColNr="4" EndColNr="4" EndLineNr="86" ID="288" LineNr="83">
+            <modifiers ColNr="4" EndColNr="4" EndLineNr="86" ID="290" LineNr="83">
+              <Modifier ColNr="4" EndColNr="9" EndLineNr="84" ID="327" LineNr="84">
+                <keyword ColNr="4" EndColNr="9" EndLineNr="84" ID="328" LineNr="84">public</keyword>
+              </Modifier>
+              <MarkerAnnotation ColNr="4" EndColNr="12" EndLineNr="83" ID="329" LineNr="83">
+                <typeName ColNr="4" EndColNr="12" EndLineNr="83" ID="330" LineNr="83">
+                  <SimpleName ColNr="5" EndColNr="12" EndLineNr="83" ID="331" LineNr="83">
+                    <identifier ColNr="5" EndColNr="12" EndLineNr="83" ID="332" LineNr="83">Override</identifier>
+                    <var ColNr="5" EndColNr="12" EndLineNr="83" ID="333" LineNr="83">false</var>
+                  </SimpleName>
+                </typeName>
+              </MarkerAnnotation>
+            </modifiers>
+            <constructor ColNr="4" EndColNr="4" EndLineNr="86" ID="291" LineNr="83">false</constructor>
+            <returnType2 ColNr="4" EndColNr="4" EndLineNr="86" ID="293" LineNr="83">
+              <SimpleType ColNr="11" EndColNr="16" EndLineNr="84" ID="321" LineNr="84">
+                <name ColNr="11" EndColNr="16" EndLineNr="84" ID="323" LineNr="84">
+                  <SimpleName ColNr="11" EndColNr="16" EndLineNr="84" ID="324" LineNr="84">
+                    <identifier ColNr="11" EndColNr="16" EndLineNr="84" ID="325" LineNr="84">String</identifier>
+                    <var ColNr="11" EndColNr="16" EndLineNr="84" ID="326" LineNr="84">false</var>
+                  </SimpleName>
+                </name>
+              </SimpleType>
+            </returnType2>
+            <name ColNr="4" EndColNr="4" EndLineNr="86" ID="294" LineNr="83">
+              <SimpleName ColNr="18" EndColNr="31" EndLineNr="84" ID="318" LineNr="84">
+                <identifier ColNr="18" EndColNr="31" EndLineNr="84" ID="319" LineNr="84">getDisplayName</identifier>
+                <var ColNr="18" EndColNr="31" EndLineNr="84" ID="320" LineNr="84">false</var>
+              </SimpleName>
+            </name>
+            <body ColNr="4" EndColNr="4" EndLineNr="86" ID="300" LineNr="83">
+              <Block ColNr="35" EndColNr="4" EndLineNr="86" ID="301" LineNr="84">
+                <statements ColNr="35" EndColNr="4" EndLineNr="86" ID="302" LineNr="84">
+                  <ReturnStatement ColNr="8" EndColNr="61" EndLineNr="85" ID="303" LineNr="85">
+                    <expression ColNr="8" EndColNr="61" EndLineNr="85" ID="304" LineNr="85">
+                      <MethodInvocation ColNr="15" EndColNr="60" EndLineNr="85" ID="305" LineNr="85">
+                        <expression ColNr="15" EndColNr="60" EndLineNr="85" ID="306" LineNr="85">
+                          <SimpleName ColNr="15" EndColNr="23" EndLineNr="85" ID="315" LineNr="85">
+                            <identifier ColNr="15" EndColNr="23" EndLineNr="85" ID="316" LineNr="85">UIManager</identifier>
+                            <var ColNr="15" EndColNr="23" EndLineNr="85" ID="317" LineNr="85">false</var>
+                          </SimpleName>
+                        </expression>
+                        <name ColNr="15" EndColNr="60" EndLineNr="85" ID="308" LineNr="85">
+                          <SimpleName ColNr="25" EndColNr="33" EndLineNr="85" ID="312" LineNr="85">
+                            <identifier ColNr="25" EndColNr="33" EndLineNr="85" ID="313" LineNr="85">getString</identifier>
+                            <var ColNr="25" EndColNr="33" EndLineNr="85" ID="314" LineNr="85">false</var>
+                          </SimpleName>
+                        </name>
+                        <arguments ColNr="15" EndColNr="60" EndLineNr="85" ID="309" LineNr="85">
+                          <StringLiteral ColNr="35" EndColNr="59" EndLineNr="85" ID="310" LineNr="85">
+                            <escapedValue ColNr="35" EndColNr="59" EndLineNr="85" ID="311" LineNr="85">"ColorChooser.colorWheel"</escapedValue>
+                          </StringLiteral>
+                        </arguments>
+                      </MethodInvocation>
+                    </expression>
+                  </ReturnStatement>
+                </statements>
+              </Block>
+            </body>
+          </MethodDeclaration>
+          <MethodDeclaration ColNr="4" EndColNr="4" EndLineNr="81" ID="334" LineNr="79">
+            <modifiers ColNr="4" EndColNr="4" EndLineNr="81" ID="336" LineNr="79">
+              <Modifier ColNr="4" EndColNr="12" EndLineNr="80" ID="355" LineNr="80">
+                <keyword ColNr="4" EndColNr="12" EndLineNr="80" ID="356" LineNr="80">protected</keyword>
+              </Modifier>
+              <MarkerAnnotation ColNr="4" EndColNr="12" EndLineNr="79" ID="357" LineNr="79">
+                <typeName ColNr="4" EndColNr="12" EndLineNr="79" ID="358" LineNr="79">
+                  <SimpleName ColNr="5" EndColNr="12" EndLineNr="79" ID="359" LineNr="79">
+                    <identifier ColNr="5" EndColNr="12" EndLineNr="79" ID="360" LineNr="79">Override</identifier>
+                    <var ColNr="5" EndColNr="12" EndLineNr="79" ID="361" LineNr="79">false</var>
+                  </SimpleName>
+                </typeName>
+              </MarkerAnnotation>
+            </modifiers>
+            <constructor ColNr="4" EndColNr="4" EndLineNr="81" ID="337" LineNr="79">false</constructor>
+            <returnType2 ColNr="4" EndColNr="4" EndLineNr="81" ID="339" LineNr="79">
+              <PrimitiveType ColNr="14" EndColNr="17" EndLineNr="80" ID="352" LineNr="80">
+                <primitiveTypeCode ColNr="14" EndColNr="17" EndLineNr="80" ID="354" LineNr="80">void</primitiveTypeCode>
+              </PrimitiveType>
+            </returnType2>
+            <name ColNr="4" EndColNr="4" EndLineNr="81" ID="340" LineNr="79">
+              <SimpleName ColNr="19" EndColNr="30" EndLineNr="80" ID="349" LineNr="80">
+                <identifier ColNr="19" EndColNr="30" EndLineNr="80" ID="350" LineNr="80">buildChooser</identifier>
+                <var ColNr="19" EndColNr="30" EndLineNr="80" ID="351" LineNr="80">false</var>
+              </SimpleName>
+            </name>
+          </MethodDeclaration>
+          <MethodDeclaration ColNr="4" EndColNr="4" EndLineNr="77" ID="362" LineNr="62">
+            <modifiers ColNr="4" EndColNr="4" EndLineNr="77" ID="364" LineNr="62">
+              <Modifier ColNr="4" EndColNr="10" EndLineNr="67" ID="548" LineNr="67">
+                <keyword ColNr="4" EndColNr="10" EndLineNr="67" ID="549" LineNr="67">private</keyword>
+              </Modifier>
+            </modifiers>
+            <constructor ColNr="4" EndColNr="4" EndLineNr="77" ID="365" LineNr="62">false</constructor>
+            <returnType2 ColNr="4" EndColNr="4" EndLineNr="77" ID="367" LineNr="62">
+              <PrimitiveType ColNr="12" EndColNr="15" EndLineNr="67" ID="545" LineNr="67">
+                <primitiveTypeCode ColNr="12" EndColNr="15" EndLineNr="67" ID="547" LineNr="67">void</primitiveTypeCode>
+              </PrimitiveType>
+            </returnType2>
+            <name ColNr="4" EndColNr="4" EndLineNr="77" ID="368" LineNr="62">
+              <SimpleName ColNr="17" EndColNr="30" EndLineNr="67" ID="542" LineNr="67">
+                <identifier ColNr="17" EndColNr="30" EndLineNr="67" ID="543" LineNr="67">initComponents</identifier>
+                <var ColNr="17" EndColNr="30" EndLineNr="67" ID="544" LineNr="67">false</var>
+              </SimpleName>
+            </name>
+            <body ColNr="4" EndColNr="4" EndLineNr="77" ID="374" LineNr="62">
+              <Block ColNr="34" EndColNr="4" EndLineNr="77" ID="375" LineNr="67">
+                <statements ColNr="34" EndColNr="4" EndLineNr="77" ID="376" LineNr="67">
+                  <ExpressionStatement ColNr="8" EndColNr="57" EndLineNr="75" ID="377" LineNr="75">
+                    <expression ColNr="8" EndColNr="57" EndLineNr="75" ID="378" LineNr="75">
+                      <MethodInvocation ColNr="8" EndColNr="56" EndLineNr="75" ID="379" LineNr="75">
+                        <name ColNr="8" EndColNr="56" EndLineNr="75" ID="382" LineNr="75">
+                          <SimpleName ColNr="8" EndColNr="10" EndLineNr="75" ID="408" LineNr="75">
+                            <identifier ColNr="8" EndColNr="10" EndLineNr="75" ID="409" LineNr="75">add</identifier>
+                            <var ColNr="8" EndColNr="10" EndLineNr="75" ID="410" LineNr="75">false</var>
+                          </SimpleName>
+                        </name>
+                        <arguments ColNr="8" EndColNr="56" EndLineNr="75" ID="383" LineNr="75">
+                          <QualifiedName ColNr="30" EndColNr="55" EndLineNr="75" ID="384" LineNr="75">
+                            <qualifier ColNr="30" EndColNr="55" EndLineNr="75" ID="385" LineNr="75">
+                              <QualifiedName ColNr="30" EndColNr="50" EndLineNr="75" ID="390" LineNr="75">
+                                <qualifier ColNr="30" EndColNr="50" EndLineNr="75" ID="391" LineNr="75">
+                                  <QualifiedName ColNr="30" EndColNr="37" EndLineNr="75" ID="396" LineNr="75">
+                                    <qualifier ColNr="30" EndColNr="37" EndLineNr="75" ID="397" LineNr="75">
+                                      <SimpleName ColNr="30" EndColNr="33" EndLineNr="75" ID="402" LineNr="75">
+                                        <identifier ColNr="30" EndColNr="33" EndLineNr="75" ID="403" LineNr="75">java</identifier>
+                                        <var ColNr="30" EndColNr="33" EndLineNr="75" ID="404" LineNr="75">false</var>
+                                      </SimpleName>
+                                    </qualifier>
+                                    <name ColNr="30" EndColNr="37" EndLineNr="75" ID="398" LineNr="75">
+                                      <SimpleName ColNr="35" EndColNr="37" EndLineNr="75" ID="399" LineNr="75">
+                                        <identifier ColNr="35" EndColNr="37" EndLineNr="75" ID="400" LineNr="75">awt</identifier>
+                                        <var ColNr="35" EndColNr="37" EndLineNr="75" ID="401" LineNr="75">false</var>
+                                      </SimpleName>
+                                    </name>
+                                  </QualifiedName>
+                                </qualifier>
+                                <name ColNr="30" EndColNr="50" EndLineNr="75" ID="392" LineNr="75">
+                                  <SimpleName ColNr="39" EndColNr="50" EndLineNr="75" ID="393" LineNr="75">
+                                    <identifier ColNr="39" EndColNr="50" EndLineNr="75" ID="394" LineNr="75">BorderLayout</identifier>
+                                    <var ColNr="39" EndColNr="50" EndLineNr="75" ID="395" LineNr="75">false</var>
+                                  </SimpleName>
+                                </name>
+                              </QualifiedName>
+                            </qualifier>
+                            <name ColNr="30" EndColNr="55" EndLineNr="75" ID="386" LineNr="75">
+                              <SimpleName ColNr="52" EndColNr="55" EndLineNr="75" ID="387" LineNr="75">
+                                <identifier ColNr="52" EndColNr="55" EndLineNr="75" ID="388" LineNr="75">EAST</identifier>
+                                <var ColNr="52" EndColNr="55" EndLineNr="75" ID="389" LineNr="75">false</var>
+                              </SimpleName>
+                            </name>
+                          </QualifiedName>
+                          <SimpleName ColNr="12" EndColNr="27" EndLineNr="75" ID="405" LineNr="75">
+                            <identifier ColNr="12" EndColNr="27" EndLineNr="75" ID="406" LineNr="75">brightnessSlider</identifier>
+                            <var ColNr="12" EndColNr="27" EndLineNr="75" ID="407" LineNr="75">false</var>
+                          </SimpleName>
+                        </arguments>
+                      </MethodInvocation>
+                    </expression>
+                  </ExpressionStatement>
+                  <ExpressionStatement ColNr="8" EndColNr="44" EndLineNr="74" ID="411" LineNr="74">
+                    <expression ColNr="8" EndColNr="44" EndLineNr="74" ID="412" LineNr="74">
+                      <MethodInvocation ColNr="8" EndColNr="43" EndLineNr="74" ID="413" LineNr="74">
+                        <expression ColNr="8" EndColNr="43" EndLineNr="74" ID="414" LineNr="74">
+                          <SimpleName ColNr="8" EndColNr="23" EndLineNr="74" ID="423" LineNr="74">
+                            <identifier ColNr="8" EndColNr="23" EndLineNr="74" ID="424" LineNr="74">brightnessSlider</identifier>
+                            <var ColNr="8" EndColNr="23" EndLineNr="74" ID="425" LineNr="74">false</var>
+                          </SimpleName>
+                        </expression>
+                        <name ColNr="8" EndColNr="43" EndLineNr="74" ID="416" LineNr="74">
+                          <SimpleName ColNr="25" EndColNr="37" EndLineNr="74" ID="420" LineNr="74">
+                            <identifier ColNr="25" EndColNr="37" EndLineNr="74" ID="421" LineNr="74">setPaintTicks</identifier>
+                            <var ColNr="25" EndColNr="37" EndLineNr="74" ID="422" LineNr="74">false</var>
+                          </SimpleName>
+                        </name>
+                        <arguments ColNr="8" EndColNr="43" EndLineNr="74" ID="417" LineNr="74">
+                          <BooleanLiteral ColNr="39" EndColNr="42" EndLineNr="74" ID="418" LineNr="74">
+                            <booleanValue ColNr="39" EndColNr="42" EndLineNr="74" ID="419" LineNr="74">true</booleanValue>
+                          </BooleanLiteral>
+                        </arguments>
+                      </MethodInvocation>
+                    </expression>
+                  </ExpressionStatement>
+                  <ExpressionStatement ColNr="8" EndColNr="69" EndLineNr="73" ID="426" LineNr="73">
+                    <expression ColNr="8" EndColNr="69" EndLineNr="73" ID="427" LineNr="73">
+                      <MethodInvocation ColNr="8" EndColNr="68" EndLineNr="73" ID="428" LineNr="73">
+                        <expression ColNr="8" EndColNr="68" EndLineNr="73" ID="429" LineNr="73">
+                          <SimpleName ColNr="8" EndColNr="23" EndLineNr="73" ID="457" LineNr="73">
+                            <identifier ColNr="8" EndColNr="23" EndLineNr="73" ID="458" LineNr="73">brightnessSlider</identifier>
+                            <var ColNr="8" EndColNr="23" EndLineNr="73" ID="459" LineNr="73">false</var>
+                          </SimpleName>
+                        </expression>
+                        <name ColNr="8" EndColNr="68" EndLineNr="73" ID="431" LineNr="73">
+                          <SimpleName ColNr="25" EndColNr="38" EndLineNr="73" ID="454" LineNr="73">
+                            <identifier ColNr="25" EndColNr="38" EndLineNr="73" ID="455" LineNr="73">setOrientation</identifier>
+                            <var ColNr="25" EndColNr="38" EndLineNr="73" ID="456" LineNr="73">false</var>
+                          </SimpleName>
+                        </name>
+                        <arguments ColNr="8" EndColNr="68" EndLineNr="73" ID="432" LineNr="73">
+                          <QualifiedName ColNr="40" EndColNr="67" EndLineNr="73" ID="433" LineNr="73">
+                            <qualifier ColNr="40" EndColNr="67" EndLineNr="73" ID="434" LineNr="73">
+                              <QualifiedName ColNr="40" EndColNr="58" EndLineNr="73" ID="439" LineNr="73">
+                                <qualifier ColNr="40" EndColNr="58" EndLineNr="73" ID="440" LineNr="73">
+                                  <QualifiedName ColNr="40" EndColNr="50" EndLineNr="73" ID="445" LineNr="73">
+                                    <qualifier ColNr="40" EndColNr="50" EndLineNr="73" ID="446" LineNr="73">
+                                      <SimpleName ColNr="40" EndColNr="44" EndLineNr="73" ID="451" LineNr="73">
+                                        <identifier ColNr="40" EndColNr="44" EndLineNr="73" ID="452" LineNr="73">javax</identifier>
+                                        <var ColNr="40" EndColNr="44" EndLineNr="73" ID="453" LineNr="73">false</var>
+                                      </SimpleName>
+                                    </qualifier>
+                                    <name ColNr="40" EndColNr="50" EndLineNr="73" ID="447" LineNr="73">
+                                      <SimpleName ColNr="46" EndColNr="50" EndLineNr="73" ID="448" LineNr="73">
+                                        <identifier ColNr="46" EndColNr="50" EndLineNr="73" ID="449" LineNr="73">swing</identifier>
+                                        <var ColNr="46" EndColNr="50" EndLineNr="73" ID="450" LineNr="73">false</var>
+                                      </SimpleName>
+                                    </name>
+                                  </QualifiedName>
+                                </qualifier>
+                                <name ColNr="40" EndColNr="58" EndLineNr="73" ID="441" LineNr="73">
+                                  <SimpleName ColNr="52" EndColNr="58" EndLineNr="73" ID="442" LineNr="73">
+                                    <identifier ColNr="52" EndColNr="58" EndLineNr="73" ID="443" LineNr="73">JSlider</identifier>
+                                    <var ColNr="52" EndColNr="58" EndLineNr="73" ID="444" LineNr="73">false</var>
+                                  </SimpleName>
+                                </name>
+                              </QualifiedName>
+                            </qualifier>
+                            <name ColNr="40" EndColNr="67" EndLineNr="73" ID="435" LineNr="73">
+                              <SimpleName ColNr="60" EndColNr="67" EndLineNr="73" ID="436" LineNr="73">
+                                <identifier ColNr="60" EndColNr="67" EndLineNr="73" ID="437" LineNr="73">VERTICAL</identifier>
+                                <var ColNr="60" EndColNr="67" EndLineNr="73" ID="438" LineNr="73">false</var>
+                              </SimpleName>
+                            </name>
+                          </QualifiedName>
+                        </arguments>
+                      </MethodInvocation>
+                    </expression>
+                  </ExpressionStatement>
+                  <ExpressionStatement ColNr="8" EndColNr="48" EndLineNr="72" ID="460" LineNr="72">
+                    <expression ColNr="8" EndColNr="48" EndLineNr="72" ID="461" LineNr="72">
+                      <MethodInvocation ColNr="8" EndColNr="47" EndLineNr="72" ID="462" LineNr="72">
+                        <expression ColNr="8" EndColNr="47" EndLineNr="72" ID="463" LineNr="72">
+                          <SimpleName ColNr="8" EndColNr="23" EndLineNr="72" ID="472" LineNr="72">
+                            <identifier ColNr="8" EndColNr="23" EndLineNr="72" ID="473" LineNr="72">brightnessSlider</identifier>
+                            <var ColNr="8" EndColNr="23" EndLineNr="72" ID="474" LineNr="72">false</var>
+                          </SimpleName>
+                        </expression>
+                        <name ColNr="8" EndColNr="47" EndLineNr="72" ID="465" LineNr="72">
+                          <SimpleName ColNr="25" EndColNr="43" EndLineNr="72" ID="469" LineNr="72">
+                            <identifier ColNr="25" EndColNr="43" EndLineNr="72" ID="470" LineNr="72">setMajorTickSpacing</identifier>
+                            <var ColNr="25" EndColNr="43" EndLineNr="72" ID="471" LineNr="72">false</var>
+                          </SimpleName>
+                        </name>
+                        <arguments ColNr="8" EndColNr="47" EndLineNr="72" ID="466" LineNr="72">
+                          <NumberLiteral ColNr="45" EndColNr="46" EndLineNr="72" ID="467" LineNr="72">
+                            <token ColNr="45" EndColNr="46" EndLineNr="72" ID="468" LineNr="72">50</token>
+                          </NumberLiteral>
+                        </arguments>
+                      </MethodInvocation>
+                    </expression>
+                  </ExpressionStatement>
+                  <ExpressionStatement ColNr="8" EndColNr="46" EndLineNr="70" ID="475" LineNr="70">
+                    <expression ColNr="8" EndColNr="46" EndLineNr="70" ID="476" LineNr="70">
+                      <MethodInvocation ColNr="8" EndColNr="45" EndLineNr="70" ID="477" LineNr="70">
+                        <name ColNr="8" EndColNr="45" EndLineNr="70" ID="480" LineNr="70">
+                          <SimpleName ColNr="8" EndColNr="16" EndLineNr="70" ID="506" LineNr="70">
+                            <identifier ColNr="8" EndColNr="16" EndLineNr="70" ID="507" LineNr="70">setLayout</identifier>
+                            <var ColNr="8" EndColNr="16" EndLineNr="70" ID="508" LineNr="70">false</var>
+                          </SimpleName>
+                        </name>
+                        <arguments ColNr="8" EndColNr="45" EndLineNr="70" ID="481" LineNr="70">
+                          <ClassInstanceCreation ColNr="18" EndColNr="44" EndLineNr="70" ID="482" LineNr="70">
+                            <type ColNr="18" EndColNr="44" EndLineNr="70" ID="485" LineNr="70">
+                              <SimpleType ColNr="22" EndColNr="42" EndLineNr="70" ID="488" LineNr="70">
+                                <name ColNr="22" EndColNr="42" EndLineNr="70" ID="490" LineNr="70">
+                                  <QualifiedName ColNr="22" EndColNr="42" EndLineNr="70" ID="491" LineNr="70">
+                                    <qualifier ColNr="22" EndColNr="42" EndLineNr="70" ID="492" LineNr="70">
+                                      <QualifiedName ColNr="22" EndColNr="29" EndLineNr="70" ID="497" LineNr="70">
+                                        <qualifier ColNr="22" EndColNr="29" EndLineNr="70" ID="498" LineNr="70">
+                                          <SimpleName ColNr="22" EndColNr="25" EndLineNr="70" ID="503" LineNr="70">
+                                            <identifier ColNr="22" EndColNr="25" EndLineNr="70" ID="504" LineNr="70">java</identifier>
+                                            <var ColNr="22" EndColNr="25" EndLineNr="70" ID="505" LineNr="70">false</var>
+                                          </SimpleName>
+                                        </qualifier>
+                                        <name ColNr="22" EndColNr="29" EndLineNr="70" ID="499" LineNr="70">
+                                          <SimpleName ColNr="27" EndColNr="29" EndLineNr="70" ID="500" LineNr="70">
+                                            <identifier ColNr="27" EndColNr="29" EndLineNr="70" ID="501" LineNr="70">awt</identifier>
+                                            <var ColNr="27" EndColNr="29" EndLineNr="70" ID="502" LineNr="70">false</var>
+                                          </SimpleName>
+                                        </name>
+                                      </QualifiedName>
+                                    </qualifier>
+                                    <name ColNr="22" EndColNr="42" EndLineNr="70" ID="493" LineNr="70">
+                                      <SimpleName ColNr="31" EndColNr="42" EndLineNr="70" ID="494" LineNr="70">
+                                        <identifier ColNr="31" EndColNr="42" EndLineNr="70" ID="495" LineNr="70">BorderLayout</identifier>
+                                        <var ColNr="31" EndColNr="42" EndLineNr="70" ID="496" LineNr="70">false</var>
+                                      </SimpleName>
+                                    </name>
+                                  </QualifiedName>
+                                </name>
+                              </SimpleType>
+                            </type>
+                          </ClassInstanceCreation>
+                        </arguments>
+                      </MethodInvocation>
+                    </expression>
+                  </ExpressionStatement>
+                  <ExpressionStatement ColNr="8" EndColNr="52" EndLineNr="68" ID="509" LineNr="68">
+                    <expression ColNr="8" EndColNr="52" EndLineNr="68" ID="510" LineNr="68">
+                      <Assignment ColNr="8" EndColNr="51" EndLineNr="68" ID="511" LineNr="68">
+                        <leftHandSide ColNr="8" EndColNr="51" EndLineNr="68" ID="512" LineNr="68">
+                          <SimpleName ColNr="8" EndColNr="23" EndLineNr="68" ID="539" LineNr="68">
+                            <identifier ColNr="8" EndColNr="23" EndLineNr="68" ID="540" LineNr="68">brightnessSlider</identifier>
+                            <var ColNr="8" EndColNr="23" EndLineNr="68" ID="541" LineNr="68">false</var>
+                          </SimpleName>
+                        </leftHandSide>
+                        <operator ColNr="8" EndColNr="51" EndLineNr="68" ID="513" LineNr="68">=</operator>
+                        <rightHandSide ColNr="8" EndColNr="51" EndLineNr="68" ID="514" LineNr="68">
+                          <ClassInstanceCreation ColNr="27" EndColNr="51" EndLineNr="68" ID="515" LineNr="68">
+                            <type ColNr="27" EndColNr="51" EndLineNr="68" ID="518" LineNr="68">
+                              <SimpleType ColNr="31" EndColNr="49" EndLineNr="68" ID="521" LineNr="68">
+                                <name ColNr="31" EndColNr="49" EndLineNr="68" ID="523" LineNr="68">
+                                  <QualifiedName ColNr="31" EndColNr="49" EndLineNr="68" ID="524" LineNr="68">
+                                    <qualifier ColNr="31" EndColNr="49" EndLineNr="68" ID="525" LineNr="68">
+                                      <QualifiedName ColNr="31" EndColNr="41" EndLineNr="68" ID="530" LineNr="68">
+                                        <qualifier ColNr="31" EndColNr="41" EndLineNr="68" ID="531" LineNr="68">
+                                          <SimpleName ColNr="31" EndColNr="35" EndLineNr="68" ID="536" LineNr="68">
+                                            <identifier ColNr="31" EndColNr="35" EndLineNr="68" ID="537" LineNr="68">javax</identifier>
+                                            <var ColNr="31" EndColNr="35" EndLineNr="68" ID="538" LineNr="68">false</var>
+                                          </SimpleName>
+                                        </qualifier>
+                                        <name ColNr="31" EndColNr="41" EndLineNr="68" ID="532" LineNr="68">
+                                          <SimpleName ColNr="37" EndColNr="41" EndLineNr="68" ID="533" LineNr="68">
+                                            <identifier ColNr="37" EndColNr="41" EndLineNr="68" ID="534" LineNr="68">swing</identifier>
+                                            <var ColNr="37" EndColNr="41" EndLineNr="68" ID="535" LineNr="68">false</var>
+                                          </SimpleName>
+                                        </name>
+                                      </QualifiedName>
+                                    </qualifier>
+                                    <name ColNr="31" EndColNr="49" EndLineNr="68" ID="526" LineNr="68">
+                                      <SimpleName ColNr="43" EndColNr="49" EndLineNr="68" ID="527" LineNr="68">
+                                        <identifier ColNr="43" EndColNr="49" EndLineNr="68" ID="528" LineNr="68">JSlider</identifier>
+                                        <var ColNr="43" EndColNr="49" EndLineNr="68" ID="529" LineNr="68">false</var>
+                                      </SimpleName>
+                                    </name>
+                                  </QualifiedName>
+                                </name>
+                              </SimpleType>
+                            </type>
+                          </ClassInstanceCreation>
+                        </rightHandSide>
+                      </Assignment>
+                    </expression>
+                  </ExpressionStatement>
+                </statements>
+              </Block>
+            </body>
+          </MethodDeclaration>
+          <MethodDeclaration ColNr="4" EndColNr="4" EndLineNr="60" ID="550" LineNr="36">
+            <modifiers ColNr="4" EndColNr="4" EndLineNr="60" ID="552" LineNr="36">
+              <Modifier ColNr="4" EndColNr="9" EndLineNr="39" ID="832" LineNr="39">
+                <keyword ColNr="4" EndColNr="9" EndLineNr="39" ID="833" LineNr="39">public</keyword>
+              </Modifier>
+            </modifiers>
+            <constructor ColNr="4" EndColNr="4" EndLineNr="60" ID="553" LineNr="36">true</constructor>
+            <name ColNr="4" EndColNr="4" EndLineNr="60" ID="556" LineNr="36">
+              <SimpleName ColNr="11" EndColNr="27" EndLineNr="39" ID="829" LineNr="39">
+                <identifier ColNr="11" EndColNr="27" EndLineNr="39" ID="830" LineNr="39">ColorWheelChooser</identifier>
+                <var ColNr="11" EndColNr="27" EndLineNr="39" ID="831" LineNr="39">false</var>
+              </SimpleName>
+            </name>
+            <body ColNr="4" EndColNr="4" EndLineNr="60" ID="562" LineNr="36">
+              <Block ColNr="31" EndColNr="4" EndLineNr="60" ID="563" LineNr="39">
+                <statements ColNr="31" EndColNr="4" EndLineNr="60" ID="564" LineNr="39">
+                  <ExpressionStatement ColNr="8" EndColNr="10" EndLineNr="59" ID="565" LineNr="54">
+                    <expression ColNr="8" EndColNr="10" EndLineNr="59" ID="566" LineNr="54">
+                      <MethodInvocation ColNr="8" EndColNr="9" EndLineNr="59" ID="567" LineNr="54">
+                        <expression ColNr="8" EndColNr="9" EndLineNr="59" ID="568" LineNr="54">
+                          <SimpleName ColNr="8" EndColNr="14" EndLineNr="54" ID="655" LineNr="54">
+                            <identifier ColNr="8" EndColNr="14" EndLineNr="54" ID="656" LineNr="54">ccModel</identifier>
+                            <var ColNr="8" EndColNr="14" EndLineNr="54" ID="657" LineNr="54">false</var>
+                          </SimpleName>
+                        </expression>
+                        <name ColNr="8" EndColNr="9" EndLineNr="59" ID="570" LineNr="54">
+                          <SimpleName ColNr="16" EndColNr="32" EndLineNr="54" ID="652" LineNr="54">
+                            <identifier ColNr="16" EndColNr="32" EndLineNr="54" ID="653" LineNr="54">addChangeListener</identifier>
+                            <var ColNr="16" EndColNr="32" EndLineNr="54" ID="654" LineNr="54">false</var>
+                          </SimpleName>
+                        </name>
+                        <arguments ColNr="8" EndColNr="9" EndLineNr="59" ID="571" LineNr="54">
+                          <ClassInstanceCreation ColNr="34" EndColNr="8" EndLineNr="59" ID="572" LineNr="54">
+                            <type ColNr="34" EndColNr="8" EndLineNr="59" ID="575" LineNr="54">
+                              <SimpleType ColNr="38" EndColNr="51" EndLineNr="54" ID="646" LineNr="54">
+                                <name ColNr="38" EndColNr="51" EndLineNr="54" ID="648" LineNr="54">
+                                  <SimpleName ColNr="38" EndColNr="51" EndLineNr="54" ID="649" LineNr="54">
+                                    <identifier ColNr="38" EndColNr="51" EndLineNr="54" ID="650" LineNr="54">ChangeListener</identifier>
+                                    <var ColNr="38" EndColNr="51" EndLineNr="54" ID="651" LineNr="54">false</var>
+                                  </SimpleName>
+                                </name>
+                              </SimpleType>
+                            </type>
+                            <anonymousClassDeclaration ColNr="34" EndColNr="8" EndLineNr="59" ID="577" LineNr="54">
+                              <AnonymousClassDeclaration ColNr="55" EndColNr="8" EndLineNr="59" ID="578" LineNr="54">
+                                <bodyDeclarations ColNr="55" EndColNr="8" EndLineNr="59" ID="579" LineNr="54">
+                                  <MethodDeclaration ColNr="12" EndColNr="12" EndLineNr="58" ID="580" LineNr="55">
+                                    <modifiers ColNr="12" EndColNr="12" EndLineNr="58" ID="582" LineNr="55">
+                                      <Modifier ColNr="12" EndColNr="17" EndLineNr="56" ID="639" LineNr="56">
+                                        <keyword ColNr="12" EndColNr="17" EndLineNr="56" ID="640" LineNr="56">public</keyword>
+                                      </Modifier>
+                                      <MarkerAnnotation ColNr="12" EndColNr="20" EndLineNr="55" ID="641" LineNr="55">
+                                        <typeName ColNr="12" EndColNr="20" EndLineNr="55" ID="642" LineNr="55">
+                                          <SimpleName ColNr="13" EndColNr="20" EndLineNr="55" ID="643" LineNr="55">
+                                            <identifier ColNr="13" EndColNr="20" EndLineNr="55" ID="644" LineNr="55">Override</identifier>
+                                            <var ColNr="13" EndColNr="20" EndLineNr="55" ID="645" LineNr="55">false</var>
+                                          </SimpleName>
+                                        </typeName>
+                                      </MarkerAnnotation>
+                                    </modifiers>
+                                    <constructor ColNr="12" EndColNr="12" EndLineNr="58" ID="583" LineNr="55">false</constructor>
+                                    <returnType2 ColNr="12" EndColNr="12" EndLineNr="58" ID="585" LineNr="55">
+                                      <PrimitiveType ColNr="19" EndColNr="22" EndLineNr="56" ID="636" LineNr="56">
+                                        <primitiveTypeCode ColNr="19" EndColNr="22" EndLineNr="56" ID="638" LineNr="56">void</primitiveTypeCode>
+                                      </PrimitiveType>
+                                    </returnType2>
+                                    <name ColNr="12" EndColNr="12" EndLineNr="58" ID="586" LineNr="55">
+                                      <SimpleName ColNr="24" EndColNr="35" EndLineNr="56" ID="633" LineNr="56">
+                                        <identifier ColNr="24" EndColNr="35" EndLineNr="56" ID="634" LineNr="56">stateChanged</identifier>
+                                        <var ColNr="24" EndColNr="35" EndLineNr="56" ID="635" LineNr="56">false</var>
+                                      </SimpleName>
+                                    </name>
+                                    <parameters ColNr="12" EndColNr="12" EndLineNr="58" ID="589" LineNr="55">
+                                      <SingleVariableDeclaration ColNr="37" EndColNr="51" EndLineNr="56" ID="616" LineNr="56">
+                                        <type ColNr="37" EndColNr="51" EndLineNr="56" ID="618" LineNr="56">
+                                          <SimpleType ColNr="37" EndColNr="47" EndLineNr="56" ID="627" LineNr="56">
+                                            <name ColNr="37" EndColNr="47" EndLineNr="56" ID="629" LineNr="56">
+                                              <SimpleName ColNr="37" EndColNr="47" EndLineNr="56" ID="630" LineNr="56">
+                                                <identifier ColNr="37" EndColNr="47" EndLineNr="56" ID="631" LineNr="56">ChangeEvent</identifier>
+                                                <var ColNr="37" EndColNr="47" EndLineNr="56" ID="632" LineNr="56">false</var>
+                                              </SimpleName>
+                                            </name>
+                                          </SimpleType>
+                                        </type>
+                                        <varargs ColNr="37" EndColNr="51" EndLineNr="56" ID="620" LineNr="56">false</varargs>
+                                        <name ColNr="37" EndColNr="51" EndLineNr="56" ID="621" LineNr="56">
+                                          <SimpleName ColNr="49" EndColNr="51" EndLineNr="56" ID="624" LineNr="56">
+                                            <identifier ColNr="49" EndColNr="51" EndLineNr="56" ID="625" LineNr="56">evt</identifier>
+                                            <var ColNr="49" EndColNr="51" EndLineNr="56" ID="626" LineNr="56">false</var>
+                                          </SimpleName>
+                                        </name>
+                                      </SingleVariableDeclaration>
+                                    </parameters>
+                                    <body ColNr="12" EndColNr="12" EndLineNr="58" ID="592" LineNr="55">
+                                      <Block ColNr="54" EndColNr="12" EndLineNr="58" ID="593" LineNr="56">
+                                        <statements ColNr="54" EndColNr="12" EndLineNr="58" ID="594" LineNr="56">
+                                          <ExpressionStatement ColNr="16" EndColNr="51" EndLineNr="57" ID="595" LineNr="57">
+                                            <expression ColNr="16" EndColNr="51" EndLineNr="57" ID="596" LineNr="57">
+                                              <MethodInvocation ColNr="16" EndColNr="50" EndLineNr="57" ID="597" LineNr="57">
+                                                <name ColNr="16" EndColNr="50" EndLineNr="57" ID="600" LineNr="57">
+                                                  <SimpleName ColNr="16" EndColNr="30" EndLineNr="57" ID="613" LineNr="57">
+                                                    <identifier ColNr="16" EndColNr="30" EndLineNr="57" ID="614" LineNr="57">setColorToModel</identifier>
+                                                    <var ColNr="16" EndColNr="30" EndLineNr="57" ID="615" LineNr="57">false</var>
+                                                  </SimpleName>
+                                                </name>
+                                                <arguments ColNr="16" EndColNr="50" EndLineNr="57" ID="601" LineNr="57">
+                                                  <MethodInvocation ColNr="32" EndColNr="49" EndLineNr="57" ID="602" LineNr="57">
+                                                    <expression ColNr="32" EndColNr="49" EndLineNr="57" ID="603" LineNr="57">
+                                                      <SimpleName ColNr="32" EndColNr="38" EndLineNr="57" ID="610" LineNr="57">
+                                                        <identifier ColNr="32" EndColNr="38" EndLineNr="57" ID="611" LineNr="57">ccModel</identifier>
+                                                        <var ColNr="32" EndColNr="38" EndLineNr="57" ID="612" LineNr="57">false</var>
+                                                      </SimpleName>
+                                                    </expression>
+                                                    <name ColNr="32" EndColNr="49" EndLineNr="57" ID="605" LineNr="57">
+                                                      <SimpleName ColNr="40" EndColNr="47" EndLineNr="57" ID="607" LineNr="57">
+                                                        <identifier ColNr="40" EndColNr="47" EndLineNr="57" ID="608" LineNr="57">getColor</identifier>
+                                                        <var ColNr="40" EndColNr="47" EndLineNr="57" ID="609" LineNr="57">false</var>
+                                                      </SimpleName>
+                                                    </name>
+                                                  </MethodInvocation>
+                                                </arguments>
+                                              </MethodInvocation>
+                                            </expression>
+                                          </ExpressionStatement>
+                                        </statements>
+                                      </Block>
+                                    </body>
+                                  </MethodDeclaration>
+                                </bodyDeclarations>
+                              </AnonymousClassDeclaration>
+                            </anonymousClassDeclaration>
+                          </ClassInstanceCreation>
+                        </arguments>
+                      </MethodInvocation>
+                    </expression>
+                  </ExpressionStatement>
+                  <ExpressionStatement ColNr="8" EndColNr="36" EndLineNr="52" ID="658" LineNr="52">
+                    <expression ColNr="8" EndColNr="36" EndLineNr="52" ID="659" LineNr="52">
+                      <MethodInvocation ColNr="8" EndColNr="35" EndLineNr="52" ID="660" LineNr="52">
+                        <expression ColNr="8" EndColNr="35" EndLineNr="52" ID="661" LineNr="52">
+                          <SimpleName ColNr="8" EndColNr="17" EndLineNr="52" ID="671" LineNr="52">
+                            <identifier ColNr="8" EndColNr="17" EndLineNr="52" ID="672" LineNr="52">colorWheel</identifier>
+                            <var ColNr="8" EndColNr="17" EndLineNr="52" ID="673" LineNr="52">false</var>
+                          </SimpleName>
+                        </expression>
+                        <name ColNr="8" EndColNr="35" EndLineNr="52" ID="663" LineNr="52">
+                          <SimpleName ColNr="19" EndColNr="26" EndLineNr="52" ID="668" LineNr="52">
+                            <identifier ColNr="19" EndColNr="26" EndLineNr="52" ID="669" LineNr="52">setModel</identifier>
+                            <var ColNr="19" EndColNr="26" EndLineNr="52" ID="670" LineNr="52">false</var>
+                          </SimpleName>
+                        </name>
+                        <arguments ColNr="8" EndColNr="35" EndLineNr="52" ID="664" LineNr="52">
+                          <SimpleName ColNr="28" EndColNr="34" EndLineNr="52" ID="665" LineNr="52">
+                            <identifier ColNr="28" EndColNr="34" EndLineNr="52" ID="666" LineNr="52">ccModel</identifier>
+                            <var ColNr="28" EndColNr="34" EndLineNr="52" ID="667" LineNr="52">false</var>
+                          </SimpleName>
+                        </arguments>
+                      </MethodInvocation>
+                    </expression>
+                  </ExpressionStatement>
+                  <ExpressionStatement ColNr="8" EndColNr="52" EndLineNr="51" ID="674" LineNr="51">
+                    <expression ColNr="8" EndColNr="52" EndLineNr="51" ID="675" LineNr="51">
+                      <MethodInvocation ColNr="8" EndColNr="51" EndLineNr="51" ID="676" LineNr="51">
+                        <expression ColNr="8" EndColNr="51" EndLineNr="51" ID="677" LineNr="51">
+                          <SimpleName ColNr="8" EndColNr="14" EndLineNr="51" ID="689" LineNr="51">
+                            <identifier ColNr="8" EndColNr="14" EndLineNr="51" ID="690" LineNr="51">ccModel</identifier>
+                            <var ColNr="8" EndColNr="14" EndLineNr="51" ID="691" LineNr="51">false</var>
+                          </SimpleName>
+                        </expression>
+                        <name ColNr="8" EndColNr="51" EndLineNr="51" ID="679" LineNr="51">
+                          <SimpleName ColNr="16" EndColNr="30" EndLineNr="51" ID="686" LineNr="51">
+                            <identifier ColNr="16" EndColNr="30" EndLineNr="51" ID="687" LineNr="51">configureSlider</identifier>
+                            <var ColNr="16" EndColNr="30" EndLineNr="51" ID="688" LineNr="51">false</var>
+                          </SimpleName>
+                        </name>
+                        <arguments ColNr="8" EndColNr="51" EndLineNr="51" ID="680" LineNr="51">
+                          <SimpleName ColNr="35" EndColNr="50" EndLineNr="51" ID="681" LineNr="51">
+                            <identifier ColNr="35" EndColNr="50" EndLineNr="51" ID="682" LineNr="51">brightnessSlider</identifier>
+                            <var ColNr="35" EndColNr="50" EndLineNr="51" ID="683" LineNr="51">false</var>
+                          </SimpleName>
+                          <NumberLiteral ColNr="32" EndColNr="32" EndLineNr="51" ID="684" LineNr="51">
+                            <token ColNr="32" EndColNr="32" EndLineNr="51" ID="685" LineNr="51">2</token>
+                          </NumberLiteral>
+                        </arguments>
+                      </MethodInvocation>
+                    </expression>
+                  </ExpressionStatement>
+                  <ExpressionStatement ColNr="8" EndColNr="23" EndLineNr="49" ID="692" LineNr="49">
+                    <expression ColNr="8" EndColNr="23" EndLineNr="49" ID="693" LineNr="49">
+                      <MethodInvocation ColNr="8" EndColNr="22" EndLineNr="49" ID="694" LineNr="49">
+                        <name ColNr="8" EndColNr="22" EndLineNr="49" ID="697" LineNr="49">
+                          <SimpleName ColNr="8" EndColNr="10" EndLineNr="49" ID="702" LineNr="49">
+                            <identifier ColNr="8" EndColNr="10" EndLineNr="49" ID="703" LineNr="49">add</identifier>
+                            <var ColNr="8" EndColNr="10" EndLineNr="49" ID="704" LineNr="49">false</var>
+                          </SimpleName>
+                        </name>
+                        <arguments ColNr="8" EndColNr="22" EndLineNr="49" ID="698" LineNr="49">
+                          <SimpleName ColNr="12" EndColNr="21" EndLineNr="49" ID="699" LineNr="49">
+                            <identifier ColNr="12" EndColNr="21" EndLineNr="49" ID="700" LineNr="49">colorWheel</identifier>
+                            <var ColNr="12" EndColNr="21" EndLineNr="49" ID="701" LineNr="49">false</var>
+                          </SimpleName>
+                        </arguments>
+                      </MethodInvocation>
+                    </expression>
+                  </ExpressionStatement>
+                  <ExpressionStatement ColNr="8" EndColNr="38" EndLineNr="48" ID="705" LineNr="48">
+                    <expression ColNr="8" EndColNr="38" EndLineNr="48" ID="706" LineNr="48">
+                      <Assignment ColNr="8" EndColNr="37" EndLineNr="48" ID="707" LineNr="48">
+                        <leftHandSide ColNr="8" EndColNr="37" EndLineNr="48" ID="708" LineNr="48">
+                          <SimpleName ColNr="8" EndColNr="17" EndLineNr="48" ID="723" LineNr="48">
+                            <identifier ColNr="8" EndColNr="17" EndLineNr="48" ID="724" LineNr="48">colorWheel</identifier>
+                            <var ColNr="8" EndColNr="17" EndLineNr="48" ID="725" LineNr="48">false</var>
+                          </SimpleName>
+                        </leftHandSide>
+                        <operator ColNr="8" EndColNr="37" EndLineNr="48" ID="709" LineNr="48">=</operator>
+                        <rightHandSide ColNr="8" EndColNr="37" EndLineNr="48" ID="710" LineNr="48">
+                          <ClassInstanceCreation ColNr="21" EndColNr="37" EndLineNr="48" ID="711" LineNr="48">
+                            <type ColNr="21" EndColNr="37" EndLineNr="48" ID="714" LineNr="48">
+                              <SimpleType ColNr="25" EndColNr="35" EndLineNr="48" ID="717" LineNr="48">
+                                <name ColNr="25" EndColNr="35" EndLineNr="48" ID="719" LineNr="48">
+                                  <SimpleName ColNr="25" EndColNr="35" EndLineNr="48" ID="720" LineNr="48">
+                                    <identifier ColNr="25" EndColNr="35" EndLineNr="48" ID="721" LineNr="48">JColorWheel</identifier>
+                                    <var ColNr="25" EndColNr="35" EndLineNr="48" ID="722" LineNr="48">false</var>
+                                  </SimpleName>
+                                </name>
+                              </SimpleType>
+                            </type>
+                          </ClassInstanceCreation>
+                        </rightHandSide>
+                      </Assignment>
+                    </expression>
+                  </ExpressionStatement>
+                  <IfStatement ColNr="8" EndColNr="0" EndLineNr="46" ID="726" LineNr="43">
+                    <expression ColNr="8" EndColNr="0" EndLineNr="46" ID="727" LineNr="43">
+                      <InfixExpression ColNr="12" EndColNr="29" EndLineNr="43" ID="782" LineNr="43">
+                        <leftOperand ColNr="12" EndColNr="29" EndLineNr="43" ID="783" LineNr="43">
+                          <SimpleName ColNr="12" EndColNr="24" EndLineNr="43" ID="789" LineNr="43">
+                            <identifier ColNr="12" EndColNr="24" EndLineNr="43" ID="790" LineNr="43">textSliderGap</identifier>
+                            <var ColNr="12" EndColNr="24" EndLineNr="43" ID="791" LineNr="43">false</var>
+                          </SimpleName>
+                        </leftOperand>
+                        <operator ColNr="12" EndColNr="29" EndLineNr="43" ID="784" LineNr="43">!=</operator>
+                        <rightOperand ColNr="12" EndColNr="29" EndLineNr="43" ID="785" LineNr="43">
+                          <NumberLiteral ColNr="29" EndColNr="29" EndLineNr="43" ID="787" LineNr="43">
+                            <token ColNr="29" EndColNr="29" EndLineNr="43" ID="788" LineNr="43">0</token>
+                          </NumberLiteral>
+                        </rightOperand>
+                      </InfixExpression>
+                    </expression>
+                    <thenStatement ColNr="8" EndColNr="0" EndLineNr="46" ID="728" LineNr="43">
+                      <Block ColNr="32" EndColNr="0" EndLineNr="46" ID="730" LineNr="43">
+                        <statements ColNr="32" EndColNr="0" EndLineNr="46" ID="731" LineNr="43">
+                          <ExpressionStatement ColNr="12" EndColNr="41" EndLineNr="45" ID="732" LineNr="45">
+                            <expression ColNr="12" EndColNr="41" EndLineNr="45" ID="733" LineNr="45">
+                              <MethodInvocation ColNr="12" EndColNr="40" EndLineNr="45" ID="734" LineNr="45">
+                                <expression ColNr="12" EndColNr="40" EndLineNr="45" ID="735" LineNr="45">
+                                  <SimpleName ColNr="12" EndColNr="17" EndLineNr="45" ID="745" LineNr="45">
+                                    <identifier ColNr="12" EndColNr="17" EndLineNr="45" ID="746" LineNr="45">layout</identifier>
+                                    <var ColNr="12" EndColNr="17" EndLineNr="45" ID="747" LineNr="45">false</var>
+                                  </SimpleName>
+                                </expression>
+                                <name ColNr="12" EndColNr="40" EndLineNr="45" ID="737" LineNr="45">
+                                  <SimpleName ColNr="19" EndColNr="25" EndLineNr="45" ID="742" LineNr="45">
+                                    <identifier ColNr="19" EndColNr="25" EndLineNr="45" ID="743" LineNr="45">setHgap</identifier>
+                                    <var ColNr="19" EndColNr="25" EndLineNr="45" ID="744" LineNr="45">false</var>
+                                  </SimpleName>
+                                </name>
+                                <arguments ColNr="12" EndColNr="40" EndLineNr="45" ID="738" LineNr="45">
+                                  <SimpleName ColNr="27" EndColNr="39" EndLineNr="45" ID="739" LineNr="45">
+                                    <identifier ColNr="27" EndColNr="39" EndLineNr="45" ID="740" LineNr="45">textSliderGap</identifier>
+                                    <var ColNr="27" EndColNr="39" EndLineNr="45" ID="741" LineNr="45">false</var>
+                                  </SimpleName>
+                                </arguments>
+                              </MethodInvocation>
+                            </expression>
+                          </ExpressionStatement>
+                          <VariableDeclarationStatement ColNr="12" EndColNr="60" EndLineNr="44" ID="748" LineNr="44">
+                            <type ColNr="12" EndColNr="60" EndLineNr="44" ID="750" LineNr="44">
+                              <SimpleType ColNr="12" EndColNr="23" EndLineNr="44" ID="776" LineNr="44">
+                                <name ColNr="12" EndColNr="23" EndLineNr="44" ID="778" LineNr="44">
+                                  <SimpleName ColNr="12" EndColNr="23" EndLineNr="44" ID="779" LineNr="44">
+                                    <identifier ColNr="12" EndColNr="23" EndLineNr="44" ID="780" LineNr="44">BorderLayout</identifier>
+                                    <var ColNr="12" EndColNr="23" EndLineNr="44" ID="781" LineNr="44">false</var>
+                                  </SimpleName>
+                                </name>
+                              </SimpleType>
+                            </type>
+                            <fragments ColNr="12" EndColNr="60" EndLineNr="44" ID="751" LineNr="44">
+                              <VariableDeclarationFragment ColNr="25" EndColNr="59" EndLineNr="44" ID="752" LineNr="44">
+                                <name ColNr="25" EndColNr="59" EndLineNr="44" ID="753" LineNr="44">
+                                  <SimpleName ColNr="25" EndColNr="30" EndLineNr="44" ID="773" LineNr="44">
+                                    <identifier ColNr="25" EndColNr="30" EndLineNr="44" ID="774" LineNr="44">layout</identifier>
+                                    <var ColNr="25" EndColNr="30" EndLineNr="44" ID="775" LineNr="44">false</var>
+                                  </SimpleName>
+                                </name>
+                                <initializer ColNr="25" EndColNr="59" EndLineNr="44" ID="755" LineNr="44">
+                                  <CastExpression ColNr="34" EndColNr="59" EndLineNr="44" ID="756" LineNr="44">
+                                    <type ColNr="34" EndColNr="59" EndLineNr="44" ID="757" LineNr="44">
+                                      <SimpleType ColNr="35" EndColNr="46" EndLineNr="44" ID="767" LineNr="44">
+                                        <name ColNr="35" EndColNr="46" EndLineNr="44" ID="769" LineNr="44">
+                                          <SimpleName ColNr="35" EndColNr="46" EndLineNr="44" ID="770" LineNr="44">
+                                            <identifier ColNr="35" EndColNr="46" EndLineNr="44" ID="771" LineNr="44">BorderLayout</identifier>
+                                            <var ColNr="35" EndColNr="46" EndLineNr="44" ID="772" LineNr="44">false</var>
+                                          </SimpleName>
+                                        </name>
+                                      </SimpleType>
+                                    </type>
+                                    <expression ColNr="34" EndColNr="59" EndLineNr="44" ID="758" LineNr="44">
+                                      <MethodInvocation ColNr="49" EndColNr="59" EndLineNr="44" ID="759" LineNr="44">
+                                        <name ColNr="49" EndColNr="59" EndLineNr="44" ID="762" LineNr="44">
+                                          <SimpleName ColNr="49" EndColNr="57" EndLineNr="44" ID="764" LineNr="44">
+                                            <identifier ColNr="49" EndColNr="57" EndLineNr="44" ID="765" LineNr="44">getLayout</identifier>
+                                            <var ColNr="49" EndColNr="57" EndLineNr="44" ID="766" LineNr="44">false</var>
+                                          </SimpleName>
+                                        </name>
+                                      </MethodInvocation>
+                                    </expression>
+                                  </CastExpression>
+                                </initializer>
+                              </VariableDeclarationFragment>
+                            </fragments>
+                          </VariableDeclarationStatement>
+                        </statements>
+                      </Block>
+                    </thenStatement>
+                  </IfStatement>
+                  <VariableDeclarationStatement ColNr="16" EndColNr="82" EndLineNr="42" ID="792" LineNr="42">
+                    <type ColNr="16" EndColNr="82" EndLineNr="42" ID="794" LineNr="42">
+                      <PrimitiveType ColNr="16" EndColNr="18" EndLineNr="42" ID="816" LineNr="42">
+                        <primitiveTypeCode ColNr="16" EndColNr="18" EndLineNr="42" ID="818" LineNr="42">int</primitiveTypeCode>
+                      </PrimitiveType>
+                    </type>
+                    <fragments ColNr="16" EndColNr="82" EndLineNr="42" ID="795" LineNr="42">
+                      <VariableDeclarationFragment ColNr="20" EndColNr="81" EndLineNr="42" ID="796" LineNr="42">
+                        <name ColNr="20" EndColNr="81" EndLineNr="42" ID="797" LineNr="42">
+                          <SimpleName ColNr="20" EndColNr="32" EndLineNr="42" ID="813" LineNr="42">
+                            <identifier ColNr="20" EndColNr="32" EndLineNr="42" ID="814" LineNr="42">textSliderGap</identifier>
+                            <var ColNr="20" EndColNr="32" EndLineNr="42" ID="815" LineNr="42">false</var>
+                          </SimpleName>
+                        </name>
+                        <initializer ColNr="20" EndColNr="81" EndLineNr="42" ID="799" LineNr="42">
+                          <MethodInvocation ColNr="36" EndColNr="81" EndLineNr="42" ID="800" LineNr="42">
+                            <expression ColNr="36" EndColNr="81" EndLineNr="42" ID="801" LineNr="42">
+                              <SimpleName ColNr="36" EndColNr="44" EndLineNr="42" ID="810" LineNr="42">
+                                <identifier ColNr="36" EndColNr="44" EndLineNr="42" ID="811" LineNr="42">UIManager</identifier>
+                                <var ColNr="36" EndColNr="44" EndLineNr="42" ID="812" LineNr="42">false</var>
+                              </SimpleName>
+                            </expression>
+                            <name ColNr="36" EndColNr="81" EndLineNr="42" ID="803" LineNr="42">
+                              <SimpleName ColNr="46" EndColNr="51" EndLineNr="42" ID="807" LineNr="42">
+                                <identifier ColNr="46" EndColNr="51" EndLineNr="42" ID="808" LineNr="42">getInt</identifier>
+                                <var ColNr="46" EndColNr="51" EndLineNr="42" ID="809" LineNr="42">false</var>
+                              </SimpleName>
+                            </name>
+                            <arguments ColNr="36" EndColNr="81" EndLineNr="42" ID="804" LineNr="42">
+                              <StringLiteral ColNr="53" EndColNr="80" EndLineNr="42" ID="805" LineNr="42">
+                                <escapedValue ColNr="53" EndColNr="80" EndLineNr="42" ID="806" LineNr="42">"ColorChooser.textSliderGap"</escapedValue>
+                              </StringLiteral>
+                            </arguments>
+                          </MethodInvocation>
+                        </initializer>
+                      </VariableDeclarationFragment>
+                    </fragments>
+                  </VariableDeclarationStatement>
+                  <ExpressionStatement ColNr="8" EndColNr="24" EndLineNr="40" ID="819" LineNr="40">
+                    <expression ColNr="8" EndColNr="24" EndLineNr="40" ID="820" LineNr="40">
+                      <MethodInvocation ColNr="8" EndColNr="23" EndLineNr="40" ID="821" LineNr="40">
+                        <name ColNr="8" EndColNr="23" EndLineNr="40" ID="824" LineNr="40">
+                          <SimpleName ColNr="8" EndColNr="21" EndLineNr="40" ID="826" LineNr="40">
+                            <identifier ColNr="8" EndColNr="21" EndLineNr="40" ID="827" LineNr="40">initComponents</identifier>
+                            <var ColNr="8" EndColNr="21" EndLineNr="40" ID="828" LineNr="40">false</var>
+                          </SimpleName>
+                        </name>
+                      </MethodInvocation>
+                    </expression>
+                  </ExpressionStatement>
+                </statements>
+              </Block>
+            </body>
+          </MethodDeclaration>
+          <FieldDeclaration ColNr="4" EndColNr="31" EndLineNr="34" ID="834" LineNr="34">
+            <modifiers ColNr="4" EndColNr="31" EndLineNr="34" ID="836" LineNr="34">
+              <Modifier ColNr="4" EndColNr="10" EndLineNr="34" ID="849" LineNr="34">
+                <keyword ColNr="4" EndColNr="10" EndLineNr="34" ID="850" LineNr="34">private</keyword>
+              </Modifier>
+            </modifiers>
+            <type ColNr="4" EndColNr="31" EndLineNr="34" ID="837" LineNr="34">
+              <PrimitiveType ColNr="12" EndColNr="14" EndLineNr="34" ID="846" LineNr="34">
+                <primitiveTypeCode ColNr="12" EndColNr="14" EndLineNr="34" ID="848" LineNr="34">int</primitiveTypeCode>
+              </PrimitiveType>
+            </type>
+            <fragments ColNr="4" EndColNr="31" EndLineNr="34" ID="838" LineNr="34">
+              <VariableDeclarationFragment ColNr="16" EndColNr="30" EndLineNr="34" ID="839" LineNr="34">
+                <name ColNr="16" EndColNr="30" EndLineNr="34" ID="840" LineNr="34">
+                  <SimpleName ColNr="16" EndColNr="30" EndLineNr="34" ID="843" LineNr="34">
+                    <identifier ColNr="16" EndColNr="30" EndLineNr="34" ID="844" LineNr="34">updatingChooser</identifier>
+                    <var ColNr="16" EndColNr="30" EndLineNr="34" ID="845" LineNr="34">false</var>
+                  </SimpleName>
+                </name>
+              </VariableDeclarationFragment>
+            </fragments>
+          </FieldDeclaration>
+          <FieldDeclaration ColNr="4" EndColNr="95" EndLineNr="32" ID="851" LineNr="32">
+            <modifiers ColNr="4" EndColNr="95" EndLineNr="32" ID="853" LineNr="32">
+              <Modifier ColNr="4" EndColNr="10" EndLineNr="32" ID="892" LineNr="32">
+                <keyword ColNr="4" EndColNr="10" EndLineNr="32" ID="893" LineNr="32">private</keyword>
+              </Modifier>
+            </modifiers>
+            <type ColNr="4" EndColNr="95" EndLineNr="32" ID="854" LineNr="32">
+              <SimpleType ColNr="12" EndColNr="27" EndLineNr="32" ID="886" LineNr="32">
+                <name ColNr="12" EndColNr="27" EndLineNr="32" ID="888" LineNr="32">
+                  <SimpleName ColNr="12" EndColNr="27" EndLineNr="32" ID="889" LineNr="32">
+                    <identifier ColNr="12" EndColNr="27" EndLineNr="32" ID="890" LineNr="32">ColorSliderModel</identifier>
+                    <var ColNr="12" EndColNr="27" EndLineNr="32" ID="891" LineNr="32">false</var>
+                  </SimpleName>
+                </name>
+              </SimpleType>
+            </type>
+            <fragments ColNr="4" EndColNr="95" EndLineNr="32" ID="855" LineNr="32">
+              <VariableDeclarationFragment ColNr="29" EndColNr="94" EndLineNr="32" ID="856" LineNr="32">
+                <name ColNr="29" EndColNr="94" EndLineNr="32" ID="857" LineNr="32">
+                  <SimpleName ColNr="29" EndColNr="35" EndLineNr="32" ID="883" LineNr="32">
+                    <identifier ColNr="29" EndColNr="35" EndLineNr="32" ID="884" LineNr="32">ccModel</identifier>
+                    <var ColNr="29" EndColNr="35" EndLineNr="32" ID="885" LineNr="32">false</var>
+                  </SimpleName>
+                </name>
+                <initializer ColNr="29" EndColNr="94" EndLineNr="32" ID="859" LineNr="32">
+                  <ClassInstanceCreation ColNr="39" EndColNr="94" EndLineNr="32" ID="860" LineNr="32">
+                    <type ColNr="39" EndColNr="94" EndLineNr="32" ID="863" LineNr="32">
+                      <SimpleType ColNr="43" EndColNr="65" EndLineNr="32" ID="877" LineNr="32">
+                        <name ColNr="43" EndColNr="65" EndLineNr="32" ID="879" LineNr="32">
+                          <SimpleName ColNr="43" EndColNr="65" EndLineNr="32" ID="880" LineNr="32">
+                            <identifier ColNr="43" EndColNr="65" EndLineNr="32" ID="881" LineNr="32">DefaultColorSliderModel</identifier>
+                            <var ColNr="43" EndColNr="65" EndLineNr="32" ID="882" LineNr="32">false</var>
+                          </SimpleName>
+                        </name>
+                      </SimpleType>
+                    </type>
+                    <arguments ColNr="39" EndColNr="94" EndLineNr="32" ID="864" LineNr="32">
+                      <MethodInvocation ColNr="67" EndColNr="93" EndLineNr="32" ID="866" LineNr="32">
+                        <expression ColNr="67" EndColNr="93" EndLineNr="32" ID="867" LineNr="32">
+                          <SimpleName ColNr="67" EndColNr="79" EndLineNr="32" ID="874" LineNr="32">
+                            <identifier ColNr="67" EndColNr="79" EndLineNr="32" ID="875" LineNr="32">HSBColorSpace</identifier>
+                            <var ColNr="67" EndColNr="79" EndLineNr="32" ID="876" LineNr="32">false</var>
+                          </SimpleName>
+                        </expression>
+                        <name ColNr="67" EndColNr="93" EndLineNr="32" ID="869" LineNr="32">
+                          <SimpleName ColNr="81" EndColNr="91" EndLineNr="32" ID="871" LineNr="32">
+                            <identifier ColNr="81" EndColNr="91" EndLineNr="32" ID="872" LineNr="32">getInstance</identifier>
+                            <var ColNr="81" EndColNr="91" EndLineNr="32" ID="873" LineNr="32">false</var>
+                          </SimpleName>
+                        </name>
+                      </MethodInvocation>
+                    </arguments>
+                  </ClassInstanceCreation>
+                </initializer>
+              </VariableDeclarationFragment>
+            </fragments>
+          </FieldDeclaration>
+          <FieldDeclaration ColNr="4" EndColNr="34" EndLineNr="31" ID="894" LineNr="31">
+            <modifiers ColNr="4" EndColNr="34" EndLineNr="31" ID="896" LineNr="31">
+              <Modifier ColNr="4" EndColNr="10" EndLineNr="31" ID="912" LineNr="31">
+                <keyword ColNr="4" EndColNr="10" EndLineNr="31" ID="913" LineNr="31">private</keyword>
+              </Modifier>
+            </modifiers>
+            <type ColNr="4" EndColNr="34" EndLineNr="31" ID="897" LineNr="31">
+              <SimpleType ColNr="12" EndColNr="22" EndLineNr="31" ID="906" LineNr="31">
+                <name ColNr="12" EndColNr="22" EndLineNr="31" ID="908" LineNr="31">
+                  <SimpleName ColNr="12" EndColNr="22" EndLineNr="31" ID="909" LineNr="31">
+                    <identifier ColNr="12" EndColNr="22" EndLineNr="31" ID="910" LineNr="31">JColorWheel</identifier>
+                    <var ColNr="12" EndColNr="22" EndLineNr="31" ID="911" LineNr="31">false</var>
+                  </SimpleName>
+                </name>
+              </SimpleType>
+            </type>
+            <fragments ColNr="4" EndColNr="34" EndLineNr="31" ID="898" LineNr="31">
+              <VariableDeclarationFragment ColNr="24" EndColNr="33" EndLineNr="31" ID="899" LineNr="31">
+                <name ColNr="24" EndColNr="33" EndLineNr="31" ID="900" LineNr="31">
+                  <SimpleName ColNr="24" EndColNr="33" EndLineNr="31" ID="903" LineNr="31">
+                    <identifier ColNr="24" EndColNr="33" EndLineNr="31" ID="904" LineNr="31">colorWheel</identifier>
+                    <var ColNr="24" EndColNr="33" EndLineNr="31" ID="905" LineNr="31">false</var>
+                  </SimpleName>
+                </name>
+              </VariableDeclarationFragment>
+            </fragments>
+          </FieldDeclaration>
+        </bodyDeclarations>
+      </TypeDeclaration>
+    </types>
+  </CompilationUnit>
+</SourceFile>

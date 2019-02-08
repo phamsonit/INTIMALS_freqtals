@@ -16,13 +16,13 @@ public class LineOutput extends AOutputFormatter {
     private char uniChar;
     Map<String,String> patSupMap;
 
-    public LineOutput(Config _config, Map<String, Vector<String>> _grammar, Map<String,String> _xmlCharacters, char _uniChar) throws IOException {
-        super(_config, _grammar,_xmlCharacters);
+    public LineOutput(String _file,Config _config, Map<String, Vector<String>> _grammar, Map<String,String> _xmlCharacters, char _uniChar) throws IOException {
+        super(_file,_config, _grammar,_xmlCharacters);
         uniChar = _uniChar;
     }
 
-    public LineOutput(Config _config, Map<String, Vector<String>> _grammar, Map<String,String> _xmlCharacters, Map<String,String> _patSupMap, char _uniChar) throws IOException {
-        super(_config, _grammar,_xmlCharacters);
+    public LineOutput(String _file, Config _config, Map<String, Vector<String>> _grammar, Map<String,String> _xmlCharacters, Map<String,String> _patSupMap, char _uniChar) throws IOException {
+        super(_file,_config, _grammar,_xmlCharacters);
         uniChar = _uniChar;
         patSupMap = _patSupMap;
     }

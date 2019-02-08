@@ -1,0 +1,87 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<SourceFile ID="0">
+  <ClassBodyDeclaration ID="1">
+    <name>
+      Class-1
+    </name>
+    <body ID="2">
+      <MethodDeclaration ID="3">
+        <modifiers ID="4">
+          <PUBLIC_KEYWORD ID="5">
+            public
+          </PUBLIC_KEYWORD>
+        </modifiers>
+        <type ID="6">
+          <INTEGER_TYPE ID="7">
+            int
+          </INTEGER_TYPE>
+        </type>
+        <name ID="8">MethodF1-A</name>
+        <body ID="9">
+          <NullLiteral ID="10">
+            <token ID="11">null</token>
+          </NullLiteral>
+          <InfixExpression ID="12">
+            <left ID="13">2</left>
+            <op ID="14">
+              <PLUS ID="15">
+                +
+              </PLUS>
+            </op>
+            <right ID="16">2</right>
+          </InfixExpression>
+        </body>
+      </MethodDeclaration>
+      <MethodDeclaration ID="17">
+        <modifiers ID="18">
+          <PUBLIC_KEYWORD ID="19">
+            public
+          </PUBLIC_KEYWORD>
+        </modifiers>
+        <type ID="20">
+          <INTEGER_TYPE ID="21">
+            int
+          </INTEGER_TYPE>
+        </type>
+        <name ID="22">MethodF1-B</name>
+        <body ID="23">
+          <InfixExpression ID="24">
+            <left ID="25">3</left>
+            <op ID="26">
+              <PLUS ID="27">
+                +
+              </PLUS>
+            </op>
+            <right ID="28">3</right>
+          </InfixExpression>
+        </body>
+      </MethodDeclaration>
+      <FieldDeclaration ID="29">
+        <modifiers ID="30">
+          <PUBLIC_KEYWORD ID="31">
+            public
+          </PUBLIC_KEYWORD>
+        </modifiers>
+        <type ID="32">
+          <INTEGER_TYPE ID="33">
+            int
+          </INTEGER_TYPE>
+        </type>
+        <name ID="34">FieldF1-A</name>
+      </FieldDeclaration>
+      <FieldDeclaration ID="35">
+        <modifiers ID="30">
+          <PRIVATE_KEYWORD ID="31">
+            private
+          </PRIVATE_KEYWORD>
+        </modifiers>
+        <type ID="32">
+          <INTEGER_TYPE ID="33">
+            int
+          </INTEGER_TYPE>
+        </type>
+        <name ID="36">FieldF1-B</name>
+      </FieldDeclaration>
+    </body>
+  </ClassBodyDeclaration>
+</SourceFile>

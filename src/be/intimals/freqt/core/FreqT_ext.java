@@ -183,8 +183,9 @@ public class FreqT_ext extends FreqT {
 
         try{
             transaction = _transaction;
-            outputLargest = config.outputAsXML() ? new XMLOutput(config, grammar, xmlCharacters) :
-                    new LineOutput(config, grammar, xmlCharacters, uniChar);
+            String fileName = "phase2-"+config.getOutputFile().replaceAll("\\/","-");
+            outputLargest = config.outputAsXML() ? new XMLOutput(fileName,config, grammar, xmlCharacters) :
+                    new LineOutput(fileName,config, grammar, xmlCharacters, uniChar);
 
             largestPattern = new Vector<>();
             Iterator < Map.Entry<String,String> > rootId = _rootIDs.entrySet().iterator();

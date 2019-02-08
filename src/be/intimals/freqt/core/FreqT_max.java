@@ -140,8 +140,8 @@ public class FreqT_max extends FreqT {
 
             initDatabase(inPatterns);
 
-            outputMaximal = config.outputAsXML() ? new XMLOutput(config, grammar, xmlCharacters, patSupMap) :
-                                            new LineOutput(config, grammar, xmlCharacters, patSupMap, uniChar);
+            outputMaximal = config.outputAsXML() ? new XMLOutput(config.getOutputFile(),config, grammar, xmlCharacters, patSupMap) :
+                                            new LineOutput(config.getOutputFile(),config, grammar, xmlCharacters, patSupMap, uniChar);
 
             //find 1-subtree
             Map < String , Projected > freq1 = buildFreq1Set(newTransaction);

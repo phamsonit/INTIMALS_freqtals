@@ -1,0 +1,557 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<SourceFile xmlns:xsi="http://www.w3.org/2001/XMLSchema" FullName="C:\Users\johan\Documents\Intimals\Reference_Sources\Cobol_85 - gen\IC204A.cob" Language="Cobol" ID="1364607">
+  <ROOT LineNr="1" EndLineNr="69" ColNr="2" EndColNr="18" ID="-1364586">
+    <ThePrograms ID="1364644" LineNr="1" EndLineNr="69" ColNr="" EndColNr="18">
+      <CobolProgram LineNr="1" EndLineNr="69" ColNr="2" EndColNr="18" ID="1364586">
+        <TheIdentificationDivision LineNr="1" EndLineNr="3" ColNr="2" EndColNr="12" ID="-1364389">
+          <IdentificationDivision LineNr="1" EndLineNr="3" ColNr="2" EndColNr="12" ID="1364389">
+            <TheProgramIdClause LineNr="2" EndLineNr="3" ColNr="2" EndColNr="12" ID="-1364388">
+              <ProgramIdClause LineNr="2" EndLineNr="3" ColNr="2" EndColNr="12" ID="1364388">
+                <TheId LineNr="3" EndLineNr="3" ColNr="6" EndColNr="11" ID="-1364387">
+                  <AnonIdent LineNr="3" EndLineNr="3" ColNr="6" EndColNr="11" ID="1364387">IC204A</AnonIdent>
+                </TheId>
+              </ProgramIdClause>
+            </TheProgramIdClause>
+          </IdentificationDivision>
+        </TheIdentificationDivision>
+        <TheEnvironmentDivision LineNr="30" EndLineNr="39" ColNr="2" EndColNr="18" ID="-1364404">
+          <EnvironmentDivision LineNr="30" EndLineNr="39" ColNr="2" EndColNr="18" ID="1364404">
+            <TheConfigurationSection LineNr="31" EndLineNr="35" ColNr="2" EndColNr="11" ID="-1364396">
+              <ConfigurationSection LineNr="31" EndLineNr="35" ColNr="2" EndColNr="11" ID="1364396">
+                <TheList LineNr="32" EndLineNr="35" ColNr="2" EndColNr="11" ID="-1364392">
+                  <SrcComputerClause LineNr="32" EndLineNr="33" ColNr="2" EndColNr="68" ID="1364392"/>
+                  <ObjComputerClause LineNr="34" EndLineNr="35" ColNr="2" EndColNr="11" ID="1364395">
+                    <TheComputerName LineNr="35" EndLineNr="35" ColNr="6" EndColNr="10" ID="-1364394">
+                      <AnonIdent LineNr="35" EndLineNr="35" ColNr="6" EndColNr="10" ID="1364394">Linux</AnonIdent>
+                    </TheComputerName>
+                  </ObjComputerClause>
+                </TheList>
+                <TheComputerClause LineNr="34" EndLineNr="35" ColNr="2" EndColNr="11" ID="-1364395">
+                  <ObjComputerClause LineNr="34" EndLineNr="35" ColNr="2" EndColNr="11" ID="1364395">
+                    <TheComputerName LineNr="35" EndLineNr="35" ColNr="6" EndColNr="10" ID="-1364394">
+                      <AnonIdent LineNr="35" EndLineNr="35" ColNr="6" EndColNr="10" ID="1364394">Linux</AnonIdent>
+                    </TheComputerName>
+                  </ObjComputerClause>
+                </TheComputerClause>
+              </ConfigurationSection>
+            </TheConfigurationSection>
+            <TheIOSection LineNr="36" EndLineNr="39" ColNr="2" EndColNr="18" ID="-1364403">
+              <IOSection LineNr="36" EndLineNr="39" ColNr="2" EndColNr="18" ID="1364403">
+                <TheFileControlClause LineNr="37" EndLineNr="39" ColNr="2" EndColNr="18" ID="-1364402">
+                  <FileControlClause LineNr="37" EndLineNr="39" ColNr="2" EndColNr="18" ID="1364402">
+                    <TheClauses LineNr="38" EndLineNr="39" ColNr="6" EndColNr="18" ID="-1364401">
+                      <SelectClause LineNr="38" EndLineNr="39" ColNr="6" EndColNr="18" ID="1364401">
+                        <TheIdent LineNr="38" EndLineNr="38" ColNr="13" EndColNr="22" ID="-1364397" XRef="1364416">
+                          <FileIdent LineNr="38" EndLineNr="38" ColNr="13" EndColNr="22" ID="1364397" XRef="1364416">PRINT-FILE</FileIdent>
+                        </TheIdent>
+                        <TheClauses LineNr="38" EndLineNr="39" ColNr="24" EndColNr="17" ID="-1364400">
+                          <AssignSubClause LineNr="38" EndLineNr="39" ColNr="24" EndColNr="17" ID="1364400">
+                            <TheFileIds LineNr="39" EndLineNr="39" ColNr="6" EndColNr="17" ID="-1364399">
+                              <StringLiteral LineNr="39" EndLineNr="39" ColNr="6" EndColNr="17" ID="1364399">"report.log"</StringLiteral>
+                            </TheFileIds>
+                          </AssignSubClause>
+                        </TheClauses>
+                      </SelectClause>
+                    </TheClauses>
+                  </FileControlClause>
+                </TheFileControlClause>
+              </IOSection>
+            </TheIOSection>
+          </EnvironmentDivision>
+        </TheEnvironmentDivision>
+        <TheDataDivision LineNr="40" EndLineNr="53" ColNr="2" EndColNr="68" ID="-1364453">
+          <DataDivision LineNr="40" EndLineNr="53" ColNr="2" EndColNr="68" ID="1364453">
+            <TheFileSection LineNr="41" EndLineNr="44" ColNr="2" EndColNr="68" ID="-1364417">
+              <FileSection LineNr="41" EndLineNr="44" ColNr="2" EndColNr="68" ID="1364417">
+                <TheFDEntries LineNr="42" EndLineNr="44" ColNr="2" EndColNr="68" ID="-1364416">
+                  <FDEntry LineNr="42" EndLineNr="44" ColNr="2" EndColNr="68" ID="1364416">
+                    <TheMode ID="1364608" LineNr="42" EndLineNr="44" ColNr="2" EndColNr="68">FdKeyword</TheMode>
+                    <TheData LineNr="43" EndLineNr="44" ColNr="2" EndColNr="68" ID="-1364415">
+                      <DataDecl LineNr="43" EndLineNr="44" ColNr="2" EndColNr="68" ID="1364415">
+                        <TheFields LineNr="43" EndLineNr="44" ColNr="2" EndColNr="68" ID="-1364410" Level="1">
+                          <DataField LineNr="43" EndLineNr="43" ColNr="2" EndColNr="68" ID="1364410" Level="1">
+                            <TheDot ID="1364609" LineNr="43" EndLineNr="43" ColNr="2" EndColNr="68">TRUE</TheDot>
+                            <TheId LineNr="43" EndLineNr="43" ColNr="6" EndColNr="14" ID="-1364408" XRef="1364410">
+                              <DataIdent LineNr="43" EndLineNr="43" ColNr="6" EndColNr="14" ID="1364408" XRef="1364410">PRINT-REC</DataIdent>
+                            </TheId>
+                            <ThePicClause LineNr="43" EndLineNr="43" ColNr="16" EndColNr="29" ID="-1364409">
+                              <PicClause LineNr="43" EndLineNr="43" ColNr="16" EndColNr="29" ID="1364409">X(120)</PicClause>
+                            </ThePicClause>
+                          </DataField>
+                          <DataField LineNr="44" EndLineNr="44" ColNr="2" EndColNr="68" ID="1364414" Level="1">
+                            <TheDot ID="1364610" LineNr="44" EndLineNr="44" ColNr="2" EndColNr="68">TRUE</TheDot>
+                            <TheId LineNr="44" EndLineNr="44" ColNr="6" EndColNr="17" ID="-1364412" XRef="1364414">
+                              <DataIdent LineNr="44" EndLineNr="44" ColNr="6" EndColNr="17" ID="1364412" XRef="1364414">DUMMY-RECORD</DataIdent>
+                            </TheId>
+                            <ThePicClause LineNr="44" EndLineNr="44" ColNr="19" EndColNr="32" ID="-1364413">
+                              <PicClause LineNr="44" EndLineNr="44" ColNr="19" EndColNr="32" ID="1364413">X(120)</PicClause>
+                            </ThePicClause>
+                          </DataField>
+                        </TheFields>
+                      </DataDecl>
+                    </TheData>
+                    <TheId LineNr="42" EndLineNr="42" ColNr="6" EndColNr="15" ID="-1364406" XRef="1364416">
+                      <FileIdent LineNr="42" EndLineNr="42" ColNr="6" EndColNr="15" ID="1364406" XRef="1364416">PRINT-FILE</FileIdent>
+                    </TheId>
+                  </FDEntry>
+                </TheFDEntries>
+              </FileSection>
+            </TheFileSection>
+            <TheWorkingStorageSection LineNr="45" EndLineNr="47" ColNr="2" EndColNr="68" ID="-1364431">
+              <WorkingStorageSection LineNr="45" EndLineNr="47" ColNr="2" EndColNr="68" ID="1364431">
+                <TheData LineNr="46" EndLineNr="47" ColNr="2" EndColNr="68" ID="-1364430">
+                  <DataDecl LineNr="46" EndLineNr="47" ColNr="2" EndColNr="68" ID="1364430">
+                    <TheFields LineNr="1" EndLineNr="47" ColNr="2" EndColNr="68" ID="-1364587" Level="1">
+                      <DataField LineNr="1" EndLineNr="1" ColNr="2" EndColNr="15" ID="1364587" Level="1">
+                        <TheSpecialCode ID="1364611" LineNr="1" EndLineNr="1" ColNr="2" EndColNr="15">ExternalKeyword</TheSpecialCode>
+                        <TheDot ID="1364613" LineNr="1" EndLineNr="1" ColNr="2" EndColNr="15">TRUE</TheDot>
+                        <TheId LineNr="1" EndLineNr="1" ColNr="2" EndColNr="15" ID="-1364588" XRef="1364587">
+                          <DataIdent LineNr="1" EndLineNr="1" ColNr="2" EndColNr="15" ID="1364588" XRef="1364587">RETURN-CODE</DataIdent>
+                        </TheId>
+                        <ThePicClause LineNr="1" EndLineNr="1" ColNr="2" EndColNr="15" ID="-1364589">
+                          <PicClause LineNr="1" EndLineNr="1" ColNr="2" EndColNr="15" ID="1364589">S9(4)</PicClause>
+                        </ThePicClause>
+                        <TheUsageClause LineNr="1" EndLineNr="1" ColNr="2" EndColNr="15" ID="-1364590">
+                          <UsageClause LineNr="1" EndLineNr="1" ColNr="2" EndColNr="15" ID="1364590">
+                            <TheCode ID="1364612" LineNr="1" EndLineNr="1" ColNr="2" EndColNr="15">BinaryKeyword</TheCode>
+                          </UsageClause>
+                        </TheUsageClause>
+                      </DataField>
+                      <DataField LineNr="1" EndLineNr="1" ColNr="2" EndColNr="15" ID="1364591" Level="1">
+                        <TheSpecialCode ID="1364614" LineNr="1" EndLineNr="1" ColNr="2" EndColNr="15">ExternalKeyword</TheSpecialCode>
+                        <TheDot ID="1364616" LineNr="1" EndLineNr="1" ColNr="2" EndColNr="15">TRUE</TheDot>
+                        <TheId LineNr="1" EndLineNr="1" ColNr="2" EndColNr="15" ID="-1364592" XRef="1364591">
+                          <DataIdent LineNr="1" EndLineNr="1" ColNr="2" EndColNr="15" ID="1364592" XRef="1364591">SORT-RETURN</DataIdent>
+                        </TheId>
+                        <ThePicClause LineNr="1" EndLineNr="1" ColNr="2" EndColNr="15" ID="-1364593">
+                          <PicClause LineNr="1" EndLineNr="1" ColNr="2" EndColNr="15" ID="1364593">S9(4)</PicClause>
+                        </ThePicClause>
+                        <TheUsageClause LineNr="1" EndLineNr="1" ColNr="2" EndColNr="15" ID="-1364594">
+                          <UsageClause LineNr="1" EndLineNr="1" ColNr="2" EndColNr="15" ID="1364594">
+                            <TheCode ID="1364615" LineNr="1" EndLineNr="1" ColNr="2" EndColNr="15">BinaryKeyword</TheCode>
+                          </UsageClause>
+                        </TheUsageClause>
+                      </DataField>
+                      <DataField LineNr="1" EndLineNr="1" ColNr="2" EndColNr="15" ID="1364595" Level="1">
+                        <TheSpecialCode ID="1364617" LineNr="1" EndLineNr="1" ColNr="2" EndColNr="15">ExternalKeyword</TheSpecialCode>
+                        <TheDot ID="1364619" LineNr="1" EndLineNr="1" ColNr="2" EndColNr="15">TRUE</TheDot>
+                        <TheId LineNr="1" EndLineNr="1" ColNr="2" EndColNr="15" ID="-1364596" XRef="1364595">
+                          <DataIdent LineNr="1" EndLineNr="1" ColNr="2" EndColNr="15" ID="1364596" XRef="1364595">SORT-CORE-SIZE</DataIdent>
+                        </TheId>
+                        <ThePicClause LineNr="1" EndLineNr="1" ColNr="2" EndColNr="15" ID="-1364597">
+                          <PicClause LineNr="1" EndLineNr="1" ColNr="2" EndColNr="15" ID="1364597">S9(8)</PicClause>
+                        </ThePicClause>
+                        <TheUsageClause LineNr="1" EndLineNr="1" ColNr="2" EndColNr="15" ID="-1364598">
+                          <UsageClause LineNr="1" EndLineNr="1" ColNr="2" EndColNr="15" ID="1364598">
+                            <TheCode ID="1364618" LineNr="1" EndLineNr="1" ColNr="2" EndColNr="15">BinaryKeyword</TheCode>
+                          </UsageClause>
+                        </TheUsageClause>
+                      </DataField>
+                      <DataField LineNr="1" EndLineNr="1" ColNr="2" EndColNr="15" ID="1364599" Level="1">
+                        <TheSpecialCode ID="1364620" LineNr="1" EndLineNr="1" ColNr="2" EndColNr="15">ExternalKeyword</TheSpecialCode>
+                        <TheDot ID="1364622" LineNr="1" EndLineNr="1" ColNr="2" EndColNr="15">TRUE</TheDot>
+                        <TheId LineNr="1" EndLineNr="1" ColNr="2" EndColNr="15" ID="-1364600" XRef="1364599">
+                          <DataIdent LineNr="1" EndLineNr="1" ColNr="2" EndColNr="15" ID="1364600" XRef="1364599">TALLY</DataIdent>
+                        </TheId>
+                        <ThePicClause LineNr="1" EndLineNr="1" ColNr="2" EndColNr="15" ID="-1364601">
+                          <PicClause LineNr="1" EndLineNr="1" ColNr="2" EndColNr="15" ID="1364601">9(5)</PicClause>
+                        </ThePicClause>
+                        <TheUsageClause LineNr="1" EndLineNr="1" ColNr="2" EndColNr="15" ID="-1364602">
+                          <UsageClause LineNr="1" EndLineNr="1" ColNr="2" EndColNr="15" ID="1364602">
+                            <TheCode ID="1364621" LineNr="1" EndLineNr="1" ColNr="2" EndColNr="15">BinaryKeyword</TheCode>
+                          </UsageClause>
+                        </TheUsageClause>
+                      </DataField>
+                      <DataField LineNr="1" EndLineNr="1" ColNr="2" EndColNr="15" ID="1364603" Level="1">
+                        <TheSpecialCode ID="1364623" LineNr="1" EndLineNr="1" ColNr="2" EndColNr="15">ExternalKeyword</TheSpecialCode>
+                        <TheDot ID="1364625" LineNr="1" EndLineNr="1" ColNr="2" EndColNr="15">TRUE</TheDot>
+                        <TheId LineNr="1" EndLineNr="1" ColNr="2" EndColNr="15" ID="-1364604" XRef="1364603">
+                          <DataIdent LineNr="1" EndLineNr="1" ColNr="2" EndColNr="15" ID="1364604" XRef="1364603">XML-CODE</DataIdent>
+                        </TheId>
+                        <ThePicClause LineNr="1" EndLineNr="1" ColNr="2" EndColNr="15" ID="-1364605">
+                          <PicClause LineNr="1" EndLineNr="1" ColNr="2" EndColNr="15" ID="1364605">S9(9)</PicClause>
+                        </ThePicClause>
+                        <TheUsageClause LineNr="1" EndLineNr="1" ColNr="2" EndColNr="15" ID="-1364606">
+                          <UsageClause LineNr="1" EndLineNr="1" ColNr="2" EndColNr="15" ID="1364606">
+                            <TheCode ID="1364624" LineNr="1" EndLineNr="1" ColNr="2" EndColNr="15">BinaryKeyword</TheCode>
+                          </UsageClause>
+                        </TheUsageClause>
+                      </DataField>
+                      <DataField LineNr="46" EndLineNr="46" ColNr="2" EndColNr="68" ID="1364423" Level="77">
+                        <TheDot ID="1364627" LineNr="46" EndLineNr="46" ColNr="2" EndColNr="68">TRUE</TheDot>
+                        <TheId LineNr="46" EndLineNr="46" ColNr="6" EndColNr="8" ID="-1364419" XRef="1364423">
+                          <DataIdent LineNr="46" EndLineNr="46" ColNr="6" EndColNr="8" ID="1364419" XRef="1364423">WS1</DataIdent>
+                        </TheId>
+                        <ThePicClause LineNr="46" EndLineNr="46" ColNr="11" EndColNr="20" ID="-1364420">
+                          <PicClause LineNr="46" EndLineNr="46" ColNr="11" EndColNr="20" ID="1364420">99</PicClause>
+                        </ThePicClause>
+                        <TheValueClause LineNr="46" EndLineNr="46" ColNr="22" EndColNr="31" ID="-1364422">
+                          <ValueClause LineNr="46" EndLineNr="46" ColNr="22" EndColNr="31" ID="1364422">
+                            <TheValue LineNr="46" EndLineNr="46" ColNr="28" EndColNr="31" ID="-1364421">
+                              <PredefinedLiteral LineNr="46" EndLineNr="46" ColNr="28" EndColNr="31" ID="1364421">
+                                <TheCode ID="1364626" LineNr="46" EndLineNr="46" ColNr="28" EndColNr="31">ZeroKeyword</TheCode>
+                              </PredefinedLiteral>
+                            </TheValue>
+                          </ValueClause>
+                        </TheValueClause>
+                      </DataField>
+                      <DataField LineNr="47" EndLineNr="47" ColNr="2" EndColNr="68" ID="1364429" Level="77">
+                        <TheDot ID="1364628" LineNr="47" EndLineNr="47" ColNr="2" EndColNr="68">TRUE</TheDot>
+                        <TheId LineNr="47" EndLineNr="47" ColNr="6" EndColNr="8" ID="-1364425" XRef="1364429">
+                          <DataIdent LineNr="47" EndLineNr="47" ColNr="6" EndColNr="8" ID="1364425" XRef="1364429">WS2</DataIdent>
+                        </TheId>
+                        <ThePicClause LineNr="47" EndLineNr="47" ColNr="10" EndColNr="21" ID="-1364426">
+                          <PicClause LineNr="47" EndLineNr="47" ColNr="10" EndColNr="21" ID="1364426">X(5)</PicClause>
+                        </ThePicClause>
+                        <TheValueClause LineNr="47" EndLineNr="47" ColNr="25" EndColNr="37" ID="-1364428">
+                          <ValueClause LineNr="47" EndLineNr="47" ColNr="25" EndColNr="37" ID="1364428">
+                            <TheValue LineNr="47" EndLineNr="47" ColNr="31" EndColNr="37" ID="-1364427">
+                              <StringLiteral LineNr="47" EndLineNr="47" ColNr="31" EndColNr="37" ID="1364427">"FIRST"</StringLiteral>
+                            </TheValue>
+                          </ValueClause>
+                        </TheValueClause>
+                      </DataField>
+                    </TheFields>
+                  </DataDecl>
+                </TheData>
+              </WorkingStorageSection>
+            </TheWorkingStorageSection>
+            <TheLinkageSection LineNr="48" EndLineNr="53" ColNr="2" EndColNr="68" ID="-1364452">
+              <LinkageSection LineNr="48" EndLineNr="53" ColNr="2" EndColNr="68" ID="1364452">
+                <TheData LineNr="49" EndLineNr="53" ColNr="2" EndColNr="68" ID="-1364451">
+                  <DataDecl LineNr="49" EndLineNr="53" ColNr="2" EndColNr="68" ID="1364451">
+                    <TheFields LineNr="49" EndLineNr="53" ColNr="2" EndColNr="68" ID="-1364435" Level="77">
+                      <DataField LineNr="49" EndLineNr="49" ColNr="2" EndColNr="68" ID="1364435" Level="77">
+                        <TheDot ID="1364629" LineNr="49" EndLineNr="49" ColNr="2" EndColNr="68">TRUE</TheDot>
+                        <TheId LineNr="49" EndLineNr="49" ColNr="6" EndColNr="12" ID="-1364433" XRef="1364435">
+                          <DataIdent LineNr="49" EndLineNr="49" ColNr="6" EndColNr="12" ID="1364433" XRef="1364435">SUB-DN1</DataIdent>
+                        </TheId>
+                        <ThePicClause LineNr="49" EndLineNr="49" ColNr="14" EndColNr="25" ID="-1364434">
+                          <PicClause LineNr="49" EndLineNr="49" ColNr="14" EndColNr="25" ID="1364434">S999</PicClause>
+                        </ThePicClause>
+                      </DataField>
+                      <DataField LineNr="50" EndLineNr="50" ColNr="2" EndColNr="68" ID="1364438" Level="1">
+                        <TheDot ID="1364630" LineNr="50" EndLineNr="50" ColNr="2" EndColNr="68">TRUE</TheDot>
+                        <TheId LineNr="50" EndLineNr="50" ColNr="6" EndColNr="16" ID="-1364437" XRef="1364438">
+                          <DataIdent LineNr="50" EndLineNr="50" ColNr="6" EndColNr="16" ID="1364437" XRef="1364438">SUB-TABLE-1</DataIdent>
+                        </TheId>
+                      </DataField>
+                      <DataField LineNr="51" EndLineNr="51" ColNr="6" EndColNr="68" ID="1364442" Level="2" ParentLevel="1364438">
+                        <TheDot ID="1364631" LineNr="51" EndLineNr="51" ColNr="6" EndColNr="68">TRUE</TheDot>
+                        <TheId LineNr="51" EndLineNr="51" ColNr="10" EndColNr="16" ID="-1364440" XRef="1364442">
+                          <DataIdent LineNr="51" EndLineNr="51" ColNr="10" EndColNr="16" ID="1364440" XRef="1364442">SUB-DN2</DataIdent>
+                        </TheId>
+                        <ThePicClause LineNr="51" EndLineNr="51" ColNr="18" EndColNr="24" ID="-1364441">
+                          <PicClause LineNr="51" EndLineNr="51" ColNr="18" EndColNr="24" ID="1364441">XXX</PicClause>
+                        </ThePicClause>
+                      </DataField>
+                      <DataField LineNr="52" EndLineNr="52" ColNr="6" EndColNr="68" ID="1364446" Level="2" ParentLevel="1364438">
+                        <TheDot ID="1364632" LineNr="52" EndLineNr="52" ColNr="6" EndColNr="68">TRUE</TheDot>
+                        <TheId LineNr="52" EndLineNr="52" ColNr="10" EndColNr="16" ID="-1364444" XRef="1364446">
+                          <DataIdent LineNr="52" EndLineNr="52" ColNr="10" EndColNr="16" ID="1364444" XRef="1364446">SUB-DN3</DataIdent>
+                        </TheId>
+                        <ThePicClause LineNr="52" EndLineNr="52" ColNr="18" EndColNr="23" ID="-1364445">
+                          <PicClause LineNr="52" EndLineNr="52" ColNr="18" EndColNr="23" ID="1364445">99</PicClause>
+                        </ThePicClause>
+                      </DataField>
+                      <DataField LineNr="53" EndLineNr="53" ColNr="6" EndColNr="68" ID="1364450" Level="2" ParentLevel="1364438">
+                        <TheDot ID="1364633" LineNr="53" EndLineNr="53" ColNr="6" EndColNr="68">TRUE</TheDot>
+                        <TheId LineNr="53" EndLineNr="53" ColNr="10" EndColNr="16" ID="-1364448" XRef="1364450">
+                          <DataIdent LineNr="53" EndLineNr="53" ColNr="10" EndColNr="16" ID="1364448" XRef="1364450">SUB-DN4</DataIdent>
+                        </TheId>
+                        <ThePicClause LineNr="53" EndLineNr="53" ColNr="18" EndColNr="25" ID="-1364449">
+                          <PicClause LineNr="53" EndLineNr="53" ColNr="18" EndColNr="25" ID="1364449">X(5)</PicClause>
+                        </ThePicClause>
+                      </DataField>
+                    </TheFields>
+                  </DataDecl>
+                </TheData>
+              </LinkageSection>
+            </TheLinkageSection>
+          </DataDivision>
+        </TheDataDivision>
+        <TheProcedureDivision LineNr="54" EndLineNr="69" ColNr="2" EndColNr="18" ID="-1364585">
+          <ProcedureDivision LineNr="54" EndLineNr="69" ColNr="2" EndColNr="18" ID="1364585">
+            <TheUsingKeyword ID="1364634" LineNr="54" EndLineNr="69" ColNr="2" EndColNr="18">UsingKeyword</TheUsingKeyword>
+            <TheUsingList LineNr="54" EndLineNr="54" ColNr="27" EndColNr="46" ID="-1364456">
+              <UsingItem LineNr="54" EndLineNr="54" ColNr="27" EndColNr="37" ID="1364456">
+                <TheId LineNr="54" EndLineNr="54" ColNr="27" EndColNr="37" ID="-1364455" XRef="1364438">
+                  <DataIdent LineNr="54" EndLineNr="54" ColNr="27" EndColNr="37" ID="1364455" XRef="1364438">SUB-TABLE-1</DataIdent>
+                </TheId>
+              </UsingItem>
+              <UsingItem LineNr="54" EndLineNr="54" ColNr="40" EndColNr="46" ID="1364458">
+                <TheId LineNr="54" EndLineNr="54" ColNr="40" EndColNr="46" ID="-1364457" XRef="1364435">
+                  <DataIdent LineNr="54" EndLineNr="54" ColNr="40" EndColNr="46" ID="1364457" XRef="1364435">SUB-DN1</DataIdent>
+                </TheId>
+              </UsingItem>
+            </TheUsingList>
+            <TheBlocks LineNr="55" EndLineNr="69" ColNr="2" EndColNr="18" ID="-1364463">
+              <SectionStatementBlock LineNr="55" EndLineNr="55" ColNr="2" EndColNr="25" ID="1364463">
+                <ALabelIdent LineNr="55" EndLineNr="55" ColNr="2" EndColNr="16" ID="-1364460">
+                  <LabelIdent LineNr="55" EndLineNr="55" ColNr="2" EndColNr="16" ID="1364460">SECT-IC204-0001</LabelIdent>
+                </ALabelIdent>
+              </SectionStatementBlock>
+              <ParagraphStatementBlock LineNr="56" EndLineNr="58" ColNr="2" EndColNr="25" ID="1364493">
+                <TheDot ID="1364635" LineNr="56" EndLineNr="58" ColNr="2" EndColNr="25">TRUE</TheDot>
+                <ALabelIdent LineNr="56" EndLineNr="56" ColNr="2" EndColNr="13" ID="-1364464">
+                  <LabelIdent LineNr="56" EndLineNr="56" ColNr="2" EndColNr="13" ID="1364464">CNCL-TEST-01</LabelIdent>
+                </ALabelIdent>
+                <AStatementList LineNr="57" EndLineNr="58" ColNr="6" EndColNr="25" ID="-1364492">
+                  <PeriodStatementList LineNr="57" EndLineNr="58" ColNr="6" EndColNr="25" ID="1364492">
+                    <AList LineNr="57" EndLineNr="58" ColNr="6" EndColNr="25" ID="-1364473">
+                      <AddStatement LineNr="57" EndLineNr="57" ColNr="6" EndColNr="18" ID="1364473">
+                        <TheExprs LineNr="57" EndLineNr="57" ColNr="10" EndColNr="10" ID="-1364465">
+                          <IntegerLiteral LineNr="57" EndLineNr="57" ColNr="10" EndColNr="10" ID="1364465">1</IntegerLiteral>
+                        </TheExprs>
+                        <TheTargets LineNr="57" EndLineNr="57" ColNr="15" EndColNr="17" ID="-1364472">
+                          <ArithDesignator LineNr="57" EndLineNr="57" ColNr="15" EndColNr="17" ID="1364472">
+                            <TheDesig LineNr="57" EndLineNr="57" ColNr="15" EndColNr="17" ID="-1364471" XRef="1364423">
+                              <Designator LineNr="57" EndLineNr="57" ColNr="15" EndColNr="17" ID="1364471" XRef="1364423">
+                                <TheElements LineNr="57" EndLineNr="57" ColNr="15" EndColNr="17" ID="-1364470">
+                                  <DesigElement LineNr="57" EndLineNr="57" ColNr="15" EndColNr="17" ID="1364470">
+                                    <TheIdent LineNr="57" EndLineNr="57" ColNr="15" EndColNr="17" ID="-1364469" XRef="1364423">
+                                      <DataIdent LineNr="57" EndLineNr="57" ColNr="15" EndColNr="17" ID="1364469" XRef="1364423">WS1</DataIdent>
+                                    </TheIdent>
+                                  </DesigElement>
+                                </TheElements>
+                              </Designator>
+                            </TheDesig>
+                          </ArithDesignator>
+                        </TheTargets>
+                      </AddStatement>
+                      <MoveStatement LineNr="58" EndLineNr="58" ColNr="6" EndColNr="25" ID="1364485">
+                        <TheExpr LineNr="58" EndLineNr="58" ColNr="11" EndColNr="13" ID="-1364478" XRef="1364423">
+                          <Designator LineNr="58" EndLineNr="58" ColNr="11" EndColNr="13" ID="1364478" XRef="1364423">
+                            <TheElements LineNr="58" EndLineNr="58" ColNr="11" EndColNr="13" ID="-1364477">
+                              <DesigElement LineNr="58" EndLineNr="58" ColNr="11" EndColNr="13" ID="1364477">
+                                <TheIdent LineNr="58" EndLineNr="58" ColNr="11" EndColNr="13" ID="-1364476" XRef="1364423">
+                                  <DataIdent LineNr="58" EndLineNr="58" ColNr="11" EndColNr="13" ID="1364476" XRef="1364423">WS1</DataIdent>
+                                </TheIdent>
+                              </DesigElement>
+                            </TheElements>
+                          </Designator>
+                        </TheExpr>
+                        <TheTargets LineNr="58" EndLineNr="58" ColNr="18" EndColNr="24" ID="-1364484" XRef="1364435">
+                          <Designator LineNr="58" EndLineNr="58" ColNr="18" EndColNr="24" ID="1364484" XRef="1364435">
+                            <TheElements LineNr="58" EndLineNr="58" ColNr="18" EndColNr="24" ID="-1364483">
+                              <DesigElement LineNr="58" EndLineNr="58" ColNr="18" EndColNr="24" ID="1364483">
+                                <TheIdent LineNr="58" EndLineNr="58" ColNr="18" EndColNr="24" ID="-1364482" XRef="1364435">
+                                  <DataIdent LineNr="58" EndLineNr="58" ColNr="18" EndColNr="24" ID="1364482" XRef="1364435">SUB-DN1</DataIdent>
+                                </TheIdent>
+                              </DesigElement>
+                            </TheElements>
+                          </Designator>
+                        </TheTargets>
+                      </MoveStatement>
+                    </AList>
+                  </PeriodStatementList>
+                </AStatementList>
+              </ParagraphStatementBlock>
+              <ParagraphStatementBlock LineNr="59" EndLineNr="63" ColNr="2" EndColNr="31" ID="1364537">
+                <TheDot ID="1364638" LineNr="59" EndLineNr="63" ColNr="2" EndColNr="31">TRUE</TheDot>
+                <ALabelIdent LineNr="59" EndLineNr="59" ColNr="2" EndColNr="13" ID="-1364494">
+                  <LabelIdent LineNr="59" EndLineNr="59" ColNr="2" EndColNr="13" ID="1364494">CNCL-TEST-02</LabelIdent>
+                </ALabelIdent>
+                <AStatementList LineNr="60" EndLineNr="63" ColNr="6" EndColNr="31" ID="-1364536">
+                  <PeriodStatementList LineNr="60" EndLineNr="63" ColNr="6" EndColNr="31" ID="1364536">
+                    <AList LineNr="60" EndLineNr="63" ColNr="6" EndColNr="31" ID="-1364502">
+                      <MoveStatement LineNr="60" EndLineNr="60" ColNr="6" EndColNr="26" ID="1364502">
+                        <TheExpr LineNr="60" EndLineNr="60" ColNr="11" EndColNr="14" ID="-1364495">
+                          <StringLiteral LineNr="60" EndLineNr="60" ColNr="11" EndColNr="14" ID="1364495">"NO"</StringLiteral>
+                        </TheExpr>
+                        <TheTargets LineNr="60" EndLineNr="60" ColNr="19" EndColNr="25" ID="-1364501" XRef="1364442">
+                          <Designator LineNr="60" EndLineNr="60" ColNr="19" EndColNr="25" ID="1364501" XRef="1364442">
+                            <TheElements LineNr="60" EndLineNr="60" ColNr="19" EndColNr="25" ID="-1364500">
+                              <DesigElement LineNr="60" EndLineNr="60" ColNr="19" EndColNr="25" ID="1364500">
+                                <TheIdent LineNr="60" EndLineNr="60" ColNr="19" EndColNr="25" ID="-1364499" XRef="1364442">
+                                  <DataIdent LineNr="60" EndLineNr="60" ColNr="19" EndColNr="25" ID="1364499" XRef="1364442">SUB-DN2</DataIdent>
+                                </TheIdent>
+                              </DesigElement>
+                            </TheElements>
+                          </Designator>
+                        </TheTargets>
+                      </MoveStatement>
+                      <IfStatement LineNr="61" EndLineNr="63" ColNr="6" EndColNr="31" ID="1364529">
+                        <TheCondition LineNr="61" EndLineNr="61" ColNr="9" EndColNr="28" ID="-1364512">
+                          <AtomicComparison LineNr="61" EndLineNr="61" ColNr="9" EndColNr="28" ID="1364512">
+                            <TheLeft LineNr="61" EndLineNr="61" ColNr="9" EndColNr="11" ID="-1364507" XRef="1364429">
+                              <Designator LineNr="61" EndLineNr="61" ColNr="9" EndColNr="11" ID="1364507" XRef="1364429">
+                                <TheElements LineNr="61" EndLineNr="61" ColNr="9" EndColNr="11" ID="-1364506">
+                                  <DesigElement LineNr="61" EndLineNr="61" ColNr="9" EndColNr="11" ID="1364506">
+                                    <TheIdent LineNr="61" EndLineNr="61" ColNr="9" EndColNr="11" ID="-1364505" XRef="1364429">
+                                      <DataIdent LineNr="61" EndLineNr="61" ColNr="9" EndColNr="11" ID="1364505" XRef="1364429">WS2</DataIdent>
+                                    </TheIdent>
+                                  </DesigElement>
+                                </TheElements>
+                              </Designator>
+                            </TheLeft>
+                            <TheRight LineNr="61" EndLineNr="61" ColNr="13" EndColNr="28" ID="-1364511">
+                              <SingleRightSide LineNr="61" EndLineNr="61" ColNr="13" EndColNr="28" ID="1364511">
+                                <TheComparisonOp LineNr="61" EndLineNr="61" ColNr="13" EndColNr="20" ID="-1364509">
+                                  <ComparisonOperator LineNr="61" EndLineNr="61" ColNr="13" EndColNr="20" ID="1364509">
+                                    <TheOp ID="1364636" LineNr="61" EndLineNr="61" ColNr="13" EndColNr="20">EqualKeyword</TheOp>
+                                  </ComparisonOperator>
+                                </TheComparisonOp>
+                                <TheArg LineNr="61" EndLineNr="61" ColNr="22" EndColNr="28" ID="-1364510">
+                                  <StringLiteral LineNr="61" EndLineNr="61" ColNr="22" EndColNr="28" ID="1364510">"FIRST"</StringLiteral>
+                                </TheArg>
+                              </SingleRightSide>
+                            </TheRight>
+                          </AtomicComparison>
+                        </TheCondition>
+                        <TheStatementList LineNr="62" EndLineNr="63" ColNr="10" EndColNr="30" ID="-1364528">
+                          <StatementList LineNr="62" EndLineNr="63" ColNr="10" EndColNr="30" ID="1364528">
+                            <AList LineNr="62" EndLineNr="63" ColNr="10" EndColNr="30" ID="-1364519">
+                              <MoveStatement LineNr="62" EndLineNr="62" ColNr="10" EndColNr="26" ID="1364519">
+                                <TheExpr LineNr="62" EndLineNr="62" ColNr="15" EndColNr="19" ID="-1364513">
+                                  <PredefinedLiteral LineNr="62" EndLineNr="62" ColNr="15" EndColNr="19" ID="1364513">
+                                    <TheCode ID="1364637" LineNr="62" EndLineNr="62" ColNr="15" EndColNr="19">SpaceKeyword</TheCode>
+                                  </PredefinedLiteral>
+                                </TheExpr>
+                                <TheTargets LineNr="62" EndLineNr="62" ColNr="24" EndColNr="26" ID="-1364518" XRef="1364429">
+                                  <Designator LineNr="62" EndLineNr="62" ColNr="24" EndColNr="26" ID="1364518" XRef="1364429">
+                                    <TheElements LineNr="62" EndLineNr="62" ColNr="24" EndColNr="26" ID="-1364517">
+                                      <DesigElement LineNr="62" EndLineNr="62" ColNr="24" EndColNr="26" ID="1364517">
+                                        <TheIdent LineNr="62" EndLineNr="62" ColNr="24" EndColNr="26" ID="-1364516" XRef="1364429">
+                                          <DataIdent LineNr="62" EndLineNr="62" ColNr="24" EndColNr="26" ID="1364516" XRef="1364429">WS2</DataIdent>
+                                        </TheIdent>
+                                      </DesigElement>
+                                    </TheElements>
+                                  </Designator>
+                                </TheTargets>
+                              </MoveStatement>
+                              <MoveStatement LineNr="63" EndLineNr="63" ColNr="10" EndColNr="30" ID="1364527">
+                                <TheExpr LineNr="63" EndLineNr="63" ColNr="15" EndColNr="19" ID="-1364520">
+                                  <StringLiteral LineNr="63" EndLineNr="63" ColNr="15" EndColNr="19" ID="1364520">"YES"</StringLiteral>
+                                </TheExpr>
+                                <TheTargets LineNr="63" EndLineNr="63" ColNr="24" EndColNr="30" ID="-1364526" XRef="1364442">
+                                  <Designator LineNr="63" EndLineNr="63" ColNr="24" EndColNr="30" ID="1364526" XRef="1364442">
+                                    <TheElements LineNr="63" EndLineNr="63" ColNr="24" EndColNr="30" ID="-1364525">
+                                      <DesigElement LineNr="63" EndLineNr="63" ColNr="24" EndColNr="30" ID="1364525">
+                                        <TheIdent LineNr="63" EndLineNr="63" ColNr="24" EndColNr="30" ID="-1364524" XRef="1364442">
+                                          <DataIdent LineNr="63" EndLineNr="63" ColNr="24" EndColNr="30" ID="1364524" XRef="1364442">SUB-DN2</DataIdent>
+                                        </TheIdent>
+                                      </DesigElement>
+                                    </TheElements>
+                                  </Designator>
+                                </TheTargets>
+                              </MoveStatement>
+                            </AList>
+                          </StatementList>
+                        </TheStatementList>
+                      </IfStatement>
+                    </AList>
+                  </PeriodStatementList>
+                </AStatementList>
+              </ParagraphStatementBlock>
+              <ParagraphStatementBlock LineNr="64" EndLineNr="67" ColNr="2" EndColNr="33" ID="1364578">
+                <TheDot ID="1364641" LineNr="64" EndLineNr="67" ColNr="2" EndColNr="33">TRUE</TheDot>
+                <ALabelIdent LineNr="64" EndLineNr="64" ColNr="2" EndColNr="13" ID="-1364538">
+                  <LabelIdent LineNr="64" EndLineNr="64" ColNr="2" EndColNr="13" ID="1364538">CNCL-TEST-03</LabelIdent>
+                </ALabelIdent>
+                <AStatementList LineNr="65" EndLineNr="67" ColNr="6" EndColNr="33" ID="-1364577">
+                  <PeriodStatementList LineNr="65" EndLineNr="67" ColNr="6" EndColNr="33" ID="1364577">
+                    <AList LineNr="65" EndLineNr="67" ColNr="6" EndColNr="33" ID="-1364546">
+                      <MoveStatement LineNr="65" EndLineNr="65" ColNr="6" EndColNr="27" ID="1364546">
+                        <TheExpr LineNr="65" EndLineNr="65" ColNr="11" EndColNr="15" ID="-1364539">
+                          <PredefinedLiteral LineNr="65" EndLineNr="65" ColNr="11" EndColNr="15" ID="1364539">
+                            <TheCode ID="1364639" LineNr="65" EndLineNr="65" ColNr="11" EndColNr="15">SpaceKeyword</TheCode>
+                          </PredefinedLiteral>
+                        </TheExpr>
+                        <TheTargets LineNr="65" EndLineNr="65" ColNr="20" EndColNr="26" ID="-1364545" XRef="1364450">
+                          <Designator LineNr="65" EndLineNr="65" ColNr="20" EndColNr="26" ID="1364545" XRef="1364450">
+                            <TheElements LineNr="65" EndLineNr="65" ColNr="20" EndColNr="26" ID="-1364544">
+                              <DesigElement LineNr="65" EndLineNr="65" ColNr="20" EndColNr="26" ID="1364544">
+                                <TheIdent LineNr="65" EndLineNr="65" ColNr="20" EndColNr="26" ID="-1364543" XRef="1364450">
+                                  <DataIdent LineNr="65" EndLineNr="65" ColNr="20" EndColNr="26" ID="1364543" XRef="1364450">SUB-DN4</DataIdent>
+                                </TheIdent>
+                              </DesigElement>
+                            </TheElements>
+                          </Designator>
+                        </TheTargets>
+                      </MoveStatement>
+                      <IfStatement LineNr="66" EndLineNr="67" ColNr="6" EndColNr="33" ID="1364570">
+                        <TheCondition LineNr="66" EndLineNr="66" ColNr="9" EndColNr="28" ID="-1364560">
+                          <AtomicComparison LineNr="66" EndLineNr="66" ColNr="9" EndColNr="28" ID="1364560">
+                            <TheLeft LineNr="66" EndLineNr="66" ColNr="9" EndColNr="11" ID="-1364551" XRef="1364423">
+                              <Designator LineNr="66" EndLineNr="66" ColNr="9" EndColNr="11" ID="1364551" XRef="1364423">
+                                <TheElements LineNr="66" EndLineNr="66" ColNr="9" EndColNr="11" ID="-1364550">
+                                  <DesigElement LineNr="66" EndLineNr="66" ColNr="9" EndColNr="11" ID="1364550">
+                                    <TheIdent LineNr="66" EndLineNr="66" ColNr="9" EndColNr="11" ID="-1364549" XRef="1364423">
+                                      <DataIdent LineNr="66" EndLineNr="66" ColNr="9" EndColNr="11" ID="1364549" XRef="1364423">WS1</DataIdent>
+                                    </TheIdent>
+                                  </DesigElement>
+                                </TheElements>
+                              </Designator>
+                            </TheLeft>
+                            <TheRight LineNr="66" EndLineNr="66" ColNr="13" EndColNr="28" ID="-1364559">
+                              <SingleRightSide LineNr="66" EndLineNr="66" ColNr="13" EndColNr="28" ID="1364559">
+                                <TheComparisonOp LineNr="66" EndLineNr="66" ColNr="13" EndColNr="20" ID="-1364553">
+                                  <ComparisonOperator LineNr="66" EndLineNr="66" ColNr="13" EndColNr="20" ID="1364553">
+                                    <TheOp ID="1364640" LineNr="66" EndLineNr="66" ColNr="13" EndColNr="20">EqualKeyword</TheOp>
+                                  </ComparisonOperator>
+                                </TheComparisonOp>
+                                <TheArg LineNr="66" EndLineNr="66" ColNr="22" EndColNr="28" ID="-1364558" XRef="1364446">
+                                  <Designator LineNr="66" EndLineNr="66" ColNr="22" EndColNr="28" ID="1364558" XRef="1364446">
+                                    <TheElements LineNr="66" EndLineNr="66" ColNr="22" EndColNr="28" ID="-1364557">
+                                      <DesigElement LineNr="66" EndLineNr="66" ColNr="22" EndColNr="28" ID="1364557">
+                                        <TheIdent LineNr="66" EndLineNr="66" ColNr="22" EndColNr="28" ID="-1364556" XRef="1364446">
+                                          <DataIdent LineNr="66" EndLineNr="66" ColNr="22" EndColNr="28" ID="1364556" XRef="1364446">SUB-DN3</DataIdent>
+                                        </TheIdent>
+                                      </DesigElement>
+                                    </TheElements>
+                                  </Designator>
+                                </TheArg>
+                              </SingleRightSide>
+                            </TheRight>
+                          </AtomicComparison>
+                        </TheCondition>
+                        <TheStatementList LineNr="67" EndLineNr="67" ColNr="10" EndColNr="32" ID="-1364569">
+                          <StatementList LineNr="67" EndLineNr="67" ColNr="10" EndColNr="32" ID="1364569">
+                            <AList LineNr="67" EndLineNr="67" ColNr="10" EndColNr="32" ID="-1364568">
+                              <MoveStatement LineNr="67" EndLineNr="67" ColNr="10" EndColNr="32" ID="1364568">
+                                <TheExpr LineNr="67" EndLineNr="67" ColNr="15" EndColNr="21" ID="-1364561">
+                                  <StringLiteral LineNr="67" EndLineNr="67" ColNr="15" EndColNr="21" ID="1364561">"EQUAL"</StringLiteral>
+                                </TheExpr>
+                                <TheTargets LineNr="67" EndLineNr="67" ColNr="26" EndColNr="32" ID="-1364567" XRef="1364450">
+                                  <Designator LineNr="67" EndLineNr="67" ColNr="26" EndColNr="32" ID="1364567" XRef="1364450">
+                                    <TheElements LineNr="67" EndLineNr="67" ColNr="26" EndColNr="32" ID="-1364566">
+                                      <DesigElement LineNr="67" EndLineNr="67" ColNr="26" EndColNr="32" ID="1364566">
+                                        <TheIdent LineNr="67" EndLineNr="67" ColNr="26" EndColNr="32" ID="-1364565" XRef="1364450">
+                                          <DataIdent LineNr="67" EndLineNr="67" ColNr="26" EndColNr="32" ID="1364565" XRef="1364450">SUB-DN4</DataIdent>
+                                        </TheIdent>
+                                      </DesigElement>
+                                    </TheElements>
+                                  </Designator>
+                                </TheTargets>
+                              </MoveStatement>
+                            </AList>
+                          </StatementList>
+                        </TheStatementList>
+                      </IfStatement>
+                    </AList>
+                  </PeriodStatementList>
+                </AStatementList>
+              </ParagraphStatementBlock>
+              <ParagraphStatementBlock LineNr="68" EndLineNr="69" ColNr="2" EndColNr="18" ID="1364584">
+                <TheDot ID="1364643" LineNr="68" EndLineNr="69" ColNr="2" EndColNr="18">TRUE</TheDot>
+                <ALabelIdent LineNr="68" EndLineNr="68" ColNr="2" EndColNr="11" ID="-1364579">
+                  <LabelIdent LineNr="68" EndLineNr="68" ColNr="2" EndColNr="11" ID="1364579">IC204-EXIT</LabelIdent>
+                </ALabelIdent>
+                <AStatementList LineNr="69" EndLineNr="69" ColNr="6" EndColNr="18" ID="-1364583">
+                  <PeriodStatementList LineNr="69" EndLineNr="69" ColNr="6" EndColNr="18" ID="1364583">
+                    <AList LineNr="69" EndLineNr="69" ColNr="6" EndColNr="18" ID="-1364580">
+                      <StopStatement LineNr="69" EndLineNr="69" ColNr="6" EndColNr="18" ID="1364580">
+                        <TheMode ID="1364642" LineNr="69" EndLineNr="69" ColNr="6" EndColNr="18">ProgramKeyword</TheMode>
+                      </StopStatement>
+                    </AList>
+                  </PeriodStatementList>
+                </AStatementList>
+              </ParagraphStatementBlock>
+            </TheBlocks>
+          </ProcedureDivision>
+        </TheProcedureDivision>
+      </CobolProgram>
+    </ThePrograms>
+  </ROOT>
+</SourceFile>

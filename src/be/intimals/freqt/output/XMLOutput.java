@@ -14,12 +14,12 @@ public class XMLOutput extends AOutputFormatter {
 
     Map<String,String> patSupMap = new LinkedHashMap<>();
 
-    public XMLOutput(Config _config, Map<String, Vector<String>> _grammar, Map<String,String> _xmlCharacters) throws IOException {
-        super(_config, _grammar, _xmlCharacters);
+    public XMLOutput(String _file, Config _config, Map<String, Vector<String>> _grammar, Map<String,String> _xmlCharacters) throws IOException {
+        super(_file,_config, _grammar, _xmlCharacters);
     }
 
-    public XMLOutput(Config _config, Map<String, Vector<String>> _grammar, Map<String,String> _xmlCharacters, Map<String,String> _patSupMap) throws IOException {
-        super(_config, _grammar, _xmlCharacters);
+    public XMLOutput(String _file,Config _config, Map<String, Vector<String>> _grammar, Map<String,String> _xmlCharacters, Map<String,String> _patSupMap) throws IOException {
+        super(_file,_config, _grammar, _xmlCharacters);
         patSupMap = _patSupMap;
     }
 

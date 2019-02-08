@@ -1,0 +1,622 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<SourceFile xmlns:xsi="http://www.w3.org/2001/XMLSchema" FullName="C:\Users\johan\Documents\Intimals\Reference_Sources\Cobol_85\ST123A.cob" Language="Cobol" ID="134009">
+  <ROOT LineNr="1" EndLineNr="121" ColNr="2" EndColNr="18" ID="-133986">
+    <ThePrograms ID="134075" LineNr="1" EndLineNr="121" ColNr="" EndColNr="18">
+      <CobolProgram LineNr="1" EndLineNr="121" ColNr="2" EndColNr="18" ID="133986">
+        <TheIdentificationDivision LineNr="1" EndLineNr="3" ColNr="2" EndColNr="12" ID="-133767">
+          <IdentificationDivision LineNr="1" EndLineNr="3" ColNr="2" EndColNr="12" ID="133767">
+            <TheProgramIdClause LineNr="2" EndLineNr="3" ColNr="2" EndColNr="12" ID="-133766">
+              <ProgramIdClause LineNr="2" EndLineNr="3" ColNr="2" EndColNr="12" ID="133766">
+                <TheId LineNr="3" EndLineNr="3" ColNr="6" EndColNr="11" ID="-133765">
+                  <AnonIdent LineNr="3" EndLineNr="3" ColNr="6" EndColNr="11" ID="133765">ST123A</AnonIdent>
+                </TheId>
+              </ProgramIdClause>
+            </TheProgramIdClause>
+          </IdentificationDivision>
+        </TheIdentificationDivision>
+        <TheEnvironmentDivision LineNr="37" EndLineNr="52" ColNr="2" EndColNr="16" ID="-133797">
+          <EnvironmentDivision LineNr="37" EndLineNr="52" ColNr="2" EndColNr="16" ID="133797">
+            <TheConfigurationSection LineNr="38" EndLineNr="42" ColNr="2" EndColNr="11" ID="-133774">
+              <ConfigurationSection LineNr="38" EndLineNr="42" ColNr="2" EndColNr="11" ID="133774">
+                <TheList LineNr="39" EndLineNr="42" ColNr="2" EndColNr="11" ID="-133770">
+                  <SrcComputerClause LineNr="39" EndLineNr="40" ColNr="2" EndColNr="68" ID="133770"/>
+                  <ObjComputerClause LineNr="41" EndLineNr="42" ColNr="2" EndColNr="11" ID="133773">
+                    <TheComputerName LineNr="42" EndLineNr="42" ColNr="6" EndColNr="10" ID="-133772">
+                      <AnonIdent LineNr="42" EndLineNr="42" ColNr="6" EndColNr="10" ID="133772">Linux</AnonIdent>
+                    </TheComputerName>
+                  </ObjComputerClause>
+                </TheList>
+                <TheComputerClause LineNr="41" EndLineNr="42" ColNr="2" EndColNr="11" ID="-133773">
+                  <ObjComputerClause LineNr="41" EndLineNr="42" ColNr="2" EndColNr="11" ID="133773">
+                    <TheComputerName LineNr="42" EndLineNr="42" ColNr="6" EndColNr="10" ID="-133772">
+                      <AnonIdent LineNr="42" EndLineNr="42" ColNr="6" EndColNr="10" ID="133772">Linux</AnonIdent>
+                    </TheComputerName>
+                  </ObjComputerClause>
+                </TheComputerClause>
+              </ConfigurationSection>
+            </TheConfigurationSection>
+            <TheIOSection LineNr="43" EndLineNr="52" ColNr="2" EndColNr="16" ID="-133796">
+              <IOSection LineNr="43" EndLineNr="52" ColNr="2" EndColNr="16" ID="133796">
+                <TheFileControlClause LineNr="44" EndLineNr="52" ColNr="2" EndColNr="16" ID="-133795">
+                  <FileControlClause LineNr="44" EndLineNr="52" ColNr="2" EndColNr="16" ID="133795">
+                    <TheClauses LineNr="45" EndLineNr="52" ColNr="6" EndColNr="16" ID="-133779">
+                      <SelectClause LineNr="45" EndLineNr="46" ColNr="6" EndColNr="18" ID="133779">
+                        <TheIdent LineNr="45" EndLineNr="45" ColNr="13" EndColNr="22" ID="-133775" XRef="133809">
+                          <FileIdent LineNr="45" EndLineNr="45" ColNr="13" EndColNr="22" ID="133775" XRef="133809">PRINT-FILE</FileIdent>
+                        </TheIdent>
+                        <TheClauses LineNr="45" EndLineNr="46" ColNr="24" EndColNr="17" ID="-133778">
+                          <AssignSubClause LineNr="45" EndLineNr="46" ColNr="24" EndColNr="17" ID="133778">
+                            <TheFileIds LineNr="46" EndLineNr="46" ColNr="6" EndColNr="17" ID="-133777">
+                              <StringLiteral LineNr="46" EndLineNr="46" ColNr="6" EndColNr="17" ID="133777">"report.log"</StringLiteral>
+                            </TheFileIds>
+                          </AssignSubClause>
+                        </TheClauses>
+                      </SelectClause>
+                      <SelectClause LineNr="47" EndLineNr="48" ColNr="6" EndColNr="16" ID="133784">
+                        <TheIdent LineNr="47" EndLineNr="47" ColNr="15" EndColNr="23" ID="-133780" XRef="133846">
+                          <FileIdent LineNr="47" EndLineNr="47" ColNr="15" EndColNr="23" ID="133780" XRef="133846">SORTIN-1J</FileIdent>
+                        </TheIdent>
+                        <TheClauses LineNr="47" EndLineNr="48" ColNr="25" EndColNr="15" ID="-133783">
+                          <AssignSubClause LineNr="47" EndLineNr="48" ColNr="25" EndColNr="15" ID="133783">
+                            <TheFileIds LineNr="48" EndLineNr="48" ColNr="6" EndColNr="15" ID="-133782">
+                              <StringLiteral LineNr="48" EndLineNr="48" ColNr="6" EndColNr="15" ID="133782">"XXXXX001"</StringLiteral>
+                            </TheFileIds>
+                          </AssignSubClause>
+                        </TheClauses>
+                      </SelectClause>
+                      <SelectClause LineNr="49" EndLineNr="50" ColNr="6" EndColNr="16" ID="133789">
+                        <TheIdent LineNr="49" EndLineNr="49" ColNr="15" EndColNr="24" ID="-133785" XRef="133883">
+                          <FileIdent LineNr="49" EndLineNr="49" ColNr="15" EndColNr="24" ID="133785" XRef="133883">SORTOUT-1J</FileIdent>
+                        </TheIdent>
+                        <TheClauses LineNr="49" EndLineNr="50" ColNr="26" EndColNr="15" ID="-133788">
+                          <AssignSubClause LineNr="49" EndLineNr="50" ColNr="26" EndColNr="15" ID="133788">
+                            <TheFileIds LineNr="50" EndLineNr="50" ColNr="6" EndColNr="15" ID="-133787">
+                              <StringLiteral LineNr="50" EndLineNr="50" ColNr="6" EndColNr="15" ID="133787">"XXXXX002"</StringLiteral>
+                            </TheFileIds>
+                          </AssignSubClause>
+                        </TheClauses>
+                      </SelectClause>
+                      <SelectClause LineNr="51" EndLineNr="52" ColNr="6" EndColNr="16" ID="133794">
+                        <TheIdent LineNr="51" EndLineNr="51" ColNr="15" EndColNr="25" ID="-133790" XRef="133945">
+                          <FileIdent LineNr="51" EndLineNr="51" ColNr="15" EndColNr="25" ID="133790" XRef="133945">SORTFILE-1J</FileIdent>
+                        </TheIdent>
+                        <TheClauses LineNr="51" EndLineNr="52" ColNr="27" EndColNr="15" ID="-133793">
+                          <AssignSubClause LineNr="51" EndLineNr="52" ColNr="27" EndColNr="15" ID="133793">
+                            <TheFileIds LineNr="52" EndLineNr="52" ColNr="6" EndColNr="15" ID="-133792">
+                              <StringLiteral LineNr="52" EndLineNr="52" ColNr="6" EndColNr="15" ID="133792">"XXXXX027"</StringLiteral>
+                            </TheFileIds>
+                          </AssignSubClause>
+                        </TheClauses>
+                      </SelectClause>
+                    </TheClauses>
+                  </FileControlClause>
+                </TheFileControlClause>
+              </IOSection>
+            </TheIOSection>
+          </EnvironmentDivision>
+        </TheEnvironmentDivision>
+        <TheDataDivision LineNr="53" EndLineNr="112" ColNr="2" EndColNr="68" ID="-133947">
+          <DataDivision LineNr="53" EndLineNr="112" ColNr="2" EndColNr="68" ID="133947">
+            <TheFileSection LineNr="54" EndLineNr="112" ColNr="2" EndColNr="68" ID="-133946">
+              <FileSection LineNr="54" EndLineNr="112" ColNr="2" EndColNr="68" ID="133946">
+                <TheFDEntries LineNr="55" EndLineNr="112" ColNr="2" EndColNr="68" ID="-133809">
+                  <FDEntry LineNr="55" EndLineNr="57" ColNr="2" EndColNr="68" ID="133809">
+                    <TheMode ID="134010" LineNr="55" EndLineNr="57" ColNr="2" EndColNr="68">FdKeyword</TheMode>
+                    <TheData LineNr="56" EndLineNr="57" ColNr="2" EndColNr="68" ID="-133808">
+                      <DataDecl LineNr="56" EndLineNr="57" ColNr="2" EndColNr="68" ID="133808">
+                        <TheFields LineNr="56" EndLineNr="57" ColNr="2" EndColNr="68" ID="-133803" Level="1">
+                          <DataField LineNr="56" EndLineNr="56" ColNr="2" EndColNr="68" ID="133803" Level="1">
+                            <TheDot ID="134011" LineNr="56" EndLineNr="56" ColNr="2" EndColNr="68">TRUE</TheDot>
+                            <TheId LineNr="56" EndLineNr="56" ColNr="6" EndColNr="14" ID="-133801" XRef="133803">
+                              <DataIdent LineNr="56" EndLineNr="56" ColNr="6" EndColNr="14" ID="133801" XRef="133803">PRINT-REC</DataIdent>
+                            </TheId>
+                            <ThePicClause LineNr="56" EndLineNr="56" ColNr="16" EndColNr="29" ID="-133802">
+                              <PicClause LineNr="56" EndLineNr="56" ColNr="16" EndColNr="29" ID="133802">X(120)</PicClause>
+                            </ThePicClause>
+                          </DataField>
+                          <DataField LineNr="57" EndLineNr="57" ColNr="2" EndColNr="68" ID="133807" Level="1">
+                            <TheDot ID="134012" LineNr="57" EndLineNr="57" ColNr="2" EndColNr="68">TRUE</TheDot>
+                            <TheId LineNr="57" EndLineNr="57" ColNr="6" EndColNr="17" ID="-133805" XRef="133807">
+                              <DataIdent LineNr="57" EndLineNr="57" ColNr="6" EndColNr="17" ID="133805" XRef="133807">DUMMY-RECORD</DataIdent>
+                            </TheId>
+                            <ThePicClause LineNr="57" EndLineNr="57" ColNr="19" EndColNr="32" ID="-133806">
+                              <PicClause LineNr="57" EndLineNr="57" ColNr="19" EndColNr="32" ID="133806">X(120)</PicClause>
+                            </ThePicClause>
+                          </DataField>
+                        </TheFields>
+                      </DataDecl>
+                    </TheData>
+                    <TheId LineNr="55" EndLineNr="55" ColNr="6" EndColNr="15" ID="-133799" XRef="133809">
+                      <FileIdent LineNr="55" EndLineNr="55" ColNr="6" EndColNr="15" ID="133799" XRef="133809">PRINT-FILE</FileIdent>
+                    </TheId>
+                  </FDEntry>
+                  <FDEntry LineNr="58" EndLineNr="75" ColNr="2" EndColNr="68" ID="133846">
+                    <TheMode ID="134013" LineNr="58" EndLineNr="75" ColNr="2" EndColNr="68">FdKeyword</TheMode>
+                    <TheData LineNr="69" EndLineNr="75" ColNr="2" EndColNr="68" ID="-133845">
+                      <DataDecl LineNr="69" EndLineNr="75" ColNr="2" EndColNr="68" ID="133845">
+                        <TheFields LineNr="69" EndLineNr="75" ColNr="2" EndColNr="68" ID="-133821" Level="1">
+                          <DataField LineNr="69" EndLineNr="69" ColNr="2" EndColNr="68" ID="133821" Level="1">
+                            <TheDot ID="134014" LineNr="69" EndLineNr="69" ColNr="2" EndColNr="68">TRUE</TheDot>
+                            <TheId LineNr="69" EndLineNr="69" ColNr="6" EndColNr="13" ID="-133819" XRef="133821">
+                              <DataIdent LineNr="69" EndLineNr="69" ColNr="6" EndColNr="13" ID="133819" XRef="133821">SHORT-IN</DataIdent>
+                            </TheId>
+                            <ThePicClause LineNr="69" EndLineNr="69" ColNr="25" EndColNr="37" ID="-133820">
+                              <PicClause LineNr="69" EndLineNr="69" ColNr="25" EndColNr="37" ID="133820">X(50)</PicClause>
+                            </ThePicClause>
+                          </DataField>
+                          <DataField LineNr="70" EndLineNr="70" ColNr="2" EndColNr="68" ID="133825" Level="1">
+                            <TheDot ID="134015" LineNr="70" EndLineNr="70" ColNr="2" EndColNr="68">TRUE</TheDot>
+                            <TheId LineNr="70" EndLineNr="70" ColNr="6" EndColNr="14" ID="-133823" XRef="133825">
+                              <DataIdent LineNr="70" EndLineNr="70" ColNr="6" EndColNr="14" ID="133823" XRef="133825">MEDIUM-IN</DataIdent>
+                            </TheId>
+                            <ThePicClause LineNr="70" EndLineNr="70" ColNr="25" EndColNr="37" ID="-133824">
+                              <PicClause LineNr="70" EndLineNr="70" ColNr="25" EndColNr="37" ID="133824">X(75)</PicClause>
+                            </ThePicClause>
+                          </DataField>
+                          <DataField LineNr="71" EndLineNr="71" ColNr="2" EndColNr="68" ID="133828" Level="1">
+                            <TheDot ID="134016" LineNr="71" EndLineNr="71" ColNr="2" EndColNr="68">TRUE</TheDot>
+                            <TheId LineNr="71" EndLineNr="71" ColNr="6" EndColNr="12" ID="-133827" XRef="133828">
+                              <DataIdent LineNr="71" EndLineNr="71" ColNr="6" EndColNr="12" ID="133827" XRef="133828">LONG-IN</DataIdent>
+                            </TheId>
+                          </DataField>
+                          <DataField LineNr="72" EndLineNr="72" ColNr="6" EndColNr="68" ID="133832" Level="2" ParentLevel="133828">
+                            <TheDot ID="134017" LineNr="72" EndLineNr="72" ColNr="6" EndColNr="68">TRUE</TheDot>
+                            <TheId LineNr="72" EndLineNr="72" ColNr="9" EndColNr="22" ID="-133830" XRef="133832">
+                              <DataIdent LineNr="72" EndLineNr="72" ColNr="9" EndColNr="22" ID="133830" XRef="133832">FALSE-LENGTH-1</DataIdent>
+                            </TheId>
+                            <ThePicClause LineNr="72" EndLineNr="72" ColNr="25" EndColNr="37" ID="-133831">
+                              <PicClause LineNr="72" EndLineNr="72" ColNr="25" EndColNr="37" ID="133831">X(25)</PicClause>
+                            </ThePicClause>
+                          </DataField>
+                          <DataField LineNr="73" EndLineNr="73" ColNr="6" EndColNr="68" ID="133836" Level="2" ParentLevel="133828">
+                            <TheDot ID="134018" LineNr="73" EndLineNr="73" ColNr="6" EndColNr="68">TRUE</TheDot>
+                            <TheId LineNr="73" EndLineNr="73" ColNr="9" EndColNr="22" ID="-133834" XRef="133836">
+                              <DataIdent LineNr="73" EndLineNr="73" ColNr="9" EndColNr="22" ID="133834" XRef="133836">FALSE-LENGTH-2</DataIdent>
+                            </TheId>
+                            <ThePicClause LineNr="73" EndLineNr="73" ColNr="25" EndColNr="37" ID="-133835">
+                              <PicClause LineNr="73" EndLineNr="73" ColNr="25" EndColNr="37" ID="133835">A(20)</PicClause>
+                            </ThePicClause>
+                          </DataField>
+                          <DataField LineNr="74" EndLineNr="74" ColNr="6" EndColNr="68" ID="133840" Level="2" ParentLevel="133828">
+                            <TheDot ID="134019" LineNr="74" EndLineNr="74" ColNr="6" EndColNr="68">TRUE</TheDot>
+                            <TheId LineNr="74" EndLineNr="74" ColNr="9" EndColNr="22" ID="-133838" XRef="133840">
+                              <DataIdent LineNr="74" EndLineNr="74" ColNr="9" EndColNr="22" ID="133838" XRef="133840">FALSE-LENGTH-3</DataIdent>
+                            </TheId>
+                            <ThePicClause LineNr="74" EndLineNr="74" ColNr="25" EndColNr="37" ID="-133839">
+                              <PicClause LineNr="74" EndLineNr="74" ColNr="25" EndColNr="37" ID="133839">9(15)</PicClause>
+                            </ThePicClause>
+                          </DataField>
+                          <DataField LineNr="75" EndLineNr="75" ColNr="6" EndColNr="68" ID="133844" Level="2" ParentLevel="133828">
+                            <TheDot ID="134020" LineNr="75" EndLineNr="75" ColNr="6" EndColNr="68">TRUE</TheDot>
+                            <TheId LineNr="75" EndLineNr="75" ColNr="9" EndColNr="22" ID="-133842" XRef="133844">
+                              <DataIdent LineNr="75" EndLineNr="75" ColNr="9" EndColNr="22" ID="133842" XRef="133844">FALSE-LENGTH-4</DataIdent>
+                            </TheId>
+                            <ThePicClause LineNr="75" EndLineNr="75" ColNr="25" EndColNr="37" ID="-133843">
+                              <PicClause LineNr="75" EndLineNr="75" ColNr="25" EndColNr="37" ID="133843">X(40)</PicClause>
+                            </ThePicClause>
+                          </DataField>
+                        </TheFields>
+                      </DataDecl>
+                    </TheData>
+                    <TheId LineNr="58" EndLineNr="58" ColNr="6" EndColNr="14" ID="-133810" XRef="133846">
+                      <FileIdent LineNr="58" EndLineNr="58" ColNr="6" EndColNr="14" ID="133810" XRef="133846">SORTIN-1J</FileIdent>
+                    </TheId>
+                    <TheClauses LineNr="59" EndLineNr="68" ColNr="6" EndColNr="29" ID="-133811">
+                      <FDClause LineNr="59" EndLineNr="59" ColNr="6" EndColNr="27" ID="133811">
+                        <TheKeyword ID="134021" LineNr="59" EndLineNr="59" ColNr="6" EndColNr="27">LabelKeyword</TheKeyword>
+                        <TheLabelMode ID="134022" LineNr="59" EndLineNr="59" ColNr="6" EndColNr="27">StandardKeyword</TheLabelMode>
+                      </FDClause>
+                      <FDClause LineNr="65" EndLineNr="65" ColNr="6" EndColNr="30" ID="133812">
+                        <TheIsVarying ID="134023" LineNr="65" EndLineNr="65" ColNr="6" EndColNr="30">TRUE</TheIsVarying>
+                        <TheKeyword ID="134024" LineNr="65" EndLineNr="65" ColNr="6" EndColNr="30">RecordKeyword</TheKeyword>
+                      </FDClause>
+                      <FDClause LineNr="66" EndLineNr="68" ColNr="6" EndColNr="29" ID="133817">
+                        <TheKeyword ID="134025" LineNr="66" EndLineNr="68" ColNr="6" EndColNr="29">DataKeyword</TheKeyword>
+                        <TheDataRecords LineNr="66" EndLineNr="68" ColNr="23" EndColNr="29" ID="-133813">
+                          <AnonIdent LineNr="66" EndLineNr="66" ColNr="23" EndColNr="30" ID="133813">SHORT-IN</AnonIdent>
+                          <AnonIdent LineNr="67" EndLineNr="67" ColNr="23" EndColNr="31" ID="133814">MEDIUM-IN</AnonIdent>
+                          <AnonIdent LineNr="68" EndLineNr="68" ColNr="23" EndColNr="29" ID="133816">LONG-IN</AnonIdent>
+                        </TheDataRecords>
+                      </FDClause>
+                    </TheClauses>
+                  </FDEntry>
+                  <FDEntry LineNr="76" EndLineNr="93" ColNr="2" EndColNr="68" ID="133883">
+                    <TheMode ID="134026" LineNr="76" EndLineNr="93" ColNr="2" EndColNr="68">FdKeyword</TheMode>
+                    <TheData LineNr="87" EndLineNr="93" ColNr="2" EndColNr="68" ID="-133882">
+                      <DataDecl LineNr="87" EndLineNr="93" ColNr="2" EndColNr="68" ID="133882">
+                        <TheFields LineNr="87" EndLineNr="93" ColNr="2" EndColNr="68" ID="-133857" Level="1">
+                          <DataField LineNr="87" EndLineNr="87" ColNr="2" EndColNr="68" ID="133857" Level="1">
+                            <TheDot ID="134027" LineNr="87" EndLineNr="87" ColNr="2" EndColNr="68">TRUE</TheDot>
+                            <TheId LineNr="87" EndLineNr="87" ColNr="6" EndColNr="14" ID="-133856" XRef="133857">
+                              <DataIdent LineNr="87" EndLineNr="87" ColNr="6" EndColNr="14" ID="133856" XRef="133857">SHORT-OUT</DataIdent>
+                            </TheId>
+                          </DataField>
+                          <DataField LineNr="88" EndLineNr="88" ColNr="6" EndColNr="68" ID="133861" Level="2" ParentLevel="133857">
+                            <TheDot ID="134028" LineNr="88" EndLineNr="88" ColNr="6" EndColNr="68">TRUE</TheDot>
+                            <TheId LineNr="88" EndLineNr="88" ColNr="9" EndColNr="21" ID="-133859" XRef="133861">
+                              <DataIdent LineNr="88" EndLineNr="88" ColNr="9" EndColNr="21" ID="133859" XRef="133861">FAKE-LENGTH-1</DataIdent>
+                            </TheId>
+                            <ThePicClause LineNr="88" EndLineNr="88" ColNr="25" EndColNr="37" ID="-133860">
+                              <PicClause LineNr="88" EndLineNr="88" ColNr="25" EndColNr="37" ID="133860">X(10)</PicClause>
+                            </ThePicClause>
+                          </DataField>
+                          <DataField LineNr="89" EndLineNr="89" ColNr="6" EndColNr="68" ID="133865" Level="2" ParentLevel="133857">
+                            <TheDot ID="134029" LineNr="89" EndLineNr="89" ColNr="6" EndColNr="68">TRUE</TheDot>
+                            <TheId LineNr="89" EndLineNr="89" ColNr="9" EndColNr="21" ID="-133863" XRef="133865">
+                              <DataIdent LineNr="89" EndLineNr="89" ColNr="9" EndColNr="21" ID="133863" XRef="133865">FAKE-LENGTH-2</DataIdent>
+                            </TheId>
+                            <ThePicClause LineNr="89" EndLineNr="89" ColNr="25" EndColNr="37" ID="-133864">
+                              <PicClause LineNr="89" EndLineNr="89" ColNr="25" EndColNr="37" ID="133864">A(10)</PicClause>
+                            </ThePicClause>
+                          </DataField>
+                          <DataField LineNr="90" EndLineNr="90" ColNr="6" EndColNr="68" ID="133869" Level="2" ParentLevel="133857">
+                            <TheDot ID="134030" LineNr="90" EndLineNr="90" ColNr="6" EndColNr="68">TRUE</TheDot>
+                            <TheId LineNr="90" EndLineNr="90" ColNr="9" EndColNr="21" ID="-133867" XRef="133869">
+                              <DataIdent LineNr="90" EndLineNr="90" ColNr="9" EndColNr="21" ID="133867" XRef="133869">FAKE-LENGTH-3</DataIdent>
+                            </TheId>
+                            <ThePicClause LineNr="90" EndLineNr="90" ColNr="25" EndColNr="37" ID="-133868">
+                              <PicClause LineNr="90" EndLineNr="90" ColNr="25" EndColNr="37" ID="133868">9(10)</PicClause>
+                            </ThePicClause>
+                          </DataField>
+                          <DataField LineNr="91" EndLineNr="91" ColNr="6" EndColNr="68" ID="133873" Level="2" ParentLevel="133857">
+                            <TheDot ID="134031" LineNr="91" EndLineNr="91" ColNr="6" EndColNr="68">TRUE</TheDot>
+                            <TheId LineNr="91" EndLineNr="91" ColNr="9" EndColNr="21" ID="-133871" XRef="133873">
+                              <DataIdent LineNr="91" EndLineNr="91" ColNr="9" EndColNr="21" ID="133871" XRef="133873">FAKE-LENGTH-4</DataIdent>
+                            </TheId>
+                            <ThePicClause LineNr="91" EndLineNr="91" ColNr="25" EndColNr="37" ID="-133872">
+                              <PicClause LineNr="91" EndLineNr="91" ColNr="25" EndColNr="37" ID="133872">X(20)</PicClause>
+                            </ThePicClause>
+                          </DataField>
+                          <DataField LineNr="92" EndLineNr="92" ColNr="2" EndColNr="68" ID="133877" Level="1">
+                            <TheDot ID="134032" LineNr="92" EndLineNr="92" ColNr="2" EndColNr="68">TRUE</TheDot>
+                            <TheId LineNr="92" EndLineNr="92" ColNr="6" EndColNr="15" ID="-133875" XRef="133877">
+                              <DataIdent LineNr="92" EndLineNr="92" ColNr="6" EndColNr="15" ID="133875" XRef="133877">MEDIUM-OUT</DataIdent>
+                            </TheId>
+                            <ThePicClause LineNr="92" EndLineNr="92" ColNr="25" EndColNr="37" ID="-133876">
+                              <PicClause LineNr="92" EndLineNr="92" ColNr="25" EndColNr="37" ID="133876">X(75)</PicClause>
+                            </ThePicClause>
+                          </DataField>
+                          <DataField LineNr="93" EndLineNr="93" ColNr="2" EndColNr="68" ID="133881" Level="1">
+                            <TheDot ID="134033" LineNr="93" EndLineNr="93" ColNr="2" EndColNr="68">TRUE</TheDot>
+                            <TheId LineNr="93" EndLineNr="93" ColNr="6" EndColNr="13" ID="-133879" XRef="133881">
+                              <DataIdent LineNr="93" EndLineNr="93" ColNr="6" EndColNr="13" ID="133879" XRef="133881">LONG-OUT</DataIdent>
+                            </TheId>
+                            <ThePicClause LineNr="93" EndLineNr="93" ColNr="25" EndColNr="38" ID="-133880">
+                              <PicClause LineNr="93" EndLineNr="93" ColNr="25" EndColNr="38" ID="133880">X(100)</PicClause>
+                            </ThePicClause>
+                          </DataField>
+                        </TheFields>
+                      </DataDecl>
+                    </TheData>
+                    <TheId LineNr="76" EndLineNr="76" ColNr="6" EndColNr="15" ID="-133847" XRef="133883">
+                      <FileIdent LineNr="76" EndLineNr="76" ColNr="6" EndColNr="15" ID="133847" XRef="133883">SORTOUT-1J</FileIdent>
+                    </TheId>
+                    <TheClauses LineNr="77" EndLineNr="86" ColNr="6" EndColNr="25" ID="-133848">
+                      <FDClause LineNr="77" EndLineNr="77" ColNr="6" EndColNr="31" ID="133848">
+                        <TheKeyword ID="134034" LineNr="77" EndLineNr="77" ColNr="6" EndColNr="31">LabelKeyword</TheKeyword>
+                        <TheLabelMode ID="134035" LineNr="77" EndLineNr="77" ColNr="6" EndColNr="31">StandardKeyword</TheLabelMode>
+                      </FDClause>
+                      <FDClause LineNr="83" EndLineNr="83" ColNr="6" EndColNr="30" ID="133849">
+                        <TheIsVarying ID="134036" LineNr="83" EndLineNr="83" ColNr="6" EndColNr="30">TRUE</TheIsVarying>
+                        <TheKeyword ID="134037" LineNr="83" EndLineNr="83" ColNr="6" EndColNr="30">RecordKeyword</TheKeyword>
+                      </FDClause>
+                      <FDClause LineNr="84" EndLineNr="86" ColNr="6" EndColNr="25" ID="133854">
+                        <TheKeyword ID="134038" LineNr="84" EndLineNr="86" ColNr="6" EndColNr="25">DataKeyword</TheKeyword>
+                        <TheDataRecords LineNr="84" EndLineNr="86" ColNr="18" EndColNr="25" ID="-133850">
+                          <AnonIdent LineNr="84" EndLineNr="84" ColNr="18" EndColNr="26" ID="133850">SHORT-OUT</AnonIdent>
+                          <AnonIdent LineNr="85" EndLineNr="85" ColNr="18" EndColNr="27" ID="133851">MEDIUM-OUT</AnonIdent>
+                          <AnonIdent LineNr="86" EndLineNr="86" ColNr="18" EndColNr="25" ID="133853">LONG-OUT</AnonIdent>
+                        </TheDataRecords>
+                      </FDClause>
+                    </TheClauses>
+                  </FDEntry>
+                  <FDEntry LineNr="94" EndLineNr="112" ColNr="2" EndColNr="68" ID="133945">
+                    <TheMode ID="134039" LineNr="94" EndLineNr="112" ColNr="2" EndColNr="68">SdKeyword</TheMode>
+                    <TheData LineNr="99" EndLineNr="112" ColNr="2" EndColNr="68" ID="-133944">
+                      <DataDecl LineNr="99" EndLineNr="112" ColNr="2" EndColNr="68" ID="133944">
+                        <TheFields LineNr="99" EndLineNr="112" ColNr="2" EndColNr="68" ID="-133893" Level="1">
+                          <DataField LineNr="99" EndLineNr="99" ColNr="2" EndColNr="68" ID="133893" Level="1">
+                            <TheDot ID="134040" LineNr="99" EndLineNr="99" ColNr="2" EndColNr="68">TRUE</TheDot>
+                            <TheId LineNr="99" EndLineNr="99" ColNr="6" EndColNr="15" ID="-133892" XRef="133893">
+                              <DataIdent LineNr="99" EndLineNr="99" ColNr="6" EndColNr="15" ID="133892" XRef="133893">SHORT-SORT</DataIdent>
+                            </TheId>
+                          </DataField>
+                          <DataField LineNr="100" EndLineNr="100" ColNr="6" EndColNr="68" ID="133897" Level="2" ParentLevel="133893">
+                            <TheDot ID="134041" LineNr="100" EndLineNr="100" ColNr="6" EndColNr="68">TRUE</TheDot>
+                            <TheId LineNr="100" EndLineNr="100" ColNr="9" EndColNr="21" ID="-133895" XRef="133897">
+                              <DataIdent LineNr="100" EndLineNr="100" ColNr="9" EndColNr="21" ID="133895" XRef="133897">SHORT-NON-KEY</DataIdent>
+                            </TheId>
+                            <ThePicClause LineNr="100" EndLineNr="100" ColNr="25" EndColNr="34" ID="-133896">
+                              <PicClause LineNr="100" EndLineNr="100" ColNr="25" EndColNr="34" ID="133896">XX</PicClause>
+                            </ThePicClause>
+                          </DataField>
+                          <DataField LineNr="101" EndLineNr="101" ColNr="6" EndColNr="68" ID="133901" Level="2" ParentLevel="133893">
+                            <TheDot ID="134042" LineNr="101" EndLineNr="101" ColNr="6" EndColNr="68">TRUE</TheDot>
+                            <TheId LineNr="101" EndLineNr="101" ColNr="9" EndColNr="19" ID="-133899" XRef="133901">
+                              <DataIdent LineNr="101" EndLineNr="101" ColNr="9" EndColNr="19" ID="133899" XRef="133901">SHORT-KEY-1</DataIdent>
+                            </TheId>
+                            <ThePicClause LineNr="101" EndLineNr="101" ColNr="25" EndColNr="37" ID="-133900">
+                              <PicClause LineNr="101" EndLineNr="101" ColNr="25" EndColNr="37" ID="133900">X(10)</PicClause>
+                            </ThePicClause>
+                          </DataField>
+                          <DataField LineNr="102" EndLineNr="102" ColNr="6" EndColNr="68" ID="133905" Level="2" ParentLevel="133893">
+                            <TheDot ID="134043" LineNr="102" EndLineNr="102" ColNr="6" EndColNr="68">TRUE</TheDot>
+                            <TheId LineNr="102" EndLineNr="102" ColNr="9" EndColNr="19" ID="-133903" XRef="133905">
+                              <DataIdent LineNr="102" EndLineNr="102" ColNr="9" EndColNr="19" ID="133903" XRef="133905">SHORT-KEY-2</DataIdent>
+                            </TheId>
+                            <ThePicClause LineNr="102" EndLineNr="102" ColNr="25" EndColNr="37" ID="-133904">
+                              <PicClause LineNr="102" EndLineNr="102" ColNr="25" EndColNr="37" ID="133904">X(38)</PicClause>
+                            </ThePicClause>
+                          </DataField>
+                          <DataField LineNr="103" EndLineNr="103" ColNr="2" EndColNr="68" ID="133908" Level="1">
+                            <TheDot ID="134044" LineNr="103" EndLineNr="103" ColNr="2" EndColNr="68">TRUE</TheDot>
+                            <TheId LineNr="103" EndLineNr="103" ColNr="6" EndColNr="16" ID="-133907" XRef="133908">
+                              <DataIdent LineNr="103" EndLineNr="103" ColNr="6" EndColNr="16" ID="133907" XRef="133908">MEDIUM-SORT</DataIdent>
+                            </TheId>
+                          </DataField>
+                          <DataField LineNr="104" EndLineNr="104" ColNr="6" EndColNr="68" ID="133912" Level="2" ParentLevel="133908">
+                            <TheDot ID="134045" LineNr="104" EndLineNr="104" ColNr="6" EndColNr="68">TRUE</TheDot>
+                            <TheId LineNr="104" EndLineNr="104" ColNr="9" EndColNr="22" ID="-133910" XRef="133912">
+                              <DataIdent LineNr="104" EndLineNr="104" ColNr="9" EndColNr="22" ID="133910" XRef="133912">MEDIUM-NON-KEY</DataIdent>
+                            </TheId>
+                            <ThePicClause LineNr="104" EndLineNr="104" ColNr="25" EndColNr="34" ID="-133911">
+                              <PicClause LineNr="104" EndLineNr="104" ColNr="25" EndColNr="34" ID="133911">XX</PicClause>
+                            </ThePicClause>
+                          </DataField>
+                          <DataField LineNr="105" EndLineNr="105" ColNr="6" EndColNr="68" ID="133916" Level="2" ParentLevel="133908">
+                            <TheDot ID="134046" LineNr="105" EndLineNr="105" ColNr="6" EndColNr="68">TRUE</TheDot>
+                            <TheId LineNr="105" EndLineNr="105" ColNr="9" EndColNr="20" ID="-133914" XRef="133916">
+                              <DataIdent LineNr="105" EndLineNr="105" ColNr="9" EndColNr="20" ID="133914" XRef="133916">MEDIUM-KEY-1</DataIdent>
+                            </TheId>
+                            <ThePicClause LineNr="105" EndLineNr="105" ColNr="25" EndColNr="37" ID="-133915">
+                              <PicClause LineNr="105" EndLineNr="105" ColNr="25" EndColNr="37" ID="133915">X(10)</PicClause>
+                            </ThePicClause>
+                          </DataField>
+                          <DataField LineNr="106" EndLineNr="106" ColNr="6" EndColNr="68" ID="133920" Level="2" ParentLevel="133908">
+                            <TheDot ID="134047" LineNr="106" EndLineNr="106" ColNr="6" EndColNr="68">TRUE</TheDot>
+                            <TheId LineNr="106" EndLineNr="106" ColNr="9" EndColNr="20" ID="-133918" XRef="133920">
+                              <DataIdent LineNr="106" EndLineNr="106" ColNr="9" EndColNr="20" ID="133918" XRef="133920">MEDIUM-KEY-2</DataIdent>
+                            </TheId>
+                            <ThePicClause LineNr="106" EndLineNr="106" ColNr="25" EndColNr="37" ID="-133919">
+                              <PicClause LineNr="106" EndLineNr="106" ColNr="25" EndColNr="37" ID="133919">X(38)</PicClause>
+                            </ThePicClause>
+                          </DataField>
+                          <DataField LineNr="107" EndLineNr="107" ColNr="6" EndColNr="68" ID="133924" Level="2" ParentLevel="133908">
+                            <TheDot ID="134048" LineNr="107" EndLineNr="107" ColNr="6" EndColNr="68">TRUE</TheDot>
+                            <TheId LineNr="107" EndLineNr="107" ColNr="9" EndColNr="21" ID="-133922" XRef="133924">
+                              <DataIdent LineNr="107" EndLineNr="107" ColNr="9" EndColNr="21" ID="133922" XRef="133924">MEDIUM-FILLER</DataIdent>
+                            </TheId>
+                            <ThePicClause LineNr="107" EndLineNr="107" ColNr="25" EndColNr="37" ID="-133923">
+                              <PicClause LineNr="107" EndLineNr="107" ColNr="25" EndColNr="37" ID="133923">X(25)</PicClause>
+                            </ThePicClause>
+                          </DataField>
+                          <DataField LineNr="108" EndLineNr="108" ColNr="2" EndColNr="68" ID="133927" Level="1">
+                            <TheDot ID="134049" LineNr="108" EndLineNr="108" ColNr="2" EndColNr="68">TRUE</TheDot>
+                            <TheId LineNr="108" EndLineNr="108" ColNr="6" EndColNr="14" ID="-133926" XRef="133927">
+                              <DataIdent LineNr="108" EndLineNr="108" ColNr="6" EndColNr="14" ID="133926" XRef="133927">LONG-SORT</DataIdent>
+                            </TheId>
+                          </DataField>
+                          <DataField LineNr="109" EndLineNr="109" ColNr="6" EndColNr="68" ID="133931" Level="2" ParentLevel="133927">
+                            <TheDot ID="134050" LineNr="109" EndLineNr="109" ColNr="6" EndColNr="68">TRUE</TheDot>
+                            <TheId LineNr="109" EndLineNr="109" ColNr="9" EndColNr="20" ID="-133929" XRef="133931">
+                              <DataIdent LineNr="109" EndLineNr="109" ColNr="9" EndColNr="20" ID="133929" XRef="133931">LONG-NON-KEY</DataIdent>
+                            </TheId>
+                            <ThePicClause LineNr="109" EndLineNr="109" ColNr="25" EndColNr="34" ID="-133930">
+                              <PicClause LineNr="109" EndLineNr="109" ColNr="25" EndColNr="34" ID="133930">XX</PicClause>
+                            </ThePicClause>
+                          </DataField>
+                          <DataField LineNr="110" EndLineNr="110" ColNr="6" EndColNr="68" ID="133935" Level="2" ParentLevel="133927">
+                            <TheDot ID="134051" LineNr="110" EndLineNr="110" ColNr="6" EndColNr="68">TRUE</TheDot>
+                            <TheId LineNr="110" EndLineNr="110" ColNr="9" EndColNr="18" ID="-133933" XRef="133935">
+                              <DataIdent LineNr="110" EndLineNr="110" ColNr="9" EndColNr="18" ID="133933" XRef="133935">LONG-KEY-1</DataIdent>
+                            </TheId>
+                            <ThePicClause LineNr="110" EndLineNr="110" ColNr="25" EndColNr="37" ID="-133934">
+                              <PicClause LineNr="110" EndLineNr="110" ColNr="25" EndColNr="37" ID="133934">X(10)</PicClause>
+                            </ThePicClause>
+                          </DataField>
+                          <DataField LineNr="111" EndLineNr="111" ColNr="6" EndColNr="68" ID="133939" Level="2" ParentLevel="133927">
+                            <TheDot ID="134052" LineNr="111" EndLineNr="111" ColNr="6" EndColNr="68">TRUE</TheDot>
+                            <TheId LineNr="111" EndLineNr="111" ColNr="9" EndColNr="18" ID="-133937" XRef="133939">
+                              <DataIdent LineNr="111" EndLineNr="111" ColNr="9" EndColNr="18" ID="133937" XRef="133939">LONG-KEY-2</DataIdent>
+                            </TheId>
+                            <ThePicClause LineNr="111" EndLineNr="111" ColNr="25" EndColNr="37" ID="-133938">
+                              <PicClause LineNr="111" EndLineNr="111" ColNr="25" EndColNr="37" ID="133938">X(38)</PicClause>
+                            </ThePicClause>
+                          </DataField>
+                          <DataField LineNr="112" EndLineNr="112" ColNr="6" EndColNr="68" ID="133943" Level="2" ParentLevel="133927">
+                            <TheDot ID="134053" LineNr="112" EndLineNr="112" ColNr="6" EndColNr="68">TRUE</TheDot>
+                            <TheId LineNr="112" EndLineNr="112" ColNr="9" EndColNr="19" ID="-133941" XRef="133943">
+                              <DataIdent LineNr="112" EndLineNr="112" ColNr="9" EndColNr="19" ID="133941" XRef="133943">LONG-FILLER</DataIdent>
+                            </TheId>
+                            <ThePicClause LineNr="112" EndLineNr="112" ColNr="25" EndColNr="37" ID="-133942">
+                              <PicClause LineNr="112" EndLineNr="112" ColNr="25" EndColNr="37" ID="133942">X(50)</PicClause>
+                            </ThePicClause>
+                          </DataField>
+                        </TheFields>
+                      </DataDecl>
+                    </TheData>
+                    <TheId LineNr="94" EndLineNr="94" ColNr="6" EndColNr="16" ID="-133884" XRef="133945">
+                      <FileIdent LineNr="94" EndLineNr="94" ColNr="6" EndColNr="16" ID="133884" XRef="133945">SORTFILE-1J</FileIdent>
+                    </TheId>
+                    <TheClauses LineNr="95" EndLineNr="98" ColNr="6" EndColNr="26" ID="-133885">
+                      <FDClause LineNr="95" EndLineNr="95" ColNr="6" EndColNr="30" ID="133885">
+                        <TheIsVarying ID="134054" LineNr="95" EndLineNr="95" ColNr="6" EndColNr="30">TRUE</TheIsVarying>
+                        <TheKeyword ID="134055" LineNr="95" EndLineNr="95" ColNr="6" EndColNr="30">RecordKeyword</TheKeyword>
+                      </FDClause>
+                      <FDClause LineNr="96" EndLineNr="98" ColNr="6" EndColNr="26" ID="133890">
+                        <TheKeyword ID="134056" LineNr="96" EndLineNr="98" ColNr="6" EndColNr="26">DataKeyword</TheKeyword>
+                        <TheDataRecords LineNr="96" EndLineNr="98" ColNr="18" EndColNr="26" ID="-133886">
+                          <AnonIdent LineNr="96" EndLineNr="96" ColNr="18" EndColNr="27" ID="133886">SHORT-SORT</AnonIdent>
+                          <AnonIdent LineNr="97" EndLineNr="97" ColNr="18" EndColNr="28" ID="133887">MEDIUM-SORT</AnonIdent>
+                          <AnonIdent LineNr="98" EndLineNr="98" ColNr="18" EndColNr="26" ID="133889">LONG-SORT</AnonIdent>
+                        </TheDataRecords>
+                      </FDClause>
+                    </TheClauses>
+                  </FDEntry>
+                </TheFDEntries>
+              </FileSection>
+            </TheFileSection>
+            <TheWorkingStorageSection LineNr="1" EndLineNr="1" ColNr="2" EndColNr="15" ID="-133987">
+              <WorkingStorageSection LineNr="1" EndLineNr="1" ColNr="2" EndColNr="15" ID="133987">
+                <TheData LineNr="1" EndLineNr="1" ColNr="2" EndColNr="15" ID="-134008">
+                  <DataDecl LineNr="1" EndLineNr="1" ColNr="2" EndColNr="15" ID="134008">
+                    <TheFields LineNr="1" EndLineNr="1" ColNr="2" EndColNr="15" ID="-133988" Level="1">
+                      <DataField LineNr="1" EndLineNr="1" ColNr="2" EndColNr="15" ID="133988" Level="1">
+                        <TheSpecialCode ID="134057" LineNr="1" EndLineNr="1" ColNr="2" EndColNr="15">ExternalKeyword</TheSpecialCode>
+                        <TheDot ID="134059" LineNr="1" EndLineNr="1" ColNr="2" EndColNr="15">TRUE</TheDot>
+                        <TheId LineNr="1" EndLineNr="1" ColNr="2" EndColNr="15" ID="-133989" XRef="133988">
+                          <DataIdent LineNr="1" EndLineNr="1" ColNr="2" EndColNr="15" ID="133989" XRef="133988">RETURN-CODE</DataIdent>
+                        </TheId>
+                        <ThePicClause LineNr="1" EndLineNr="1" ColNr="2" EndColNr="15" ID="-133990">
+                          <PicClause LineNr="1" EndLineNr="1" ColNr="2" EndColNr="15" ID="133990">S9(4)</PicClause>
+                        </ThePicClause>
+                        <TheUsageClause LineNr="1" EndLineNr="1" ColNr="2" EndColNr="15" ID="-133991">
+                          <UsageClause LineNr="1" EndLineNr="1" ColNr="2" EndColNr="15" ID="133991">
+                            <TheCode ID="134058" LineNr="1" EndLineNr="1" ColNr="2" EndColNr="15">BinaryKeyword</TheCode>
+                          </UsageClause>
+                        </TheUsageClause>
+                      </DataField>
+                      <DataField LineNr="1" EndLineNr="1" ColNr="2" EndColNr="15" ID="133992" Level="1">
+                        <TheSpecialCode ID="134060" LineNr="1" EndLineNr="1" ColNr="2" EndColNr="15">ExternalKeyword</TheSpecialCode>
+                        <TheDot ID="134062" LineNr="1" EndLineNr="1" ColNr="2" EndColNr="15">TRUE</TheDot>
+                        <TheId LineNr="1" EndLineNr="1" ColNr="2" EndColNr="15" ID="-133993" XRef="133992">
+                          <DataIdent LineNr="1" EndLineNr="1" ColNr="2" EndColNr="15" ID="133993" XRef="133992">SORT-RETURN</DataIdent>
+                        </TheId>
+                        <ThePicClause LineNr="1" EndLineNr="1" ColNr="2" EndColNr="15" ID="-133994">
+                          <PicClause LineNr="1" EndLineNr="1" ColNr="2" EndColNr="15" ID="133994">S9(4)</PicClause>
+                        </ThePicClause>
+                        <TheUsageClause LineNr="1" EndLineNr="1" ColNr="2" EndColNr="15" ID="-133995">
+                          <UsageClause LineNr="1" EndLineNr="1" ColNr="2" EndColNr="15" ID="133995">
+                            <TheCode ID="134061" LineNr="1" EndLineNr="1" ColNr="2" EndColNr="15">BinaryKeyword</TheCode>
+                          </UsageClause>
+                        </TheUsageClause>
+                      </DataField>
+                      <DataField LineNr="1" EndLineNr="1" ColNr="2" EndColNr="15" ID="133996" Level="1">
+                        <TheSpecialCode ID="134063" LineNr="1" EndLineNr="1" ColNr="2" EndColNr="15">ExternalKeyword</TheSpecialCode>
+                        <TheDot ID="134065" LineNr="1" EndLineNr="1" ColNr="2" EndColNr="15">TRUE</TheDot>
+                        <TheId LineNr="1" EndLineNr="1" ColNr="2" EndColNr="15" ID="-133997" XRef="133996">
+                          <DataIdent LineNr="1" EndLineNr="1" ColNr="2" EndColNr="15" ID="133997" XRef="133996">SORT-CORE-SIZE</DataIdent>
+                        </TheId>
+                        <ThePicClause LineNr="1" EndLineNr="1" ColNr="2" EndColNr="15" ID="-133998">
+                          <PicClause LineNr="1" EndLineNr="1" ColNr="2" EndColNr="15" ID="133998">S9(8)</PicClause>
+                        </ThePicClause>
+                        <TheUsageClause LineNr="1" EndLineNr="1" ColNr="2" EndColNr="15" ID="-133999">
+                          <UsageClause LineNr="1" EndLineNr="1" ColNr="2" EndColNr="15" ID="133999">
+                            <TheCode ID="134064" LineNr="1" EndLineNr="1" ColNr="2" EndColNr="15">BinaryKeyword</TheCode>
+                          </UsageClause>
+                        </TheUsageClause>
+                      </DataField>
+                      <DataField LineNr="1" EndLineNr="1" ColNr="2" EndColNr="15" ID="134000" Level="1">
+                        <TheSpecialCode ID="134066" LineNr="1" EndLineNr="1" ColNr="2" EndColNr="15">ExternalKeyword</TheSpecialCode>
+                        <TheDot ID="134068" LineNr="1" EndLineNr="1" ColNr="2" EndColNr="15">TRUE</TheDot>
+                        <TheId LineNr="1" EndLineNr="1" ColNr="2" EndColNr="15" ID="-134001" XRef="134000">
+                          <DataIdent LineNr="1" EndLineNr="1" ColNr="2" EndColNr="15" ID="134001" XRef="134000">TALLY</DataIdent>
+                        </TheId>
+                        <ThePicClause LineNr="1" EndLineNr="1" ColNr="2" EndColNr="15" ID="-134002">
+                          <PicClause LineNr="1" EndLineNr="1" ColNr="2" EndColNr="15" ID="134002">9(5)</PicClause>
+                        </ThePicClause>
+                        <TheUsageClause LineNr="1" EndLineNr="1" ColNr="2" EndColNr="15" ID="-134003">
+                          <UsageClause LineNr="1" EndLineNr="1" ColNr="2" EndColNr="15" ID="134003">
+                            <TheCode ID="134067" LineNr="1" EndLineNr="1" ColNr="2" EndColNr="15">BinaryKeyword</TheCode>
+                          </UsageClause>
+                        </TheUsageClause>
+                      </DataField>
+                      <DataField LineNr="1" EndLineNr="1" ColNr="2" EndColNr="15" ID="134004" Level="1">
+                        <TheSpecialCode ID="134069" LineNr="1" EndLineNr="1" ColNr="2" EndColNr="15">ExternalKeyword</TheSpecialCode>
+                        <TheDot ID="134071" LineNr="1" EndLineNr="1" ColNr="2" EndColNr="15">TRUE</TheDot>
+                        <TheId LineNr="1" EndLineNr="1" ColNr="2" EndColNr="15" ID="-134005" XRef="134004">
+                          <DataIdent LineNr="1" EndLineNr="1" ColNr="2" EndColNr="15" ID="134005" XRef="134004">XML-CODE</DataIdent>
+                        </TheId>
+                        <ThePicClause LineNr="1" EndLineNr="1" ColNr="2" EndColNr="15" ID="-134006">
+                          <PicClause LineNr="1" EndLineNr="1" ColNr="2" EndColNr="15" ID="134006">S9(9)</PicClause>
+                        </ThePicClause>
+                        <TheUsageClause LineNr="1" EndLineNr="1" ColNr="2" EndColNr="15" ID="-134007">
+                          <UsageClause LineNr="1" EndLineNr="1" ColNr="2" EndColNr="15" ID="134007">
+                            <TheCode ID="134070" LineNr="1" EndLineNr="1" ColNr="2" EndColNr="15">BinaryKeyword</TheCode>
+                          </UsageClause>
+                        </TheUsageClause>
+                      </DataField>
+                    </TheFields>
+                  </DataDecl>
+                </TheData>
+              </WorkingStorageSection>
+            </TheWorkingStorageSection>
+          </DataDivision>
+        </TheDataDivision>
+        <TheProcedureDivision LineNr="113" EndLineNr="121" ColNr="2" EndColNr="18" ID="-133985">
+          <ProcedureDivision LineNr="113" EndLineNr="121" ColNr="2" EndColNr="18" ID="133985">
+            <TheBlocks LineNr="114" EndLineNr="121" ColNr="2" EndColNr="18" ID="-133984">
+              <ParagraphStatementBlock LineNr="114" EndLineNr="121" ColNr="2" EndColNr="18" ID="133984">
+                <TheDot ID="134074" LineNr="114" EndLineNr="121" ColNr="2" EndColNr="18">TRUE</TheDot>
+                <ALabelIdent LineNr="114" EndLineNr="114" ColNr="2" EndColNr="15" ID="-133953">
+                  <LabelIdent LineNr="114" EndLineNr="114" ColNr="2" EndColNr="15" ID="133953">SORT-PARAGRAPH</LabelIdent>
+                </ALabelIdent>
+                <AStatementList LineNr="115" EndLineNr="121" ColNr="6" EndColNr="18" ID="-133983">
+                  <PeriodStatementList LineNr="115" EndLineNr="121" ColNr="6" EndColNr="18" ID="133983">
+                    <AList LineNr="115" EndLineNr="121" ColNr="6" EndColNr="18" ID="-133977">
+                      <SortStatement LineNr="115" EndLineNr="120" ColNr="6" EndColNr="32" ID="133977">
+                        <TheArg LineNr="115" EndLineNr="115" ColNr="15" EndColNr="25" ID="-133954" XRef="133945">
+                          <FileIdent LineNr="115" EndLineNr="115" ColNr="15" EndColNr="25" ID="133954" XRef="133945">SORTFILE-1J</FileIdent>
+                        </TheArg>
+                        <TheClauses LineNr="116" EndLineNr="118" ColNr="15" EndColNr="26" ID="-133965">
+                          <SortClause LineNr="116" EndLineNr="118" ColNr="15" EndColNr="26" ID="133965">
+                            <TheMode ID="134072" LineNr="116" EndLineNr="118" ColNr="15" EndColNr="26">DescendingKeyword</TheMode>
+                            <TheKeys LineNr="117" EndLineNr="118" ColNr="15" EndColNr="26" ID="-133959" XRef="133916">
+                              <Designator LineNr="117" EndLineNr="117" ColNr="15" EndColNr="26" ID="133959" XRef="133916">
+                                <TheElements LineNr="117" EndLineNr="117" ColNr="15" EndColNr="26" ID="-133958">
+                                  <DesigElement LineNr="117" EndLineNr="117" ColNr="15" EndColNr="26" ID="133958">
+                                    <TheIdent LineNr="117" EndLineNr="117" ColNr="15" EndColNr="26" ID="-133957" XRef="133916">
+                                      <DataIdent LineNr="117" EndLineNr="117" ColNr="15" EndColNr="26" ID="133957" XRef="133916">MEDIUM-KEY-1</DataIdent>
+                                    </TheIdent>
+                                  </DesigElement>
+                                </TheElements>
+                              </Designator>
+                              <Designator LineNr="118" EndLineNr="118" ColNr="15" EndColNr="26" ID="133964" XRef="133920">
+                                <TheElements LineNr="118" EndLineNr="118" ColNr="15" EndColNr="26" ID="-133963">
+                                  <DesigElement LineNr="118" EndLineNr="118" ColNr="15" EndColNr="26" ID="133963">
+                                    <TheIdent LineNr="118" EndLineNr="118" ColNr="15" EndColNr="26" ID="-133962" XRef="133920">
+                                      <DataIdent LineNr="118" EndLineNr="118" ColNr="15" EndColNr="26" ID="133962" XRef="133920">MEDIUM-KEY-2</DataIdent>
+                                    </TheIdent>
+                                  </DesigElement>
+                                </TheElements>
+                              </Designator>
+                            </TheKeys>
+                          </SortClause>
+                        </TheClauses>
+                        <TheUsing LineNr="119" EndLineNr="119" ColNr="21" EndColNr="29" ID="-133970" XRef="133846">
+                          <Designator LineNr="119" EndLineNr="119" ColNr="21" EndColNr="29" ID="133970" XRef="133846">
+                            <TheElements LineNr="119" EndLineNr="119" ColNr="21" EndColNr="29" ID="-133969">
+                              <DesigElement LineNr="119" EndLineNr="119" ColNr="21" EndColNr="29" ID="133969">
+                                <TheIdent LineNr="119" EndLineNr="119" ColNr="21" EndColNr="29" ID="-133968" XRef="133846">
+                                  <DataIdent LineNr="119" EndLineNr="119" ColNr="21" EndColNr="29" ID="133968" XRef="133846">SORTIN-1J</DataIdent>
+                                </TheIdent>
+                              </DesigElement>
+                            </TheElements>
+                          </Designator>
+                        </TheUsing>
+                        <TheGiving LineNr="120" EndLineNr="120" ColNr="22" EndColNr="31" ID="-133976" XRef="133883">
+                          <Designator LineNr="120" EndLineNr="120" ColNr="22" EndColNr="31" ID="133976" XRef="133883">
+                            <TheElements LineNr="120" EndLineNr="120" ColNr="22" EndColNr="31" ID="-133975">
+                              <DesigElement LineNr="120" EndLineNr="120" ColNr="22" EndColNr="31" ID="133975">
+                                <TheIdent LineNr="120" EndLineNr="120" ColNr="22" EndColNr="31" ID="-133974" XRef="133883">
+                                  <DataIdent LineNr="120" EndLineNr="120" ColNr="22" EndColNr="31" ID="133974" XRef="133883">SORTOUT-1J</DataIdent>
+                                </TheIdent>
+                              </DesigElement>
+                            </TheElements>
+                          </Designator>
+                        </TheGiving>
+                      </SortStatement>
+                      <StopStatement LineNr="121" EndLineNr="121" ColNr="6" EndColNr="18" ID="133980">
+                        <TheMode ID="134073" LineNr="121" EndLineNr="121" ColNr="6" EndColNr="18">RunKeyword</TheMode>
+                      </StopStatement>
+                    </AList>
+                  </PeriodStatementList>
+                </AStatementList>
+              </ParagraphStatementBlock>
+            </TheBlocks>
+          </ProcedureDivision>
+        </TheProcedureDivision>
+      </CobolProgram>
+    </ThePrograms>
+  </ROOT>
+</SourceFile>

@@ -1,0 +1,208 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<SourceFile xmlns:xsi="http://www.w3.org/2001/XMLSchema" FullName="C:\Users\johan\Documents\Intimals\Reference_Sources\Cobol_85 - gen\IC214A.cob" Language="Cobol" ID="120838">
+  <ROOT LineNr="1" EndLineNr="36" ColNr="2" EndColNr="18" ID="-120815">
+    <ThePrograms ID="120859" LineNr="1" EndLineNr="36" ColNr="" EndColNr="18">
+      <CobolProgram LineNr="1" EndLineNr="36" ColNr="2" EndColNr="18" ID="120815">
+        <TheIdentificationDivision LineNr="1" EndLineNr="3" ColNr="2" EndColNr="12" ID="-120771">
+          <IdentificationDivision LineNr="1" EndLineNr="3" ColNr="2" EndColNr="12" ID="120771">
+            <TheProgramIdClause LineNr="2" EndLineNr="3" ColNr="2" EndColNr="12" ID="-120770">
+              <ProgramIdClause LineNr="2" EndLineNr="3" ColNr="2" EndColNr="12" ID="120770">
+                <TheId LineNr="3" EndLineNr="3" ColNr="6" EndColNr="11" ID="-120769">
+                  <AnonIdent LineNr="3" EndLineNr="3" ColNr="6" EndColNr="11" ID="120769">IC214A</AnonIdent>
+                </TheId>
+              </ProgramIdClause>
+            </TheProgramIdClause>
+          </IdentificationDivision>
+        </TheIdentificationDivision>
+        <TheEnvironmentDivision LineNr="23" EndLineNr="28" ColNr="2" EndColNr="11" ID="-120779">
+          <EnvironmentDivision LineNr="23" EndLineNr="28" ColNr="2" EndColNr="11" ID="120779">
+            <TheConfigurationSection LineNr="24" EndLineNr="28" ColNr="2" EndColNr="11" ID="-120778">
+              <ConfigurationSection LineNr="24" EndLineNr="28" ColNr="2" EndColNr="11" ID="120778">
+                <TheList LineNr="25" EndLineNr="28" ColNr="2" EndColNr="11" ID="-120774">
+                  <SrcComputerClause LineNr="25" EndLineNr="26" ColNr="2" EndColNr="68" ID="120774"/>
+                  <ObjComputerClause LineNr="27" EndLineNr="28" ColNr="2" EndColNr="11" ID="120777">
+                    <TheComputerName LineNr="28" EndLineNr="28" ColNr="6" EndColNr="10" ID="-120776">
+                      <AnonIdent LineNr="28" EndLineNr="28" ColNr="6" EndColNr="10" ID="120776">Linux</AnonIdent>
+                    </TheComputerName>
+                  </ObjComputerClause>
+                </TheList>
+                <TheComputerClause LineNr="27" EndLineNr="28" ColNr="2" EndColNr="11" ID="-120777">
+                  <ObjComputerClause LineNr="27" EndLineNr="28" ColNr="2" EndColNr="11" ID="120777">
+                    <TheComputerName LineNr="28" EndLineNr="28" ColNr="6" EndColNr="10" ID="-120776">
+                      <AnonIdent LineNr="28" EndLineNr="28" ColNr="6" EndColNr="10" ID="120776">Linux</AnonIdent>
+                    </TheComputerName>
+                  </ObjComputerClause>
+                </TheComputerClause>
+              </ConfigurationSection>
+            </TheConfigurationSection>
+          </EnvironmentDivision>
+        </TheEnvironmentDivision>
+        <TheDataDivision LineNr="29" EndLineNr="31" ColNr="2" EndColNr="68" ID="-120786">
+          <DataDivision LineNr="29" EndLineNr="31" ColNr="2" EndColNr="68" ID="120786">
+            <TheWorkingStorageSection LineNr="1" EndLineNr="1" ColNr="2" EndColNr="15" ID="-120816">
+              <WorkingStorageSection LineNr="1" EndLineNr="1" ColNr="2" EndColNr="15" ID="120816">
+                <TheData LineNr="1" EndLineNr="1" ColNr="2" EndColNr="15" ID="-120837">
+                  <DataDecl LineNr="1" EndLineNr="1" ColNr="2" EndColNr="15" ID="120837">
+                    <TheFields LineNr="1" EndLineNr="1" ColNr="2" EndColNr="15" ID="-120817" Level="1">
+                      <DataField LineNr="1" EndLineNr="1" ColNr="2" EndColNr="15" ID="120817" Level="1">
+                        <TheSpecialCode ID="120839" LineNr="1" EndLineNr="1" ColNr="2" EndColNr="15">ExternalKeyword</TheSpecialCode>
+                        <TheDot ID="120841" LineNr="1" EndLineNr="1" ColNr="2" EndColNr="15">TRUE</TheDot>
+                        <TheId LineNr="1" EndLineNr="1" ColNr="2" EndColNr="15" ID="-120818" XRef="120817">
+                          <DataIdent LineNr="1" EndLineNr="1" ColNr="2" EndColNr="15" ID="120818" XRef="120817">RETURN-CODE</DataIdent>
+                        </TheId>
+                        <ThePicClause LineNr="1" EndLineNr="1" ColNr="2" EndColNr="15" ID="-120819">
+                          <PicClause LineNr="1" EndLineNr="1" ColNr="2" EndColNr="15" ID="120819">S9(4)</PicClause>
+                        </ThePicClause>
+                        <TheUsageClause LineNr="1" EndLineNr="1" ColNr="2" EndColNr="15" ID="-120820">
+                          <UsageClause LineNr="1" EndLineNr="1" ColNr="2" EndColNr="15" ID="120820">
+                            <TheCode ID="120840" LineNr="1" EndLineNr="1" ColNr="2" EndColNr="15">BinaryKeyword</TheCode>
+                          </UsageClause>
+                        </TheUsageClause>
+                      </DataField>
+                      <DataField LineNr="1" EndLineNr="1" ColNr="2" EndColNr="15" ID="120821" Level="1">
+                        <TheSpecialCode ID="120842" LineNr="1" EndLineNr="1" ColNr="2" EndColNr="15">ExternalKeyword</TheSpecialCode>
+                        <TheDot ID="120844" LineNr="1" EndLineNr="1" ColNr="2" EndColNr="15">TRUE</TheDot>
+                        <TheId LineNr="1" EndLineNr="1" ColNr="2" EndColNr="15" ID="-120822" XRef="120821">
+                          <DataIdent LineNr="1" EndLineNr="1" ColNr="2" EndColNr="15" ID="120822" XRef="120821">SORT-RETURN</DataIdent>
+                        </TheId>
+                        <ThePicClause LineNr="1" EndLineNr="1" ColNr="2" EndColNr="15" ID="-120823">
+                          <PicClause LineNr="1" EndLineNr="1" ColNr="2" EndColNr="15" ID="120823">S9(4)</PicClause>
+                        </ThePicClause>
+                        <TheUsageClause LineNr="1" EndLineNr="1" ColNr="2" EndColNr="15" ID="-120824">
+                          <UsageClause LineNr="1" EndLineNr="1" ColNr="2" EndColNr="15" ID="120824">
+                            <TheCode ID="120843" LineNr="1" EndLineNr="1" ColNr="2" EndColNr="15">BinaryKeyword</TheCode>
+                          </UsageClause>
+                        </TheUsageClause>
+                      </DataField>
+                      <DataField LineNr="1" EndLineNr="1" ColNr="2" EndColNr="15" ID="120825" Level="1">
+                        <TheSpecialCode ID="120845" LineNr="1" EndLineNr="1" ColNr="2" EndColNr="15">ExternalKeyword</TheSpecialCode>
+                        <TheDot ID="120847" LineNr="1" EndLineNr="1" ColNr="2" EndColNr="15">TRUE</TheDot>
+                        <TheId LineNr="1" EndLineNr="1" ColNr="2" EndColNr="15" ID="-120826" XRef="120825">
+                          <DataIdent LineNr="1" EndLineNr="1" ColNr="2" EndColNr="15" ID="120826" XRef="120825">SORT-CORE-SIZE</DataIdent>
+                        </TheId>
+                        <ThePicClause LineNr="1" EndLineNr="1" ColNr="2" EndColNr="15" ID="-120827">
+                          <PicClause LineNr="1" EndLineNr="1" ColNr="2" EndColNr="15" ID="120827">S9(8)</PicClause>
+                        </ThePicClause>
+                        <TheUsageClause LineNr="1" EndLineNr="1" ColNr="2" EndColNr="15" ID="-120828">
+                          <UsageClause LineNr="1" EndLineNr="1" ColNr="2" EndColNr="15" ID="120828">
+                            <TheCode ID="120846" LineNr="1" EndLineNr="1" ColNr="2" EndColNr="15">BinaryKeyword</TheCode>
+                          </UsageClause>
+                        </TheUsageClause>
+                      </DataField>
+                      <DataField LineNr="1" EndLineNr="1" ColNr="2" EndColNr="15" ID="120829" Level="1">
+                        <TheSpecialCode ID="120848" LineNr="1" EndLineNr="1" ColNr="2" EndColNr="15">ExternalKeyword</TheSpecialCode>
+                        <TheDot ID="120850" LineNr="1" EndLineNr="1" ColNr="2" EndColNr="15">TRUE</TheDot>
+                        <TheId LineNr="1" EndLineNr="1" ColNr="2" EndColNr="15" ID="-120830" XRef="120829">
+                          <DataIdent LineNr="1" EndLineNr="1" ColNr="2" EndColNr="15" ID="120830" XRef="120829">TALLY</DataIdent>
+                        </TheId>
+                        <ThePicClause LineNr="1" EndLineNr="1" ColNr="2" EndColNr="15" ID="-120831">
+                          <PicClause LineNr="1" EndLineNr="1" ColNr="2" EndColNr="15" ID="120831">9(5)</PicClause>
+                        </ThePicClause>
+                        <TheUsageClause LineNr="1" EndLineNr="1" ColNr="2" EndColNr="15" ID="-120832">
+                          <UsageClause LineNr="1" EndLineNr="1" ColNr="2" EndColNr="15" ID="120832">
+                            <TheCode ID="120849" LineNr="1" EndLineNr="1" ColNr="2" EndColNr="15">BinaryKeyword</TheCode>
+                          </UsageClause>
+                        </TheUsageClause>
+                      </DataField>
+                      <DataField LineNr="1" EndLineNr="1" ColNr="2" EndColNr="15" ID="120833" Level="1">
+                        <TheSpecialCode ID="120851" LineNr="1" EndLineNr="1" ColNr="2" EndColNr="15">ExternalKeyword</TheSpecialCode>
+                        <TheDot ID="120853" LineNr="1" EndLineNr="1" ColNr="2" EndColNr="15">TRUE</TheDot>
+                        <TheId LineNr="1" EndLineNr="1" ColNr="2" EndColNr="15" ID="-120834" XRef="120833">
+                          <DataIdent LineNr="1" EndLineNr="1" ColNr="2" EndColNr="15" ID="120834" XRef="120833">XML-CODE</DataIdent>
+                        </TheId>
+                        <ThePicClause LineNr="1" EndLineNr="1" ColNr="2" EndColNr="15" ID="-120835">
+                          <PicClause LineNr="1" EndLineNr="1" ColNr="2" EndColNr="15" ID="120835">S9(9)</PicClause>
+                        </ThePicClause>
+                        <TheUsageClause LineNr="1" EndLineNr="1" ColNr="2" EndColNr="15" ID="-120836">
+                          <UsageClause LineNr="1" EndLineNr="1" ColNr="2" EndColNr="15" ID="120836">
+                            <TheCode ID="120852" LineNr="1" EndLineNr="1" ColNr="2" EndColNr="15">BinaryKeyword</TheCode>
+                          </UsageClause>
+                        </TheUsageClause>
+                      </DataField>
+                    </TheFields>
+                  </DataDecl>
+                </TheData>
+              </WorkingStorageSection>
+            </TheWorkingStorageSection>
+            <TheLinkageSection LineNr="30" EndLineNr="31" ColNr="2" EndColNr="68" ID="-120785">
+              <LinkageSection LineNr="30" EndLineNr="31" ColNr="2" EndColNr="68" ID="120785">
+                <TheData LineNr="31" EndLineNr="31" ColNr="2" EndColNr="68" ID="-120784">
+                  <DataDecl LineNr="31" EndLineNr="31" ColNr="2" EndColNr="68" ID="120784">
+                    <TheFields LineNr="31" EndLineNr="31" ColNr="2" EndColNr="68" ID="-120783" Level="1">
+                      <DataField LineNr="31" EndLineNr="31" ColNr="2" EndColNr="68" ID="120783" Level="1">
+                        <TheDot ID="120854" LineNr="31" EndLineNr="31" ColNr="2" EndColNr="68">TRUE</TheDot>
+                        <TheId LineNr="31" EndLineNr="31" ColNr="6" EndColNr="8" ID="-120781" XRef="120783">
+                          <DataIdent LineNr="31" EndLineNr="31" ColNr="6" EndColNr="8" ID="120781" XRef="120783">DN1</DataIdent>
+                        </TheId>
+                        <ThePicClause LineNr="31" EndLineNr="31" ColNr="34" EndColNr="43" ID="-120782">
+                          <PicClause LineNr="31" EndLineNr="31" ColNr="34" EndColNr="43" ID="120782">S9</PicClause>
+                        </ThePicClause>
+                      </DataField>
+                    </TheFields>
+                  </DataDecl>
+                </TheData>
+              </LinkageSection>
+            </TheLinkageSection>
+          </DataDivision>
+        </TheDataDivision>
+        <TheProcedureDivision LineNr="32" EndLineNr="36" ColNr="2" EndColNr="18" ID="-120814">
+          <ProcedureDivision LineNr="32" EndLineNr="36" ColNr="2" EndColNr="18" ID="120814">
+            <TheUsingKeyword ID="120855" LineNr="32" EndLineNr="36" ColNr="2" EndColNr="18">UsingKeyword</TheUsingKeyword>
+            <TheUsingList LineNr="32" EndLineNr="32" ColNr="27" EndColNr="29" ID="-120788">
+              <UsingItem LineNr="32" EndLineNr="32" ColNr="27" EndColNr="29" ID="120788">
+                <TheId LineNr="32" EndLineNr="32" ColNr="27" EndColNr="29" ID="-120787" XRef="120783">
+                  <DataIdent LineNr="32" EndLineNr="32" ColNr="27" EndColNr="29" ID="120787" XRef="120783">DN1</DataIdent>
+                </TheId>
+              </UsingItem>
+            </TheUsingList>
+            <TheBlocks LineNr="33" EndLineNr="36" ColNr="2" EndColNr="18" ID="-120807">
+              <ParagraphStatementBlock LineNr="33" EndLineNr="34" ColNr="2" EndColNr="19" ID="120807">
+                <TheDot ID="120856" LineNr="33" EndLineNr="34" ColNr="2" EndColNr="19">TRUE</TheDot>
+                <ALabelIdent LineNr="33" EndLineNr="33" ColNr="2" EndColNr="12" ID="-120791">
+                  <LabelIdent LineNr="33" EndLineNr="33" ColNr="2" EndColNr="12" ID="120791">CALL-TEST-1</LabelIdent>
+                </ALabelIdent>
+                <AStatementList LineNr="34" EndLineNr="34" ColNr="6" EndColNr="19" ID="-120806">
+                  <PeriodStatementList LineNr="34" EndLineNr="34" ColNr="6" EndColNr="19" ID="120806">
+                    <AList LineNr="34" EndLineNr="34" ColNr="6" EndColNr="19" ID="-120799">
+                      <MoveStatement LineNr="34" EndLineNr="34" ColNr="6" EndColNr="19" ID="120799">
+                        <TheExpr LineNr="34" EndLineNr="34" ColNr="11" EndColNr="11" ID="-120792">
+                          <IntegerLiteral LineNr="34" EndLineNr="34" ColNr="11" EndColNr="11" ID="120792">1</IntegerLiteral>
+                        </TheExpr>
+                        <TheTargets LineNr="34" EndLineNr="34" ColNr="16" EndColNr="18" ID="-120798" XRef="120783">
+                          <Designator LineNr="34" EndLineNr="34" ColNr="16" EndColNr="18" ID="120798" XRef="120783">
+                            <TheElements LineNr="34" EndLineNr="34" ColNr="16" EndColNr="18" ID="-120797">
+                              <DesigElement LineNr="34" EndLineNr="34" ColNr="16" EndColNr="18" ID="120797">
+                                <TheIdent LineNr="34" EndLineNr="34" ColNr="16" EndColNr="18" ID="-120796" XRef="120783">
+                                  <DataIdent LineNr="34" EndLineNr="34" ColNr="16" EndColNr="18" ID="120796" XRef="120783">DN1</DataIdent>
+                                </TheIdent>
+                              </DesigElement>
+                            </TheElements>
+                          </Designator>
+                        </TheTargets>
+                      </MoveStatement>
+                    </AList>
+                  </PeriodStatementList>
+                </AStatementList>
+              </ParagraphStatementBlock>
+              <ParagraphStatementBlock LineNr="35" EndLineNr="36" ColNr="2" EndColNr="18" ID="120813">
+                <TheDot ID="120858" LineNr="35" EndLineNr="36" ColNr="2" EndColNr="18">TRUE</TheDot>
+                <ALabelIdent LineNr="35" EndLineNr="35" ColNr="2" EndColNr="11" ID="-120808">
+                  <LabelIdent LineNr="35" EndLineNr="35" ColNr="2" EndColNr="11" ID="120808">IC214-EXIT</LabelIdent>
+                </ALabelIdent>
+                <AStatementList LineNr="36" EndLineNr="36" ColNr="6" EndColNr="18" ID="-120812">
+                  <PeriodStatementList LineNr="36" EndLineNr="36" ColNr="6" EndColNr="18" ID="120812">
+                    <AList LineNr="36" EndLineNr="36" ColNr="6" EndColNr="18" ID="-120809">
+                      <StopStatement LineNr="36" EndLineNr="36" ColNr="6" EndColNr="18" ID="120809">
+                        <TheMode ID="120857" LineNr="36" EndLineNr="36" ColNr="6" EndColNr="18">ProgramKeyword</TheMode>
+                      </StopStatement>
+                    </AList>
+                  </PeriodStatementList>
+                </AStatementList>
+              </ParagraphStatementBlock>
+            </TheBlocks>
+          </ProcedureDivision>
+        </TheProcedureDivision>
+      </CobolProgram>
+    </ThePrograms>
+  </ROOT>
+</SourceFile>
