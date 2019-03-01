@@ -5,6 +5,9 @@ import be.intimals.freqt.structure.*;
 import be.intimals.freqt.output.*;
 import be.intimals.freqt.input.*;
 
+import java.io.BufferedReader;
+import java.io.FileReader;
+import java.io.IOException;
 import java.util.*;
 
 
@@ -49,7 +52,7 @@ public class FreqT_max extends FreqT {
 
             //System.out.println(getPatternString(maximalPattern));
 
-            if( Pattern.checkMissedLeafNode(maximalPattern) ) return;
+            if( Pattern.isMissedLeafNode(maximalPattern) ) return;
 
             //find all candidates of the current subtree
             int depth = projected.getProjectedDepth();
@@ -112,10 +115,12 @@ public class FreqT_max extends FreqT {
                 String patStr = Pattern.getPatternString(maximalPattern);
                 if(patSupMap.containsKey(patStr)){
                     //System.out.println("max pattern "+ entry.getValue().getProjectedSupport()+" " + patStr);
-                    if( entry.getValue().getProjectedSupport()==1)
-                        //collect leaves of maximalPattern
-                        //if leaves exists in
+                    if( entry.getValue().getProjectedSupport()==1) {
                         outputMaximal.report(maximalPattern, entry.getValue());
+                        nbMaximalPatterns++;
+                        //System.out.println(Pattern.getPatternString1(maximalPattern));
+                    }
+
                 }
 
                 project(entry.getValue());
@@ -132,8 +137,6 @@ public class FreqT_max extends FreqT {
      */
     public void run(Map<String,String> inPatterns) {
         try{
-            /*  ==============================  */
-            //System.out.println("# patterns : "+ newTransaction.size());
             //System.out.println("==============================");
             //System.out.println("running FreqT post-processing");
             //System.out.println("==============================");
@@ -159,21 +162,51 @@ public class FreqT_max extends FreqT {
                 if(rootLabel.contains(entry.getKey())){
                     entry.getValue().setProjectedDepth(0);
                     maximalPattern.addElement(entry.getKey());
-
                     project(entry.getValue());
-
                     maximalPattern.setSize(maximalPattern.size()-1);
+                    //garbage collector
+                    //System.gc();
                 }
             }
-            nbMaximalPatterns = outputMaximal.getNbPattern();
+            //nbMaximalPatterns = outputMaximal.getNbPattern();
             outputMaximal.close();
         }
         catch (Exception e) {System.out.println("running post-processing error "+e);}
 
     }
 
+    /**
+     * create transaction from variable outputLargestPatternMap
+     * @param patternMap
+     */
     private void initDatabase(Map<String,String> patternMap) {
         //System.out.println("reading input subtrees ...");
+        ReadFile readFile = new ReadFile();
+        readFile.createTransactionFromMap(patternMap,newTransaction,patSupMap,rootLabel);
+    }
+
+    /**
+     * create database from file (largest patterns are stored in a file in the second step)
+     * @param path
+     */
+    private void initDatabase(String path) {
+
+        //System.out.println("reading input subtrees ...");
+        Map<String,String> patternMap = new LinkedHashMap<>();
+        try (BufferedReader br = new BufferedReader(new FileReader(path))) {
+            String line;
+            while ((line = br.readLine()) != null) {
+                if( ! line.isEmpty() )
+                {
+                    String[] str_tmp = line.split(String.valueOf(uniChar));
+                    patternMap.put(str_tmp[0],str_tmp[1]);
+
+                }
+            }
+        }catch (IOException e) {System.out.println("Reading file error ");}
+
+        //System.out.print(patternMap.size());
+
         ReadFile readFile = new ReadFile();
         readFile.createTransactionFromMap(patternMap,newTransaction,patSupMap,rootLabel);
     }

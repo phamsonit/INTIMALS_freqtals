@@ -42,18 +42,22 @@ public class Main {
         Main m = new Main();
 
         if (args.length==0) {
+
             System.out.println("Single-run Freq-T usage:\n" +
                     "java -jar freqt_java.jar CONFIG_FILE [MIN_SUPPORT] [INPUT_FOLDER]\n" +
                     "\n" +
                     "Multi-run Freq-T usage:\n" +
                     "java -jar freqt_java.jar -multi CONFIG_FILE");
+
+            m.singleRun(args);
+
         } else if (args[0].equals("-multi")) {
             m.multiRun(args);
         } else {
             m.singleRun(args);
         }
-
         System.exit(3);
+
     }
 
     private void singleRun(String[] args) {
@@ -64,7 +68,7 @@ public class Main {
                 Config configBasic = new Config(configPathBasic);
                 //update minSup and sub folder name
                 String inputMinSup = args.length == 0 ? String.valueOf(configBasic.getMinSupport()) : args[1];
-                String inputFold = args.length == 0 ? "" : args[2];
+                String inputFold = args.length == 0 ? "fold4" : args[2];
                 //create temporary configuration
                 Properties prop;
                 OutputStream output = null;
@@ -82,6 +86,9 @@ public class Main {
                     //update input dir path
                     inputPath = configBasic.getInputFiles().replace("\"", "") + "/"+inputFold;
                     //update output file path
+                    File directory = new File(configBasic.getOutputFile());
+                    if(!directory.exists()) directory.mkdir();
+
                     outputPath = configBasic.getOutputFile().replace("\"","") +
                             "/"+inputFold.replaceAll("\\/","-")+"-" + inputMinSup +"-patterns.xml";
                     //delete output file if if exists
@@ -100,7 +107,8 @@ public class Main {
                     Files.deleteIfExists(Paths.get(configPathTemp));
 
                     //update properties
-                    prop.replace("minSupport", inputMinSup);
+                    //prop.replace("minSupport", inputMinSup);
+                    prop.setProperty("minSupport",inputMinSup);
                     prop.replace("inFiles", inputPath);
                     prop.replace("outFile", outputPath);
                     //save new properties
@@ -132,7 +140,9 @@ public class Main {
                     Process proc = Runtime.getRuntime().exec(command);
 
                 }
-                //System.out.println("===========================================================");
+            //System.out.println("===========================================================");
+            //how to safety stop this single task
+            return;
         }
         catch (Exception e){
             System.out.println("!!! Error: main "+e);

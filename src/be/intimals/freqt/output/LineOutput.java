@@ -14,7 +14,7 @@ import be.intimals.freqt.config.*;
 
 public class LineOutput extends AOutputFormatter {
     private char uniChar;
-    Map<String,String> patSupMap;
+    //Map<String,String> patSupMap = new LinkedHashMap<>();;
 
     public LineOutput(String _file,Config _config, Map<String, Vector<String>> _grammar, Map<String,String> _xmlCharacters, char _uniChar) throws IOException {
         super(_file,_config, _grammar,_xmlCharacters);
@@ -24,7 +24,7 @@ public class LineOutput extends AOutputFormatter {
     public LineOutput(String _file, Config _config, Map<String, Vector<String>> _grammar, Map<String,String> _xmlCharacters, Map<String,String> _patSupMap, char _uniChar) throws IOException {
         super(_file,_config, _grammar,_xmlCharacters);
         uniChar = _uniChar;
-        patSupMap = _patSupMap;
+        this.patSupMap = _patSupMap;
     }
 
     /**
@@ -39,16 +39,17 @@ public class LineOutput extends AOutputFormatter {
             if(checkOutputConstraint(pat)) return;
             ++nbPattern;
 
-            if(config.postProcess()){
+            if(config.postProcess() && !patSupMap.isEmpty()){
                 String patTemp = Pattern.getPatternString(pat);
-                String[] sup = patSupMap.get(patTemp).split(" ");
+                String[] sup = patSupMap.get(patTemp).split(",");
+                int size = Pattern.getPatternSize(pat);
                 //out.write("supp:"+sup[0]+" wsupp:"+sup[1]+" size:"+sup[2]+"\t");
-                out.write("fileIds:\t "+sup[0] +"\t supp:"+sup[1]+ "\t wsup:" +sup[2] + " size:"+sup[3]+"\t");
+                out.write("rootIDs\t " + sup[0] + "\t supp:" + sup[1] + "\t wsup:" + sup[2] + " size:" + size + "\t");
             }
             else{
-                int size = Pattern.getPatternSize(pat);
                 int sup = projected.getProjectedSupport();
                 int wsup = projected.getProjectedRootSupport();
+                int size = Pattern.getPatternSize(pat);
 
                 //List<Integer> allOccurrences = getSizeAllOccurrences(projected);
 
@@ -61,14 +62,14 @@ public class LineOutput extends AOutputFormatter {
                 out.write("supp:"+ sup  + " wsup:" + wsup +" size:" + size + "\t");
             }
 
-            if(config.outputAsENC()){
+/*            if(config.outputAsENC()){
                 for(int i = 0; i < pat.size(); ++i){
                     if(i != 0) out.write(" ");
                     //System.out.print(pat.elementAt(i));
                     out.write(pat.elementAt(i).replace(uniChar,'-'));
                 }
             }
-            else{
+            else{*/
                 int n = 0;
                 for(int i = 0; i<pat.size(); ++i){
                     if(pat.elementAt(i).equals(")")) {
@@ -85,7 +86,7 @@ public class LineOutput extends AOutputFormatter {
                 }
                 out.write("\n");
 
-            }
+            /*}
             //output locations
             if(config.addLocations()){
                 out.write("Locations : ");
@@ -97,11 +98,38 @@ public class LineOutput extends AOutputFormatter {
                         out.write(tmp2.getLocationId()+" ");
                 }
                 out.write("\n");
-            }
+            }*/
 
         }catch (IOException e) {
             System.out.println("report error");
         }
+    }
+
+    @Override
+    public void printPattern(String _pat){
+        try{
+
+            String[] strTmp = _pat.split("\t");
+            String[] supports = strTmp[0].split(",");
+            String[] pattern = strTmp[1].substring(1,strTmp[1].length()-1).split(",");
+
+            Vector<String> pat = new Vector<>();
+            for(int i=0; i<pattern.length;++i)
+                pat.add(pattern[i].trim());
+
+            Projected projected = new Projected();
+            projected.setProjectedSupport(Integer.valueOf(supports[0]));
+            projected.setProjectedRootSupport(Integer.valueOf(supports[1]));
+
+            report(pat,projected);
+
+        }
+        catch (Exception e){
+            System.out.println("report String error : " + e);
+            System.out.println(_pat);
+
+        }
+
     }
 
     @Override

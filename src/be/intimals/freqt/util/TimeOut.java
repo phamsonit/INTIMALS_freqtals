@@ -28,12 +28,16 @@ public class TimeOut implements Runnable {
         }catch (Exception e){}
     }
 
+    public void stop(){
+        System.exit(3);
+    }
 
     public void run() {
         try {
             Thread.sleep(times);
             if (taskComplete == false) {
-                System.out.println("Timed Out : "+times/(60*1000)+" minutes");
+                //System.out.println("Timed Out : "+times/(60*1000)+" minutes");
+                report.write("Timed Out : "+times/(60*1000)+" minutes");
                 closeReport();
                 System.exit(2);
             }

@@ -85,10 +85,9 @@ public class Projected {
 
     }
 
-        public Location getProjectRootLocation(int i){
+    public Location getProjectRootLocation(int i){
         return this.rootLocations.get(i);
     }
-
 
     public int getProjectRootLocationSize(){
         return this.rootLocations.size();
@@ -111,5 +110,6 @@ public class Projected {
     public List<Integer> getProjectLineNr(int a){
         return this.lineNr.get(a);
     }
+
 
 }

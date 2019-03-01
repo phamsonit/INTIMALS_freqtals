@@ -6,6 +6,11 @@ import java.util.*;
 public class Pattern {
     private  static  char uniChar = '\u00a5';// Japanese Yen symbol
 
+    /**
+     * count the number of identifier keywords in a pattern
+     * @param pat
+     * @return
+     */
     public static int countIdentifiers(Vector<String> pat){
         int count=0;
 
@@ -17,7 +22,11 @@ public class Pattern {
         return count;
     }
 
-
+    /**
+     * get the string format of a pattern: remove the part missed leaf node
+      * @param pat
+     * @return
+     */
     //all leaf nodes of patterns are also the real leaf nodes in ASTs
     public static String getPatternString1(Vector<String> pat){
         String result="";
@@ -52,8 +61,9 @@ public class Pattern {
     }
 
     /**
-     * get pattern in the form of string representation
-     * i.e. input pat = A B ) C, this function return (A(B)(C))
+     * get string format of the pattern: keep all node
+     * i.e., input  = A B ) C
+     *       output = (A(B)(C))
      * @param pat
      * @return
      */
@@ -78,17 +88,14 @@ public class Pattern {
     }
 
     /**
-     * calculate size of a pattern
+     * calculate size (total nodes) of a pattern
      * @param pat
      * @return
      */
     public static int getPatternSize(Vector<String > pat){
         int size = 0;
-        try{
-            for(int i = 0; i < pat.size(); ++i)
-                if( ! pat.elementAt(i).equals(")") ) ++size;
-        }
-        catch (Exception e) { System.out.println("get pattern size error : "+ size+" " + e); }
+        for(int i = 0; i < pat.size(); ++i)
+            if( ! pat.elementAt(i).equals(")") ) ++size;
         return size;
     }
 
@@ -109,6 +116,7 @@ public class Pattern {
 
     /**
      * get label of a potential candidate
+     * i.e., input  = )¥)¥)¥label, output = label
      * @param candidate
      * @return
      */
@@ -128,20 +136,14 @@ public class Pattern {
         int nodeLevel = 0;
         int candidateSize = 0;
         try {
-            //String potentialCandidate = "";
             String[] p = candidate.split(String.valueOf(uniChar));
             for (int i = 0; i < p.length; ++i) {
                 if (p[i].equals(")"))
                     ++nodeLevel;
-                //if (!p[i].equals(")"))
-                //potentialCandidate = p[i];
                 if (!p[i].isEmpty())
                     ++candidateSize;
             }
 
-            //System.out.println("pattern :" + pat);
-            //System.out.println("potential candidate: " + candidate);
-            //System.out.println("length of candidate "+candidateSize);
             int size = pat.size() - candidateSize;
             if (nodeLevel == 0) {
                 parentPos = size - 1;
@@ -150,7 +152,6 @@ public class Pattern {
                     if (pat.elementAt(i).equals(")"))
                         ++nodeLevel;
                     else --nodeLevel;
-
                     if (nodeLevel == -1) {
                         parentPos = i;
                         break;
@@ -164,7 +165,7 @@ public class Pattern {
     }
 
     /**
-     * find all children of the node at the parentPos in the pattern
+     * find all children of the node at the parentPos
      * @param pat
      * @param parentPos
      * @return
@@ -187,7 +188,7 @@ public class Pattern {
     }
 
     /**
-     *
+     * find the firt mandatory child of a node based on input grammar
      * @param listOfChildrenGrammar
      * @return
      */
@@ -211,7 +212,7 @@ public class Pattern {
      * @param n
      * @return
      */
-    public static boolean checkRepeatedLabel(Vector<String> pat, String candidate, int n){
+    public static boolean isRepeatedLabel(Vector<String> pat, String candidate, int n){
 
         String[] Temp = candidate.split( String.valueOf(uniChar) );
         String label = Temp[Temp.length-1];
@@ -255,9 +256,9 @@ public class Pattern {
     /**
      * check if the left part of this pattern missing leaf node
      * @param pat
-     * @return
+     * @return true if the pattern misses a leaf node
      */
-    public static boolean checkMissedLeafNode(Vector<String> pat){
+    public static boolean isMissedLeafNode(Vector<String> pat){
         boolean result = false;
         for(int i=0; i<pat.size()-1;++i) {
             if (!pat.elementAt(i).equals(")") &&
@@ -265,14 +266,9 @@ public class Pattern {
                 if (pat.elementAt(i).charAt(0) != '*') {
                     result = true;
                 }
-            //problem: the right part misses leaf
-            //TODO:how to delete right part of this pattern then print it
         }
         return result;
     }
-
-
-
 
 
     /**
@@ -283,7 +279,7 @@ public class Pattern {
      * @param whiteChildrenList
      * @return
      */
-    public static boolean checkMissedMandatoryChild(Vector<String> childrenInPattern,
+    public static boolean isMissedMandatoryChild(Vector<String> childrenInPattern,
                                                    Vector<String> childrenInGrammar,
                                                    Set<String> blackChildrenList,
                                                    Set<String> whiteChildrenList){
@@ -318,9 +314,9 @@ public class Pattern {
      */
     public static Set<String> getChildrenLabels(Map<String,Vector<String>> ListNode, Vector<String> pat, String candidate){
 
+        //add current candidate to pattern
         Set<String> childrenTemp = new LinkedHashSet<>();
         String[] candidateTemp = candidate.split(String.valueOf(uniChar));
-
         Vector<String> patternTemp = new Vector<>(pat);
         for (int i = 0; i < candidateTemp.length; ++i) {
             if (!candidateTemp[i].isEmpty())
@@ -343,7 +339,7 @@ public class Pattern {
                                       int _minLineDistance,
                                       int _maxLineDistance){
 
-        if(checkMissedLeafNode(pat)) return false;
+        if(isMissedLeafNode(pat)) return false;
 
         //System.out.println("check line distance");
 
@@ -406,13 +402,23 @@ public class Pattern {
      */
     public  boolean checkConstraints(Vector<String> pat, int maxLeaf) {
 
-        if(checkMissedLeafNode(pat) ||
+        if(isMissedLeafNode(pat) ||
                 (countLeafNode(pat)  >  maxLeaf) )
             return true;
         else
             return false;
 
 
+    }
+
+
+    public static Vector<String> formatPattern(String[] pat){
+        Vector<String> _pat = new Vector<>();
+
+        for(int i=0; i<pat.length;++i)
+            _pat.add(pat[i].trim());
+
+        return _pat;
     }
 
 

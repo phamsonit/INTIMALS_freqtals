@@ -14,6 +14,7 @@ public class Util {
     private static Vector<String> trans = new Vector<>();
     // TODO (The method that uses this field is currently unused.) This field is error-prone though because it's static and we're running Freq-T in parallel!
 
+
     //create transaction for item set mining algorithm
     public static void createTransaction(String inputPath, String outputPath){
 
@@ -142,4 +143,13 @@ public class Util {
 
         System.out.println("# leaf sets / patterns " + leafSet.size() + " / " + leafMap.size());
     }
+
+
+    public static Object makeObject(String inputString) {
+        StringBuffer buf = new StringBuffer(12);
+        buf.append(inputString);
+        return buf.toString();
+    }
+
+
 }

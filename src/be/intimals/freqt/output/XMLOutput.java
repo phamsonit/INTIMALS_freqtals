@@ -5,14 +5,11 @@ import be.intimals.freqt.config.*;
 
 import java.io.FileWriter;
 import java.io.IOException;
-import java.util.HashMap;
-import java.util.LinkedHashMap;
-import java.util.Map;
-import java.util.Vector;
+import java.util.*;
 
 public class XMLOutput extends AOutputFormatter {
 
-    Map<String,String> patSupMap = new LinkedHashMap<>();
+    //Map<String,String> patSupMap = new LinkedHashMap<>();
 
     public XMLOutput(String _file, Config _config, Map<String, Vector<String>> _grammar, Map<String,String> _xmlCharacters) throws IOException {
         super(_file,_config, _grammar, _xmlCharacters);
@@ -41,23 +38,18 @@ public class XMLOutput extends AOutputFormatter {
 
             if( checkOutputConstraint(pat) ) return;
 
+            //System.out.print(pat);
+
             Map<String,Integer> metaVariable = new HashMap<>();
             ++nbPattern;
 
-            if(config.postProcess()){
-                if(patSupMap.isEmpty()){
-                    int sup = projected.getProjectedSupport();
-                    int wsup = projected.getProjectedRootSupport();
-                    int size = Pattern.getPatternSize(pat);
-                    out.write("<subtree id=\""+ nbPattern+ "\" support=\"" + sup +
-                            "\" wsupport=\"" + wsup + "\" size=\"" + size + "\">\n");
+            if(config.postProcess() && !patSupMap.isEmpty()){
 
-                }else {
-                    String patTemp = Pattern.getPatternString(pat);
-                    String[] sup = patSupMap.get(patTemp).split(" ");
-                    out.write("<subtree id=\"" + nbPattern + "\" support=\"" + sup[1] +
-                            "\" wsupport=\"" + sup[2] + "\" size=\"" + sup[3] + "\">\n");
-                }
+                String patTemp = Pattern.getPatternString(pat);
+                String[] sup = patSupMap.get(patTemp).split(",");
+                int size = Pattern.getPatternSize(pat);
+                out.write("<subtree id=\"" + nbPattern + "\" support=\"" + sup[1] +
+                        "\" wsupport=\"" + sup[2] + "\" size=\"" + size + "\">\n");
             }
             else{
                 int sup = projected.getProjectedSupport();
@@ -215,6 +207,32 @@ public class XMLOutput extends AOutputFormatter {
 
         }
 
+    }
+
+    @Override
+    public void printPattern(String _pat){
+        try{
+
+            String[] strTmp = _pat.split("\t");
+            String[] supports = strTmp[0].split(",");
+            String[] pattern = strTmp[1].substring(1,strTmp[1].length()-1).split(",");
+
+            Vector<String> pat = new Vector<>();
+            for(int i=0; i<pattern.length;++i)
+                pat.add(pattern[i].trim());
+
+            Projected projected = new Projected();
+            projected.setProjectedSupport(Integer.valueOf(supports[0]));
+            projected.setProjectedRootSupport(Integer.valueOf(supports[1]));
+
+            report(pat,projected);
+
+        }
+        catch (Exception e){
+            System.out.println("report xml error : " + e);
+            System.out.println(_pat);
+
+        }
     }
 
     @Override

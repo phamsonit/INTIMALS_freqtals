@@ -14,6 +14,7 @@ public abstract class AOutputFormatter {
     Config config;
     Map<String, Vector<String>> grammar;
     Map<String,String> xmlCharacters;
+    Map<String,String> patSupMap = new LinkedHashMap<>();
 
 
     public AOutputFormatter(String _fileName, Config _config, Map<String, Vector<String>> _grammar, Map<String,String> _xmlCharacters)
@@ -42,7 +43,7 @@ public abstract class AOutputFormatter {
      */
     public boolean checkOutputConstraint(Vector<String> pat){
 
-        if(Pattern.checkMissedLeafNode(pat) ||
+        if(Pattern.isMissedLeafNode(pat) ||
                 (Pattern.countLeafNode(pat) < config.getMinLeaf()) )
             return true;
         else
@@ -112,5 +113,6 @@ public abstract class AOutputFormatter {
     }
 
     public abstract void report(Vector<String> pat, Projected projected);
+    public abstract void printPattern(String pat);
     public abstract void close() throws IOException;
 }
