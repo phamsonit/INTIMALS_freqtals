@@ -14,13 +14,20 @@ import be.intimals.freqt.output.*;
 public class FreqT_ext extends FreqT {
 
     private AOutputFormatter outputLargest;
+    private AOutputFormatter outputMaximalPatterns;
+
     private Vector <String> largestPattern;
     private Vector <Vector<NodeFreqT> >  transaction = new Vector<>();
-    private Map<String,String> outputLargestPatternsMap = new LinkedHashMap<>();
+    private Map<String,String> outputLargestPatternsMap = new HashMap<>();
+
+
     private int nbOutputLargestPatterns;
     private int largestMinSup;
 
-    private Map<String,String> rootIDs = new LinkedHashMap<>();
+    private Map<String,String> rootIDs = new HashMap<>();
+
+    //test check maximality
+    private Map<String,String> outputMaximalPatternsMap1 = new HashMap<>();
 
     //test: don't store patterns in variable
     //add patterns to file -->
@@ -51,9 +58,76 @@ public class FreqT_ext extends FreqT {
 
         if (checkOutput(pat)) return;
         //keep one largest pattern per group root occurrences
-        addRootIDs(pat, projected,rootIDs);
+        //addRootIDs(pat, projected,rootIDs);
         //keep all largest patterns
         //addPattern(pat, projected, outputLargestPatternsMap);
+        addMaximality (pat,projected,outputMaximalPatternsMap1);
+    }
+
+    //return 1 : pat1 is subset of 2; 2 : pat2 is subset of pat1; otherwise return 0
+    private int checkSubTree(String pat1, String pat2){
+
+        //System.out.println("===================");
+        FreqT_max1 post = new FreqT_max1(this.config);
+        post.run(pat1, pat2);
+
+        if (post.getOutputPattern() == null)
+        {
+            return 0;
+        }else
+            {
+                if( pat1.length() <= pat2.length() ) {
+                    return 1;
+                }
+                else {
+                    return 2;
+                }
+            }
+
+    }
+
+    //input pat, patSet
+    //for each element in patSet
+    //if pat is a subtree of element return
+    //else if element is a subset of pat then replace element by pat
+    //else add pat to patSet
+    private void addMaximality(Vector<String> pat, Projected projected, Map<String,String> patSet){
+        boolean found = false;
+        Iterator < Map.Entry<String,String> > p = patSet.entrySet().iterator();
+        while(p.hasNext()){
+            Map.Entry<String, String> entry = p.next();
+
+            switch (checkSubTree(Pattern.getPatternString1(pat),entry.getKey())){
+                case 1:
+                    found = true;
+                    break;
+                case 2:
+                    //found = true;
+                    p.remove();
+                    break;
+            }
+        }
+        if(! found) {
+            int support = projected.getProjectedSupport();
+            int wsupport = projected.getProjectedRootSupport(); //=> root location
+            int size = Pattern.getPatternSize(pat);
+            //find root occurrences of pattern
+            /*String rootOccurrences = "";
+            for (int i = 0; i < projected.getProjectRootLocationSize(); ++i) {
+                rootOccurrences = rootOccurrences +
+                        projected.getProjectRootLocation(i).getLocationId() + ("-") +
+                        projected.getProjectRootLocation(i).getLocationPos() + ";";
+            }*/
+            String patternSupport =
+                    "rootOccurrences" + "," +
+                            String.valueOf(support) + "," +
+                            String.valueOf(wsupport) + "," +
+                            String.valueOf(size)+"\t"+
+                            pat.toString(); //keeping for XML output
+
+            String patternString = Pattern.getPatternString1(pat); //filter out the right part of pattern which misses leaf nodes
+            patSet.put(patternString, patternSupport);
+        }
     }
 
     //expand candidate based on grammar
@@ -226,7 +300,7 @@ public class FreqT_ext extends FreqT {
 
                 //long start = System.currentTimeMillis( );
                 Map.Entry<String,String> entry = rootId.next();
-                System.out.println(entry.getValue());
+                //System.out.println(entry.getValue());
                 String tmp[] = entry.getValue().split("\t");
                 //String rootLabel = entry.getValue().split(String.valueOf("\\("))[1];
                 String rootLabel = tmp[1].split(String.valueOf(","))[0].substring(1);
@@ -247,11 +321,15 @@ public class FreqT_ext extends FreqT {
                 largestMinSup = support(projected);
                 project(projected);
                 largestPattern.setSize(largestPattern.size() - 1);
+                //System.out.println(outputLargestPatternsMap2.size());
+
                 //garbage collector
                 //System.gc();
+                /*
+                //Test: do the maximality check for each group of largest patterns
                 //System.out.println("#largest patterns: "+outputLargestPatternsMap.size());
-                /*//for each group of largest patterns do the maximality check
                 //test result: don't improve running time; generate larger number of maximal subtrees
+
                 System.out.println("#largest patterns: "+outputLargestPatternsMap.size());
                 FreqT_max post = new FreqT_max(this.config, this.grammar, this.blackLabels, this.whiteLabels, this.xmlCharacters);
                 post.run(outputLargestPatternsMap);
@@ -263,17 +341,28 @@ public class FreqT_ext extends FreqT {
                 long diff1 = end1 - start;
                 System.out.println("#running time = "+ diff1);*/
             }
-            //nbOutputLargestPatterns = outputLargestPatternsMap.size();
             //outputLargest.close();
             //garbage collector
             //System.gc();
 
+            nbOutputLargestPatterns = outputMaximalPatternsMap1.size();
+            outputMaximalPatterns =  new XMLOutput(config.getOutputFile(),config, grammar, xmlCharacters);
+            //System.out.println("outputLargestPatternsMap1 :" + outputLargestPatternsMap1.size()+" ==>");
+            Iterator < Map.Entry<String,String> > iter1 = outputMaximalPatternsMap1.entrySet().iterator();
+            while(iter1.hasNext()){
+                Map.Entry<String,String> entry = iter1.next();
+                //print to screen
+                //System.out.println(entry.getValue());
+                //XML output
+                outputMaximalPatterns.printPattern(entry.getValue());
+            }
+            outputMaximalPatterns.close();
 
-            //keep rootIDs to compare with maximal patterns in the third step
+            //test: keep rootIDs to compare with maximal patterns in the third step
             //for each group of patterns keep only the largest
             //test result: improve the running time, but risk of losing maximal subtrees
 
-            //FileWriter fileWriter = new FileWriter(config.getOutputFile()+".xml");
+            /*//FileWriter fileWriter = new FileWriter(config.getOutputFile()+".xml");
             Iterator < Map.Entry<String,String> > rootIdNew = rootIDs.entrySet().iterator();
             while(rootIdNew.hasNext()){
                 Map.Entry<String,String> entry = rootIdNew.next();
@@ -289,7 +378,7 @@ public class FreqT_ext extends FreqT {
                 //System.out.println(entry.getKey()+" : "+entry.getValue());
                 //log(fileWriter,entry.getKey()+"\t"+Pattern.getPatternString1(pat));
             }
-            nbOutputLargestPatterns = outputLargestPatternsMap.size();
+            nbOutputLargestPatterns = outputLargestPatternsMap.size();*/
             //fileWriter.close();
             //System.out.print("number of largest patterns "+outputLargestPatternsMap.size());
 

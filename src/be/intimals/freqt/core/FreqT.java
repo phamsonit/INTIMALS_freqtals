@@ -25,10 +25,10 @@ public class FreqT {
     protected Map <String,Vector<String> > whiteLabels = new LinkedHashMap<>();
     protected Map <String,String>          xmlCharacters  = new LinkedHashMap<>();
 
-    private Set <String>        rootLabels  = new LinkedHashSet<>();
-    private Map<String,String>  outputFrequentPatternsMap = new LinkedHashMap<>(); //store patterns for post-processing
-    private Map<String,String>  fileIDs = new LinkedHashMap<>();
-    private Map<String,String>  rootIDs = new LinkedHashMap<>();
+    private Set <String>        rootLabels  = new HashSet<>();
+    private Map<String,String>  outputFrequentPatternsMap = new HashMap<>(); //store patterns for post-processing
+    private Map<String,String>  fileIDs = new HashMap<>();
+    private Map<String,String>  rootIDs = new HashMap<>();
 
     private int nbInputFiles;
     private int nbOutputFrequentPatterns;
@@ -101,13 +101,14 @@ public class FreqT {
                         projected.getProjectRootLocation(i).getLocationPos() + ";";
             }
 
-            String patStr =
+            String patternSupport =
                             rootOccurrences + "," +
                             String.valueOf(support) + "," +
                             String.valueOf(wsupport) + "," +
                             String.valueOf(size);
 
-            _outputFrequentPatternsMap.put(patternString, patStr);
+            _outputFrequentPatternsMap.put(patternString, patternSupport);
+
         }catch (Exception e){}
     }
 
@@ -596,8 +597,6 @@ public class FreqT {
      */
     private void project(Projected projected) {
         try{
-
-
             oldRootSupport = rootSupport(projected);
 
             //System.out.println(pattern);
@@ -709,7 +708,7 @@ public class FreqT {
                 //delete result of step 1
                 //Files.deleteIfExists(Paths.get("phase1-"+config.getOutputFile().replaceAll("\\/","-")));
 
-                //phase 3: maximality check
+                /*//phase 3: maximality check
                 FreqT_max post = new FreqT_max(this.config, this.grammar, this.blackLabels, this.whiteLabels, this.xmlCharacters);
                 post.run(freqT_ext.getOutputLargestPatterns());
                 nbOutputMaximalPatterns = post.getNbMaximalPattern();
@@ -717,11 +716,11 @@ public class FreqT {
                 long diff3 = end3 - end2;
                 //report phase 3
                 String s3 = "FREQT_MAX: maximal patterns = "+nbOutputMaximalPatterns+", time = "+ diff3;
-                log(report,s3);
+                log(report,s3);*/
                 //delete phase2 result
                 //Files.deleteIfExists(Paths.get("phase2-"+config.getOutputFile().replaceAll("\\/","-")));
 
-                String s4 = "total times = "+(end3-start);
+                String s4 = "total times = "+(end2-start);
                 log(report,s4);
                 report.close();
 

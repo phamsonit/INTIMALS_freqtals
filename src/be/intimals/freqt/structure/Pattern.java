@@ -6,34 +6,26 @@ import java.util.*;
 public class Pattern {
     private  static  char uniChar = '\u00a5';// Japanese Yen symbol
 
+    //subtree representation
+    //input subtree
+    //    aa
+    //    /\
+    //   b  c
+    //  /    \
+    // *1     *2
+    //
+    //format 1 = a,b,*1,),),c,*2,),)
+    //format 2 = (a(b(*1))(c(*2)))
+
     /**
-     * count the number of identifier keywords in a pattern
+     * filter: remove the parts missed leaf labels
      * @param pat
      * @return
      */
-    public static int countIdentifiers(Vector<String> pat){
-        int count=0;
-
-        for(int i=0; i<pat.size(); ++i){
-            if(pat.elementAt(i).equals("identifier"))
-                ++count;
-        }
-
-        return count;
-    }
-
-    /**
-     * get the string format of a pattern: remove the part missed leaf node
-      * @param pat
-     * @return
-     */
-    //all leaf nodes of patterns are also the real leaf nodes in ASTs
-    public static String getPatternString1(Vector<String> pat){
-        String result="";
-
+    public static Vector<String> filter(Vector<String> pat){
+        Vector<String> result = new Vector<>();
         //find the last leaf
         //System.out.println(pat);
-
         int pos=0;
         for(int i=0; i<pat.size();++i){
             if(pat.elementAt(i).charAt(0)=='*')
@@ -41,7 +33,39 @@ public class Pattern {
         }
         //System.out.println("post leaf "+pos);
         //output patterns
+        int n = 0;
+        for(int i = 0; i <= pos; ++i){
+            result.add(pat.elementAt(i));
+        }
 
+        for(int i = pos ; i < pat.size(); ++i) {
+            if(pat.elementAt(i).equals(")"))
+                result.add(")");
+            else
+                break;
+        }
+        return result;
+    }
+
+
+    /**
+     * transform format 1 to format 2
+     * filter : remove the parts missed leaf labels
+      * @param pat
+     * @return
+     */
+    //all leaf nodes of patterns are also the real leaf nodes in ASTs
+    public static String getPatternString1(Vector<String> pat){
+        String result="";
+        //find the last leaf
+        //System.out.println(pat);
+        int pos=0;
+        for(int i=0; i<pat.size();++i){
+            if(pat.elementAt(i).charAt(0)=='*')
+                pos = i;
+        }
+        //System.out.println("post leaf "+pos);
+        //output patterns
         int n = 0;
         for(int i = 0; i <= pos; ++i){
             if(pat.elementAt(i).equals(")")) {
@@ -56,14 +80,11 @@ public class Pattern {
         for(int i = 0 ; i < n; ++i) {
             result += ")";
         }
-
         return result;
     }
 
     /**
-     * get string format of the pattern: keep all node
-     * i.e., input  = A B ) C
-     *       output = (A(B)(C))
+     * transform pattern format 1 to format 2
      * @param pat
      * @return
      */
@@ -83,7 +104,6 @@ public class Pattern {
         for(int i = 0 ; i < n; ++i) {
             result += ")";
         }
-
         return result;
     }
 
@@ -112,6 +132,22 @@ public class Pattern {
                 result++;
 
         return result;
+    }
+
+    /**
+     * count the number of identifier keywords in a pattern
+     * @param pat
+     * @return
+     */
+    public static int countIdentifiers(Vector<String> pat){
+        int count=0;
+
+        for(int i=0; i<pat.size(); ++i){
+            if(pat.elementAt(i).equals("identifier"))
+                ++count;
+        }
+
+        return count;
     }
 
     /**
@@ -410,6 +446,7 @@ public class Pattern {
 
 
     }
+
 
 
     public static Vector<String> formatPattern(String[] pat){

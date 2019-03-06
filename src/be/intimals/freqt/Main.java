@@ -64,7 +64,7 @@ public class Main {
 
         try{
                 //load basic configuration
-                String configPathBasic = args.length == 0 ? "conf/java/config.properties" : args[0];
+                String configPathBasic = args.length == 0 ? "conf/java/config-jhotdraw.properties" : args[0];
                 Config configBasic = new Config(configPathBasic);
                 //update minSup and sub folder name
                 String inputMinSup = args.length == 0 ? String.valueOf(configBasic.getMinSupport()) : args[1];

@@ -36,7 +36,7 @@ public class XMLOutput extends AOutputFormatter {
     public void report(Vector<String> pat, Projected projected){
         try{
 
-            if( checkOutputConstraint(pat) ) return;
+            //if( checkOutputConstraint(pat) ) return;
 
             //System.out.print(pat);
 
@@ -221,9 +221,11 @@ public class XMLOutput extends AOutputFormatter {
             for(int i=0; i<pattern.length;++i)
                 pat.add(pattern[i].trim());
 
+            pat = Pattern.filter(pat);
+
             Projected projected = new Projected();
-            projected.setProjectedSupport(Integer.valueOf(supports[0]));
-            projected.setProjectedRootSupport(Integer.valueOf(supports[1]));
+            projected.setProjectedSupport(Integer.valueOf(supports[1]));
+            projected.setProjectedRootSupport(Integer.valueOf(supports[2]));
 
             report(pat,projected);
 
