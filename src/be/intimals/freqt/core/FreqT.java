@@ -144,10 +144,6 @@ public class FreqT {
     public void addRootIDs(Vector<String> pat, Projected projected, Map<String,String> _rootIDs){
         try {
 
-            int sup = projected.getProjectedSupport();
-            int wsup = projected.getProjectedRootSupport();
-            int size = Pattern.getPatternSize(pat);
-
             //find root occurrences (id-pos) of pattern
             String rootOccurrences = "";
             for (int i = 0; i < projected.getProjectRootLocationSize(); ++i) {
@@ -155,21 +151,29 @@ public class FreqT {
                         projected.getProjectRootLocation(i).getLocationId() + ("-") +
                         projected.getProjectRootLocation(i).getLocationPos() + ";";
             }
+            //System.out.println("rootOccurrences "+rootOccurrences);
+            //keep only the root occurrences and root label
+            String rootLabel = pat.subList(0,1).toString();
+            _rootIDs.put(rootOccurrences, rootLabel);
+
+            /*
+            //keep the largest pattern for each group root occurrences
+            //int sup = projected.getProjectedSupport();
+            //int wsup = projected.getProjectedRootSupport();
+            //int size = Pattern.getPatternSize(pat);
             String supports = rootOccurrences+","+sup+","+wsup+","+size;
-            //find root label of this pattern
+            //String rootLabel = supports+"\t"+pat.toString();
             int sizeNew = Pattern.getPatternSize(pat);
-            //String rootLabel = supports+"\t"+Pattern.getPatternString1(pat);
-            String rootLabel = supports+"\t"+pat.toString();
-            //System.out.println(rootLabel);
-            //String rootLabel = pat.elementAt(0);
             if(_rootIDs.containsKey(rootOccurrences)) {
-                String[] strTmp = _rootIDs.get(rootOccurrences).split("\t");
-                Vector<String> patTemp = Pattern.formatPattern(strTmp[1].substring(1, strTmp[1].length() -1 ).split(","));
+                //String[] strTmp = _rootIDs.get(rootOccurrences).split("\t");
+                //Vector<String> patTemp = Pattern.formatPattern(strTmp[1].substring(1, strTmp[1].length() -1 ).split(","));
+                //don't keep supports to keep pattern for next round
+                Vector<String> patTemp = Pattern.formatPattern(_rootIDs.get(rootOccurrences).substring(1,_rootIDs.get(rootOccurrences).length() -1 ).split(","));
                 int sizeOld = Pattern.getPatternSize(patTemp);
                 if (sizeOld < sizeNew)
                     _rootIDs.replace(rootOccurrences, rootLabel);
             }else
-                _rootIDs.put(rootOccurrences, rootLabel);
+                _rootIDs.put(rootOccurrences, rootLabel);*/
 
         }catch (Exception e){System.out.println("Error: adding rootIDs "+e);}
     }
@@ -684,7 +688,8 @@ public class FreqT {
             findFrequentSubtrees(freq1);
             //closed output for the first step
             //outputFrequent.close();
-            //end the first step
+            //end the first step --> garbage collector
+            System.gc();
             long end1 = System.currentTimeMillis( );
             long diff1 = end1 - start;
             //report phase 1
@@ -698,7 +703,7 @@ public class FreqT {
                 log(report,"\t#filtered root occurrences groups = "+ rootIDs.size());
                 //phase 2: find largest patterns according to rootIDs groups
                 FreqT_ext freqT_ext = new FreqT_ext(config, this.grammar, this.blackLabels,this.whiteLabels,this.xmlCharacters);
-                freqT_ext.run(rootIDs,transaction);
+                freqT_ext.run(rootIDs,transaction,diff1,report);
                 nbOutputLargestPatterns = freqT_ext.getNbOutputLargestPatterns();
                 long end2 = System.currentTimeMillis( );
                 long diff2 = end2 - end1;
@@ -720,7 +725,7 @@ public class FreqT {
                 //delete phase2 result
                 //Files.deleteIfExists(Paths.get("phase2-"+config.getOutputFile().replaceAll("\\/","-")));
 
-                String s4 = "total times = "+(end2-start);
+                String s4 = "total times = "+(end2-start)+" ms";
                 log(report,s4);
                 report.close();
 
@@ -736,7 +741,7 @@ public class FreqT {
                     String s2 = "FREQT_MAX: maximal patterns "+post.getNbMaximalPattern()+", time "+ diff3;
                     log(report,s2);
 
-                    String s4 = "total times = "+(diff3-diff1);
+                    String s4 = "total times = "+(diff3-diff1) +" ms";
                     log(report,s4);
                     report.close();
                 }
@@ -811,10 +816,9 @@ public class FreqT {
     }
 
     public void log(FileWriter report, String msg) throws IOException {
+        //System.out.println(msg);
         report.write(msg + "\n");
         report.flush();
-        //System.out.println(msg);
-
     }
 
 }

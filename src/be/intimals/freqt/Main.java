@@ -63,85 +63,90 @@ public class Main {
     private void singleRun(String[] args) {
 
         try{
-                //load basic configuration
-                String configPathBasic = args.length == 0 ? "conf/java/config-jhotdraw.properties" : args[0];
-                Config configBasic = new Config(configPathBasic);
-                //update minSup and sub folder name
-                String inputMinSup = args.length == 0 ? String.valueOf(configBasic.getMinSupport()) : args[1];
-                String inputFold = args.length == 0 ? "fold4" : args[2];
-                //create temporary configuration
-                Properties prop;
-                OutputStream output = null;
-                String configPathTemp = "";
+            //load basic configuration
+            String configPathBasic = args.length == 0 ? "conf/java/config-jhotdraw.properties" : args[0];
+            Config configBasic = new Config(configPathBasic);
+            //update minSup and sub folder name
+            String inputMinSup = args.length == 0 ? String.valueOf(configBasic.getMinSupport()) : args[1];
+            String inputFold = args.length == 0 ? "fold4" : args[2];
+            //create temporary configuration
+            Properties prop;
+            OutputStream output = null;
+            String configPathTemp = "";
 
-                String inputPath = "";
-                String outputPath = "";
+            String inputPath = "";
+            String outputPath = "";
 
-                String sourceMatcher = "";
-                String inputPatterns = "";
-                String outputMatches = "";
+            String sourceMatcher = "";
+            String inputPatterns = "";
+            String outputMatches = "";
 
-                try {
-                    prop = configBasic.getProp();
-                    //update input dir path
-                    inputPath = configBasic.getInputFiles().replace("\"", "") + "/"+inputFold;
-                    //update output file path
-                    File directory = new File(configBasic.getOutputFile());
-                    if(!directory.exists()) directory.mkdir();
+            try {
+                prop = configBasic.getProp();
+                //update input dir path
+                inputPath = configBasic.getInputFiles().replace("\"", "") + "/"+inputFold;
+                //update output file path
+                File directory = new File(configBasic.getOutputFile());
+                if(!directory.exists()) directory.mkdir();
 
-                    outputPath = configBasic.getOutputFile().replace("\"","") +
-                            "/"+inputFold.replaceAll("\\/","-")+"-" + inputMinSup +"-patterns.xml";
-                    //delete output file if if exists
-                    Files.deleteIfExists(Paths.get(outputPath));
+                outputPath = configBasic.getOutputFile().replace("\"","") +
+                        "/"+inputFold.replaceAll("\\/","-")+"-" + inputMinSup +"-patterns.xml";
+                //delete output file if if exists
+                Files.deleteIfExists(Paths.get(outputPath));
 
-                    //create parameters for forest matcher
-                    sourceMatcher = inputPath;
-                    inputPatterns = outputPath;
-                    outputMatches = configBasic.getOutputFile().replace("\"","") +
-                            "/"+inputFold.replaceAll("\\/","-")+"-" +inputMinSup + "-matches.xml";
-                    Files.deleteIfExists(Paths.get(outputMatches));
+                //create parameters for forest matcher
+                sourceMatcher = inputPath;
+                inputPatterns = outputPath;
+                outputMatches = configBasic.getOutputFile().replace("\"","") +
+                        "/"+inputFold.replaceAll("\\/","-")+"-" +inputMinSup + "-matches.xml";
+                Files.deleteIfExists(Paths.get(outputMatches));
 
-                    //update path of temporary configuration
-                    configPathTemp = configBasic.getOutputFile().replace("\"","")
-                            + "/"+ inputFold.replaceAll("\\/","-")+"-"+ inputMinSup + "-config.properties";
-                    Files.deleteIfExists(Paths.get(configPathTemp));
+                //update path of temporary configuration
+                configPathTemp = configBasic.getOutputFile().replace("\"","")
+                        + "/"+ inputFold.replaceAll("\\/","-")+"-"+ inputMinSup + "-config.properties";
+                Files.deleteIfExists(Paths.get(configPathTemp));
 
-                    //update properties
-                    //prop.replace("minSupport", inputMinSup);
-                    prop.setProperty("minSupport",inputMinSup);
-                    prop.replace("inFiles", inputPath);
-                    prop.replace("outFile", outputPath);
-                    //save new properties
-                    output = new FileOutputStream(configPathTemp);
-                    prop.store(output, null);
+                //update properties
+                //prop.replace("minSupport", inputMinSup);
+                prop.setProperty("minSupport",inputMinSup);
+                prop.replace("inFiles", inputPath);
+                prop.replace("outFile", outputPath);
+                //save new properties
+                output = new FileOutputStream(configPathTemp);
+                prop.store(output, null);
 
-                } catch (IOException io) {
-                    io.printStackTrace();
-                } finally {
-                    if (output != null) {
-                        try {
-                            output.close();
-                        } catch (IOException e) {
-                            e.printStackTrace();
-                        }
+            } catch (IOException io) {
+                io.printStackTrace();
+            } finally {
+                if (output != null) {
+                    try {
+                        output.close();
+                    } catch (IOException e) {
+                        e.printStackTrace();
                     }
                 }
+            }
 
-                //load new configuration;
-                Config config = new Config(configPathTemp);
-                //run Freqt
-                FreqT freqt = new FreqT(config);
-                freqt.run();
+            //load new configuration;
+            Config config = new Config(configPathTemp);
+            //run Freqt
+            FreqT freqt = new FreqT(config);
+            freqt.run();
 
-                //run forestmatcher
-                if(config.outputAsXML()){
-                    String command = "java -jar forestmatcher.jar " +
-                            sourceMatcher + " " + inputPatterns +" " + outputMatches;
-                    Process proc = Runtime.getRuntime().exec(command);
+            //test memory consumption - no correct !
+            /*Runtime runtime = Runtime.getRuntime();
+            long memory = runtime.totalMemory() - runtime.freeMemory();
+            System.out.println("Used memory is megabytes: " + bytesToMegabytes(memory));*/
 
-                }
+            //run forestmatcher
+            if(config.outputAsXML()){
+                String command = "java -jar forestmatcher.jar " +
+                        sourceMatcher + " " + inputPatterns +" " + outputMatches;
+                Process proc = Runtime.getRuntime().exec(command);
+
+            }
             //System.out.println("===========================================================");
-            //how to safety stop this single task
+
             return;
         }
         catch (Exception e){
@@ -150,6 +155,15 @@ public class Main {
         }
     }
 
+    //memory consumption test
+    private static final long MEGABYTE = 1024L * 1024L;
+
+    private static long bytesToMegabytes(long bytes) {
+        return bytes / MEGABYTE;
+    }
+
+
+    //
     private class MultiRunConfig{
         public Integer minSupport;
         public String inFolder;
