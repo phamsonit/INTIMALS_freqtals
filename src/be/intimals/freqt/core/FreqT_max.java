@@ -58,8 +58,10 @@ public class FreqT_max extends FreqT {
             int depth = projected.getProjectedDepth();
             Map <String , Projected > candidate = new LinkedHashMap<>();
             for(int i = 0; i < projected.getProjectLocationSize(); ++i ){
-                int id  = projected.getProjectLocation(i).getLocationId();
-                int pos = projected.getProjectLocation(i).getLocationPos();
+                int id  = Location.getLocationId(projected.getProjectLocation(i));
+                int pos = Location.getLocationPos(projected.getProjectLocation(i));
+//                int id  = projected.getProjectLocation(i).getLocationId();
+//                int pos = projected.getProjectLocation(i).getLocationPos();
                 //add to keep all occurrences --> problem: memory consumption
                 //List<Integer> occurrences = projected.getProjectLocation(i).getLocationList();
 

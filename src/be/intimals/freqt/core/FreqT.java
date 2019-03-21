@@ -37,7 +37,7 @@ public class FreqT {
 
     private int oldRootSupport;
 
-    private boolean isGroupingRootOccurrences = true;
+    private boolean isGroupingRootOccurrences = false;
     private int nbIdentifiers = 2;
 
 
@@ -83,13 +83,22 @@ public class FreqT {
             int wsupport = projected.getProjectedRootSupport(); //=> root location
             int size = Pattern.getPatternSize(pat);
             //keep fileIds for itemset mining algorithm
-            String fileIds = String.valueOf(projected.getProjectLocation(0).getLocationId());
-            int oldId = projected.getProjectLocation(0).getLocationId();
+
+            String fileIds = String.valueOf(Location.getLocationId(projected.getProjectLocation(0)));
+            int oldId = Location.getLocationId(projected.getProjectLocation(0));
             for (int i = 1; i < projected.getProjectLocationSize(); ++i)
-                if (oldId != projected.getProjectLocation(i).getLocationId()) {
-                    fileIds = fileIds + "-" + String.valueOf(projected.getProjectLocation(i).getLocationId());
-                    oldId = projected.getProjectLocation(i).getLocationId();
+                if (oldId != Location.getLocationId(projected.getProjectLocation(i))) {
+                    fileIds = fileIds + "-" + String.valueOf(Location.getLocationId(projected.getProjectLocation(i)));
+                    oldId = Location.getLocationId(projected.getProjectLocation(i));
                 }
+
+//            String fileIds = String.valueOf(projected.getProjectLocation(0).getLocationId());
+//            int oldId = projected.getProjectLocation(0).getLocationId();
+//            for (int i = 1; i < projected.getProjectLocationSize(); ++i)
+//                if (oldId != projected.getProjectLocation(i).getLocationId()) {
+//                    fileIds = fileIds + "-" + String.valueOf(projected.getProjectLocation(i).getLocationId());
+//                    oldId = projected.getProjectLocation(i).getLocationId();
+//                }
 
             String patternString = Pattern.getPatternString1(pat); //filter out the right part of pattern which misses leaf nodes
 
@@ -97,8 +106,11 @@ public class FreqT {
             String rootOccurrences = "";
             for (int i = 0; i < projected.getProjectRootLocationSize(); ++i) {
                 rootOccurrences = rootOccurrences +
-                        projected.getProjectRootLocation(i).getLocationId() + ("-") +
-                        projected.getProjectRootLocation(i).getLocationPos() + ";";
+                        Location.getLocationId(projected.getProjectRootLocation(i)) + ("-") +
+                        Location.getLocationPos(projected.getProjectRootLocation(i)) + ";";
+//                rootOccurrences = rootOccurrences +
+//                        projected.getProjectRootLocation(i).getLocationId() + ("-") +
+//                        projected.getProjectRootLocation(i).getLocationPos() + ";";
             }
 
             String patternSupport =
@@ -119,13 +131,20 @@ public class FreqT {
      */
     private void addFileIDs(Vector<String> pat, Projected projected){
 
-        String fileIds = String.valueOf(projected.getProjectLocation(0).getLocationId());
-        int oldId = projected.getProjectLocation(0).getLocationId();
+        String fileIds = String.valueOf(Location.getLocationId(projected.getProjectLocation(0)));
+        int oldId = Location.getLocationId(projected.getProjectLocation(0));
         for(int i=1;i<projected.getProjectLocationSize(); ++i)
-            if(oldId != projected.getProjectLocation(i).getLocationId() ) {
-                fileIds = fileIds+","+ String.valueOf(projected.getProjectLocation(i).getLocationId());
-                oldId = projected.getProjectLocation(i).getLocationId();
+            if(oldId != Location.getLocationId(projected.getProjectLocation(i)) ) {
+                fileIds = fileIds+","+ String.valueOf(Location.getLocationId(projected.getProjectLocation(i)));
+                oldId = Location.getLocationId(projected.getProjectLocation(i));
             }
+//        String fileIds = String.valueOf(projected.getProjectLocation(0).getLocationId());
+//        int oldId = projected.getProjectLocation(0).getLocationId();
+//        for(int i=1;i<projected.getProjectLocationSize(); ++i)
+//            if(oldId != projected.getProjectLocation(i).getLocationId() ) {
+//                fileIds = fileIds+","+ String.valueOf(projected.getProjectLocation(i).getLocationId());
+//                oldId = projected.getProjectLocation(i).getLocationId();
+//            }
 
         String patternString = Pattern.getPatternString1(pat); //filter out the right part of pattern which misses leaf nodes
 
@@ -148,8 +167,11 @@ public class FreqT {
             String rootOccurrences = "";
             for (int i = 0; i < projected.getProjectRootLocationSize(); ++i) {
                 rootOccurrences = rootOccurrences +
-                        projected.getProjectRootLocation(i).getLocationId() + ("-") +
-                        projected.getProjectRootLocation(i).getLocationPos() + ";";
+                        Location.getLocationId(projected.getProjectRootLocation(i)) + ("-") +
+                        Location.getLocationPos(projected.getProjectRootLocation(i)) + ";";
+//                rootOccurrences = rootOccurrences +
+//                        projected.getProjectRootLocation(i).getLocationId() + ("-") +
+//                        projected.getProjectRootLocation(i).getLocationPos() + ";";
             }
             //System.out.println("rootOccurrences "+rootOccurrences);
             //keep only the root occurrences and root label
@@ -261,9 +283,12 @@ public class FreqT {
         int old = 0xffffffff;
         int sup = 0;
         for(int i=0; i<projected.getProjectLocationSize(); ++i) {
-            if (projected.getProjectLocation(i).getLocationId() != old)
+            if (Location.getLocationId(projected.getProjectLocation(i)) != old)
                 ++sup;
-            old = projected.getProjectLocation(i).getLocationId();
+            old = Location.getLocationId(projected.getProjectLocation(i));
+//            if (projected.getProjectLocation(i).getLocationId() != old)
+//                ++sup;
+//            old = projected.getProjectLocation(i).getLocationId();
         }
         return sup;
     }
@@ -276,14 +301,22 @@ public class FreqT {
     public int rootSupport(Projected projected){
         int rootSup = 1;
         for(int i=0; i< projected.getProjectRootLocationSize()-1;++i) {
-            Location location1 = projected.getProjectRootLocation(i);
-            Location location2 = projected.getProjectRootLocation(i+1);
+            int[] location1 = projected.getProjectRootLocation(i);
+            int[] location2 = projected.getProjectRootLocation(i+1);
 
-            if( (location1.getLocationId() == location2.getLocationId() &&
-                    location1.getLocationPos() != location2.getLocationPos()) ||
-                    location1.getLocationId() != location2.getLocationId()
+            if( (Location.getLocationId(location1) == Location.getLocationId(location2) &&
+                    Location.getLocationPos(location1) != Location.getLocationPos(location2)) ||
+                    Location.getLocationId(location1) != Location.getLocationId(location2)
                     )
                 ++rootSup;
+//            Location location1 = projected.getProjectRootLocation(i);
+//            Location location2 = projected.getProjectRootLocation(i+1);
+//
+//            if( (location1.getLocationId() == location2.getLocationId() &&
+//                    location1.getLocationPos() != location2.getLocationPos()) ||
+//                    location1.getLocationId() != location2.getLocationId()
+//                    )
+//                ++rootSup;
         }
 
         return rootSup;
@@ -359,8 +392,10 @@ public class FreqT {
             List<String> siblingList = new LinkedList<>();
 
             for (int i = 0; i < projected.getProjectLocationSize(); ++i) {
-                int id = projected.getProjectLocation(i).getLocationId();
-                int pos = projected.getProjectLocation(i).getLocationPos();
+                int id = Location.getLocationId(projected.getProjectLocation(i));
+                int pos = Location.getLocationPos(projected.getProjectLocation(i));
+//                int id = projected.getProjectLocation(i).getLocationId();
+//                int pos = projected.getProjectLocation(i).getLocationPos();
                 //System.out.println(_transaction.elementAt(id).elementAt(pos).getNodeLabel());
                 //find parent of id,pos
                 int parent = _transaction.elementAt(id).elementAt(pos).getNodeParent();
@@ -418,12 +453,15 @@ public class FreqT {
             // Find all candidates of the current subtree
             int depth = projected.getProjectedDepth();
             for (int i = 0; i < projected.getProjectLocationSize(); ++i) {
-                int id = projected.getProjectLocation(i).getLocationId();
-                int pos = projected.getProjectLocation(i).getLocationPos();
+                int id = Location.getLocationId(projected.getProjectLocation(i));
+                int pos = Location.getLocationPos(projected.getProjectLocation(i));
+//                int id = projected.getProjectLocation(i).getLocationId();
+//                int pos = projected.getProjectLocation(i).getLocationPos();
                 // Add to keep all occurrences --> problem: memory consumption
                 //List<Integer> occurrences = projected.getProjectLocation(i).getLocationList();
                 //only keep root location and right-most location
-                List<Integer> occurrences = projected.getProjectLocation(i).getLocationList().subList(0,1);
+//                List<Integer> occurrences = projected.getProjectLocation(i).getLocationList().subList(0,1);
+                List<Integer> occurrences = Location.getLocationList(projected.getProjectLocation(i)).subList(0,1);
                 //keep lineNr to calculate distance of two nodes
                 //List<Integer> lines = projected.getProjectLineNr(i);
 
@@ -443,7 +481,8 @@ public class FreqT {
                             candidates.get(item).addProjectLocation(id, l, occurrences);//keeping all locations
                             //candidate.get(item).addProjectLineNr(Integer.valueOf(lineNrTemp),lines);
                             //rootId = id, rootPos = ?
-                            int rootPos = projected.getProjectLocation(i).getLocationList().get(0);
+//                            int rootPos = projected.getProjectLocation(i).getLocationList().get(0);
+                            int rootPos = Location.getLocationList(projected.getProjectLocation(i)).get(0);
                             //if (id, rootPos) exists in root ???
                             candidates.get(item).setProjectRootLocation(id, rootPos);//keeping root locations
                         } else {
@@ -452,7 +491,8 @@ public class FreqT {
                             //tmp.setProjectLocation(id, l); //keep right most position
                             tmp.addProjectLocation(id, l, occurrences); //keeping all locations
                             //tmp.addProjectLineNr(Integer.valueOf(lineNrTemp),lines);
-                            int rootPos = projected.getProjectLocation(i).getLocationList().get(0);
+//                            int rootPos = projected.getProjectLocation(i).getLocationList().get(0);
+                            int rootPos = Location.getLocationList(projected.getProjectLocation(i)).get(0);
                             tmp.setProjectRootLocation(id, rootPos); //keeping root locations
                             candidates.put(item, tmp);
                         }
@@ -647,7 +687,7 @@ public class FreqT {
             if(config.buildGrammar())
                 Initial.initGrammar(config.getInputFiles(),grammar,config.buildGrammar());
             else
-                Initial.initGrammar(config.getGrammarFile(),grammar,config.buildGrammar()) ;
+                Initial.initGrammar(config.getGrammarFile(),grammar,config.buildGrammar());
 
             Initial.readWhiteLabel(config.getWhiteLabelFile(), grammar, whiteLabels, blackLabels); //read white labels and create black labels
             Initial.readRootLabel(config.getRootLabelFile(), rootLabels);  //read root labels (AST Nodes)
@@ -689,7 +729,7 @@ public class FreqT {
             //closed output for the first step
             //outputFrequent.close();
             //end the first step --> garbage collector
-            System.gc();
+//            System.gc();
             long end1 = System.currentTimeMillis( );
             long diff1 = end1 - start;
             //report phase 1

@@ -129,7 +129,7 @@ public class FreqT_ext extends FreqT {
             patSet.put(patternString, patternSupport);
         }
         //Note: reduce memory consuming but increase running time !
-        //System.gc();
+//        System.gc();
     }
 
     //expand candidate based on grammar
@@ -300,6 +300,7 @@ public class FreqT_ext extends FreqT {
             long timeForPrint = time > 1 ? time : 1;//??? minute(s)
             long timeFor2nd = (config.getTimeout())*(60*1000)- timeFor1st - timeForPrint*60*1000;
             long timeSpent = 0;
+
             while(! _rootIDs.isEmpty()){
                 //store groups which run over timePerTask
                 Map<String,String> rootIDTemp = new LinkedHashMap<>();
@@ -371,9 +372,13 @@ public class FreqT_ext extends FreqT {
                         //keep root and right-most locations
                         for (int i = 0; i < projected.getProjectRootLocationSize(); ++i) {
                             rootOccurrences = rootOccurrences +
-                                    projected.getProjectRootLocation(i).getLocationId() + ("-") +
-                                    projected.getProjectRootLocation(i).getLocationPos() + "-" +
-                                    projected.getProjectLocation(i).getLocationPos() + ";";
+                                    Location.getLocationId(projected.getProjectRootLocation(i)) + ("-") +
+                                    Location.getLocationPos(projected.getProjectRootLocation(i)) + "-" +
+                                    Location.getLocationPos(projected.getProjectLocation(i)) + ";";
+//                            rootOccurrences = rootOccurrences +
+//                                    projected.getProjectRootLocation(i).getLocationId() + ("-") +
+//                                    projected.getProjectRootLocation(i).getLocationPos() + "-" +
+//                                    projected.getProjectLocation(i).getLocationPos() + ";";
                         }
                         //store the current pattern for the next round
                         rootIDTemp.put(rootOccurrences,largestPattern.toString());
@@ -385,7 +390,7 @@ public class FreqT_ext extends FreqT {
                     timeEndRound = System.currentTimeMillis();
                     timeSpent = (timeEndRound - timeStartRound);
                     //garbage collector
-                    System.gc();
+//                    System.gc();
                 }
                 //update this list of groups for the next round
                 _rootIDs = rootIDTemp;
@@ -445,7 +450,7 @@ public class FreqT_ext extends FreqT {
                 project(projected);
                 largestPattern.setSize(largestPattern.size() - 1);
                 //garbage collector
-                System.gc();
+//                System.gc();
 
                 /*
                 //Test: do the maximality check for each group of largest patterns
