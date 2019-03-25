@@ -17,6 +17,8 @@ public class FreqT {
     protected Config config;
 
     private AOutputFormatter outputFrequent;
+    private AOutputFormatter outputMaximalPatterns;
+
     private Vector <String>  pattern;
     private Vector <Vector<NodeFreqT> >  transaction = new Vector<>();
 
@@ -37,8 +39,11 @@ public class FreqT {
 
     private int oldRootSupport;
 
-    private boolean isGroupingRootOccurrences = false;
+    //private boolean isGroupingRootOccurrences = true;
     private int nbIdentifiers = 2;
+
+    //test check maximality
+    private Map<String,String> outputMaximalPatternsMap = new HashMap<>();
 
 
     ////////////////////////////////////////////////////////////////////////////////
@@ -250,6 +255,73 @@ public class FreqT {
             return false;
     }
 
+    //return 1 : pat1 is subset of 2; 2 : pat2 is subset of pat1; otherwise return 0
+    private int checkSubTree(String pat1, String pat2){
+
+        //System.out.println("===================");
+        //TODO: this object is created many times --> increasing usage memory
+        FreqT_max1 post = new FreqT_max1(this.config);
+        post.checkSubtrees(pat1, pat2);
+
+        if (post.getOutputPattern() == null)
+        {
+            return 0;
+        }else
+        {
+            if( pat1.length() <= pat2.length() ) {
+                return 1;
+            }
+            else {
+                return 2;
+            }
+        }
+    }
+
+    //input pat, patSet
+    //for each element in patSet
+    //if pat is a subtree of element return
+    //else if element is a subset of pat then replace element by pat
+    //else add pat to patSet
+    public void addMaximality(Vector<String> pat, Projected projected, Map<String,String> patSet){
+        boolean found = false;
+        Iterator < Map.Entry<String,String> > p = patSet.entrySet().iterator();
+        while(p.hasNext()){
+            Map.Entry<String, String> entry = p.next();
+            switch (checkSubTree(Pattern.getPatternString1(pat),entry.getKey())){
+                case 1:
+                    found = true;
+                    break;
+                case 2:
+                    //found = true;
+                    p.remove();
+                    break;
+            }
+        }
+        if(! found) {
+            int support = projected.getProjectedSupport();
+            int wsupport = projected.getProjectedRootSupport(); //=> root location
+            int size = Pattern.getPatternSize(pat);
+            //find root occurrences of pattern
+            /*String rootOccurrences = "";
+            for (int i = 0; i < projected.getProjectRootLocationSize(); ++i) {
+                rootOccurrences = rootOccurrences +
+                        projected.getProjectRootLocation(i).getLocationId() + ("-") +
+                        projected.getProjectRootLocation(i).getLocationPos() + ";";
+            }*/
+            String patternSupport =
+                    "rootOccurrences" + "," +
+                            String.valueOf(support) + "," +
+                            String.valueOf(wsupport) + "," +
+                            String.valueOf(size)+"\t"+
+                            pat.toString(); //keeping for XML output
+
+            String patternString = Pattern.getPatternString1(pat); //filter out the right part of pattern which misses leaf nodes
+            patSet.put(patternString, patternSupport);
+        }
+        //Note: reduce memory consuming but increase running time !
+//        System.gc();
+    }
+
     /**
      * choose output of the first step
      * @param pat
@@ -261,7 +333,13 @@ public class FreqT {
 
         nbOutputFrequentPatterns++;
 
-        if(isGroupingRootOccurrences){
+        if (config.postProcess()) {
+            addRootIDs(pat, projected,rootIDs);
+        }else
+            addMaximality(pat,projected,outputMaximalPatternsMap);
+
+
+        /*if(isGroupingRootOccurrences){
             addRootIDs(pat, projected,rootIDs);
             //outputFrequent.report(pat, projected);
         }else{
@@ -270,7 +348,7 @@ public class FreqT {
                 //outputFrequent.report(pat, projected);
             }
             else outputFrequent.report(pat, projected);
-        }
+        }*/
     }
 
     /**
@@ -604,8 +682,6 @@ public class FreqT {
                     pattern.addElement(p[i]);
             }
 
-            /*if(Pattern.countLeafNode(pattern) <= config.getMaxLeaf())
-                grammarExpand(entry);*/
 
             if(Pattern.countLeafNode(pattern) <= config.getMaxLeaf()){
                 if (Pattern.isMissedLeafNode(pattern)){
@@ -614,7 +690,7 @@ public class FreqT {
                 }else
                     grammarExpand(entry);
             }
-            else{ //if don't use the grouping root occurrences step then expand patterns by root occurrences
+            /*else{ //if don't use the grouping root occurrences step then expand patterns by root occurrences
                 if(!isGroupingRootOccurrences){
                     int newRootSupport = rootSupport(entry.getValue());
                     if (oldRootSupport == newRootSupport){
@@ -629,7 +705,7 @@ public class FreqT {
                         return;
                     }
                 }
-            }
+            }*/
 
         }catch (Exception e){System.out.println("Error: expand candidate " + e);}
     }
@@ -730,13 +806,14 @@ public class FreqT {
             //outputFrequent.close();
             //end the first step --> garbage collector
 //            System.gc();
-            long end1 = System.currentTimeMillis( );
-            long diff1 = end1 - start;
-            //report phase 1
-            String s1 = "FREQT: frequent patterns = "+ nbOutputFrequentPatterns +", time = "+ diff1;
-            log(report,s1);
 
-            if(isGroupingRootOccurrences){
+
+            if(config.postProcess()){
+                long end1 = System.currentTimeMillis( );
+                long diff1 = end1 - start;
+                //report phase 1
+                String s1 = "FREQT: frequent patterns = "+ nbOutputFrequentPatterns +", time = "+ diff1;
+                log(report,s1);
                 //filter rootIDs
                 log(report,"\t#root occurrences groups = "+ rootIDs.size());
                 filterRootOccurrences(rootIDs);
@@ -770,21 +847,33 @@ public class FreqT {
                 report.close();
 
             }else{
-                if(config.postProcess()){
-                    //maximality check on all frequent subtrees
-                    FreqT_max post = new FreqT_max(this.config, this.grammar, this.blackLabels, this.whiteLabels, this.xmlCharacters);
-                    post.run(outputFrequentPatternsMap);
-                    nbOutputMaximalPatterns = post.getNbMaximalPattern();
-                    long end3 = System.currentTimeMillis( );
-                    long diff3 = end3 - end1;
+                //report phase 1
+                long end1 = System.currentTimeMillis( );
+                long diff1 = end1 - start;
+                String s1 = "FREQT: frequent patterns = "+ nbOutputFrequentPatterns +", time = "+ diff1;
+                log(report,s1);
+                //String s11 = "average pattern size = " + totalSize/nbOutputFrequentPatterns;
+                //log(report,s11);
 
-                    String s2 = "FREQT_MAX: maximal patterns "+post.getNbMaximalPattern()+", time "+ diff3;
-                    log(report,s2);
-
-                    String s4 = "total times = "+(diff3-diff1) +" ms";
-                    log(report,s4);
-                    report.close();
+                //output maximal patterns
+                outputMaximalPatterns =  new XMLOutput(config.getOutputFile(),config, grammar, xmlCharacters);
+                //System.out.println("outputLargestPatternsMap1 :" + outputLargestPatternsMap1.size()+" ==>");
+                Iterator < Map.Entry<String,String> > iter1 = outputMaximalPatternsMap.entrySet().iterator();
+                while(iter1.hasNext()){
+                    Map.Entry<String,String> entry = iter1.next();
+                    //output XML
+                    outputMaximalPatterns.printPattern(entry.getValue());
                 }
+                outputMaximalPatterns.close();
+
+                long end2 = System.currentTimeMillis();
+                long diff2 = end2 - start;
+                String s2 = "FREQT_MAX: maximal patterns "+outputMaximalPatterns.getNbPattern()+", time "+ diff2;
+                log(report,s2);
+                String s3 = "total times = "+ diff2 +" ms";
+                log(report,s3);
+                report.close();
+
             }
         }
         catch (Exception e) {

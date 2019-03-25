@@ -65,72 +65,7 @@ public class FreqT_ext extends FreqT {
         addMaximality (pat,projected,outputMaximalPatternsMap1);
     }
 
-    //return 1 : pat1 is subset of 2; 2 : pat2 is subset of pat1; otherwise return 0
-    private int checkSubTree(String pat1, String pat2){
 
-        //System.out.println("===================");
-        //TODO: this object is created many times --> increasing usage memory
-        FreqT_max1 post = new FreqT_max1(this.config);
-        post.checkSubtrees(pat1, pat2);
-
-        if (post.getOutputPattern() == null)
-        {
-            return 0;
-        }else
-            {
-                if( pat1.length() <= pat2.length() ) {
-                    return 1;
-                }
-                else {
-                    return 2;
-                }
-            }
-    }
-
-    //input pat, patSet
-    //for each element in patSet
-    //if pat is a subtree of element return
-    //else if element is a subset of pat then replace element by pat
-    //else add pat to patSet
-    private void addMaximality(Vector<String> pat, Projected projected, Map<String,String> patSet){
-        boolean found = false;
-        Iterator < Map.Entry<String,String> > p = patSet.entrySet().iterator();
-        while(p.hasNext()){
-            Map.Entry<String, String> entry = p.next();
-            switch (checkSubTree(Pattern.getPatternString1(pat),entry.getKey())){
-                case 1:
-                    found = true;
-                    break;
-                case 2:
-                    //found = true;
-                    p.remove();
-                    break;
-            }
-        }
-        if(! found) {
-            int support = projected.getProjectedSupport();
-            int wsupport = projected.getProjectedRootSupport(); //=> root location
-            int size = Pattern.getPatternSize(pat);
-            //find root occurrences of pattern
-            /*String rootOccurrences = "";
-            for (int i = 0; i < projected.getProjectRootLocationSize(); ++i) {
-                rootOccurrences = rootOccurrences +
-                        projected.getProjectRootLocation(i).getLocationId() + ("-") +
-                        projected.getProjectRootLocation(i).getLocationPos() + ";";
-            }*/
-            String patternSupport =
-                    "rootOccurrences" + "," +
-                            String.valueOf(support) + "," +
-                            String.valueOf(wsupport) + "," +
-                            String.valueOf(size)+"\t"+
-                            pat.toString(); //keeping for XML output
-
-            String patternString = Pattern.getPatternString1(pat); //filter out the right part of pattern which misses leaf nodes
-            patSet.put(patternString, patternSupport);
-        }
-        //Note: reduce memory consuming but increase running time !
-//        System.gc();
-    }
 
     //expand candidate based on grammar
     private void grammarExpand(Map.Entry<String, Projected> entry){
