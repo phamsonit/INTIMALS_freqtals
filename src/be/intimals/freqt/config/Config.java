@@ -20,6 +20,7 @@ public class Config {
         input.close();
     }
 
+    public int getNbIdentifiers(){return Integer.valueOf(prop.getProperty("nbIdentifiers"));}
 
     public int getConfigID(){
         return Integer.valueOf(prop.getProperty("configID"));

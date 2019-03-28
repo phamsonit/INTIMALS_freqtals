@@ -8,15 +8,8 @@ import java.util.*;
 
 public class Util {
 
-    static  Vector<String> pattern = new Vector<>();
-    // TODO (The method that uses this field is currently unused.) This field is error-prone though because it's static and we're running Freq-T in parallel!
-
-    private static Vector<String> trans = new Vector<>();
-    // TODO (The method that uses this field is currently unused.) This field is error-prone though because it's static and we're running Freq-T in parallel!
-
-
     //create transaction for item set mining algorithm
-    public static void createTransaction(String inputPath, String outputPath){
+    public static void createTransaction(String inputPath, String outputPath, Vector<String> trans){
 
         String file = inputPath;
         try (BufferedReader br = new BufferedReader(new FileReader(file))) {
@@ -32,7 +25,7 @@ public class Util {
             }
         }catch (IOException e) {System.out.println("Reading file error ");}
 
-        int rows = 450;
+        int rows = 450;//???
         int columns = trans.size();
         List<List<Integer>> matrix = new LinkedList<>();
         for(int i=0; i<rows; ++i){
@@ -74,7 +67,7 @@ public class Util {
 
 
     //group patterns by leaf labels
-    public void groupPattern(String inputFile, String outputFile) {
+    public void groupPattern(String inputFile, String outputFile, Vector<String> pattern) {
 
         //readPattern(path);
         //String file = inputFile;

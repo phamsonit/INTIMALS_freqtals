@@ -15,7 +15,7 @@ public class XMLOutput extends AOutputFormatter {
         super(_file,_config, _grammar, _xmlCharacters);
     }
 
-    public XMLOutput(String _file,Config _config, Map<String, Vector<String>> _grammar, Map<String,String> _xmlCharacters, Map<String,String> _patSupMap) throws IOException {
+    public XMLOutput(String _file, Config _config, Map<String, Vector<String>> _grammar, Map<String,String> _xmlCharacters, Map<String,String> _patSupMap) throws IOException {
         super(_file,_config, _grammar, _xmlCharacters);
         patSupMap = _patSupMap;
     }

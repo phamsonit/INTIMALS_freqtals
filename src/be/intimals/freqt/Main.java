@@ -42,19 +42,17 @@ public class Main {
         Main m = new Main();
 
         if (args.length==0) {
-
             System.out.println("Single-run Freq-T usage:\n" +
                     "java -jar freqt_java.jar CONFIG_FILE [MIN_SUPPORT] [INPUT_FOLDER]\n" +
                     "\n" +
                     "Multi-run Freq-T usage:\n" +
                     "java -jar freqt_java.jar -multi CONFIG_FILE");
-
-            m.singleRun(args);
-
-        } else if (args[0].equals("-multi")) {
-            m.multiRun(args);
         } else {
-            m.singleRun(args);
+            if (args[0].equals("-multi")) {
+                m.multiRun(args);
+            } else {
+                m.singleRun(args);
+            }
         }
         System.exit(3);
 
@@ -64,11 +62,10 @@ public class Main {
 
         try{
             //load basic configuration
-            String configPathBasic = args.length == 0 ? "conf/java/config-jhotdraw.properties" : args[0];
+            String configPathBasic = args[0];
             Config configBasic = new Config(configPathBasic);
-            //update minSup and sub folder name
-            String inputMinSup = args.length == 0 ? String.valueOf(configBasic.getMinSupport()) : args[1];
-            String inputFold = args.length == 0 ? "fold4" : args[2];
+            String inputMinSup = args[1];
+            String inputFold = args[2];
             //create temporary configuration
             Properties prop;
             OutputStream output = null;

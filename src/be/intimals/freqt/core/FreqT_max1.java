@@ -42,10 +42,6 @@ public class FreqT_max1 extends FreqT {
             for(int i = 0; i < projected.getProjectLocationSize(); ++i ){
                 int id  = Location.getLocationId(projected.getProjectLocation(i));
                 int pos = Location.getLocationPos(projected.getProjectLocation(i));
-//                int id  = projected.getProjectLocation(i).getLocationId();
-//                int pos = projected.getProjectLocation(i).getLocationPos();
-                //add to keep all occurrences --> problem: memory consumption
-                //List<Integer> occurrences = projected.getProjectLocation(i).getLocationList();
 
                 String prefix = "";
                 for(int d = -1; d < depth && pos != -1; ++d) {
@@ -60,14 +56,10 @@ public class FreqT_max1 extends FreqT {
                         Projected tmp;// = new Projected();
                         if(candidate.containsKey(item)) {
                             candidate.get(item).setProjectLocation(id,l); //store right most positions
-                            //add to keep all occurrences
-                            //candidate.get(item).addProjectLocation(id, l, occurrences);
                         }
                         else {
-                            //add to keep all occurrences
                             tmp = new Projected();
                             tmp.setProjectedDepth(newdepth);
-                            //tmp.addProjectLocation(id,l,occurrences);
                             tmp.setProjectLocation(id,l); //store right most positions
                             candidate.put(item, tmp);
                         }
@@ -88,21 +80,21 @@ public class FreqT_max1 extends FreqT {
                 //not found and stop
                 found = true;
                 return;
-            }
-
-            //expand the current pattern with each candidate
-            Iterator < Map.Entry<String,Projected> > iter = candidate.entrySet().iterator();
-            while (iter.hasNext()) {
-                int oldSize = maximalPattern.size();
-                Map.Entry<String, Projected> entry = iter.next();
-                // add new candidate to current pattern
-                String[] p = entry.getKey().split(String.valueOf(uniChar));
-                for (int i = 0; i < p.length; ++i) {
-                    if (!p[i].isEmpty())
-                        maximalPattern.addElement(p[i]);
+            }else {
+                //expand the current pattern with each candidate
+                Iterator<Map.Entry<String, Projected>> iter = candidate.entrySet().iterator();
+                while (iter.hasNext()) {
+                    int oldSize = maximalPattern.size();
+                    Map.Entry<String, Projected> entry = iter.next();
+                    // add new candidate to current pattern
+                    String[] p = entry.getKey().split(String.valueOf(uniChar));
+                    for (int i = 0; i < p.length; ++i) {
+                        if (!p[i].isEmpty())
+                            maximalPattern.addElement(p[i]);
+                    }
+                    project(entry.getValue());
+                    maximalPattern.setSize(oldSize);
                 }
-                project(entry.getValue());
-                maximalPattern.setSize(oldSize);
             }
         }catch (Exception e){
             System.out.println("ERROR: post-processing expanding " + e);
@@ -110,8 +102,9 @@ public class FreqT_max1 extends FreqT {
     }
 
     /**
-     * check subtree of pat1 and pat2
-     *
+     * check subtrees
+     * @param pat1
+     * @param pat2
      */
     public void checkSubtrees(String pat1, String pat2) {
         try{
@@ -132,7 +125,6 @@ public class FreqT_max1 extends FreqT {
             //create tree database
             initDatabase(inputPatterns);
             //System.out.println("root label candidates " + freq1.keySet());
-            //init maximalPattern
             maximalPattern = new Vector<>();
             String rootLabel1 = newTransaction.elementAt(0).elementAt(0).getNodeLabel();
             //String rootLabel2 = newTransaction.elementAt(1).elementAt(0).getNodeLabel();
