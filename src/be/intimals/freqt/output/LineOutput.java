@@ -53,7 +53,8 @@ public class LineOutput extends AOutputFormatter {
 
                 //List<Integer> allOccurrences = getSizeAllOccurrences(projected);
 
-                assert(size == projected.getProjectLocation(0).getLocationList().size());
+                assert(size == Location.getLocationList(projected.getProjectLocation(0)).size());
+//                assert(size == projected.getProjectLocation(0).getLocationList().size());
 
                 //System.out.println(FreqT.getPatternString(pat));
                 //printAllOccurrence(projected);

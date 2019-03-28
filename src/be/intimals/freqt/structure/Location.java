@@ -3,46 +3,52 @@ package be.intimals.freqt.structure;
 import java.util.*;
 
 public class Location {
-    private int id;
-    //private int pos; //right most position
-//    private List<Integer> pos = new ArrayList<>();
+    /**
+     * Set of static functions to represent and modify a location
+     * A location is an int[], where the first element is an identifier of this location, followed by a list of positions.
+     *
+     * !! Note: this definitely is very un-OOP-like code, but this is done to significantly reduce memory consumption.
+     * We are creating **many** of these locations, so it takes less space to directly work with an int[]
+     * instead of wrapping it in a class instance.
+     *
+     * @return
+     */
 
-    private int[] pos; //positions of all labels in pattern
-
-    //private Set<Integer> rootPos = new LinkedHashSet<>();
-    ////////////////////////////////////////////////////////////
-
-    public Location(){
-        pos = new int[0];
-    }
-    public Location(List<Integer> start) {
-        pos = toPrimitiveIntArray(start);
-//        pos = new ArrayList<>(start);
+    public static int[] init() {
+        return new int[1]; // Reserve the first element to store location id
     }
 
-    public void setLocationId(int a) {
-        this.id = a;
-    }
-    public int getLocationId() {
-        return this.id;
-    }
-
-    public void addLocationPos(int a) {
-        pos = appendArray(pos, a);
-//        this.pos.add(a);
+    public static int[] init(List<Integer> start) {
+        List<Integer> copy = new ArrayList<>(start);
+        copy.add(0, 0); // Reserve the first element to store location id
+        return toPrimitiveIntArray(copy);
     }
 
-    public int getLocationPos() {
-        return pos[pos.length-1];
-//        return this.pos.get(this.pos.size()-1);
+    public static void setLocationId(int[]location , int a) {
+        location[0] = a;
     }
 
-    public List<Integer> getLocationList() {
-        return toArrayList(pos);
+    public static int getLocationId(int[] location) {
+        return location[0];
     }
+
+    public static int[] addLocationPos(int[] location, int a) {
+        return appendArray(location, a);
+    }
+
+    public static int getLocationPos(int[] location) {
+        return location[location.length-1];
+    }
+
+    public static List<Integer> getLocationList(int[] location) {
+        List<Integer> list = toArrayList(location);
+        list.remove(0); // Remove the id
+        return list;
+    }
+
 
     // Convert an int[] to a List<Integer>
-    private int[] toPrimitiveIntArray(List<Integer> al) {
+    private static int[] toPrimitiveIntArray(List<Integer> al) {
         int[] converted = new int[al.size()];
         Iterator<Integer> iterator = al.iterator();
         for (int i = 0; i < converted.length; i++)
@@ -53,7 +59,7 @@ public class Location {
     }
 
     // Convert a List<Integer> to an int[]
-    private List<Integer> toArrayList(int[] arr) {
+    private static List<Integer> toArrayList(int[] arr) {
         List<Integer> converted = new ArrayList<>();
         for(int i = 0; i < arr.length; i++) {
             converted.add(arr[i]);
@@ -62,7 +68,7 @@ public class Location {
     }
 
     // Append an integer to an array
-    private int[] appendArray(int[] array, int x){
+    private static int[] appendArray(int[] array, int x){
         int[] result = new int[array.length + 1];
         for(int i = 0; i < array.length; i++)
             result[i] = array[i];
