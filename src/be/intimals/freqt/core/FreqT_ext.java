@@ -27,6 +27,9 @@ public class FreqT_ext extends FreqT {
     boolean finished;
     long timePerGroup;
 
+    //store root occurrences for the second round
+    Map<String,String> interruptedRootID = new LinkedHashMap<>();
+
 
     ////////////////////////////////////////////////////////////////////////////////
 
@@ -158,6 +161,30 @@ public class FreqT_ext extends FreqT {
             long diff = end-start;
             if( diff  > timePerGroup) {
                 finished = false;
+                //keep the depth of projector
+                String rootOccurrences = String.valueOf(projected.getProjectedDepth())+"\t";
+                //keep root occurrences and right-most occurrences
+                for (int i = 0; i < projected.getProjectRootLocationSize(); ++i) {
+                    rootOccurrences = rootOccurrences +
+                            Location.getLocationId(projected.getProjectRootLocation(i)) + ("-") +
+                            Location.getLocationPos(projected.getProjectRootLocation(i)) + ";";
+                            //Location.getLocationPos(projected.getProjectLocation(i)) + ";";
+
+                }
+
+                String rightmostOccurrences="";
+                for (int i = 0; i < projected.getProjectLocationSize(); ++i) {
+                    rightmostOccurrences = rightmostOccurrences +
+                            Location.getLocationId(projected.getProjectLocation(i)) + ("-") +
+                            Location.getLocationPos(projected.getProjectLocation(i)) + ";";
+
+                }
+                rootOccurrences = rootOccurrences+"\t"+rightmostOccurrences;
+
+                //store the current pattern for the next round
+                //System.out.println((rootOccurrences+"--"+largestPattern.toString()));
+                interruptedRootID.put(rootOccurrences,largestPattern.toString());
+
                 return;
             }
             //find candidates
@@ -212,16 +239,16 @@ public class FreqT_ext extends FreqT {
             long timeSpent = 0;
 
             while(! _rootIDs.isEmpty()){
-                //store groups which run over timePerTask
-                Map<String,String> rootIDTemp = new LinkedHashMap<>();
+                //store interrupted groups which run over timePerTask
+                interruptedRootID = new LinkedHashMap<>();
                 //calculate time for each group in the current round
-                log(_report,"===================");
-                log(_report,"ROUND: "+ roundCount);
-                log(_report,"- nbGroups = "+ _rootIDs.size());
+                //log(_report,"===================");
+                //log(_report,"ROUND: "+ roundCount);
+                //log(_report,"- nbGroups = "+ _rootIDs.size());
                 timePerGroup = (timeFor2nd - timeSpent) / _rootIDs.size() ;
-                log(_report,"- timePerGroup = "+ timePerGroup +" ms");
-                log(_report,"===================");
-                //for each group of root occurrences find patterns without size constraints
+                //log(_report,"- timePerGroup = "+ timePerGroup +" ms");
+                //log(_report,"===================");
+                //for each group of root occurrences find patterns without max size constraints
                 int groupCount = 1;
                 largestPattern = new Vector<>();
                 Iterator < Map.Entry<String,String> > rootId = _rootIDs.entrySet().iterator();
@@ -230,13 +257,17 @@ public class FreqT_ext extends FreqT {
                     start = System.currentTimeMillis( );
                     finished = true;
                     //long timeRemaining = timeFor2nd - timeSpent;
-                    if(timeFor2nd - timeSpent <= 0){
-                        log(_report,"the second step timeout");
+                    if(timeFor2nd < timeSpent){
+                        //log(_report,"the second step timeout");
                         break;
+                        //return;
                     }
-                    log(_report,"- Group: "+groupCount);
+                    //log(_report,"- Group: "+groupCount);
 
                     Map.Entry<String,String> entry = rootId.next();
+                    ////output to check which files containing very large patterns
+                    //System.out.println(entry.getKey()+"--"+entry.getValue());
+
                     Projected projected = new Projected();
                     if(roundCount == 1) {
                         String[]tmp = entry.getValue().substring(1,entry.getValue().length()-1).split(String.valueOf(","));
@@ -251,53 +282,53 @@ public class FreqT_ext extends FreqT {
                             projected.setProjectRootLocation(Integer.valueOf(pos[0]),Integer.valueOf(pos[1]));
                         }
                     }else{
-                        //from the second round, expanding from the pattern which stored in the previous round
+                        //from the second round, expanding from the patterns which interrupted in the previous round
                         String[]tmp = entry.getValue().substring(1,entry.getValue().length()-1).split(String.valueOf(","));
                         largestPattern = Pattern.formatPattern(tmp);
-                        String[] pro = entry.getKey().split("\t");
-                        projected.setProjectedDepth(Integer.valueOf(pro[0])); //depth = ???
+                        //print to test locations of interrupted pattern
+                        //System.out.println(entry.getKey());
+                        String[] projectTemp = entry.getKey().split("\t");
+                        projected.setProjectedDepth(Integer.valueOf(projectTemp[0]));
                         //calculate root and right-most positions
-                        String[] temp = pro[1].split(";");
-                        for(int i=0; i<temp.length; ++i){
-                            String[] pos = temp[i].split("-");
-                            projected.setProjectLocation(Integer.valueOf(pos[0]),Integer.valueOf(pos[2]));
-                            projected.setProjectRootLocation(Integer.valueOf(pos[0]),Integer.valueOf(pos[1]));
+                        String[] rootTemp = projectTemp[1].split(";");
+                        for(int i=0; i<rootTemp.length; ++i) {
+                            String[] pos = rootTemp[i].split("-");
+                            projected.setProjectRootLocation(Integer.valueOf(pos[0]), Integer.valueOf(pos[1]));
+                            ////location = (id,[root pos, rightmost pos])
+                            //projected.setProjectLocation(Integer.valueOf(pos[0]), Integer.valueOf(pos[1]));
+                            //projected.setProjectLocation(Integer.valueOf(pos[0]), Integer.valueOf(pos[2]));
+                        }
+                        String[] rightmostTemp = projectTemp[2].split(";");
+                        for(int i=0; i<rightmostTemp.length; ++i) {
+                            String[] pos = rightmostTemp[i].split("-");
+                            projected.setProjectLocation(Integer.valueOf(pos[0]), Integer.valueOf(pos[1]));
                         }
                     }
 
                     largestMinSup = support(projected);
 
                     project(projected);
-
-                    long end = System.currentTimeMillis();
+                    //report for each group
+                    /*long end = System.currentTimeMillis();
                     long diff = end - start;
                     if(finished) {
                         log(_report,"+ Finish : " + diff);
-                        //rootId.remove();
                     }
                     else {
                         log(_report,"+ Stop : " + diff);
-                        //keep the depth of projector
-                        String rootOccurrences = String.valueOf(projected.getProjectedDepth())+"\t";
-                        //keep root and right-most locations
-                        for (int i = 0; i < projected.getProjectRootLocationSize(); ++i) {
-                            rootOccurrences = rootOccurrences +
-                                    Location.getLocationId(projected.getProjectRootLocation(i)) + ("-") +
-                                    Location.getLocationPos(projected.getProjectRootLocation(i)) + "-" +
-                                    Location.getLocationPos(projected.getProjectLocation(i)) + ";";
-                        }
-                        //store the current pattern for the next round
-                        rootIDTemp.put(rootOccurrences,largestPattern.toString());
                     }
+                    //report number of maximal patterns
+                    log(_report,"+ Maximal patterns: " + outputMaximalPatternsMap.size());*/
+
                     //update size of the pattern for next expansion
                     largestPattern.setSize(largestPattern.size() - 1);
+                    //
                     groupCount++;
-                    log(_report,"+ Maximal patterns: " + outputMaximalPatternsMap.size());
                     timeEndRound = System.currentTimeMillis();
                     timeSpent = (timeEndRound - timeStartRound);
                 }
-                //update this list of groups for the next round
-                _rootIDs = rootIDTemp;
+                //update lists of root occurrences for next round
+                _rootIDs = interruptedRootID;
                 roundCount++;
             }
 
