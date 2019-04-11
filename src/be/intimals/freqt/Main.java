@@ -106,8 +106,11 @@ public class Main {
                 //update properties
                 //prop.replace("minSupport", inputMinSup);
                 prop.setProperty("minSupport",inputMinSup);
-                prop.replace("inFiles", inputPath);
-                prop.replace("outFile", outputPath);
+                prop.replace("inputPath", inputPath);
+                prop.replace("outputPath", outputPath);
+                prop.remove("minSupportList");
+                prop.remove("inFilesList");
+
                 //save new properties
                 output = new FileOutputStream(configPathTemp);
                 prop.store(output, null);
@@ -130,18 +133,14 @@ public class Main {
             FreqT freqt = new FreqT(config);
             freqt.run();
 
-            //test memory consumption - no correct !
-            /*Runtime runtime = Runtime.getRuntime();
-            long memory = runtime.totalMemory() - runtime.freeMemory();
-            System.out.println("Used memory is megabytes: " + bytesToMegabytes(memory));*/
 
-            //run forestmatcher
-            if(config.outputAsXML()){
+            //run forestmatcher to create matches.xml
+            /*if(config.outputAsXML()){
                 String command = "java -jar forestmatcher.jar " +
                         sourceMatcher + " " + inputPatterns +" " + outputMatches;
                 Process proc = Runtime.getRuntime().exec(command);
 
-            }
+            }*/
             //System.out.println("===========================================================");
 
             return;

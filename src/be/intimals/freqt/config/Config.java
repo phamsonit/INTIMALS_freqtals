@@ -54,11 +54,11 @@ public class Config {
     }
 
     public String getInputFiles() {
-        return prop.getProperty("inFiles");
+        return prop.getProperty("inputPath");
     }
 
     public String getOutputFile() {
-        return prop.getProperty("outFile");
+        return prop.getProperty("outputPath");
     }
 
     public int getMinSupport() {
