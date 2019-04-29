@@ -66,8 +66,7 @@ public class FreqT {
      */
     public boolean checkOutput(Vector<String> pat){
 
-        if(Pattern.countLeafNode(pat) < config.getMinLeaf() ||
-                Pattern.countIdentifiers(pat) <= config.getNbIdentifiers())
+        if(Pattern.countLeafNode(pat) < config.getMinLeaf())// || Pattern.countIdentifiers(pat) <= config.getNbIdentifiers())
             return true;
         else
             return false;
@@ -196,12 +195,20 @@ public class FreqT {
             int support = projected.getProjectedSupport();
             int wsupport = projected.getProjectedRootSupport(); //=> root location
             int size = Pattern.getPatternSize(pat);
+
+            //replace "," in the leafs by uniChar
+            String patString = pat.elementAt(0);
+            for(int i=1; i< pat.size(); ++i)
+                patString = patString+"," + pat.elementAt(i);
+                //patString = patString + uniChar + pat.elementAt(i);
+
             String patternSupport =
                     "rootOccurrences" + "," +
                             String.valueOf(support) + "," +
                             String.valueOf(wsupport) + "," +
                             String.valueOf(size)+"\t"+
-                            pat.toString(); //keeping for XML output
+                            patString;//pat.toString(); //keeping for XML output
+
             String patternString = Pattern.getPatternString1(pat); //filter out the right part of pattern which misses leaf nodes
             patSet.put(patternString, patternSupport);
         }

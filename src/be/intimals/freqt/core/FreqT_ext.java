@@ -59,8 +59,7 @@ public class FreqT_ext extends FreqT {
             addMaximality (pat,projected,outputMaximalPatternsMap);
     }
 
-
-
+    
     //the difference of this function is chooseOutput
     private void grammarExpand(Map.Entry<String, Projected> entry){
         //get the current candidate label
@@ -80,21 +79,8 @@ public class FreqT_ext extends FreqT {
                         project(entry.getValue());
                         break;
                     case "1..*"://node-list
-                        //project(entry.getValue());
-                        if(parentOrdered.equals("unordered")) {
-                            //don't allow N children of an unordered node to have the same label
-                            if (Pattern.isRepeatedLabel(largestPattern, entry.getKey(), config.getMaxRepeatLabel()))
-                                //check line distance of 2 nodes which have the same label
-                                //if(Pattern.checkLineDistance(pattern, entry.getKey(), entry.getValue(), config.getMinLineDistance(), config.getMaxLineDistance()))
-                                project(entry.getValue());
-                                else{//output the current pattern
-                                    chooseOutput(largestPattern,entry.getValue());
-                                    return;
-                                }
-                        }else
-                            if(parentOrdered.equals("ordered")){
-                                project(entry.getValue());
-                            }
+                        project(entry.getValue());
+
                         break;
 
                     default: //AST node has fixed N children
@@ -340,6 +326,7 @@ public class FreqT_ext extends FreqT {
             Iterator < Map.Entry<String,String> > iter1 = outputMaximalPatternsMap.entrySet().iterator();
             while(iter1.hasNext()){
                 Map.Entry<String,String> entry = iter1.next();
+                //System.out.println(entry.getValue());
                 //output XML
                 outputMaximalPatterns.printPattern(entry.getValue());
             }

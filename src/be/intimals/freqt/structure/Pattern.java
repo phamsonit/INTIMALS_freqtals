@@ -18,7 +18,7 @@ public class Pattern {
     //format 2 = (a(b(*1))(c(*2)))
 
     /**
-     * filter: remove the parts missed leaf labels
+     * filter: remove the parts missed real leafs
      * @param pat
      * @return
      */

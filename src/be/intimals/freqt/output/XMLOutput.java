@@ -8,7 +8,7 @@ import java.io.IOException;
 import java.util.*;
 
 public class XMLOutput extends AOutputFormatter {
-
+    private char uniChar = '\u00a5';
     //Map<String,String> patSupMap = new LinkedHashMap<>();
 
     public XMLOutput(String _file, Config _config, Map<String, Vector<String>> _grammar, Map<String,String> _xmlCharacters) throws IOException {
@@ -153,7 +153,6 @@ public class XMLOutput extends AOutputFormatter {
                     //print leaf node of subtree
                     if (!pat.elementAt(i).equals(")") && pat.elementAt(i + 1).equals(")")) {
                         if (pat.elementAt(i).charAt(0) == '*') {
-
                             for(int t=1; t<pat.elementAt(i).length(); ++t)
                                 if (xmlCharacters.containsKey(String.valueOf(pat.elementAt(i).charAt(t))))
                                     out.write(xmlCharacters.get(String.valueOf(pat.elementAt(i).charAt(t))));
@@ -177,15 +176,11 @@ public class XMLOutput extends AOutputFormatter {
 
             //print the last node of pattern
             if(pat.elementAt(pat.size() - 1).charAt(0) == '*')  {
-
                 for(int t=1; t<pat.elementAt(pat.size() - 1).length(); ++t)
                     if (xmlCharacters.containsKey(String.valueOf(pat.elementAt(pat.size() - 1).charAt(t))))
                         out.write(xmlCharacters.get(String.valueOf(pat.elementAt(pat.size() - 1).charAt(t))));
                     else out.write(pat.elementAt(pat.size() - 1).charAt(t));
                 out.write("\n");
-
-
-
             }
             else {
                 int i = pat.size() - 1;
@@ -206,21 +201,23 @@ public class XMLOutput extends AOutputFormatter {
             System.out.println(pat);
 
         }
-
     }
 
     @Override
     public void printPattern(String _pat){
+        Vector<String> pat = new Vector<>();
         try{
 
             String[] strTmp = _pat.split("\t");
             String[] supports = strTmp[0].split(",");
-            String[] pattern = strTmp[1].substring(1,strTmp[1].length()-1).split(",");
 
-            Vector<String> pat = new Vector<>();
+            //String[] pattern = strTmp[1].substring(1,strTmp[1].length()-1).split(",");
+            String[] pattern = strTmp[1].split(",");
+
             for(int i=0; i<pattern.length;++i)
-                pat.add(pattern[i].trim());
+                pat.add(pattern[i].replaceAll(String.valueOf(uniChar),","));
 
+            //remove right-branch missed real leafs
             pat = Pattern.filter(pat);
 
             Projected projected = new Projected();
@@ -231,8 +228,8 @@ public class XMLOutput extends AOutputFormatter {
 
         }
         catch (Exception e){
-            System.out.println("report xml error : " + e);
-            System.out.println(_pat);
+            System.out.println("print xml error : " + e);
+            System.out.println(pat);
 
         }
     }

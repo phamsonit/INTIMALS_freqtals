@@ -100,7 +100,7 @@ public class ReadXML {
                     if (node.getChildNodes().getLength() == 1) {
                         //add leaf node label
                         //System.out.println(node.getTextContent().trim());
-                        trans.elementAt(id).setNodeLabel("*" + node.getTextContent().trim());
+                        trans.elementAt(id).setNodeLabel("*" + node.getTextContent().replace(",",String.valueOf(uniChar)).trim());
                         trans.elementAt(id).setLineNr("-1");
                         //trans.elementAt(id).setNodeLabel("**");
                         //System.out.println("node "+trans.elementAt(id).getNodeLabel());
