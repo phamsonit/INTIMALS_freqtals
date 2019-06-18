@@ -54,6 +54,10 @@ public class Projected {
         return this.locations.get(i);
     }
 
+    public void deleteProjectLocation(int i){
+        this.locations.remove(i);
+    }
+
     public int getProjectLocationSize(){
         return this.locations.size();
     }

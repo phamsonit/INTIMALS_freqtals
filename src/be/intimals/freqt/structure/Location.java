@@ -36,6 +36,13 @@ public class Location {
         return appendArray(location, a);
     }
 
+    public static List<Integer> deleteLocationPos(int[] location, int a) {
+        List<Integer> list = toArrayList(location);
+        list.remove(a);
+        return list;
+    }
+
+
     public static int getLocationPos(int[] location) {
         return location[location.length-1];
     }

@@ -20,18 +20,16 @@ public class Config {
         input.close();
     }
 
-    public int getNbIdentifiers(){return Integer.valueOf(prop.getProperty("nbIdentifiers"));}
 
-    public int getConfigID(){
-        return Integer.valueOf(prop.getProperty("configID"));
-    }
+    public boolean getAbstractLeafs(){return Boolean.valueOf(prop.getProperty("abstractLeafs"));}
+
+    public int getNbIdentifiers(){return Integer.valueOf(prop.getProperty("nbIdentifiers"));}
 
     public int getTimeout(){return Integer.valueOf(prop.getProperty("timeout"));}
 
     public Properties getProp(){
         return this.prop;
     }
-
 
     public boolean buildGrammar() {
         return Boolean.valueOf(prop.getProperty("buildGrammar"));
@@ -65,12 +63,12 @@ public class Config {
         return Integer.valueOf(prop.getProperty("minSupport"));
     }
 
-    public int getMinPatternSize() {
-        return Integer.valueOf(prop.getProperty("minPatternSize"));
+    public int getMinNode() {
+        return Integer.valueOf(prop.getProperty("minNode"));
     }
 
-    public int getMaxPatternSize() {
-        return Integer.valueOf(prop.getProperty("maxPatternSize"));
+    public int getMaxNode() {
+        return Integer.valueOf(prop.getProperty("maxNode"));
     }
 
     public int getMinLeaf() {
@@ -80,6 +78,8 @@ public class Config {
     public int getMaxLeaf() {
         return Integer.valueOf(prop.getProperty("maxLeafSize"));
     }
+
+
 
     public boolean addLocations() {
         return Boolean.valueOf(prop.getProperty("where"));

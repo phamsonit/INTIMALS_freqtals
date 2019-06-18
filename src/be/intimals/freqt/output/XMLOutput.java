@@ -9,7 +9,10 @@ import java.util.*;
 
 public class XMLOutput extends AOutputFormatter {
     private char uniChar = '\u00a5';
-    //Map<String,String> patSupMap = new LinkedHashMap<>();
+
+    //boolean abstractLeafs = false;
+
+    /////////////////////////////
 
     public XMLOutput(String _file, Config _config, Map<String, Vector<String>> _grammar, Map<String,String> _xmlCharacters) throws IOException {
         super(_file,_config, _grammar, _xmlCharacters);
@@ -20,12 +23,15 @@ public class XMLOutput extends AOutputFormatter {
         patSupMap = _patSupMap;
     }
 
+
     @Override
     protected void openOutputFile() throws IOException {
         super.openOutputFile();
         out.write("<?xml version=\"1.0\" encoding=\"UTF-8\" standalone=\"no\"?>\n\n");
         out.write("<results>\n\n");
+
     }
+    
 
     /**
      * Represent subtrees in XML format + Ekeko
@@ -39,12 +45,12 @@ public class XMLOutput extends AOutputFormatter {
             //if( checkOutputConstraint(pat) ) return;
 
             //System.out.print(pat);
-
-            Map<String,Integer> metaVariable = new HashMap<>();
             ++nbPattern;
 
-            if(config.postProcess() && !patSupMap.isEmpty()){
+            //keep meta-variables in pattern
+            Map<String,Integer> metaVariable = new HashMap<>();
 
+            if(config.postProcess() && !patSupMap.isEmpty()){
                 String patTemp = Pattern.getPatternString(pat);
                 String[] sup = patSupMap.get(patTemp).split(",");
                 int size = Pattern.getPatternSize(pat);
@@ -70,7 +76,7 @@ public class XMLOutput extends AOutputFormatter {
 
                     String nodeOrder = grammar.get(pat.elementAt(i)).elementAt(0);
                     String nodeDegree = grammar.get(pat.elementAt(i)).elementAt(1);
-                    Vector<String> childrenList = Pattern.findChildren(pat,i);
+                    Vector<String> childrenList = Pattern.findChildrenLabels(pat,i);
 
                     if(nodeOrder.equals("unordered")){
                         switch (nodeDegree){
@@ -145,20 +151,14 @@ public class XMLOutput extends AOutputFormatter {
 
                     }
 
-                    //track open node label
-                    //System.out.println(tmp);
                     tmp.addElement(pat.elementAt(i));
                     ++n;
                 }else {
                     //print leaf node of subtree
                     if (!pat.elementAt(i).equals(")") && pat.elementAt(i + 1).equals(")")) {
+                        //TODO: abstracting leafs of Cobol data
                         if (pat.elementAt(i).charAt(0) == '*') {
-                            for(int t=1; t<pat.elementAt(i).length(); ++t)
-                                if (xmlCharacters.containsKey(String.valueOf(pat.elementAt(i).charAt(t))))
-                                    out.write(xmlCharacters.get(String.valueOf(pat.elementAt(i).charAt(t))));
-                                else out.write(pat.elementAt(i).charAt(t));
-                                out.write("\n");
-
+                            outputLeaf(pat, i);
                         } else { //leaf of subtree is an internal node in the original tree
                             outputNode(pat, metaVariable, i);
                         }
@@ -166,21 +166,15 @@ public class XMLOutput extends AOutputFormatter {
                         //close a node
                         if (pat.elementAt(i).equals(")") && pat.elementAt(i + 1).equals(")")) {
                             out.write("</" + tmp.elementAt(n - 1) + ">\n");
-                            //tmp.remove(tmp.lastElement());
                             tmp.remove(n-1);
                             --n;
                         }
                     }
                 }
             }
-
             //print the last node of pattern
             if(pat.elementAt(pat.size() - 1).charAt(0) == '*')  {
-                for(int t=1; t<pat.elementAt(pat.size() - 1).length(); ++t)
-                    if (xmlCharacters.containsKey(String.valueOf(pat.elementAt(pat.size() - 1).charAt(t))))
-                        out.write(xmlCharacters.get(String.valueOf(pat.elementAt(pat.size() - 1).charAt(t))));
-                    else out.write(pat.elementAt(pat.size() - 1).charAt(t));
-                out.write("\n");
+                outputLeaf(pat,pat.size() - 1);
             }
             else {
                 int i = pat.size() - 1;
@@ -239,6 +233,28 @@ public class XMLOutput extends AOutputFormatter {
         out.write("</results>\n");
         out.flush();
         out.close();
+    }
+
+
+    private void outputLeaf(Vector<String> pat, int i) throws IOException{
+
+        if (config.getAbstractLeafs() ){
+            out.write("<Dummy>\n");
+            out.write("<__directives>\n");
+            out.write("<optional />\n");
+            out.write("<meta-variable>\n");
+            out.write("<parameter key=\"name\" value=\"?"+pat.elementAt(i-1)+"\"/>\n");
+            out.write("</meta-variable>\n");
+            out.write("</__directives>\n");
+            out.write("</Dummy>\n");
+        }else{
+            for(int t=1; t<pat.elementAt(i).length(); ++t)
+              if (xmlCharacters.containsKey(String.valueOf(pat.elementAt(i).charAt(t))))
+                  out.write(xmlCharacters.get(String.valueOf(pat.elementAt(i).charAt(t))));
+              else out.write(pat.elementAt(i).charAt(t));
+                out.write("\n");
+               }
+
     }
 
     private void outputNode(Vector<String> pat, Map<String, Integer> metaVariable, int i) throws IOException {

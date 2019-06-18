@@ -43,11 +43,13 @@ public abstract class AOutputFormatter {
      */
     public boolean checkOutputConstraint(Vector<String> pat){
 
-        if(Pattern.isMissedLeafNode(pat) ||
+        /*if(Pattern.isMissedLeafNode(pat) ||
                 (Pattern.countLeafNode(pat) < config.getMinLeaf()) )
             return true;
         else
-            return false;
+            return false;*/
+
+        return true;
     }
 
     /**
@@ -106,7 +108,7 @@ public abstract class AOutputFormatter {
         for(int i=0; i<pat.size(); ++i)
             if(pat.elementAt(i).equals(nodeName))
             {
-                Vector<String> listOfChild = Pattern.findChildren(pat,i);
+                Vector<String> listOfChild = Pattern.findChildrenLabels(pat,i);
                 String degree = grammar.get(nodeName).elementAt(1);
                 if(!degree.equals(String.valueOf(listOfChild.size())))
                     return true;//result = true;

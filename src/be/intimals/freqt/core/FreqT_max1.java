@@ -144,7 +144,7 @@ public class FreqT_max1 extends FreqT {
             //expand the pattern
             project(projected);
         }
-        catch (Exception e) {}
+        catch (Exception e) {System.out.println("Error: check sub-trees");}
 
     }
 

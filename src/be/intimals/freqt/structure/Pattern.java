@@ -161,6 +161,15 @@ public class Pattern {
         return p[p.length-1];
     }
 
+    public static void addCandidate(Vector<String> pat, String candidate){
+        //add a candidate to the current pattern
+        String[] p = candidate.split(String.valueOf(uniChar));
+        for (int i = 0; i < p.length; ++i) {
+            if (!p[i].isEmpty())
+                pat.addElement(p[i]);
+        }
+    }
+
     /**
      * find parent's position of a given candidate in a pattern
      * @param pat
@@ -200,13 +209,36 @@ public class Pattern {
         return parentPos;
     }
 
+    public static List<Integer> findChildrenPosition(Vector<String> pat, Integer parentPos){
+        int top = -1;
+
+        List<Integer> tmp = new ArrayList<>();
+
+        if(parentPos < pat.size()-1){
+            int count = parentPos;
+            for(int i = parentPos+1; i < pat.size(); ++i){
+                if(pat.elementAt(i).equals(")"))
+                    --top;
+                else {
+                    ++top;
+                    ++count;
+                }
+                if(top == 0 && !pat.elementAt(i).equals(")")) {
+                    tmp.add(count);
+                }
+                if(top == -2) break;
+            }
+        }
+        return tmp;
+    }
+
     /**
      * find all children of the node at the parentPos
      * @param pat
      * @param parentPos
      * @return
      */
-    public static Vector<String > findChildren(Vector<String> pat, Integer parentPos){
+    public static Vector<String > findChildrenLabels(Vector<String> pat, Integer parentPos){
         int top = -1;
         Vector<String > children = new Vector<>();
         if(parentPos < pat.size()-1){
@@ -253,7 +285,7 @@ public class Pattern {
         String[] Temp = candidate.split( String.valueOf(uniChar) );
         String label = Temp[Temp.length-1];
         int parentPos = findParentPosition(pat,candidate);
-        Vector<String> children = findChildren(pat,parentPos);
+        Vector<String> children = findChildrenLabels(pat,parentPos);
 
         int count=0;
         for(int i=0; i<children.size();++i){

@@ -16,14 +16,23 @@ import java.util.Vector;
 
 public class Initial {
     private  static  char uniChar = '\u00a5';// Japanese Yen symbol
+
+
+    private static Vector<Integer> lineNrs = new Vector<>();
+
+    public static Vector<Integer> getLineNrs(){
+        return lineNrs;
+    }
+
     /**
      * Loads data from folders
      */
-    public static void initDatabase(String path, Map<String,Vector<String>> gram, Vector < Vector<NodeFreqT> > trans) {
+    public static void readDatabase(boolean abstractLeafs, String path, Map<String,Vector<String>> gram, Vector < Vector<NodeFreqT> > trans) {
 
         //System.out.println("reading data ...");
         ReadXML readXML = new ReadXML();
-        readXML.createTransaction(new File(path),gram,trans);
+        readXML.createTransaction(abstractLeafs, new File(path), gram, trans);
+        lineNrs = readXML.getlineNrs();
 
         //create transaction from single input file
         //ReadFile r = new ReadFile();

@@ -27,6 +27,20 @@ public class ReadXML {
 
     public static  char uniChar = '\u00a5';// Japanese Yen symbol
 
+    boolean abstractLeafs = false;
+
+    Vector<Integer> lineNrs = new Vector<>();
+    int countSection;
+
+
+    //////////////////////////////
+
+    //return total number of reading files
+    public Vector<Integer> getlineNrs(){
+        return this.lineNrs;
+    }
+
+
     //return total number of reading files
     public int getnbFiles(){
         return this.nbFiles;
@@ -89,6 +103,16 @@ public class ReadXML {
                 //System.out.println(" "+lineNbTemp);
                 trans.elementAt(id).setLineNr(lineNbTemp);
 
+                //TODO: find lineNr of the second SectionStatementBlock
+                //using only for Cobol data
+                if(node.getNodeName().equals("SectionStatementBlock") && countSection < 2) {
+                    countSection++;
+                }else
+                    if(countSection==2) {
+                        lineNrs.add(Integer.valueOf(lineNbTemp));
+                        countSection++;
+                    }
+
                 //keep positions to calculate relationships: parent - child - sibling
                 sr.addElement(id);
                 ++id;
@@ -100,9 +124,14 @@ public class ReadXML {
                     if (node.getChildNodes().getLength() == 1) {
                         //add leaf node label
                         //System.out.println(node.getTextContent().trim());
-                        trans.elementAt(id).setNodeLabel("*" + node.getTextContent().replace(",",String.valueOf(uniChar)).trim());
+                        //TODO: abstractLeafs of Cobol data --> Done
+                        if(abstractLeafs)
+                            trans.elementAt(id).setNodeLabel("**");
+                        else
+                            trans.elementAt(id).setNodeLabel("*" + node.getTextContent().replace(",",String.valueOf(uniChar)).trim());
+
                         trans.elementAt(id).setLineNr("-1");
-                        //trans.elementAt(id).setNodeLabel("**");
+
                         //System.out.println("node "+trans.elementAt(id).getNodeLabel());
                         sr.addElement(id);
                         ++id;
@@ -127,7 +156,7 @@ public class ReadXML {
                         }
 
                         /*
-                        //add children after sorted
+                        //sort add children
                         String nodeOrder  = "";
                         String nodeDegree = "";
                         if(grammar.containsKey(node.getNodeName())) {
@@ -252,9 +281,10 @@ public class ReadXML {
     }
 
     //create transaction from ASTs in multiple folders
-    public void createTransaction(File f, Map <String, Vector<String> > _grammar, Vector < Vector<NodeFreqT> > transaction) {
+    public void createTransaction(boolean _abstractLeafs, File f, Map <String, Vector<String> > _grammar, Vector < Vector<NodeFreqT> > transaction) {
         try {
             //System.out.print("create tree data: ");
+            abstractLeafs = _abstractLeafs;
             grammar = _grammar;
 
             File[] subdir = f.listFiles();
@@ -268,12 +298,14 @@ public class ReadXML {
                         //System.out.print("reading file ---------------- ");
                         //System.out.println(f+"/"+fi.getName());
                         ++nbFiles;
+                        countSection=0;
                         //for each file in folder create one tree
                         File fXmlFile = new File(f+"/"+fi.getName());
                         DocumentBuilderFactory dbFactory = DocumentBuilderFactory.newInstance();
                         DocumentBuilder dBuilder = dbFactory.newDocumentBuilder();
                         Document doc = dBuilder.parse(fXmlFile);
                         doc.getDocumentElement().normalize();
+
 
                         //get total number of nodes
                         int size = countNBNodes(doc.getDocumentElement())+1;
@@ -311,7 +343,7 @@ public class ReadXML {
 
                 }else
                     if (fi.isDirectory()) {
-                        createTransaction(fi , grammar, transaction );
+                        createTransaction(abstractLeafs, fi , grammar, transaction );
                     }
             }
             //System.out.println("input : "+nbFiles);
