@@ -669,9 +669,9 @@ public class FreqT {
             timeOut.setReport(report);
             Thread timeOutThread = new Thread(timeOut);
             timeOutThread.start();
+
             log(report,"INPUT");
             log(report,"===================");
-
             log(report,"- data sources : " + config.getInputFiles());
             log(report,"- input files : " + nbInputFiles);
             log(report,"- minSupport : " + config.getMinSupport());

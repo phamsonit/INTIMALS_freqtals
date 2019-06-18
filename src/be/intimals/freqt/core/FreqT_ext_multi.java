@@ -12,22 +12,19 @@ import java.util.*;
 import java.util.concurrent.ConcurrentHashMap;
 
 public class FreqT_ext_multi extends FreqT {
-
-    private AOutputFormatter outputMaximalPatterns;
+    //private AOutputFormatter outputMaximalPatterns;
 
     private Vector <Vector<NodeFreqT> >  transaction = new Vector<>();
+    //private Map<String,String> outputMaximalPatternsMap = null;
     //store frequent patterns in the second step
-    private Map<String,String> outputMaximalPatternsMap = null;
     private Map<String,String> frequentPatterns = null;
 
     private int nbOutputMaximalPatterns;
-    //private int largestMinSup; //How to use for parallel computing
+    private int roundCount;
+    private long timeStart2nd;
+    private long timeFor2nd;
+    private long timePerGroup;
 
-    //long start;
-    //boolean finished;
-    //long timePerGroup;
-
-    int roundCount = 1;
 
     //store root occurrences for the second round
     //Map<String,String> interruptedRootID = new LinkedHashMap<>();
@@ -78,9 +75,7 @@ public class FreqT_ext_multi extends FreqT {
         }
     }
 
-    //TODO: keep top-k largest patterns
-
-    //TODO: filter maximal patterns for frequentPatterns
+    //filter maximal patterns
     private Map<String,String> maximalFilter(Map<String,String> FP){
         //outputMaximalPatternsMap
         Map<String,String> MFP = new HashMap<>();
@@ -120,13 +115,14 @@ public class FreqT_ext_multi extends FreqT {
 
     }
 
-    //the difference of this function is chooseOutput
+    //expand a pattern based on grammar
     private void grammarExpand(Vector<String> largestPattern, Map.Entry<String, Projected> entry,
-                               long timePerGroup, long start){
+                               long timeStartGroup){
+
         //get the current candidate label
         String potentialCandidate = Pattern.getPotentialCandidateLabel(entry.getKey());
         if ( potentialCandidate.charAt(0) == '*' ) { //potentialCandidate is a leaf node
-            project(largestPattern, entry.getValue(),timePerGroup,start);
+            project(largestPattern, entry.getValue(), timeStartGroup);
         }else {//internal node
             //find grammar of parent of potentialCandidate
             int parentPos = Pattern.findParentPosition(largestPattern, entry.getKey());
@@ -137,11 +133,10 @@ public class FreqT_ext_multi extends FreqT {
                 String parentDegree  = grammar.get(parentLabel).elementAt(1);
                 switch (parentDegree) {
                     case "1": //node has one non-terminal child or one leaf
-                        project(largestPattern, entry.getValue(),timePerGroup,start);
+                        project(largestPattern, entry.getValue(),timeStartGroup);
                         break;
                     case "1..*"://node-list
-                        project(largestPattern, entry.getValue(),timePerGroup,start);
-
+                        project(largestPattern, entry.getValue(),timeStartGroup);
                         break;
 
                     default: //AST node has fixed N children
@@ -160,24 +155,19 @@ public class FreqT_ext_multi extends FreqT {
                             blackLabelChildren.addAll(blackLabels.get(parentLabel));
                         //expand this candidate if it doesn't miss the previous mandatory sibling
                         if (! Pattern.isMissedMandatoryChild(listOfChildrenPattern, listOfChildrenGrammar, blackLabelChildren, whiteLabelChildren)) {
-                            project(largestPattern, entry.getValue(),timePerGroup,start);
+                            project(largestPattern, entry.getValue(),timeStartGroup);
                         }else {
                             chooseOutput(largestPattern, entry.getValue());
                             return;
                         }
-
                         break;
                 }
             }
         }
     }
 
-    /**
-     * expand a pattern WITHOUT max size constraint
-     * @param entry
-     */
-    private void expandCandidate(Vector<String> largestPattern, Map.Entry<String, Projected> entry,
-                                 long timePerGroup, long start) {
+    //expand a pattern WITHOUT max size constraint
+    private void expandCandidate(Vector<String> largestPattern, Map.Entry<String, Projected> entry, long timeStartGroup) {
         try{
 
             // add a candidate to the current pattern
@@ -192,26 +182,16 @@ public class FreqT_ext_multi extends FreqT {
                 return;
             }
             else
-                grammarExpand(largestPattern, entry,timePerGroup,start);
-
+                grammarExpand(largestPattern, entry, timeStartGroup);
         }catch (Exception e){System.out.println("Error: Freqt_ext expand candidate " + e);}
     }
 
-    /**
-     * expand a subtree
-     * @param projected
-     */
-
-
-
-    //private void project(Vector<String> largestPattern, Projected projected) {
-    private void project(Vector<String> largestPattern, Projected projected,
-                         long timePerGroup, long start) {
+    //main step to find candidates and expand a pattern
+    private void project(Vector<String> largestPattern, Projected projected,long timeStartGroup) {
         try{
             //check timeout for the current group
-            long end = System.currentTimeMillis( );
-            long diff = end-start;
-            if( diff  > timePerGroup) {
+            long diff = System.currentTimeMillis( ) - timeStartGroup;
+            if( diff  > timePerGroup) { //keep the current pattern for next round
                 //keep the depth of projector
                 String rootOccurrences = String.valueOf(projected.getProjectedDepth())+"\t";
                 //keep root occurrences and right-most occurrences
@@ -220,15 +200,12 @@ public class FreqT_ext_multi extends FreqT {
                             Location.getLocationId(projected.getProjectRootLocation(i)) + ("-") +
                             Location.getLocationPos(projected.getProjectRootLocation(i)) + ";";
                     //Location.getLocationPos(projected.getProjectLocation(i)) + ";";
-
                 }
-
                 String rightmostOccurrences="";
                 for (int i = 0; i < projected.getProjectLocationSize(); ++i) {
                     rightmostOccurrences = rightmostOccurrences +
                             Location.getLocationId(projected.getProjectLocation(i)) + ("-") +
                             Location.getLocationPos(projected.getProjectLocation(i)) + ";";
-
                 }
                 rootOccurrences = rootOccurrences+"\t"+rightmostOccurrences;
                 //store the current pattern for the next round
@@ -236,7 +213,6 @@ public class FreqT_ext_multi extends FreqT {
                 interruptedRootID.put(rootOccurrences,largestPattern.toString());
                 return;
             }
-            //System.out.println(largestPattern);
             //find candidates
             Map<String, Projected> candidates = generateCandidates(projected,transaction);
             //System.out.println("all candidates     " + candidates.keySet());
@@ -255,18 +231,15 @@ public class FreqT_ext_multi extends FreqT {
             while (iter.hasNext()) {
                 int oldSize = largestPattern.size();
                 Map.Entry<String, Projected> entry = iter.next();
-
                 //delete candidate that belongs to black-section
                 String candidateLabel = Pattern.getPotentialCandidateLabel(entry.getKey());
                 if(candidateLabel.equals("SectionStatementBlock"))
                     deleteSection(entry,transaction);
-
                 //expand the pattern if all paragraphs are continuous
                 if(candidateLabel.equals("ParagraphStatementBlock")) {
                     checkContinuousParagraph(largestPattern, entry, transaction);
                 }
-                expandCandidate(largestPattern, entry,timePerGroup,start);
-
+                expandCandidate(largestPattern, entry, timeStartGroup);
                 largestPattern.setSize(oldSize);
             }
         }catch (Exception e){
@@ -275,20 +248,13 @@ public class FreqT_ext_multi extends FreqT {
         }
     }
 
-    private void groupExpandParallel(Map <String, String > _rootIDs,
-                                     long timePerGroup, long timeStartRound, long timeFor2nd){
-
+    //parallel expand groups of root occurrences
+    private void groupExpandParallel(Map <String, String > _rootIDs){
         _rootIDs.entrySet().parallelStream().forEach(entry -> {
-
-            //calculate time to stop group expansion
+            //check total running time of the second step
+            if(checkTimeOut("groupExpandParallel: 2nd step timeout")) return;
+            //start expanding for this group
             long timeStartGroup = System.currentTimeMillis( );
-            final long currentTimeSpent = (timeStartGroup - timeStartRound);
-            //TODO: how to completely exit recursion ?
-            if(timeFor2nd < currentTimeSpent) {
-                //System.out.println("2nd step timeout");
-                return;
-            }
-
             //boolean finished = true;
             //System.out.println("Group "+entry.getKey());
             //System.out.println(frequentPatterns.size()+" - "+ nbOutputMaximalPatterns);
@@ -329,56 +295,46 @@ public class FreqT_ext_multi extends FreqT {
                     projected.setProjectLocation(Integer.valueOf(pos[0]), Integer.valueOf(pos[1]));
                 }
             }
-            //int largestMinSup = projected.getProjectedSupport();
-            project(largestPattern,projected,timePerGroup,timeStartGroup);
+            //largestMinSup = projected.getProjectedSupport();
+            project(largestPattern,projected,timeStartGroup);
             //update size of the pattern for next expansion
             largestPattern.setSize(largestPattern.size() - 1);
 
         });
     }
 
-    /**
-     * expanding each group of root occurrences to find largest pattern
-     * @param _rootIDs
-     * @param _transaction
-     * @param timeFor1st
-     * @param _report
-     */
-    public void run(Map <String, String > _rootIDs,
-                    Vector <Vector<NodeFreqT>  > _transaction,
-                    long timeFor1st,
-                    FileWriter _report){
+    //main function to find maximal patterns in the second step
+    public void run(Map <String, String > _rootIDs, Vector <Vector<NodeFreqT>  > _transaction,
+                    long timeFor1st, FileWriter _report){
 
         try{
             transaction = _transaction;
             frequentPatterns = new ConcurrentHashMap<>();
-            //frequentPatterns = Collections.synchronizedMap(new HashMap<>());
-
+            roundCount = 1;
             //calculate times for incremental maximal pattern mining
-            long timeStartRound = System.currentTimeMillis();
-            long timeEndRound  = timeStartRound;
+            timeStart2nd = System.currentTimeMillis();
             //time for pattern printing = 10% timeOut and at least 5 minutes !!!
             long time = Math.round(config.getTimeout()*0.1);
-            long timeForPrint = time > 5 ? time : 5;//??? minute(s)
-            long timeFor2nd = (config.getTimeout())*(60*1000)- timeFor1st - timeForPrint*60*1000;
+            long timeForPrint = time > 20 ? time : 20;//??? minute(s)
+            //time for the second step
+            timeFor2nd = (config.getTimeout())*(60*1000)- timeFor1st - timeForPrint*60*1000;
+            //time spent for each round
             long timeSpent = 0;
-
+            //loop _rootIDs be empty or running time is larger than timeFor2nd.
             while(! _rootIDs.isEmpty()) {
                 //store interrupted groups which run over timePerTask
                 interruptedRootID = new LinkedHashMap<>();
-                //check necessary time for next round
-                if(timeFor2nd < timeSpent) break;
-
+                //check total running time of the second step
+                if(timeFor2nd < timeSpent){
+                    _report.write("timeout in the second step");
+                    break;
+                }
                 //recalculate time for each group
-                long timePerGroup = (timeFor2nd - timeSpent) / _rootIDs.size();
-
+                timePerGroup = (timeFor2nd - timeSpent) / _rootIDs.size();
                 //PARALLEL RUNNING: for each group of root occurrences find patterns without max size constraints
-                groupExpandParallel(_rootIDs,timePerGroup,timeStartRound,timeFor2nd);
-
+                groupExpandParallel(_rootIDs);
                 //update running time of this round
-                timeEndRound = System.currentTimeMillis();
-                timeSpent = (timeEndRound - timeStartRound);
-
+                timeSpent = (System.currentTimeMillis() - timeStart2nd);
                 //update lists of root occurrences for next round
                 _rootIDs = interruptedRootID;
                 roundCount++;
@@ -389,14 +345,14 @@ public class FreqT_ext_multi extends FreqT {
         }catch (Exception e){}
     }
 
+    //filter and print maximal patterns
     private  void outputMaximalPatterns(){
-
         try{
             //filter maximal patterns
             Map<String,String> maximalPatterns = maximalFilter(frequentPatterns);
             //output maximal patterns
             nbOutputMaximalPatterns = maximalPatterns.size();
-            outputMaximalPatterns =  new XMLOutput(config.getOutputFile(),config, grammar, xmlCharacters);
+            AOutputFormatter outputMaximalPatterns =  new XMLOutput(config.getOutputFile(),config, grammar, xmlCharacters);
             Iterator < Map.Entry<String,String> > iter1 = maximalPatterns.entrySet().iterator();
             while(iter1.hasNext()){
                 Map.Entry<String,String> entry = iter1.next();
@@ -408,5 +364,16 @@ public class FreqT_ext_multi extends FreqT {
         catch(Exception e){System.out.println("error print maximal patterns");}
     }
 
+    //check running time for the second step
+    private boolean checkTimeOut(String message){
+
+        //long currentTime = System.currentTimeMillis( );
+        long currentTimeSpent = (System.currentTimeMillis( ) - timeStart2nd);
+        if(timeFor2nd < currentTimeSpent) {
+            //System.out.println(message);
+            return true;
+        }else
+            return false;
+    }
 
 }
