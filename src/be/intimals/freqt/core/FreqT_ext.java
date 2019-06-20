@@ -29,6 +29,7 @@ public class FreqT_ext extends FreqT {
     long start;
     long timePerGroup;
     boolean finished;
+    long timeStartRound;
 
     //int roundCount = 1;
 
@@ -207,19 +208,20 @@ public class FreqT_ext extends FreqT {
 
     public void run(Map <String, String > _rootIDs,
                     Vector <Vector<NodeFreqT>  > _transaction,
-                    long timeFor1st,
+                    long start1st,
                     FileWriter _report){
 
         try{
             transaction = _transaction;
             //calculate times for incremental maximal pattern mining
             int roundCount = 1;
-            long timeStartRound = System.currentTimeMillis();
+            timeStartRound = System.currentTimeMillis();
             long timeEndRound  = System.currentTimeMillis();
             //time for pattern printing = 10%timeOut and at least 1 minute
-            long time = Math.round(config.getTimeout()*0.1);
-            long timeForPrint = time > 1 ? time : 1;//??? minute(s)
-            long timeFor2nd = (config.getTimeout())*(60*1000)- timeFor1st - timeForPrint*60*1000;
+            //long time = Math.round(config.getTimeout()*0.1);
+            //long timeForPrint = time > 5 ? time : 5;//??? minute(s)
+            //long timeFor2nd = (config.getTimeout())*(60*1000)- timeFor1st - timeForPrint*60*1000;
+            long timeFor2nd = (config.getTimeout())*(60*1000);
             long timeSpent = 0;
 
             //System.out.println("number of root occurrences "+_rootIDs.size());
@@ -250,7 +252,6 @@ public class FreqT_ext extends FreqT {
                     if(timeFor2nd < timeSpent){ //long timeRemaining = timeFor2nd - timeSpent;
                         //log(_report,"the second step timeout");
                         break;
-                        //return;
                     }
                     //log(_report,"- Group: "+groupCount);
                     Map.Entry<String,String> entry = rootId.next();
@@ -321,29 +322,17 @@ public class FreqT_ext extends FreqT {
             }
 
             //print maximal patterns
-            outputMaximalPatterns();
+            outputMaximalPatterns(outputMaximalPatternsMap);
 
+            //report result
+            log(_report,"\t + maximal patterns: "+ outputMaximalPatternsMap.size());
+            long currentTimeSpent = (System.currentTimeMillis( ) - timeStartRound);
+            log(_report, "\t + running time: ..."+Float.valueOf(currentTimeSpent)/1000+"s");
+            log(_report,"- total running time "+Float.valueOf(System.currentTimeMillis( )-start1st)/1000+"s");
+            _report.flush();
+            _report.close();
 
         }catch (Exception e){}
-
     }
 
-    private void outputMaximalPatterns(){
-        try{
-            nbOutputMaximalPatterns = outputMaximalPatternsMap.size();
-            //output maximal patterns
-            AOutputFormatter outputMaximalPatterns =  new XMLOutput(config.getOutputFile(),config, grammar, xmlCharacters);
-            Iterator < Map.Entry<String,String> > iter1 = outputMaximalPatternsMap.entrySet().iterator();
-            while(iter1.hasNext()){
-                Map.Entry<String,String> entry = iter1.next();
-                //System.out.println(entry.getValue());
-                //output XML
-                outputMaximalPatterns.printPattern(entry.getValue());
-            }
-            outputMaximalPatterns.close();
-
-        }catch(Exception e){System.out.println();}
-
-
-    }
 }

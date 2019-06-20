@@ -20,6 +20,9 @@ public class Config {
         input.close();
     }
 
+    public int getNbCores(){
+        return Integer.valueOf(prop.getProperty("nbCores"));
+    }
 
     public boolean getAbstractLeafs(){return Boolean.valueOf(prop.getProperty("abstractLeafs"));}
 

@@ -5,11 +5,15 @@ import be.intimals.freqt.output.AOutputFormatter;
 import be.intimals.freqt.output.XMLOutput;
 import be.intimals.freqt.structure.*;
 
-
 import java.io.FileWriter;
 import java.io.IOException;
 import java.util.*;
 import java.util.concurrent.ConcurrentHashMap;
+import java.util.concurrent.ForkJoinPool;
+import java.util.concurrent.ExecutionException;
+
+
+import java.lang.Exception;
 
 public class FreqT_ext_multi extends FreqT {
     //private AOutputFormatter outputMaximalPatterns;
@@ -24,6 +28,7 @@ public class FreqT_ext_multi extends FreqT {
     private long timeStart2nd;
     private long timeFor2nd;
     private long timePerGroup;
+    private boolean timeout;
 
 
     //store root occurrences for the second round
@@ -51,7 +56,7 @@ public class FreqT_ext_multi extends FreqT {
 
     private void chooseOutput(Vector<String> pat, Projected projected){
 
-        if (!checkOutput(pat)) {
+        if (!checkOutput(pat) && Pattern.getPatternSize(pat) > config.getMinNode()) {
             //nbOutputMaximalPatterns++;
             int support = projected.getProjectedSupport();
             int wsupport = projected.getProjectedRootSupport(); //=> root location
@@ -248,87 +253,98 @@ public class FreqT_ext_multi extends FreqT {
         }
     }
 
-    //parallel expand groups of root occurrences
-    private void groupExpandParallel(Map <String, String > _rootIDs){
-        _rootIDs.entrySet().parallelStream().forEach(entry -> {
-            //check total running time of the second step
-            if(checkTimeOut("groupExpandParallel: 2nd step timeout")) return;
-            //start expanding for this group
-            long timeStartGroup = System.currentTimeMillis( );
-            //boolean finished = true;
-            //System.out.println("Group "+entry.getKey());
-            //System.out.println(frequentPatterns.size()+" - "+ nbOutputMaximalPatterns);
-            Vector<String> largestPattern = new Vector<>();
-            Projected projected = new Projected();
-            if(roundCount == 1) {
-                String[]tmp = entry.getValue().substring(1,entry.getValue().length()-1).split(String.valueOf(","));
-                String rootLabel = tmp[0];
-                largestPattern.add(rootLabel);
-                projected.setProjectedDepth(0);
-                //calculate the root positions
-                String[] temp = entry.getKey().split(";");
-                for(int i=0; i<temp.length; ++i){
-                    String[] pos = temp[i].split("-");
-                    projected.setProjectLocation(Integer.valueOf(pos[0]),Integer.valueOf(pos[1]));
-                    projected.setProjectRootLocation(Integer.valueOf(pos[0]),Integer.valueOf(pos[1]));
-                }
-            }else{
-                //from the second round, expanding from the patterns which interrupted in the previous round
-                String[]tmp = entry.getValue().substring(1,entry.getValue().length()-1).split(String.valueOf(","));
-                largestPattern = Pattern.formatPattern(tmp);
-                //print to test locations of interrupted pattern
-                //System.out.println(entry.getKey());
-                String[] projectTemp = entry.getKey().split("\t");
-                projected.setProjectedDepth(Integer.valueOf(projectTemp[0]));
-                //calculate root and right-most positions
-                String[] rootTemp = projectTemp[1].split(";");
-                for(int i=0; i<rootTemp.length; ++i) {
-                    String[] pos = rootTemp[i].split("-");
-                    projected.setProjectRootLocation(Integer.valueOf(pos[0]), Integer.valueOf(pos[1]));
-                    ////location = (id,[root pos, rightmost pos])
-                    //projected.setProjectLocation(Integer.valueOf(pos[0]), Integer.valueOf(pos[1]));
-                    //projected.setProjectLocation(Integer.valueOf(pos[0]), Integer.valueOf(pos[2]));
-                }
-                String[] rightmostTemp = projectTemp[2].split(";");
-                for(int i=0; i<rightmostTemp.length; ++i) {
-                    String[] pos = rightmostTemp[i].split("-");
-                    projected.setProjectLocation(Integer.valueOf(pos[0]), Integer.valueOf(pos[1]));
-                }
-            }
-            //largestMinSup = projected.getProjectedSupport();
-            project(largestPattern,projected,timeStartGroup);
-            //update size of the pattern for next expansion
-            largestPattern.setSize(largestPattern.size() - 1);
 
-        });
+    //parallel expand groups of root occurrences
+    private void groupExpandParallel(Map <String, String > _rootIDs) {
+
+        final int parallelism = config.getNbCores();
+        ForkJoinPool forkJoinPool = null;
+        try{
+            forkJoinPool = new ForkJoinPool(parallelism);
+            forkJoinPool.submit(()->
+                _rootIDs.entrySet().parallelStream().forEach(entry -> {
+                    //check total running time of the second step
+                    if(checkTimeOut()){
+                        //System.out.println("project: Timeout at the second step: "+System.currentTimeMillis());
+                        timeout = true;
+                        return;
+                    }
+                    //start expanding for this group
+                    long timeStartGroup = System.currentTimeMillis( );
+                    //boolean finished = true;
+                    //System.out.println("Group "+entry.getKey());
+                    //System.out.println(frequentPatterns.size()+" - "+ nbOutputMaximalPatterns);
+                    Vector<String> largestPattern = new Vector<>();
+                    Projected projected = new Projected();
+                    if(roundCount == 1) {
+                        String[]tmp = entry.getValue().substring(1,entry.getValue().length()-1).split(String.valueOf(","));
+                        String rootLabel = tmp[0];
+                        largestPattern.add(rootLabel);
+                        projected.setProjectedDepth(0);
+                        //calculate the root positions
+                        String[] temp = entry.getKey().split(";");
+                        for(int i=0; i<temp.length; ++i){
+                            String[] pos = temp[i].split("-");
+                            projected.setProjectLocation(Integer.valueOf(pos[0]),Integer.valueOf(pos[1]));
+                            projected.setProjectRootLocation(Integer.valueOf(pos[0]),Integer.valueOf(pos[1]));
+                        }
+                    }else{
+                        //from the second round, expanding from the patterns which interrupted in the previous round
+                        String[]tmp = entry.getValue().substring(1,entry.getValue().length()-1).split(String.valueOf(","));
+                        largestPattern = Pattern.formatPattern(tmp);
+                        //print to test locations of interrupted pattern
+                        //System.out.println(entry.getKey());
+                        String[] projectTemp = entry.getKey().split("\t");
+                        projected.setProjectedDepth(Integer.valueOf(projectTemp[0]));
+                        //calculate root and right-most positions
+                        String[] rootTemp = projectTemp[1].split(";");
+                        for(int i=0; i<rootTemp.length; ++i) {
+                            String[] pos = rootTemp[i].split("-");
+                            projected.setProjectRootLocation(Integer.valueOf(pos[0]), Integer.valueOf(pos[1]));
+                            ////location = (id,[root pos, rightmost pos])
+                            //projected.setProjectLocation(Integer.valueOf(pos[0]), Integer.valueOf(pos[1]));
+                            //projected.setProjectLocation(Integer.valueOf(pos[0]), Integer.valueOf(pos[2]));
+                        }
+                        String[] rightmostTemp = projectTemp[2].split(";");
+                        for(int i=0; i<rightmostTemp.length; ++i) {
+                            String[] pos = rightmostTemp[i].split("-");
+                            projected.setProjectLocation(Integer.valueOf(pos[0]), Integer.valueOf(pos[1]));
+                        }
+                    }
+                    //largestMinSup = projected.getProjectedSupport();
+                    project(largestPattern,projected,timeStartGroup);
+                    //update size of the pattern for next expansion
+                    largestPattern.setSize(largestPattern.size() - 1);
+
+                })
+            ).get();
+        }catch(Exception e){
+            e.printStackTrace();
+        }finally {
+            if (forkJoinPool != null) {
+                forkJoinPool.shutdown(); //always remember to shutdown the pool
+            }
+        }
     }
 
     //main function to find maximal patterns in the second step
     public void run(Map <String, String > _rootIDs, Vector <Vector<NodeFreqT>  > _transaction,
-                    long timeFor1st, FileWriter _report){
+                    long start1st, FileWriter _report){
 
         try{
             transaction = _transaction;
             frequentPatterns = new ConcurrentHashMap<>();
+            timeout = false;
             roundCount = 1;
             //calculate times for incremental maximal pattern mining
             timeStart2nd = System.currentTimeMillis();
-            //time for pattern printing = 10% timeOut and at least 5 minutes !!!
-            long time = Math.round(config.getTimeout()*0.1);
-            long timeForPrint = time > 20 ? time : 20;//??? minute(s)
-            //time for the second step
-            timeFor2nd = (config.getTimeout())*(60*1000)- timeFor1st - timeForPrint*60*1000;
+            timeFor2nd = (config.getTimeout())*(60*1000);
             //time spent for each round
             long timeSpent = 0;
             //loop _rootIDs be empty or running time is larger than timeFor2nd.
             while(! _rootIDs.isEmpty()) {
                 //store interrupted groups which run over timePerTask
                 interruptedRootID = new LinkedHashMap<>();
-                //check total running time of the second step
-                if(timeFor2nd < timeSpent){
-                    _report.write("timeout in the second step");
-                    break;
-                }
                 //recalculate time for each group
                 timePerGroup = (timeFor2nd - timeSpent) / _rootIDs.size();
                 //PARALLEL RUNNING: for each group of root occurrences find patterns without max size constraints
@@ -339,38 +355,40 @@ public class FreqT_ext_multi extends FreqT {
                 _rootIDs = interruptedRootID;
                 roundCount++;
             }
-            //filter and print maximal patterns
-            outputMaximalPatterns();
+
+            //filter maximal patterns
+
+            if(timeout)
+                log(_report,"\t + timeout in the second step");
+            else
+                log(_report,"\t + search finished");
+
+            long start = System.currentTimeMillis();
+            log(_report,"\t + #FP: "+frequentPatterns.size());
+            Map<String,String> maximalPatterns = maximalFilter(frequentPatterns);
+            log(_report,"\t + filtering time: "+Float.valueOf(System.currentTimeMillis() - start)/1000+"s");
+
+            //output maximal patterns
+            start = System.currentTimeMillis();
+            outputMaximalPatterns(maximalPatterns);
+            log(_report,"\t + printing time: "+ Float.valueOf(System.currentTimeMillis()-start)/1000+"s");
+
+            //report result
+            log(_report,"\t + maximal patterns: "+maximalPatterns.size());
+            log(_report,"\t + running time: "+ Float.valueOf(System.currentTimeMillis( ) - timeStart2nd)/1000+"s");
+
+            log(_report,"- total running time: "+ Float.valueOf(System.currentTimeMillis()-start1st)/1000+"s");
+            _report.flush();
+            _report.close();
 
         }catch (Exception e){}
     }
 
-    //filter and print maximal patterns
-    private  void outputMaximalPatterns(){
-        try{
-            //filter maximal patterns
-            Map<String,String> maximalPatterns = maximalFilter(frequentPatterns);
-            //output maximal patterns
-            nbOutputMaximalPatterns = maximalPatterns.size();
-            AOutputFormatter outputMaximalPatterns =  new XMLOutput(config.getOutputFile(),config, grammar, xmlCharacters);
-            Iterator < Map.Entry<String,String> > iter1 = maximalPatterns.entrySet().iterator();
-            while(iter1.hasNext()){
-                Map.Entry<String,String> entry = iter1.next();
-                outputMaximalPatterns.printPattern(entry.getValue());
-            }
-            outputMaximalPatterns.close();
-
-        }
-        catch(Exception e){System.out.println("error print maximal patterns");}
-    }
-
     //check running time for the second step
-    private boolean checkTimeOut(String message){
-
+    private boolean checkTimeOut(){
         //long currentTime = System.currentTimeMillis( );
         long currentTimeSpent = (System.currentTimeMillis( ) - timeStart2nd);
         if(timeFor2nd < currentTimeSpent) {
-            //System.out.println(message);
             return true;
         }else
             return false;

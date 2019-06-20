@@ -664,11 +664,11 @@ public class FreqT {
             FileWriter report = new FileWriter(reportFile);
 
             //set timeout for the current task
-            TimeOut timeOut = new TimeOut();
-            timeOut.setTimes(config.getTimeout() * 60 * 1000);
-            timeOut.setReport(report);
-            Thread timeOutThread = new Thread(timeOut);
-            timeOutThread.start();
+//            TimeOut timeOut = new TimeOut();
+//            timeOut.setTimes(config.getTimeout() * 60 * 1000);
+//            timeOut.setReport(report);
+//            Thread timeOutThread = new Thread(timeOut);
+//            timeOutThread.start();
 
             log(report,"INPUT");
             log(report,"===================");
@@ -697,7 +697,8 @@ public class FreqT {
                 long diff1 = end1 - start;
                 //report phase 1
                 log(report,"- Step 1: Find frequent patterns with max size constraints");
-                log(report,"\t + Frequent patterns = "+ nbOutputFrequentPatterns + ", time = "+ diff1 +"ms");
+                log(report,"\t + Frequent patterns = "+ nbOutputFrequentPatterns);
+                log(report, "\t + running time = "+ Float.valueOf(diff1)/1000 +"s");
                 //log(report,"#root occurrences groups = "+ rootIDs.size());
 
                 filterRootOccurrences(rootIDs);
@@ -709,35 +710,30 @@ public class FreqT {
                 //FreqT_ext freqT_ext = new FreqT_ext(config, this.grammar, this.blackLabels,this.whiteLabels,this.xmlCharacters);
                 //parallel running
                 FreqT_ext_multi freqT_ext = new FreqT_ext_multi(config, this.grammar, this.blackLabels,this.whiteLabels,this.xmlCharacters);
+                freqT_ext.run(rootIDs,transaction,start,report);
 
-                freqT_ext.run(rootIDs,transaction,diff1,report);
-
-                nbOutputLargestPatterns = freqT_ext.getNbOutputMaximalPatterns();
-                long end2 = System.currentTimeMillis( );
-                long diff2 = end2 - end1;
+                //nbOutputLargestPatterns = freqT_ext.getNbOutputMaximalPatterns();
+                //long end2 = System.currentTimeMillis( );
+                //long diff2 = end2 - end1;
                 //report phase 2
                 //log(report,"===================");
-                log(report,"\t + Maximal patterns = "+nbOutputLargestPatterns+", time = "+ diff2 +"ms");
+                //log(report,"\t + Maximal patterns = "+nbOutputLargestPatterns+", time = "+ diff2 +"ms");
                 //total running time
-                log(report,"- Total running times = "+(end2-start)+" ms");
-                report.close();
+                //log(report,"- Total running times = "+(end2-start)+" ms");
+                //report.close();
+                //System.out.println(end2-start);
 
             }else{//output maximal patterns in the first step
                 log(report,"OUTPUT");
                 log(report,"===================");
                 log(report,"- Find maximal patterns with max size constraint");
-                AOutputFormatter outputMaximalPatterns =  new XMLOutput(config.getOutputFile(),config, grammar, xmlCharacters);
-                Iterator < Map.Entry<String,String> > iter1 = outputMaximalPatternsMap.entrySet().iterator();
-                while(iter1.hasNext()){
-                    Map.Entry<String,String> entry = iter1.next();
-                    outputMaximalPatterns.printPattern(entry.getValue());
-                }
-                outputMaximalPatterns.close();
+
+                outputMaximalPatterns(outputMaximalPatternsMap);
 
                 long end1 = System.currentTimeMillis( );
                 long diff1 = end1 - start;
                 log(report,"\t + Frequent patterns = "+ nbOutputFrequentPatterns);
-                log(report,"\t + Maximal patterns = "+ outputMaximalPatterns.getNbPattern());
+                log(report,"\t + Maximal patterns = "+ outputMaximalPatternsMap.size());
                 log(report,"\t + Running times = "+ diff1 +" ms");
                 report.close();
 
@@ -809,6 +805,21 @@ public class FreqT {
         //System.out.println(msg);
         report.write(msg + "\n");
         report.flush();
+    }
+
+    //filter and print maximal patterns
+    public  void outputMaximalPatterns(Map<String,String> maximalPatterns){
+        try{
+            //output maximal patterns
+            AOutputFormatter outputMaximalPatterns =  new XMLOutput(config.getOutputFile(),config, grammar, xmlCharacters);
+            Iterator < Map.Entry<String,String> > iter1 = maximalPatterns.entrySet().iterator();
+            while(iter1.hasNext()){
+                Map.Entry<String,String> entry = iter1.next();
+                outputMaximalPatterns.printPattern(entry.getValue());
+            }
+            outputMaximalPatterns.close();
+        }
+        catch(Exception e){System.out.println("error print maximal patterns");}
     }
 
 }
