@@ -16,9 +16,8 @@ public class FreqT {
     static char uniChar = '\u00a5';// Japanese Yen symbol
     protected Config config;
 
-    private Vector <Vector<NodeFreqT> >  transaction = new Vector<>();
-
     //used by Freqt_ext
+    protected Vector <Vector<NodeFreqT> >  transaction = new Vector<>();
     protected Map <String,Vector<String> > grammar    = new LinkedHashMap<>();
     protected Map <String,Vector<String> > blackLabels = new LinkedHashMap<>();
     protected Map <String,Vector<String> > whiteLabels = new LinkedHashMap<>();
@@ -709,8 +708,9 @@ public class FreqT {
                 //sequential running
                 //FreqT_ext freqT_ext = new FreqT_ext(config, this.grammar, this.blackLabels,this.whiteLabels,this.xmlCharacters);
                 //parallel running
-                FreqT_ext_multi freqT_ext = new FreqT_ext_multi(config, this.grammar, this.blackLabels,this.whiteLabels,this.xmlCharacters);
-                freqT_ext.run(rootIDs,transaction,start,report);
+                FreqT_ext_multi freqT_ext = new FreqT_ext_multi(config, this.grammar, this.blackLabels,
+                        this.whiteLabels,this.xmlCharacters,this.transaction);
+                freqT_ext.run(rootIDs,start,report);
 
                 //nbOutputLargestPatterns = freqT_ext.getNbOutputMaximalPatterns();
                 //long end2 = System.currentTimeMillis( );

@@ -17,19 +17,16 @@ public class FreqT_ext extends FreqT {
 
     //private Vector <String> _largestPattern;
 
-    private Vector <Vector<NodeFreqT> >  transaction = new Vector<>();
-
-    private Map<String,String> outputMaximalPatternsMap = new HashMap<>();
-
-
-    private int nbOutputMaximalPatterns;
+    //private Vector <Vector<NodeFreqT> >  transaction = new Vector<>();
 
     //private int largestMinSup; //How to use for parallel computing
 
-    long start;
-    long timePerGroup;
-    boolean finished;
-    long timeStartRound;
+    private Map<String,String> outputMaximalPatternsMap = new HashMap<>();
+
+    private long start;
+    private long timePerGroup;
+    private boolean finished;
+    private long timeStartRound;
 
     //int roundCount = 1;
 
@@ -43,16 +40,14 @@ public class FreqT_ext extends FreqT {
                      Map<String,Vector<String>> grammar,
                      Map<String,Vector<String>> blackLabels,
                      Map<String,Vector<String>> whiteLabels,
-                     Map<String,String> xmlCharacters) {
+                     Map<String,String> xmlCharacters,
+                     Vector <Vector<NodeFreqT> >  transaction) {
         super(config);
         this.grammar = grammar;
         this.blackLabels = blackLabels;
         this.whiteLabels = whiteLabels;
         this.xmlCharacters = xmlCharacters;
-    }
-
-    public int getNbOutputMaximalPatterns(){
-        return this.nbOutputMaximalPatterns;
+        this.transaction = transaction;
     }
 
 
@@ -206,13 +201,9 @@ public class FreqT_ext extends FreqT {
         }
     }
 
-    public void run(Map <String, String > _rootIDs,
-                    Vector <Vector<NodeFreqT>  > _transaction,
-                    long start1st,
-                    FileWriter _report){
+    public void run(Map <String, String > _rootIDs,long start1st,FileWriter _report){
 
         try{
-            transaction = _transaction;
             //calculate times for incremental maximal pattern mining
             int roundCount = 1;
             timeStartRound = System.currentTimeMillis();
