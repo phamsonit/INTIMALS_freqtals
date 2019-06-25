@@ -82,12 +82,12 @@ public class FreqT_ext_multi extends FreqT {
     private Map<String,String> filterMaximalFP(Map<String,String> FP){
 
         Map<String,String> MFP = new ConcurrentHashMap<>();
-
-        final int parallelism = config.getNbCores();
-        ForkJoinPool forkJoinPool = null;
-        try{
-            forkJoinPool = new ForkJoinPool(parallelism);
-            forkJoinPool.submit(()->
+        //parallel filter
+        //final int parallelism = config.getNbCores();
+        //ForkJoinPool forkJoinPool = null;
+        //try{
+            //forkJoinPool = new ForkJoinPool(parallelism);
+            //forkJoinPool.submit(()->
                FP.entrySet().parallelStream().forEach(fpEntry-> {
                    boolean found = false;
                    if (MFP.isEmpty()) {
@@ -110,15 +110,16 @@ public class FreqT_ext_multi extends FreqT {
                            MFP.put(fpEntry.getKey(), fpEntry.getValue());
                        }
                    }
-               })
-            ).get();
-        }catch(Exception e){
-            e.printStackTrace();
-        }finally {
-            if (forkJoinPool != null) {
-                forkJoinPool.shutdown(); //always remember to shutdown the pool
-            }
-        }
+               });
+    //        ).get();
+    //    }catch(Exception e){
+    //        e.printStackTrace();
+    //    }finally {
+    //        if (forkJoinPool != null) {
+    //            forkJoinPool.shutdown(); //always remember to shutdown the pool
+    //        }
+    //    }
+        //sequent filter
 
 //        try{
 //            Iterator < Map.Entry<String,String> > fp = FP.entrySet().iterator();
@@ -228,7 +229,7 @@ public class FreqT_ext_multi extends FreqT {
     }
 
     //main step to find candidates and expand a pattern
-    private void project(Vector<String> largestPattern, Projected projected,long timeStartGroup) {
+    private void project(Vector<String> largestPattern, Projected projected, long timeStartGroup) {
         try{
             //check timeout for the current group
             long diff = System.currentTimeMillis( ) - timeStartGroup;
@@ -272,61 +273,61 @@ public class FreqT_ext_multi extends FreqT {
             while (iter.hasNext()) {
                 int oldSize = largestPattern.size();
                 Map.Entry<String, Projected> entry = iter.next();
+                //TODO: adjust deleteSection for parallel version
                 //delete candidate that belongs to black-section
-                String candidateLabel = Pattern.getPotentialCandidateLabel(entry.getKey());
-                if(candidateLabel.equals("SectionStatementBlock"))
-                    deleteSection(entry,transaction);
+//                String candidateLabel = Pattern.getPotentialCandidateLabel(entry.getKey());
+                //if(candidateLabel.equals("SectionStatementBlock"))
+                    //if(checkBlackSection(entry,transaction)) return;
                 //expand the pattern if all paragraphs are continuous
-                if(candidateLabel.equals("ParagraphStatementBlock")) {
-                    checkContinuousParagraph(largestPattern, entry, transaction);
-                }
+//                if(candidateLabel.equals("ParagraphStatementBlock")) {
+//                    checkContinuousParagraph(largestPattern, entry, transaction);
+//                }
+
                 expandCandidate(largestPattern, entry, timeStartGroup);
                 largestPattern.setSize(oldSize);
             }
         }catch (Exception e){
-            System.out.println("Error: Freqt_ext projected " + e);
+            System.out.println("Error: Freqt_ext_multi projected " + e);
             e.printStackTrace();
         }
     }
 
-
     //parallel expand groups of root occurrences
     private void groupExpandParallel(Map <String, String > _rootIDs) {
-
-        final int parallelism = config.getNbCores();
-        ForkJoinPool forkJoinPool = null;
-        try{
-            forkJoinPool = new ForkJoinPool(parallelism);
-            forkJoinPool.submit(()->
+        //final int parallelism = config.getNbCores();
+        //ForkJoinPool forkJoinPool = null;
+        //try{
+            //forkJoinPool = new ForkJoinPool(parallelism);
+            //forkJoinPool.submit(()->
                 _rootIDs.entrySet().parallelStream().forEach(entry -> {
                     //check total running time of the second step
-                    if(checkTimeOut()){
+                    if (checkTimeOut()) {
                         //System.out.println("project: Timeout at the second step: "+System.currentTimeMillis());
                         timeout = true;
                         return;
                     }
                     //start expanding for this group
-                    long timeStartGroup = System.currentTimeMillis( );
+                    long timeStartGroup = System.currentTimeMillis();
                     //boolean finished = true;
                     //System.out.println("Group "+entry.getKey());
                     //System.out.println(frequentPatterns.size()+" - "+ nbOutputMaximalPatterns);
                     Vector<String> largestPattern = new Vector<>();
                     Projected projected = new Projected();
-                    if(roundCount == 1) {
-                        String[]tmp = entry.getValue().substring(1,entry.getValue().length()-1).split(String.valueOf(","));
+                    if (roundCount == 1) {
+                        String[] tmp = entry.getValue().substring(1, entry.getValue().length() - 1).split(String.valueOf(","));
                         String rootLabel = tmp[0];
                         largestPattern.add(rootLabel);
                         projected.setProjectedDepth(0);
                         //calculate the root positions
                         String[] temp = entry.getKey().split(";");
-                        for(int i=0; i<temp.length; ++i){
+                        for (int i = 0; i < temp.length; ++i) {
                             String[] pos = temp[i].split("-");
-                            projected.setProjectLocation(Integer.valueOf(pos[0]),Integer.valueOf(pos[1]));
-                            projected.setProjectRootLocation(Integer.valueOf(pos[0]),Integer.valueOf(pos[1]));
+                            projected.setProjectLocation(Integer.valueOf(pos[0]), Integer.valueOf(pos[1]));
+                            projected.setProjectRootLocation(Integer.valueOf(pos[0]), Integer.valueOf(pos[1]));
                         }
-                    }else{
+                    } else {
                         //from the second round, expanding from the patterns which interrupted in the previous round
-                        String[]tmp = entry.getValue().substring(1,entry.getValue().length()-1).split(String.valueOf(","));
+                        String[] tmp = entry.getValue().substring(1, entry.getValue().length() - 1).split(String.valueOf(","));
                         largestPattern = Pattern.formatPattern(tmp);
                         //print to test locations of interrupted pattern
                         //System.out.println(entry.getKey());
@@ -334,7 +335,7 @@ public class FreqT_ext_multi extends FreqT {
                         projected.setProjectedDepth(Integer.valueOf(projectTemp[0]));
                         //calculate root and right-most positions
                         String[] rootTemp = projectTemp[1].split(";");
-                        for(int i=0; i<rootTemp.length; ++i) {
+                        for (int i = 0; i < rootTemp.length; ++i) {
                             String[] pos = rootTemp[i].split("-");
                             projected.setProjectRootLocation(Integer.valueOf(pos[0]), Integer.valueOf(pos[1]));
                             ////location = (id,[root pos, rightmost pos])
@@ -342,25 +343,26 @@ public class FreqT_ext_multi extends FreqT {
                             //projected.setProjectLocation(Integer.valueOf(pos[0]), Integer.valueOf(pos[2]));
                         }
                         String[] rightmostTemp = projectTemp[2].split(";");
-                        for(int i=0; i<rightmostTemp.length; ++i) {
+                        for (int i = 0; i < rightmostTemp.length; ++i) {
                             String[] pos = rightmostTemp[i].split("-");
                             projected.setProjectLocation(Integer.valueOf(pos[0]), Integer.valueOf(pos[1]));
                         }
                     }
                     //largestMinSup = projected.getProjectedSupport();
-                    project(largestPattern,projected,timeStartGroup);
+                    project(largestPattern, projected, timeStartGroup);
                     //update size of the pattern for next expansion
                     largestPattern.setSize(largestPattern.size() - 1);
+                });
 
-                })
-            ).get();
-        }catch(Exception e){
-            e.printStackTrace();
-        }finally {
-            if (forkJoinPool != null) {
-                forkJoinPool.shutdown(); //always remember to shutdown the pool
-            }
-        }
+    //            })
+    //        ).get();
+    //    }catch(Exception e){
+    //        e.printStackTrace();
+    //    }finally {
+    //        if (forkJoinPool != null) {
+    //            forkJoinPool.shutdown(); //always remember to shutdown the pool
+    //        }
+    //    }
     }
 
     //main function to find maximal patterns in the second step

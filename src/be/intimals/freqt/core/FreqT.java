@@ -9,7 +9,7 @@ import java.io.*;
 import java.nio.file.Files;
 import java.nio.file.Paths;
 import java.util.*;
-
+import java.util.concurrent.ConcurrentHashMap;
 
 
 public class FreqT {
@@ -340,11 +340,10 @@ public class FreqT {
             for (int i = 0; i < projected.getProjectLocationSize(); ++i) {
                 int id = Location.getLocationId(projected.getProjectLocation(i));
                 int pos = Location.getLocationPos(projected.getProjectLocation(i));
-                //TODO: how to keep only root and rightmost positions
                 //keep only the root id and rightmost locations
-                //List<Integer> occurrences = Location.getLocationList(projected.getProjectLocation(i)).subList(0,1);
+                List<Integer> occurrences = Location.getLocationList(projected.getProjectLocation(i)).subList(0,1);
                 //keep all locations of pattern
-                List<Integer> occurrences = Location.getLocationList(projected.getProjectLocation(i));
+                //List<Integer> occurrences = Location.getLocationList(projected.getProjectLocation(i));
                 //keep lineNr to calculate distance of two nodes
                 //List<Integer> lines = projected.getProjectLineNr(i);
                 String prefix = "";
@@ -388,24 +387,16 @@ public class FreqT {
                                          Map.Entry<String, Projected> entry,
                                          Vector <Vector<NodeFreqT> >  _transaction){
 
-        //find parent location in pattern {parentPos}
-        //find all children locations of parentPos {childrenPos}
-        //check sibling of these children
-        //if all children have sibling relationship return true
-
         //System.out.println(entry.getKey());
         Vector<String> tmp = new Vector<>(pat);
         Pattern.addCandidate(tmp,entry.getKey());
         //System.out.println(tmp);
-
-
         Projected projected = entry.getValue();
         /*for (int i = 0; i < projected.getProjectLocationSize(); ++i) {
             System.out.println(Location.getLocationList(projected.getProjectLocation(i)));
         }*/
 
-
-        //find parent location of Paragraph
+        //find parent's location of Paragraph
         int parentPos = Pattern.findParentPosition(tmp,entry.getKey());
         //System.out.println("parent "+parentPos);
         //find Paragraph locations
@@ -423,7 +414,6 @@ public class FreqT {
                 int pos1 = pos.get(childrenPos.get(childrenPos.size()-2));
                 int pos2 = pos.get(childrenPos.get(childrenPos.size()-1));
                 //System.out.println(pos1+" "+pos2);
-
                 if (_transaction.elementAt(id).elementAt(pos1).getNodeSibling() != pos2){
                     //remove paragraph location
                     projected.deleteProjectLocation(i);
@@ -432,7 +422,6 @@ public class FreqT {
                 }
             }
             i++;
-
         }
         /*for (int k = 0; k < projected.getProjectLocationSize(); ++k) {
             System.out.println(Location.getLocationList(projected.getProjectLocation(k)));
@@ -441,25 +430,44 @@ public class FreqT {
         entry.setValue(projected);
     }
 
-    /**
-     * delete locations of a label that belongs to black-section?
-     */
-
-    public void deleteSection(Map.Entry<String, Projected> entry, Vector <Vector<NodeFreqT> >  _transaction){
+    //check SectionStatementBlock in blackSection ?
+    public boolean checkBlackSection(Map.Entry<String, Projected> entry, Vector <Vector<NodeFreqT> >  _transaction){
 
         //TODO: read black-section from file
-        Set<String> blackSectionList = new LinkedHashSet<>();
+        Set<String> blackSectionList = new HashSet<>();
         blackSectionList.add("*CCVS1");
         blackSectionList.add("*CCVS-EXIT");
-
+        boolean found = false;
         try{
-            Projected projected = entry.getValue();
-            /*System.out.println("pos of sections");
-            for (int i = 0; i < projected.getProjectLocationSize(); ++i) {
-                System.out.println(Location.getLocationList(projected.getProjectLocation(i)));
-            }*/
             int i=0;
-            while(i < projected.getProjectLocationSize()) {
+            Projected projected = entry.getValue();
+//            int id = Location.getLocationId(projected.getProjectLocation(i));
+//            //for each location check if it belongs to SectionStatementBlock or not
+//            int currentPos = Location.getLocationPos(projected.getProjectLocation(i));
+//
+//            int searchPos = currentPos;
+//            //check if label of section is in black-section or not
+//            while (searchPos != -1) {
+//                //System.out.println("search label " + transaction.elementAt(id).elementAt(searchPos).getNodeLabel());
+//                if (blackSectionList.contains(_transaction.elementAt(id).elementAt(searchPos).getNodeLabel())) {
+//                    System.out.println("found " + id + " " + searchPos);
+//                    //projected.deleteProjectLocation(i);
+//                    //i--;
+//                    //projected.deleteProjectLocation(currentPos);
+//                    found = true;
+//                    break;
+//                } else {
+//                    searchPos = _transaction.elementAt(id).elementAt(searchPos).getNodeChild();
+//                }
+//            }
+
+
+//            //System.out.println("pos of sections");
+//            for (int i = 0; i < projected.getProjectLocationSize(); ++i) {
+//                System.out.println(Location.getLocationList(projected.getProjectLocation(i)));
+//            }
+
+            while(i < projected.getProjectLocationSize() && !found) {
                 //get position of the current label
                 int id = Location.getLocationId(projected.getProjectLocation(i));
                 //for each location check if it belongs to SectionStatementBlock or not
@@ -470,9 +478,11 @@ public class FreqT {
                 while (searchPos != -1) {
                     //System.out.println("search label " + transaction.elementAt(id).elementAt(searchPos).getNodeLabel());
                     if (blackSectionList.contains(_transaction.elementAt(id).elementAt(searchPos).getNodeLabel())) {
-                        //System.out.println("found " + id + " " + searchPos);
-                        projected.deleteProjectLocation(i);
-                        i--;
+                        System.out.println("found " + id + " " + searchPos);
+                        //projected.deleteProjectLocation(i);
+                        //i--;
+                        //projected.deleteProjectLocation(currentPos);
+                        found = true;
                         break;
                     } else {
                         searchPos = _transaction.elementAt(id).elementAt(searchPos).getNodeChild();
@@ -480,10 +490,57 @@ public class FreqT {
                 }
                 i++;
             }
-            /*System.out.println("pos of sections after removed");
-            for (int j = 0; j < projected.getProjectLocationSize(); ++j) {
-                System.out.println(Location.getLocationList(projected.getProjectLocation(j)));
-            }*/
+
+        }catch (Exception e){
+            System.out.println("Error: Delete locations of SectionStatementBlock "+e);
+        }
+        return found;
+    }
+
+    /**
+     * delete locations of a label that belongs to black-section?
+     */
+
+    public void deleteSection(Map.Entry<String, Projected> entry, Vector <Vector<NodeFreqT> >  _transaction){
+
+        //TODO: read black-section from file
+        Set<String> blackSectionList = new HashSet<>();
+        blackSectionList.add("*CCVS1");
+        blackSectionList.add("*CCVS-EXIT");
+
+        try{
+            Projected projected = entry.getValue();
+//            System.out.println("pos of sections");
+//            for (int i = 0; i < projected.getProjectLocationSize(); ++i) {
+//                System.out.println(Location.getLocationList(projected.getProjectLocation(i)));
+//            }
+            //////
+            int i=0;
+            while(i < projected.getProjectLocationSize()) {
+                //get position of the current label
+                int id = Location.getLocationId(projected.getProjectLocation(i));
+                //for each location check if it belongs to SectionStatementBlock or not
+                int currentPos = Location.getLocationPos(projected.getProjectLocation(i));
+                //int searchPos = Location.getLocationPos(projected.getProjectLocation(i));;
+                //check if label of section is in black-section or not
+                while (currentPos != -1) {
+                    //System.out.println("search label " + transaction.elementAt(id).elementAt(searchPos).getNodeLabel());
+                    if (blackSectionList.contains(_transaction.elementAt(id).elementAt(currentPos).getNodeLabel())) {
+                        //System.out.println("found " + id + " " + searchPos);
+                        projected.deleteProjectLocation(i);
+                        i--;
+                        break;
+                    } else {
+                        currentPos = _transaction.elementAt(id).elementAt(currentPos).getNodeChild();
+                    }
+                }
+                i++;
+            }
+            ///////
+//            System.out.println("pos of sections after removed");
+//            for (int j = 0; j < projected.getProjectLocationSize(); ++j) {
+//                System.out.println(Location.getLocationList(projected.getProjectLocation(j)));
+//            }
             entry.setValue(projected);
 
         }catch (Exception e){
@@ -626,7 +683,7 @@ public class FreqT {
 
                 pattern.setSize(oldSize);
             }
-        }catch (Exception e){System.out.println("Error: projected " + e);}
+        }catch (Exception e){System.out.println("Error: Freqt - projected " + e);}
     }
 
     /**
