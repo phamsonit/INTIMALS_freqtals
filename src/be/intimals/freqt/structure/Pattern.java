@@ -1,6 +1,8 @@
 package be.intimals.freqt.structure;
 
 import java.util.*;
+import java.util.concurrent.ConcurrentSkipListSet;
+import java.util.Set;
 
 
 public class Pattern {
@@ -240,7 +242,10 @@ public class Pattern {
      */
     public static Vector<String > findChildrenLabels(Vector<String> pat, Integer parentPos){
         int top = -1;
-        Vector<String > children = new Vector<>();
+
+        //Set<String> children = new ConcurrentSkipListSet<>();
+        Vector<String > children1 = new Vector<>();
+
         if(parentPos < pat.size()-1){
             for(int i = parentPos+1; i < pat.size(); ++i){
                 if(pat.elementAt(i).equals(")"))
@@ -248,11 +253,13 @@ public class Pattern {
                 else
                     ++top;
                 if(top == 0 && !pat.elementAt(i).equals(")"))
-                    children.addElement(pat.elementAt(i));
+                    //children.add(pat.elementAt(i));
+                    children1.add(pat.elementAt(i));
                 if(top == -2) break;
             }
         }
-        return  children;
+        //children1 = new Vector<>(children);
+        return  children1;
     }
 
     /**
@@ -383,7 +390,8 @@ public class Pattern {
     public static Set<String> getChildrenLabels(Map<String,Vector<String>> ListNode, Vector<String> pat, String candidate){
 
         //add current candidate to pattern
-        Set<String> childrenTemp = new LinkedHashSet<>();
+        Set<String> childrenTemp = new ConcurrentSkipListSet<>(); //LinkedHashSet<>();
+
         String[] candidateTemp = candidate.split(String.valueOf(uniChar));
         Vector<String> patternTemp = new Vector<>(pat);
         for (int i = 0; i < candidateTemp.length; ++i) {

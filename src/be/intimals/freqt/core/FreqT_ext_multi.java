@@ -22,6 +22,9 @@ public class FreqT_ext_multi extends FreqT {
     //private Map<String,String> outputMaximalPatternsMap = null;
     //store frequent patterns in the second step
     private Map<String,String> frequentPatterns = null;
+    //store root occurrences for the second round
+    //Map<String,String> interruptedRootID = new LinkedHashMap<>();
+    Map<String,String> interruptedRootID = null;
 
     private int roundCount;
     private long timeStart2nd;
@@ -29,14 +32,7 @@ public class FreqT_ext_multi extends FreqT {
     private long timePerGroup;
     private boolean timeout;
 
-
-    //store root occurrences for the second round
-    //Map<String,String> interruptedRootID = new LinkedHashMap<>();
-    Map<String,String> interruptedRootID = new ConcurrentHashMap<>();
-
-
-    ////////////////////////////////////////////////////////////////////////////////
-
+    //////////////////
     public FreqT_ext_multi(Config config,
                            Map<String,Vector<String>> grammar,
                            Map<String,Vector<String>> blackLabels,
@@ -51,10 +47,9 @@ public class FreqT_ext_multi extends FreqT {
         this.transaction = transaction;
     }
 
-
     private void outputFP(Vector<String> pat, Projected projected){
-
         if (!checkOutput(pat) && Pattern.getPatternSize(pat) > config.getMinNode()) {
+            //System.out.println(pat);
             //nbOutputMaximalPatterns++;
             int support = projected.getProjectedSupport();
             int wsupport = projected.getProjectedRootSupport(); //=> root location
@@ -65,7 +60,6 @@ public class FreqT_ext_multi extends FreqT {
             for (int i = 1; i < pat.size(); ++i)
                 patString = patString + "," + pat.elementAt(i);
             //patString = patString + uniChar + pat.elementAt(i);
-
             String patternSupport =
                     "rootOccurrences" + "," +
                             String.valueOf(support) + "," +
@@ -82,6 +76,8 @@ public class FreqT_ext_multi extends FreqT {
     private Map<String,String> filterMaximalFP(Map<String,String> FP){
 
         Map<String,String> MFP = new ConcurrentHashMap<>();
+
+
         //parallel filter
         //final int parallelism = config.getNbCores();
         //ForkJoinPool forkJoinPool = null;
@@ -93,7 +89,7 @@ public class FreqT_ext_multi extends FreqT {
                    if (MFP.isEmpty()) {
                        MFP.put(fpEntry.getKey(), fpEntry.getValue());
                    } else {
-                       //check the pattern existing in MFP list ?
+                       //check the maximality in MFP list ?
                        Iterator<Map.Entry<String, String>> mfp = MFP.entrySet().iterator();
                        while (mfp.hasNext()) {
                            Map.Entry<String, String> mfpEntry = mfp.next();
@@ -119,8 +115,7 @@ public class FreqT_ext_multi extends FreqT {
     //            forkJoinPool.shutdown(); //always remember to shutdown the pool
     //        }
     //    }
-        //sequent filter
-
+        //sequentially filter
 //        try{
 //            Iterator < Map.Entry<String,String> > fp = FP.entrySet().iterator();
 //            //for each pattern
@@ -273,11 +268,12 @@ public class FreqT_ext_multi extends FreqT {
             while (iter.hasNext()) {
                 int oldSize = largestPattern.size();
                 Map.Entry<String, Projected> entry = iter.next();
-                //TODO: adjust deleteSection for parallel version
+                //TODO: need update for parallel version
                 //delete candidate that belongs to black-section
 //                String candidateLabel = Pattern.getPotentialCandidateLabel(entry.getKey());
-                //if(candidateLabel.equals("SectionStatementBlock"))
-                    //if(checkBlackSection(entry,transaction)) return;
+//                if(candidateLabel.equals("SectionStatementBlock"))
+//                    deleteSection(entry, transaction);
+//                    //if(checkBlackSection(entry,transaction)) return;
                 //expand the pattern if all paragraphs are continuous
 //                if(candidateLabel.equals("ParagraphStatementBlock")) {
 //                    checkContinuousParagraph(largestPattern, entry, transaction);
@@ -293,7 +289,7 @@ public class FreqT_ext_multi extends FreqT {
     }
 
     //parallel expand groups of root occurrences
-    private void groupExpandParallel(Map <String, String > _rootIDs) {
+    private void expandGroupParallel(Map <String, String > _rootIDs) {
         //final int parallelism = config.getNbCores();
         //ForkJoinPool forkJoinPool = null;
         //try{
@@ -380,11 +376,12 @@ public class FreqT_ext_multi extends FreqT {
             //loop _rootIDs be empty or running time is larger than timeFor2nd.
             while(! _rootIDs.isEmpty()) {
                 //store interrupted groups which run over timePerTask
-                interruptedRootID = new LinkedHashMap<>();
+                //interruptedRootID = new LinkedHashMap<>();
+                interruptedRootID = new ConcurrentHashMap<>();
                 //recalculate time for each group
                 timePerGroup = (timeFor2nd - timeSpent) / _rootIDs.size();
                 //PARALLEL RUNNING: for each group of root occurrences find patterns without max size constraints
-                groupExpandParallel(_rootIDs);
+                expandGroupParallel(_rootIDs);
                 //update running time of this round
                 timeSpent = (System.currentTimeMillis() - timeStart2nd);
                 //update lists of root occurrences for next round
@@ -407,7 +404,7 @@ public class FreqT_ext_multi extends FreqT {
 
             //output maximal patterns
             start = System.currentTimeMillis();
-            outputMaximalPatterns(maximalPatterns);
+            outputMFP(maximalPatterns);
             log(_report,"\t + printing time: "+ Float.valueOf(System.currentTimeMillis()-start)/1000+"s");
 
             //report result

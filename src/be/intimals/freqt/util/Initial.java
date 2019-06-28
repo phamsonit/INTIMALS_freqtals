@@ -16,10 +16,7 @@ import java.util.Vector;
 
 public class Initial {
     private  static  char uniChar = '\u00a5';// Japanese Yen symbol
-
-
     private static Vector<Integer> lineNrs = new Vector<>();
-
     public static Vector<Integer> getLineNrs(){
         return lineNrs;
     }

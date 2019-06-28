@@ -50,7 +50,6 @@ public class FreqT_ext extends FreqT {
         this.transaction = transaction;
     }
 
-
     //the difference of this function is chooseOutput
     private void grammarExpand(Vector<String> largestPattern, Map.Entry<String, Projected> entry){
         //get the current candidate label
@@ -102,7 +101,6 @@ public class FreqT_ext extends FreqT {
         }
     }
 
-
     private void expandCandidate(Vector<String> largestPattern, Map.Entry<String, Projected> entry) {
         try{
 
@@ -123,10 +121,6 @@ public class FreqT_ext extends FreqT {
         }catch (Exception e){System.out.println("Error: Freqt_ext expand candidate " + e);}
     }
 
-    /**
-     * expand a subtree
-     * @param projected
-     */
     private void project(Vector<String> largestPattern, Projected projected) {
         try{
 
@@ -313,7 +307,7 @@ public class FreqT_ext extends FreqT {
             }
 
             //print maximal patterns
-            outputMaximalPatterns(outputMaximalPatternsMap);
+            outputMFP(outputMaximalPatternsMap);
 
             //report result
             log(_report,"\t + maximal patterns: "+ outputMaximalPatternsMap.size());
