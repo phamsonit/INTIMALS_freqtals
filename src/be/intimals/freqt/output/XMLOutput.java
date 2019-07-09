@@ -29,27 +29,61 @@ public class XMLOutput extends AOutputFormatter {
         super.openOutputFile();
         out.write("<?xml version=\"1.0\" encoding=\"UTF-8\" standalone=\"no\"?>\n\n");
         out.write("<results>\n\n");
-
     }
-    
 
+    @Override
+    public void close() throws IOException {
+        out.write("</results>\n");
+        out.flush();
+        out.close();
+    }
+
+
+    @Override
+    public void printPattern(String _pat){
+        Vector<String> pat = new Vector<>();
+        try{
+
+            String[] strTmp = _pat.split("\t");
+            String[] supports = strTmp[0].split(",");
+
+            //String[] pattern = strTmp[1].substring(1,strTmp[1].length()-1).split(",");
+            String[] pattern = strTmp[1].split(",");
+
+            for(int i=0; i<pattern.length;++i)
+                pat.add(pattern[i].trim());//replaceAll(String.valueOf(uniChar),","));
+
+            //remove right-path missed real leafs
+            pat = Pattern.filter(pat);
+
+            Projected projected = new Projected();
+            projected.setProjectedSupport(Integer.valueOf(supports[1]));
+            projected.setProjectedRootSupport(Integer.valueOf(supports[2]));
+
+            report(pat,projected);
+
+        }
+        catch (Exception e){
+            System.out.println("print xml error : " + e);
+            System.out.println(pat);
+
+        }
+    }
     /**
      * Represent subtrees in XML format + Ekeko
      * @param pat
      * @param projected
      */
-    @Override
-    public void report(Vector<String> pat, Projected projected){
+    //@Override
+    private void report(Vector<String> pat, Projected projected){
         try{
-
             //if( checkOutputConstraint(pat) ) return;
-
             //System.out.print(pat);
             ++nbPattern;
 
             //keep meta-variables in pattern
             Map<String,Integer> metaVariable = new HashMap<>();
-
+            //print support, wsupport, size
             if(config.postProcess() && !patSupMap.isEmpty()){
                 String patTemp = Pattern.getPatternString(pat);
                 String[] sup = patSupMap.get(patTemp).split(",");
@@ -64,9 +98,7 @@ public class XMLOutput extends AOutputFormatter {
                 out.write("<subtree id=\""+ nbPattern+ "\" support=\"" + sup +
                         "\" wsupport=\"" + wsup + "\" size=\"" + size + "\">\n");
             }
-
-            //System.out.println(nbPattern);
-
+            //print pattern
             int n = 0;
             Vector < String > tmp = new Vector<>();
             //number of meta-variable ???
@@ -104,7 +136,15 @@ public class XMLOutput extends AOutputFormatter {
                             case "1..*":
                                 out.write("<" + pat.elementAt(i)+">\n");
                                 out.write("<__directives>");
-                                out.write("<match-set/>");
+
+                                //add new directive for nodes which have children directly follow each others
+                                if(pat.elementAt(i).equals("TheBlocks")&& pat.elementAt(i-1).equals("SectionStatementBlock"))
+                                    out.write("<match-succession/>");
+                                else
+                                    out.write("<match-set/>");
+
+
+                                //out.write("<match-set/>");
                                 out.write("</__directives>\n");
                                 break;
 
@@ -197,45 +237,6 @@ public class XMLOutput extends AOutputFormatter {
         }
     }
 
-    @Override
-    public void printPattern(String _pat){
-        Vector<String> pat = new Vector<>();
-        try{
-
-            String[] strTmp = _pat.split("\t");
-            String[] supports = strTmp[0].split(",");
-
-            //String[] pattern = strTmp[1].substring(1,strTmp[1].length()-1).split(",");
-            String[] pattern = strTmp[1].split(",");
-
-            for(int i=0; i<pattern.length;++i)
-                pat.add(pattern[i].replaceAll(String.valueOf(uniChar),","));
-
-            //remove right-branch missed real leafs
-            pat = Pattern.filter(pat);
-
-            Projected projected = new Projected();
-            projected.setProjectedSupport(Integer.valueOf(supports[1]));
-            projected.setProjectedRootSupport(Integer.valueOf(supports[2]));
-
-            report(pat,projected);
-
-        }
-        catch (Exception e){
-            System.out.println("print xml error : " + e);
-            System.out.println(pat);
-
-        }
-    }
-
-    @Override
-    public void close() throws IOException {
-        out.write("</results>\n");
-        out.flush();
-        out.close();
-    }
-
-
     private void outputLeaf(Vector<String> pat, int i) throws IOException{
 
         if (config.getAbstractLeafs() ){
@@ -280,7 +281,12 @@ public class XMLOutput extends AOutputFormatter {
                 case "1..*":
                     out.write("<" + pat.elementAt(i)+">\n");
                     out.write("<__directives>");
-                    out.write("<match-set/>");
+
+                    if(pat.elementAt(i).equals("TheBlocks") && pat.elementAt(i-1).equals("SectionStatementBlock"))
+                        out.write("<match-succession/>");
+                    else
+                        out.write("<match-set/>");
+
                     out.write("</__directives>\n");
                     out.write("</" + pat.elementAt(i)+">\n");
                     break;

@@ -84,12 +84,11 @@ public class ReadXML {
     private void readTreeDepthFirst(Node node , Vector <NodeFreqT> trans) {
         try {
             if (node.getNodeType() == Node.ELEMENT_NODE) {
-                // add this node to trans
+                // add this node label into trans
                 trans.elementAt(id).setNodeLabel(node.getNodeName());
                 //System.out.print(node.getNodeName());
-                //add node degree
+
                 int nbChildren = countNBChildren(node);
-                //get LineNr attribute if need
 
                 //find line number of this node.
                 String lineNbTemp = "0";
@@ -100,11 +99,7 @@ public class ReadXML {
                         if(nodeMap.item(i).getNodeName().equals("LineNr"))
                             lineNbTemp = nodeMap.getNamedItem("LineNr").getNodeValue();
                 }
-                //System.out.println(" "+lineNbTemp);
-                trans.elementAt(id).setLineNr(lineNbTemp);
-
-                //TODO: find lineNr of the second SectionStatementBlock
-                //using only for Cobol data
+                //only using for Cobol
                 if(node.getNodeName().equals("SectionStatementBlock") && countSection < 2) {
                     countSection++;
                 }else
@@ -112,11 +107,13 @@ public class ReadXML {
                         lineNrs.add(Integer.valueOf(lineNbTemp));
                         countSection++;
                     }
+                //System.out.println(" "+lineNbTemp);
+                trans.elementAt(id).setLineNr(lineNbTemp);
+                ///////////////////////////////////////////////////////////
 
                 //keep positions to calculate relationships: parent - child - sibling
                 sr.addElement(id);
                 ++id;
-
                 if (node.hasChildNodes()) {
                     //get list of children
                     NodeList nodeList = node.getChildNodes();
@@ -124,8 +121,7 @@ public class ReadXML {
                     if (node.getChildNodes().getLength() == 1) {
                         //add leaf node label
                         //System.out.println(node.getTextContent().trim());
-                        //TODO: abstractLeafs of Cobol data --> Done
-                        if(abstractLeafs)
+                        if(abstractLeafs) //abstract leafs of Cobol: change all leafs to **
                             trans.elementAt(id).setNodeLabel("**");
                         else
                             trans.elementAt(id).setNodeLabel("*" + node.getTextContent().replace(",",String.valueOf(uniChar)).trim());
@@ -154,7 +150,6 @@ public class ReadXML {
                                 readTreeDepthFirst(nodeList.item(i), trans);
                             }
                         }
-
                         /*
                         //sort add children
                         String nodeOrder  = "";
@@ -163,7 +158,6 @@ public class ReadXML {
                             nodeOrder  = grammar.get(node.getNodeName()).elementAt(0);
                             nodeDegree = grammar.get(node.getNodeName()).elementAt(1);
                         }
-
                         //sort children if they are unordered and degree = "1..*"
                         if(nodeOrder.equals("unordered") && nodeDegree.equals("1..*")){
                             //sort children by labels if node is a nodelist ==> OK
@@ -174,14 +168,12 @@ public class ReadXML {
                                     sortedNodeList.add(nodeList.item(i));
                                 }
                             }
-
                             Collections.sort(sortedNodeList, new Comparator<Node>() {
                                 @Override
                                 public int compare(Node o1, Node o2) {
                                     return o1.getNodeName().compareToIgnoreCase(o2.getNodeName());
                                 }
                             });
-
                             // loop for each sorted child
                             for (int i = 0; i < sortedNodeList.size(); ++i) {
                                 readTreeDepthFirst(sortedNodeList.get(i), trans);
@@ -197,7 +189,6 @@ public class ReadXML {
                         */
                     }
                 }
-
                 //close a node and calculate parent, child, sibling
                 //System.out.println(" )");
                 top = sr.size() - 1;

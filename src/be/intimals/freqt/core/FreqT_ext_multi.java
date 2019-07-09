@@ -47,7 +47,7 @@ public class FreqT_ext_multi extends FreqT {
         this.transaction = transaction;
     }
 
-    private void outputFP(Vector<String> pat, Projected projected){
+    private void addFP(Vector<String> pat, Projected projected){
         if (!checkOutput(pat) && Pattern.getPatternSize(pat) > config.getMinNode()) {
             //System.out.println(pat);
             //nbOutputMaximalPatterns++;
@@ -194,7 +194,7 @@ public class FreqT_ext_multi extends FreqT {
                         if (! Pattern.isMissedMandatoryChild(listOfChildrenPattern, listOfChildrenGrammar, blackLabelChildren, whiteLabelChildren)) {
                             project(largestPattern, entry.getValue(),timeStartGroup);
                         }else {
-                            outputFP(largestPattern, entry.getValue());
+                            addFP(largestPattern, entry.getValue());
                             return;
                         }
                         break;
@@ -215,7 +215,7 @@ public class FreqT_ext_multi extends FreqT {
             }
             //DON'T USE SIZE CONSTRAINT
             if(Pattern.isMissedLeafNode(largestPattern)) {
-                outputFP(largestPattern,entry.getValue());
+                addFP(largestPattern,entry.getValue());
                 return;
             }
             else
@@ -260,7 +260,7 @@ public class FreqT_ext_multi extends FreqT {
             //System.out.println("after blacklist pruning " + candidates.keySet());
             //if there is no candidate then report pattern --> stop
             if( candidates.isEmpty() ){
-                outputFP(largestPattern,projected);
+                addFP(largestPattern,projected);
                 return;
             }
             //expand the current pattern with each candidate
@@ -404,12 +404,12 @@ public class FreqT_ext_multi extends FreqT {
 
             //output maximal patterns
             start = System.currentTimeMillis();
-            outputMFP(maximalPatterns);
+
+            String outFile = config.getOutputFile();
+            outputMFP(maximalPatterns,outFile);
+
             log(_report,"\t + printing time: "+ Float.valueOf(System.currentTimeMillis()-start)/1000+"s");
-
-            //report result
             log(_report,"\t + maximal patterns: "+maximalPatterns.size());
-
             log(_report,"- total running time: "+ Float.valueOf(System.currentTimeMillis()-start1st)/1000+"s");
             _report.flush();
             _report.close();

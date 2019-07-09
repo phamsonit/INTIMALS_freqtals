@@ -103,7 +103,6 @@ public class FreqT_ext extends FreqT {
 
     private void expandCandidate(Vector<String> largestPattern, Map.Entry<String, Projected> entry) {
         try{
-
             // add a candidate to the current pattern
             String[] p = entry.getKey().split(String.valueOf(uniChar));
             for (int i = 0; i < p.length; ++i) {
@@ -179,8 +178,8 @@ public class FreqT_ext extends FreqT {
                 //delete candidate that belongs to black-section
                 String candidateLabel = Pattern.getPotentialCandidateLabel(entry.getKey());
                 if(candidateLabel.equals("SectionStatementBlock"))
-                    deleteSection(entry,transaction);
-                //expand the pattern if all paragraphs are continuous
+                    checkBlackSection(entry,transaction);
+                //delete paragraph locations which are not continuous
                 if(candidateLabel.equals("ParagraphStatementBlock")) {
                     checkContinuousParagraph(largestPattern, entry, transaction);
                 }
@@ -307,7 +306,8 @@ public class FreqT_ext extends FreqT {
             }
 
             //print maximal patterns
-            outputMFP(outputMaximalPatternsMap);
+            String outFile = config.getOutputFile();
+            outputMFP(outputMaximalPatternsMap,outFile);
 
             //report result
             log(_report,"\t + maximal patterns: "+ outputMaximalPatternsMap.size());

@@ -71,16 +71,23 @@ public class Main {
             OutputStream output = null;
             String configPathTemp = "";
 
-            String inputPath = "";
-            String outputPath = "";
+            String inputPath = ""; //input data
+            String outputPath = ""; //output patterns
 
-            String sourceMatcher = "";
-            String inputPatterns = "";
+            //paths for forestmatcher
             String outputMatches = "";
+            String outputClusters = "";
+            String outputClustersTemp = "";
+
+            //output paths for mining common patterns in clusters
+            String outputCommonPatterns = "";
+            String outputCommonMatches = "";
+            String outputCommonClusters = "";
+            String outputCommonClustersTemp = "";
 
             try {
                 prop = configBasic.getProp();
-                //update input dir path
+                //update input path
                 inputPath = configBasic.getInputFiles().replace("\"", "") + "/"+inputFold;
                 //update output file path
                 File directory = new File(configBasic.getOutputFile());
@@ -92,11 +99,33 @@ public class Main {
                 Files.deleteIfExists(Paths.get(outputPath));
 
                 //create parameters for forest matcher
-                sourceMatcher = inputPath;
-                inputPatterns = outputPath;
                 outputMatches = configBasic.getOutputFile().replace("\"","") +
                         "/"+inputFold.replaceAll("\\/","-")+"-" +inputMinSup + "-matches.xml";
                 Files.deleteIfExists(Paths.get(outputMatches));
+
+                outputClusters = configBasic.getOutputFile().replace("\"","") +
+                        "/"+inputFold.replaceAll("\\/","-")+"-" +inputMinSup + "-clusters.xml";
+                Files.deleteIfExists(Paths.get(outputClusters));
+
+                outputClustersTemp = configBasic.getOutputFile().replace("\"","") +
+                        "/"+inputFold.replaceAll("\\/","-")+"-" +inputMinSup + "-matches_clusters.xml";
+                Files.deleteIfExists(Paths.get(outputClustersTemp));
+
+                outputCommonPatterns = configBasic.getOutputFile().replace("\"","") +
+                        "/"+inputFold.replaceAll("\\/","-")+"-" +inputMinSup + "-common_patterns.xml";
+                Files.deleteIfExists(Paths.get(outputCommonPatterns));
+
+                outputCommonMatches = configBasic.getOutputFile().replace("\"","") +
+                        "/"+inputFold.replaceAll("\\/","-")+"-" +inputMinSup + "-common_matches.xml";
+                Files.deleteIfExists(Paths.get(outputCommonMatches));
+
+                outputCommonClusters = configBasic.getOutputFile().replace("\"","") +
+                        "/"+inputFold.replaceAll("\\/","-")+"-" +inputMinSup + "-common_clusters.xml";
+                Files.deleteIfExists(Paths.get(outputCommonClusters));
+
+                outputCommonClustersTemp = configBasic.getOutputFile().replace("\"","") +
+                        "/"+inputFold.replaceAll("\\/","-")+"-" +inputMinSup + "-common_matches_clusters.xml";
+                Files.deleteIfExists(Paths.get(outputCommonClustersTemp));
 
                 //update path of temporary configuration
                 configPathTemp = configBasic.getOutputFile().replace("\"","")
@@ -129,21 +158,40 @@ public class Main {
 
             //load new configuration;
             Config config = new Config(configPathTemp);
-            //run Freqt
+            //run Freqt to find maximal patterns
             FreqT freqt = new FreqT(config);
             freqt.run();
 
-
-            //run forestmatcher to create matches.xml
-            /*if(config.outputAsXML()){
+            //run forestmatcher to create matches.xml and clusters.xml
+            if(config.outputAsXML()){
                 String command = "java -jar forestmatcher.jar " +
-                        sourceMatcher + " " + inputPatterns +" " + outputMatches;
+                        inputPath + " " + outputPath +" " + outputMatches + " " + outputClusters;
                 Process proc = Runtime.getRuntime().exec(command);
+                proc.waitFor();
 
-            }*/
+                //find common patterns in each cluster
+                String outputPathTemp = outputPath+".txt";
+                FreqT_common inCluster = new FreqT_common(config,freqt.getGrammar(),freqt.getXmlCharacters());
+                inCluster.run(outputPathTemp, outputClustersTemp, outputCommonPatterns);
+
+
+                //find matches of common_patterns
+                command = "java -jar forestmatcher.jar " +
+                        inputPath + " " + outputCommonPatterns +" " + outputCommonMatches + " " + outputCommonClusters;
+                proc = Runtime.getRuntime().exec(command);
+                proc.waitFor();
+
+                Files.deleteIfExists(Paths.get(outputPathTemp));
+                Files.deleteIfExists(Paths.get(outputCommonPatterns+".txt"));
+                Files.deleteIfExists(Paths.get(outputCommonClustersTemp));
+
+
+
+
+
+            }
             //System.out.println("===========================================================");
-
-            return;
+            //return;
         }
         catch (Exception e){
             System.out.println("!!! Error: main "+e);

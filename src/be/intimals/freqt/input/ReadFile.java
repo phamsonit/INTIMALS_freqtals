@@ -12,8 +12,7 @@ import java.io.BufferedReader;
 
 public class ReadFile {
 
-    public void createTransaction (String path, Vector < Vector<NodeFreqT> > trans)
-    {
+    public void createTransaction (String path, Vector < Vector<NodeFreqT> > trans){
         String file = path;
         try (BufferedReader br = new BufferedReader(new FileReader(file))) {
             String line;
@@ -39,9 +38,7 @@ public class ReadFile {
         while(iterMap.hasNext()){
             for(int i=0; i<inPatterns.size(); ++i){
                 Map.Entry<String,String> temp = iterMap.next();
-
                 String str_pattern = temp.getKey();
-
                 Vector <NodeFreqT> tran_tmp = new Vector<>();
                 str2node(str_pattern,tran_tmp);
                 trans.addElement(tran_tmp);
@@ -185,7 +182,6 @@ public class ReadFile {
                 sibling.setElementAt(-1,i);
 
             }
-
             //create tree
             Vector<Integer> sr = new Vector<>();
             int id = 0;

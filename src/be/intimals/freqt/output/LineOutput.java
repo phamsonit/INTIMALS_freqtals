@@ -32,8 +32,8 @@ public class LineOutput extends AOutputFormatter {
      * @param pat
      * @param projected
      */
-    @Override
-    public void report(Vector<String> pat, Projected projected){
+    //@Override
+    private void report(Vector<String> pat, Projected projected){
         try{
 
             if(checkOutputConstraint(pat)) return;

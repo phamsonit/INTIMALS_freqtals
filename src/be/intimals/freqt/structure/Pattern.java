@@ -16,8 +16,75 @@ public class Pattern {
     //  /    \
     // *1     *2
     //
-    //format 1 = a,b,*1,),),c,*2,),)
+    //format 1 = a,b,*1,),),c,*2
     //format 2 = (a(b(*1))(c(*2)))
+
+    //convert format 2 to format 1
+  public static String covert(String str){
+      Vector<String> tmp = new Vector<>(); //a list of node labels
+      try {
+          int len = str.length();
+          int size = 0;
+          String buff = ""; //store a node label
+
+          int ii = 0;
+          while (ii < len) {
+              //for(int i = 0; i < len; ++i) //for each char in the str
+              //if str.chatAt(i) =='(' open a node
+              //if str.chatAt(i) ==')' close a node of a branch
+              if (str.charAt(ii) == '(' || str.charAt(ii) == ')') {
+                  if (!buff.isEmpty()) {
+                      if (buff.charAt(0) == '*') {
+                          tmp.addElement(buff);
+                      } else {
+                          String[] label = buff.split("_");
+                          tmp.addElement(label[0]);
+                      }
+                      buff = "";
+                      ++size;
+                  }
+                  if (str.charAt(ii) == ')') tmp.addElement(")");
+              } else
+                  if (str.charAt(ii) == '\t' || str.charAt(ii) == ' ') {
+                  buff += "_";
+                  } else {
+                      //adding to find leaf node i.e. *X(120)
+                      if (str.charAt(ii) == '*') {
+                          int bracket = 0;
+                          while (bracket >= 0) {
+
+                              if (str.charAt(ii) == '(')
+                                  bracket++;
+                              else if (str.charAt(ii) == ')')
+                                  bracket--;
+
+                              if (bracket == -1)
+                                  break;
+                              else {
+                                  buff += str.charAt(ii);
+                                  ++ii;
+                              }
+                          }
+                          //System.out.println(buff);
+                          --ii;
+                      } else buff += str.charAt(ii);
+                  }
+              ++ii;
+          }
+
+          for (int i = tmp.size()-1; i >= 0; --i) {
+              if (tmp.elementAt(i).equals(")"))
+                  tmp.remove(i);
+              else
+                  break;
+          }
+      }catch(Exception e){
+          System.out.println("Pattern convert " + e);
+      }
+
+      return  tmp.toString().substring(1,tmp.toString().length()-1);
+
+  }
 
     /**
      * filter: remove the parts missed real leafs
@@ -51,8 +118,8 @@ public class Pattern {
 
 
     /**
-     * transform format 1 to format 2
-     * filter : remove the parts missed leaf labels
+     * transform format 1 into format 2
+     * filter : remove the parts missed real leafs
       * @param pat
      * @return
      */
@@ -86,7 +153,7 @@ public class Pattern {
     }
 
     /**
-     * transform pattern format 1 to format 2
+     * transform pattern format 1 into format 2
      * @param pat
      * @return
      */
@@ -486,7 +553,6 @@ public class Pattern {
 
 
     }
-
 
 
     public static Vector<String> formatPattern(String[] pat){

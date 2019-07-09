@@ -118,7 +118,7 @@ public abstract class AOutputFormatter {
         return result;
     }
 
-    public abstract void report(Vector<String> pat, Projected projected);
+    //public abstract void report(Vector<String> pat, Projected projected);
     public abstract void printPattern(String pat);
     public abstract void close() throws IOException;
 }

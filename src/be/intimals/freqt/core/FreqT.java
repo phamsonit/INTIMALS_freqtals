@@ -37,7 +37,10 @@ public class FreqT {
     public FreqT(Config config) {
         this.config = config;
     }
+
     public Map <String,String> getXmlCharacters(){return this.xmlCharacters;}
+    public Map <String,Vector<String>> getGrammar(){return this.grammar;}
+
 
      /**
      * store root occurrences of pattern for the second step
@@ -313,9 +316,9 @@ public class FreqT {
                 int id = Location.getLocationId(projected.getProjectLocation(i));
                 int pos = Location.getLocationPos(projected.getProjectLocation(i));
                 //keep only the root id and rightmost locations
-                List<Integer> occurrences = Location.getLocationList(projected.getProjectLocation(i)).subList(0,1);
+                //List<Integer> occurrences = Location.getLocationList(projected.getProjectLocation(i)).subList(0,1);
                 //keep all locations of pattern
-                //List<Integer> occurrences = Location.getLocationList(projected.getProjectLocation(i));
+                List<Integer> occurrences = Location.getLocationList(projected.getProjectLocation(i));
                 //keep lineNr to calculate distance of two nodes
                 //List<Integer> lines = projected.getProjectLineNr(i);
                 String prefix = "";
@@ -476,15 +479,15 @@ public class FreqT {
             while (iter.hasNext()) {
                 int oldSize = pattern.size();
                 Map.Entry<String, Projected> entry = iter.next();
-                //TODO: need update for parallel version
+
                 //if potential candidate = SectionStatementBlock then check if candidate belongs to black-section or not
-//                String candidateLabel = Pattern.getPotentialCandidateLabel(entry.getKey());
-//                if(candidateLabel.equals("SectionStatementBlock"))
-//                    deleteSection(entry,transaction);
-//                //expand the pattern if all paragraphs are continuous
-//                if(candidateLabel.equals("ParagraphStatementBlock")) {
-//                    checkContinuousParagraph(pattern, entry, transaction);
-//                }
+                String candidateLabel = Pattern.getPotentialCandidateLabel(entry.getKey());
+                if(candidateLabel.equals("SectionStatementBlock"))
+                    checkBlackSection(entry,transaction);
+                //expand the pattern if all paragraphs are continuous
+                if(candidateLabel.equals("ParagraphStatementBlock")) {
+                    checkContinuousParagraph(pattern, entry, transaction);
+                }
 
                 expandCandidate(pattern, entry,outputMaximalPatternsMap);
 
@@ -516,7 +519,7 @@ public class FreqT {
      * Return all frequent subtrees of size 1
      * @return
      */
-    private Map<String, Projected> buildFP1Set(Vector < Vector<NodeFreqT> > trans) {
+    public Map<String, Projected> buildFP1Set(Vector < Vector<NodeFreqT> > trans) {
         Map<String, Projected> freq1 = new LinkedHashMap<>();
         for(int i = 0; i < trans.size(); ++i) {
             for (int j = 0; j < trans.elementAt(i).size(); ++j) {
@@ -548,6 +551,8 @@ public class FreqT {
         }
         return freq1;
     }
+
+
     /**
      * run Freqt with file config.properties
      */
@@ -573,19 +578,20 @@ public class FreqT {
             //lineNrs = Initial.getLineNrs();
             //System.out.println(lineNrs);
 
-            long start = System.currentTimeMillis( );
-            nbInputFiles = transaction.size();
-
-            //create report file
-            String reportFile = config.getOutputFile().replaceAll("\"","") +"-report.txt";
-            FileWriter report = new FileWriter(reportFile);
-
             //set timeout for the current task
 //            TimeOut timeOut = new TimeOut();
 //            timeOut.setTimes(config.getTimeout() * 60 * 1000);
 //            timeOut.setReport(report);
 //            Thread timeOutThread = new Thread(timeOut);
 //            timeOutThread.start();
+
+            /////mining maximal patterns
+            //create report file
+            String reportFile = config.getOutputFile().replaceAll("\"","") +"-report.txt";
+            FileWriter report = new FileWriter(reportFile);
+
+            long start = System.currentTimeMillis( );
+            nbInputFiles = transaction.size();
 
             log(report,"INPUT");
             log(report,"===================");
@@ -633,7 +639,8 @@ public class FreqT {
                 log(report,"===================");
                 log(report,"- Find maximal patterns with max size constraint");
 
-                outputMFP(outputMaximalPatternsMap);
+                String outFile = config.getOutputFile();
+                outputMFP(outputMaximalPatternsMap,outFile);
 
                 long end1 = System.currentTimeMillis( );
                 long diff1 = end1 - start;
@@ -656,16 +663,24 @@ public class FreqT {
     }
 
     //filter and print maximal patterns
-    public  void outputMFP(Map<String,String> maximalPatterns){
+    public void outputMFP(Map<String,String> maximalPatterns,String outFile){
         try{
+
+            FileWriter outputCommonPatterns = new FileWriter(outFile+".txt");
             //output maximal patterns
-            AOutputFormatter outputMaximalPatterns =  new XMLOutput(config.getOutputFile(),config, grammar, xmlCharacters);
+            AOutputFormatter outputMaximalPatterns =  new XMLOutput(outFile,config, grammar, xmlCharacters);
             Iterator < Map.Entry<String,String> > iter1 = maximalPatterns.entrySet().iterator();
             while(iter1.hasNext()){
                 Map.Entry<String,String> entry = iter1.next();
                 outputMaximalPatterns.printPattern(entry.getValue());
+                //System.out.println(entry.getKey());
+                outputCommonPatterns.write(entry.getKey()+"\n");
             }
             outputMaximalPatterns.close();
+
+            outputCommonPatterns.flush();
+            outputCommonPatterns.close();
+
         }
         catch(Exception e){System.out.println("error print maximal patterns");}
     }
@@ -721,7 +736,7 @@ public class FreqT {
     /**
      * delete locations of a label that belongs to black-section?
      */
-    public void deleteSection(Map.Entry<String, Projected> entry, Vector <Vector<NodeFreqT> >  _transaction){
+    public void checkBlackSection(Map.Entry<String, Projected> entry, Vector <Vector<NodeFreqT> >  _transaction){
 
         //TODO: read black-section from file
         Set<String> blackSectionList = new HashSet<>();
@@ -769,8 +784,7 @@ public class FreqT {
         }
     }
 
-    //check SectionStatementBlock in blackSection ?
-    public boolean checkBlackSection(Map.Entry<String, Projected> entry, Vector <Vector<NodeFreqT> >  _transaction){
+    public boolean checkBlackSectionNew(Map.Entry<String, Projected> entry, Vector <Vector<NodeFreqT> >  _transaction){
 
         Set<String> blackSectionList = new HashSet<>();
         blackSectionList.add("*CCVS1");
