@@ -12,6 +12,7 @@ import java.io.BufferedReader;
 
 public class ReadFile {
 
+    //create transaction data for a XML file, each line is a input tree
     public void createTransaction (String path, Vector < Vector<NodeFreqT> > trans){
         String file = path;
         try (BufferedReader br = new BufferedReader(new FileReader(file))) {
@@ -27,7 +28,6 @@ public class ReadFile {
                 }
             }
         }catch (IOException e) {System.out.println("Reading file error ");}
-
     }
 
     //create transaction from Map < pattern, supports>
@@ -109,7 +109,7 @@ public class ReadFile {
     }
 
 
-    private void str2node(String str, Vector<NodeFreqT> node){
+    private void str2node(String str, Vector<NodeFreqT> trans){
 
         try{
             int len = str.length();
@@ -167,15 +167,15 @@ public class ReadFile {
             if (! buff.isEmpty()) throw new ArithmeticException("error !");
 
             //init a list of node
-            node.setSize(size);
+            trans.setSize(size);
             Vector<Integer> sibling = new Vector<>(size);
             sibling.setSize(size);
             for(int i = 0; i < size; ++i){
-                NodeFreqT n = new NodeFreqT();
-                n.setNodeSibling(-1);
-                n.setNodeParent(-1);
-                n.setNodeChild(-1);
-                node.setElementAt(n,i);
+                NodeFreqT nodeTemp = new NodeFreqT();
+                nodeTemp.setNodeSibling(-1);
+                nodeTemp.setNodeParent(-1);
+                nodeTemp.setNodeChild(-1);
+                trans.setElementAt(nodeTemp,i);
                 //node.elementAt(i).setNodeChild(-1);
                 //node.elementAt(i).setNodeParent(-1);
                 //node.elementAt(i).setNodeSibling(-1);
@@ -193,16 +193,16 @@ public class ReadFile {
                     if (top < 1) continue;
                     int child = sr.elementAt(top);
                     int parent = sr.elementAt(top-1);
-                    node.elementAt(child).setNodeParent(parent);
-                    if(node.elementAt(parent).getNodeChild() == -1)
-                        node.elementAt(parent).setNodeChild(child);
+                    trans.elementAt(child).setNodeParent(parent);
+                    if(trans.elementAt(parent).getNodeChild() == -1)
+                        trans.elementAt(parent).setNodeChild(child);
                     if(sibling.elementAt(parent) != -1)
-                        node.elementAt(sibling.elementAt(parent)).setNodeSibling(child);
+                        trans.elementAt(sibling.elementAt(parent)).setNodeSibling(child);
                     sibling.setElementAt(child,parent);
                     sr.setSize(top);
                 }
                 else {
-                    node.elementAt(id).setNodeLabel(tmp.elementAt(i));
+                    trans.elementAt(id).setNodeLabel(tmp.elementAt(i));
                     sr.addElement(id);
                     id ++;
                 }

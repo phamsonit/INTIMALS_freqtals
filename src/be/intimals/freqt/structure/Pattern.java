@@ -19,7 +19,7 @@ public class Pattern {
     //format 1 = a,b,*1,),),c,*2
     //format 2 = (a(b(*1))(c(*2)))
 
-    //convert format 2 to format 1
+    //TODO: convert format 2 to format 1
   public static String covert(String str){
       Vector<String> tmp = new Vector<>(); //a list of node labels
       try {

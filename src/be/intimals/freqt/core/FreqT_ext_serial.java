@@ -11,7 +11,12 @@ import java.nio.file.Paths;
 
 import be.intimals.freqt.output.*;
 
-public class FreqT_ext extends FreqT {
+
+/*
+    extended FREQT + without using max size constraints
+ */
+
+public class FreqT_ext_serial extends FreqT {
 
     //private AOutputFormatter outputMaximalPatterns;
 
@@ -36,7 +41,7 @@ public class FreqT_ext extends FreqT {
 
     ////////////////////////////////////////////////////////////////////////////////
 
-    public FreqT_ext(Config config,
+    public FreqT_ext_serial(Config config,
                      Map<String,Vector<String>> grammar,
                      Map<String,Vector<String>> blackLabels,
                      Map<String,Vector<String>> whiteLabels,

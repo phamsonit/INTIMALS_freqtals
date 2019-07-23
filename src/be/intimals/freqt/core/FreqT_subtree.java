@@ -10,8 +10,11 @@ import java.io.FileReader;
 import java.io.IOException;
 import java.util.*;
 
+/*
+    check subtree relationship of 2 input patterns
+ */
 
-public class FreqT_max1 extends FreqT {
+public class FreqT_subtree extends FreqT {
 
     private Vector < String > maximalPattern;
     private Vector < Vector<NodeFreqT> > newTransaction = new Vector<>();
@@ -23,7 +26,7 @@ public class FreqT_max1 extends FreqT {
 
     ////////////////////////////////////////////////////////////////////////////////
 
-    public FreqT_max1(Config config){
+    public FreqT_subtree(Config config){
         super(config);
     }
 
@@ -110,9 +113,7 @@ public class FreqT_max1 extends FreqT {
         try{
             //create input data
             found = false;
-
             Map<String,String> inputPatterns = new LinkedHashMap<>();
-
             if(pat1.length() <= pat2.length()){
                 inputPattern = pat1;
                 inputPatterns.put(pat1,"supports");

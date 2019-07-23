@@ -20,7 +20,9 @@ import java.io.File;
 import java.io.FileReader;
 import java.util.*;
 
-
+/*
+    find a common pattern in each cluster
+ */
 public class FreqT_common extends FreqT {
 
     private Map<String,String> commonOutputPatterns = null;
@@ -190,8 +192,6 @@ public class FreqT_common extends FreqT {
 
         }catch (Exception e){  }
 
-
-
     }
 
     /**
@@ -202,36 +202,6 @@ public class FreqT_common extends FreqT {
         //System.out.println("reading input subtrees ...");
         ReadFile readFile = new ReadFile();
         readFile.createTransactionFromMap(patterns,newTransaction);
-    }
-
-
-    private static void visitNode(Node node){
-
-        if(node.getNodeName().equals("subtree")) {
-            System.out.print("(");
-        }
-        else {
-            System.out.print(node.getNodeName() + "(");
-        }
-        if(node.hasChildNodes()){
-            NodeList nodeList = node.getChildNodes();
-
-            if(nodeList.getLength()==1){//leaf
-                if(node.getNodeType() == Node.ELEMENT_NODE){
-                    System.out.print(node.getTextContent().trim()+")");
-                    //add how many )
-                }
-            }else{
-                for(int i=0; i<nodeList.getLength();++i)
-                {
-                    if(nodeList.item(i).getNodeType() == Node.ELEMENT_NODE &&
-                            nodeList.item(i).getNodeName().charAt(0)!='_'){
-                        visitNode(nodeList.item(i));
-                    }
-                }
-            }
-        }
-
     }
 
 
@@ -279,8 +249,6 @@ public class FreqT_common extends FreqT {
 
         return temp;
     }
-
-
 
 
 }

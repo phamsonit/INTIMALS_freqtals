@@ -1,19 +1,18 @@
 package be.intimals.freqt.core;
 
 import be.intimals.freqt.config.Config;
-import be.intimals.freqt.output.AOutputFormatter;
-import be.intimals.freqt.output.XMLOutput;
 import be.intimals.freqt.structure.*;
 
 import java.io.FileWriter;
-import java.io.IOException;
 import java.util.*;
 import java.util.concurrent.ConcurrentHashMap;
-import java.util.concurrent.ForkJoinPool;
-import java.util.concurrent.ExecutionException;
 
 
 import java.lang.Exception;
+
+/*
+    extended FREQT + parallel at the second step
+ */
 
 public class FreqT_ext_multi extends FreqT {
     //private AOutputFormatter outputMaximalPatterns;
@@ -26,11 +25,19 @@ public class FreqT_ext_multi extends FreqT {
     //Map<String,String> interruptedRootID = new LinkedHashMap<>();
     Map<String,String> interruptedRootID = null;
 
+
     private int roundCount;
     private long timeStart2nd;
     private long timeFor2nd;
     private long timePerGroup;
     private boolean timeout;
+
+    private int max;
+
+
+
+    Vector<Vector<String>> matrixLabels = new Vector<>();
+
 
     //////////////////
     public FreqT_ext_multi(Config config,
@@ -46,6 +53,7 @@ public class FreqT_ext_multi extends FreqT {
         this.xmlCharacters = xmlCharacters;
         this.transaction = transaction;
     }
+
 
     private void addFP(Vector<String> pat, Projected projected){
         if (!checkOutput(pat) && Pattern.getPatternSize(pat) > config.getMinNode()) {
@@ -72,12 +80,75 @@ public class FreqT_ext_multi extends FreqT {
         }
     }
 
-    //filter maximal patterns
+    private void createLabelsTransaction(){
+        //input pattern p1 = {A,B,C,D}
+        //number of columns: map<int,String> index= {[0,A], [1,B], [2,C], [3,D]}
+
+        //create a vector<Bitset> VB = [1 1 1 1]
+
+        //add a new pattern p2 = {A,C,E,F}
+        //update index: {[0,A], [1,B], [2,C], [3,D], [4,E], [5,F]}
+        //update VB =  [1 1 1 1 0 0]
+        //             [1 0 1 0 1 1]
+
+        //add a new pattern p3 = {A,C,C,G}
+        //update index: {[0,A], [1,B], [2,C], [3,D], [4,E], [5,F], [6,G]}
+        //update VB =  [1 1 1 1 0 0 0]
+        //             [1 0 1 0 1 1 0]
+        //             [1 0 1 0 0 0 1]
+
+        //problem 1: how to index duplicated labels
+    }
+
+
+
+    //serial filter maximal patterns by using original FREQT
+    private Map<String,String> serialFilterMaximalFP(Map<String,String> FP){
+        Map<String,String> MFP = new ConcurrentHashMap<>();
+        try{
+            Iterator < Map.Entry<String,String> > fp = FP.entrySet().iterator();
+            //for each pattern
+            while(fp.hasNext()){
+                boolean found = false;
+                Map.Entry<String, String> fpEntry = fp.next();
+
+                if(MFP.isEmpty()){
+                    MFP.put(fpEntry.getKey(), fpEntry.getValue());
+                }
+                else {
+                    //check the pattern existing in MFP list ?
+                    Iterator<Map.Entry<String, String>> mfp = MFP.entrySet().iterator();
+                    while (mfp.hasNext()) {
+                        Map.Entry<String, String> mfpEntry = mfp.next();
+                        //check the labels of two subtrees before check maximal subtree
+                        if(checkSubsetLabels(fpEntry.getKey(), mfpEntry.getKey())) {
+                            switch (checkSubTree(fpEntry.getKey(), mfpEntry.getKey())) {
+                                case 1:
+                                    found = true;
+                                    break;
+                                case 2:
+                                    mfp.remove();
+                                    break;
+                            }
+                        }
+                    }
+                    if (!found) {
+                        MFP.put(fpEntry.getKey(), fpEntry.getValue());
+                        //if(max < MFP.size()) max=MFP.size();
+                    }
+                }
+            }
+        }catch (Exception e){System.out.println("Error: Filter maximal pattern");}
+
+        //System.out.println(max);
+        return MFP;
+    }
+
+
+    //parallel filter maximal patterns by using pair-wise checking
     private Map<String,String> filterMaximalFP(Map<String,String> FP){
 
         Map<String,String> MFP = new ConcurrentHashMap<>();
-
-
         //parallel filter
         //final int parallelism = config.getNbCores();
         //ForkJoinPool forkJoinPool = null;
@@ -86,6 +157,7 @@ public class FreqT_ext_multi extends FreqT {
             //forkJoinPool.submit(()->
                FP.entrySet().parallelStream().forEach(fpEntry-> {
                    boolean found = false;
+                   max=MFP.size();
                    if (MFP.isEmpty()) {
                        MFP.put(fpEntry.getKey(), fpEntry.getValue());
                    } else {
@@ -93,19 +165,24 @@ public class FreqT_ext_multi extends FreqT {
                        Iterator<Map.Entry<String, String>> mfp = MFP.entrySet().iterator();
                        while (mfp.hasNext()) {
                            Map.Entry<String, String> mfpEntry = mfp.next();
-                           switch (checkSubTree(fpEntry.getKey(), mfpEntry.getKey())) {
-                               case 1:
-                                   found = true;
-                                   break;
-                               case 2:
-                                   mfp.remove();
-                                   break;
+                           //check labels of pat is subset of labels of mfpEntry
+                           if(checkSubsetLabels(fpEntry.getKey(), mfpEntry.getKey())) {
+                               switch (checkSubTree(fpEntry.getKey(), mfpEntry.getKey())) {
+                                   case 1:
+                                       found = true;
+                                       break;
+                                   case 2:
+                                       mfp.remove();
+                                       break;
+                               }
                            }
                        }
                        if (!found) {
                            MFP.put(fpEntry.getKey(), fpEntry.getValue());
+                           //if(max < MFP.size()) max=MFP.size();
                        }
                    }
+
                });
     //        ).get();
     //    }catch(Exception e){
@@ -115,42 +192,11 @@ public class FreqT_ext_multi extends FreqT {
     //            forkJoinPool.shutdown(); //always remember to shutdown the pool
     //        }
     //    }
-        //sequentially filter
-//        try{
-//            Iterator < Map.Entry<String,String> > fp = FP.entrySet().iterator();
-//            //for each pattern
-//            while(fp.hasNext()){
-//                boolean found = false;
-//                Map.Entry<String, String> fpEntry = fp.next();
-//
-//                if(MFP.isEmpty()){
-//                    MFP.put(fpEntry.getKey(), fpEntry.getValue());
-//                }
-//                else {
-//                    //check the pattern existing in MFP list ?
-//                    Iterator<Map.Entry<String, String>> mfp = MFP.entrySet().iterator();
-//                    while (mfp.hasNext()) {
-//                        Map.Entry<String, String> mfpEntry = mfp.next();
-//                        switch (checkSubTree(fpEntry.getKey(), mfpEntry.getKey())) {
-//                            case 1:
-//                                found = true;
-//                                break;
-//                            case 2:
-//                                mfp.remove();
-//                                break;
-//                        }
-//                    }
-//                    if (!found) {
-//                        MFP.put(fpEntry.getKey(), fpEntry.getValue());
-//                    }
-//                }
-//            }
-//        }
-//        catch (Exception e){System.out.println("Error: Filter maximal pattern");}
-
+        //System.out.println(max);
         return MFP;
 
     }
+
 
     //expand a pattern based on grammar
     private void grammarExpand(Vector<String> largestPattern, Map.Entry<String, Projected> entry,
@@ -363,7 +409,6 @@ public class FreqT_ext_multi extends FreqT {
 
     //main function to find maximal patterns in the second step
     public void run(Map <String, String > _rootIDs, long start1st, FileWriter _report){
-
         try{
             frequentPatterns = new ConcurrentHashMap<>();
             timeout = false;
@@ -389,7 +434,7 @@ public class FreqT_ext_multi extends FreqT {
                 roundCount++;
             }
 
-            //filter maximal patterns
+            System.out.println("Filtering maximal patterns ...");
 
             if(timeout)
                 log(_report,"\t + timeout in the second step");
@@ -400,9 +445,10 @@ public class FreqT_ext_multi extends FreqT {
             long start = System.currentTimeMillis();
             log(_report,"\t + #FP: "+frequentPatterns.size());
             Map<String,String> maximalPatterns = filterMaximalFP(frequentPatterns);
+            //Map<String,String> maximalPatterns = serialFilterMaximalFP(frequentPatterns);
             log(_report,"\t + filtering time: "+Float.valueOf(System.currentTimeMillis() - start)/1000+"s");
 
-            //output maximal patterns
+            System.out.println("Output maximal patterns ...");
             start = System.currentTimeMillis();
 
             String outFile = config.getOutputFile();
@@ -411,6 +457,8 @@ public class FreqT_ext_multi extends FreqT {
             log(_report,"\t + printing time: "+ Float.valueOf(System.currentTimeMillis()-start)/1000+"s");
             log(_report,"\t + maximal patterns: "+maximalPatterns.size());
             log(_report,"- total running time: "+ Float.valueOf(System.currentTimeMillis()-start1st)/1000+"s");
+
+
             _report.flush();
             _report.close();
 

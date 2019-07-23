@@ -1,5 +1,6 @@
 package be.intimals.freqt.core;
 
+import be.intimals.freqt.input.CreateSingleTree;
 import be.intimals.freqt.structure.*;
 import be.intimals.freqt.config.*;
 import be.intimals.freqt.util.*;
@@ -12,6 +13,9 @@ import java.util.*;
 import java.util.concurrent.ConcurrentHashMap;
 
 
+/*
+    extended FREQT
+ */
 public class FreqT {
     static char uniChar = '\u00a5';// Japanese Yen symbol
     protected Config config;
@@ -112,6 +116,46 @@ public class FreqT {
             return false;
     }
 
+
+    //convert pattern of String format, i.e., (A(B)(B)(C)) to Vector<String> format [A,B,B,C]
+    private ArrayList<String> convert(String pat){
+        Vector<String> temp = new Vector<>();
+        Set<String> temp1 = new HashSet<>();
+        ArrayList<String> temp2 = new ArrayList<>();
+
+        int i=0;
+        String buff="";
+        while(i<pat.length()){
+            if( (pat.charAt(i)=='(') || (pat.charAt(i)==')') ) {
+                if(!buff.isEmpty()) {
+                    temp2.add(buff);
+                    buff = "";
+                }
+            }
+            else{
+                buff += pat.charAt(i);
+            }
+            ++i;
+        }
+        return  temp2;
+    }
+    //return true if either labels of pat1 contain labels of pat2 or labels of pat2 contain labels of pat1
+    public boolean checkSubsetLabels(String pat1, String pat2){
+
+        ArrayList<String> p1 = convert(pat1);
+        ArrayList<String> p2 = convert(pat2);
+        //System.out.println(p1);
+        //System.out.println(p2);
+        if(p1.size() >= p2.size()){
+            //System.out.println(p1.containsAll(p2));
+            return  p1.containsAll(p2);
+        }
+        else {
+            //System.out.println(p2.containsAll(p1));
+            return p2.containsAll(p1);
+        }
+    }
+
     /**
      * check if pat1 is a subtree of pat2 ?
      * return 1 : pat1 is subset of 2; 2 : pat2 is subset of pat1; otherwise return 0
@@ -119,24 +163,25 @@ public class FreqT {
      * @param pat2
      * @return
      */
-    public int checkSubTree(String pat1, String pat2){
+    public int checkSubTree(String pat1, String pat2) {
+        if (checkSubsetLabels(pat1, pat2)) {
 
-        FreqT_max1 post = new FreqT_max1(this.config);
-        post.checkSubtrees(pat1, pat2);
-
-        if (post.getOutputPattern() == null){
-            return 0;
-        }else{
-            if( pat1.length() <= pat2.length() ) {
-                return 1;
+            FreqT_subtree post = new FreqT_subtree(this.config);
+            post.checkSubtrees(pat1, pat2);
+            if (post.getOutputPattern() == null) {
+                return 0; //not related
+            } else {
+                if (pat1.length() <= pat2.length()) {
+                    return 1; //pat1 is a subtree of pat2
+                } else {
+                    return 2; //pat2 is a subtree of pat1
+                }
             }
-            else {
-                return 2;
-            }
-        }
+        }else return 0;
     }
 
     /**
+     * pair-wise check maximal subtree
      * adding a pattern to maximal pattern list (patSet)
      * if pat is a subtree of another pattern in the patSet then ignore this pattern
      * else if pat is a super-set of another pattern in the patSet then replace this pattern by pat
@@ -186,6 +231,7 @@ public class FreqT {
         }
     }
 
+
     /**
      * check output conditions
      * @param pat
@@ -208,7 +254,10 @@ public class FreqT {
             if (post) { //store root occurrences for next step
                 addRootIDs(pat, projected, rootIDs);
             } else //check and store pattern to maximal pattern list
+                //if using pair-wise subtree check
                 addMaximality(pat, projected, _outputMaximalPatternsMap);
+                //if using original FREQT
+                //_outputMaximalPatternsMap.put(...,...)
         }
     }
 
@@ -557,6 +606,7 @@ public class FreqT {
      * run Freqt with file config.properties
      */
     public void run() {
+
         try{
             //System.out.println("=========running FreqT==========");
             if(config.buildGrammar())
@@ -574,6 +624,20 @@ public class FreqT {
             Initial.readRootLabel(config.getRootLabelFile(), rootLabels);  //read root labels (AST Nodes)
             Initial.readXMLCharacter(config.getXmlCharacterFile(), xmlCharacters); //read list of special XML characters
             Initial.readDatabase(config.getAbstractLeafs(),config.getInputFiles(),grammar,transaction);
+
+
+
+
+//            Vector<NodeFreqT> sTree = new Vector<>();
+//
+//            CreateSingleTree tree = new CreateSingleTree();
+//            tree.createTree(false,new File(config.getInputFiles()),grammar,sTree);
+//
+//            for(int i=0; i<sTree.size(); ++i){
+//                System.out.println(sTree.elementAt(i).getNodeLevel()+" "+sTree.elementAt(i).getNodeLabel());
+//            }
+//
+//            System.exit(2);
 
             //lineNrs = Initial.getLineNrs();
             //System.out.println(lineNrs);
@@ -599,7 +663,7 @@ public class FreqT {
             log(report,"- input files : " + nbInputFiles);
             log(report,"- minSupport : " + config.getMinSupport());
 
-            //Mining frequent subtrees
+            System.out.println("Mining frequent subtrees ...");
             Vector<String> pattern = new Vector<>();
             Map<String,String> outputMaximalPatternsMap = new HashMap<>();
             //find 1-subtrees
@@ -611,7 +675,7 @@ public class FreqT {
             //expand 1-subtrees to find frequent subtrees with size constraints
             findFP(pattern, FP1, outputMaximalPatternsMap);
             /////////
-            //Mining maximal frequent subtrees
+            System.out.println("Mining maximal frequent subtrees ...");
             if(config.postProcess()){//for each group of root occurrences expand to find largest patterns
                 log(report,"");
                 log(report,"OUTPUT");
@@ -619,7 +683,7 @@ public class FreqT {
                 long end1 = System.currentTimeMillis( );
                 long diff1 = end1 - start;
                 //report the phase 1
-                log(report,"- Step 1: Find frequent patterns with max size constraints");
+                log(report,"- Step 1: Mining frequent patterns with max size constraints");
                 log(report,"\t + Frequent patterns = "+ nbOutputFrequentPatterns);
                 log(report, "\t + running time = "+ Float.valueOf(diff1)/1000 +"s");
                 //log(report,"#root occurrences groups = "+ rootIDs.size());
@@ -627,9 +691,9 @@ public class FreqT {
                 filterRootOccurrences(rootIDs);
                 //log(report,"#filtered root occurrences groups = "+ rootIDs.size());
                 //phase 2: find maximal patterns from rootIDs
-                log(report,"- Step 2: Find maximal patterns WITHOUT max size constraint:");
-                //sequential running
-                //FreqT_ext freqT_ext = new FreqT_ext(config, this.grammar, this.blackLabels,this.whiteLabels,this.xmlCharacters,this.transaction);
+                log(report,"- Step 2: Mining maximal patterns WITHOUT max size constraint:");
+                //serial running
+                //FreqT_ext_serial freqT_ext = new FreqT_ext_serial(config, this.grammar, this.blackLabels,this.whiteLabels,this.xmlCharacters,this.transaction);
                 //parallel running
                 FreqT_ext_multi freqT_ext = new FreqT_ext_multi(config, this.grammar, this.blackLabels, this.whiteLabels,this.xmlCharacters,this.transaction);
                 freqT_ext.run(rootIDs,start,report);
@@ -637,7 +701,7 @@ public class FreqT {
             }else{//output maximal patterns in the first step
                 log(report,"OUTPUT");
                 log(report,"===================");
-                log(report,"- Find maximal patterns with max size constraint");
+                log(report,"- Mining maximal patterns with max size constraint");
 
                 String outFile = config.getOutputFile();
                 outputMFP(outputMaximalPatternsMap,outFile);
