@@ -1,0 +1,29 @@
+#This file contains a list of nodes and their children which are allowed to expand in the mining process
+#Each line corresponds to a node and its children.
+#Lines begin with # are comments
+#i.e. DataDivision has 2 children, TheFileSection and TheWorkingStorageSection.
+#.    If we want to expand TheFileSection and ignore TheWorkingStorageSection
+#     we can create a line as DataDivision TheFileSection
+#     here DataDivision is AST Node, TheFileSection is the white label
+
+#CobolProgram [ordered, 4, TheIdentificationDivision¥true, TheEnvironmentDivision¥true, TheDataDivision¥true, TheProcedureDivision¥true]
+#IdentificationDivision
+
+#EnvironmentDivision [ordered, 0..3, leaf-node¥false, TheConfigurationSection¥false, TheIOSection¥false]
+EnvironmentDivision TheIOSection
+
+#DataDivision [ordered, 2, TheFileSection¥true, TheWorkingStorageSection¥true]
+DataDivision TheWorkingStorageSection
+
+#DataField [ordered, 1..9, TheDot¥true, TheId¥false, ThePicClause¥false, TheSpecialCode¥false, TheUsageClause¥false, TheValueClause¥false, TheOccursClause¥false, TheIsFiller¥false, TheRedefines¥false]
+DataField TheId ThePicClause TheValueClause
+
+#TheProcedureDivision
+#ProcedureDivision [ordered, 1..4, TheBlocks¥true, TheUsingKeyword¥false, TheUsingList¥false, TheProcDivDeclarative¥false]
+ProcedureDivision TheBlocks
+
+#SectionStatementBlock [ordered, 2, ALabelIdent¥true, TheBlocks¥true]
+SectionStatementBlock TheBlocks
+
+#ParagraphStatementBlock [ordered, 3, TheDot¥true, ALabelIdent¥true, AStatementList¥true]
+ParagraphStatementBlock AStatementList
