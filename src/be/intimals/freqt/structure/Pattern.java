@@ -293,7 +293,7 @@ public class Pattern {
                     ++count;
                 }
                 if(top == 0 && !pat.elementAt(i).equals(")")) {
-                    tmp.add(count);
+                    tmp.add(i);//before: add(count)
                 }
                 if(top == -2) break;
             }

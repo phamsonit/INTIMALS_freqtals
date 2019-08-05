@@ -434,27 +434,22 @@ public class FreqT_ext_multi extends FreqT {
                 roundCount++;
             }
 
-            System.out.println("Filtering maximal patterns ...");
-
             if(timeout)
                 log(_report,"\t + timeout in the second step");
             else
                 log(_report,"\t + search finished");
             log(_report,"\t + running time: "+ Float.valueOf(System.currentTimeMillis( ) - timeStart2nd)/1000+"s");
 
-            long start = System.currentTimeMillis();
+            long startFilter = System.currentTimeMillis();
             log(_report,"\t + #FP: "+frequentPatterns.size());
             Map<String,String> maximalPatterns = filterMaximalFP(frequentPatterns);
             //Map<String,String> maximalPatterns = serialFilterMaximalFP(frequentPatterns);
-            log(_report,"\t + filtering time: "+Float.valueOf(System.currentTimeMillis() - start)/1000+"s");
+            log(_report,"\t + filtering time: "+Float.valueOf(System.currentTimeMillis() - startFilter)/1000+"s");
 
-            System.out.println("Output maximal patterns ...");
-            start = System.currentTimeMillis();
-
+            long startPrint = System.currentTimeMillis();
             String outFile = config.getOutputFile();
             outputMFP(maximalPatterns,outFile);
-
-            log(_report,"\t + printing time: "+ Float.valueOf(System.currentTimeMillis()-start)/1000+"s");
+            log(_report,"\t + printing time: "+ Float.valueOf(System.currentTimeMillis()-startPrint)/1000+"s");
             log(_report,"\t + maximal patterns: "+maximalPatterns.size());
             log(_report,"- total running time: "+ Float.valueOf(System.currentTimeMillis()-start1st)/1000+"s");
 

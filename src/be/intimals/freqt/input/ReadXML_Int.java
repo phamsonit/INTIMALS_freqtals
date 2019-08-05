@@ -1,21 +1,23 @@
 package be.intimals.freqt.input;
 
-import be.intimals.freqt.structure.*;
+import be.intimals.freqt.structure.NodeFreqT;
+import org.w3c.dom.Document;
+import org.w3c.dom.NamedNodeMap;
+import org.w3c.dom.Node;
+import org.w3c.dom.NodeList;
+
+import javax.xml.parsers.DocumentBuilder;
+import javax.xml.parsers.DocumentBuilderFactory;
+import java.io.File;
+import java.util.*;
+
 /*
 create tree data from ASTs
  */
-import java.lang.reflect.Array;
-import java.util.*;
-import java.io.*;
 //import java.io.File;
-import java.nio.file.Files;
-import javax.management.Attribute;
-import javax.xml.parsers.DocumentBuilderFactory;
-import javax.xml.parsers.DocumentBuilder;
-import org.w3c.dom.*;
 
 
-public class ReadXML {
+public class ReadXML_Int {
 
     private int top;
     private int id;
@@ -237,12 +239,10 @@ public class ReadXML {
     }
 
     //create transaction from ASTs in multiple folders
-    public void createTransaction(boolean _abstractLeafs, File f, Map <String, Vector<String> > _grammar,
-                                  Vector < Vector<NodeFreqT> > transaction, Map <Integer, String> labelIndex) {
+    public void createTransaction(boolean _abstractLeafs, File f, Vector < Vector<NodeFreqT> > transaction, Map <Integer, String> labelIndex) {
         try {
             //System.out.print("create tree data: ");
             abstractLeafs = _abstractLeafs;
-            grammar = _grammar;
 
             File[] subdir = f.listFiles();
             Arrays.sort(subdir);
@@ -300,7 +300,7 @@ public class ReadXML {
 
                 }else
                     if (fi.isDirectory()) {
-                        createTransaction(abstractLeafs, fi , grammar, transaction, labelIndex);
+                        createTransaction(abstractLeafs, fi , transaction, labelIndex);
                     }
             }
             //System.out.println("input : "+nbFiles);

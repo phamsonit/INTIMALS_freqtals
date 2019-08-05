@@ -1,9 +1,10 @@
 package be.intimals.freqt.util;
 
-import be.intimals.freqt.input.*;
-import be.intimals.freqt.structure.*;
-import be.intimals.freqt.grammar.*;
-
+import be.intimals.freqt.grammar.CreateGrammar;
+import be.intimals.freqt.grammar.ReadGrammar;
+import be.intimals.freqt.input.ReadXML;
+import be.intimals.freqt.input.ReadXML_Int;
+import be.intimals.freqt.structure.NodeFreqT;
 
 import java.io.BufferedReader;
 import java.io.File;
@@ -11,35 +12,18 @@ import java.io.FileReader;
 import java.io.IOException;
 import java.util.*;
 
-public class Initial {
+public class Initial_Int {
     private  static  char uniChar = '\u00a5';// Japanese Yen symbol
     private static Vector<Integer> lineNrs = new Vector<>();
     public static Vector<Integer> getLineNrs(){
         return lineNrs;
     }
 
-    /**
-     * Loads data from folders
-     */
-    public static void readDatabase(boolean abstractLeafs, String path, Map<String,Vector<String>> gram,
-                                    Vector < Vector<NodeFreqT> > trans,
-                                    Map<Integer,String> labelIndex) {
-
-        //System.out.println("reading data ...");
-        ReadXML readXML = new ReadXML();
-        readXML.createTransaction(abstractLeafs, new File(path), gram, trans,labelIndex);
-        lineNrs = readXML.getlineNrs();
-
-        //create transaction from single input file
-        //ReadFile r = new ReadFile();
-        //r.createTransaction(inFile,transaction);
-    }
-
 
     /**
      * Loads data from folders
      */
-    public static void readDatabase_Int(boolean abstractLeafs, String path,
+    public static void readDatabase(boolean abstractLeafs, String path,
                                     Vector < Vector<NodeFreqT> > trans,
                                     Map<Integer,String> labelIndex) {
 
@@ -138,57 +122,14 @@ public class Initial {
         }catch (IOException e) {System.out.println("Error: reading XMLCharater "+e);}
     }
 
-    /**
-     * read whitelist and create blacklist
-     */
-    public static void readWhiteLabel(String path,
-                                Map<String,Vector<String>> _grammar,
-                                Map <String,Vector<String> > _whiteLabels,
-                                Map <String,Vector<String> > _blackLabels){
-
-        try (BufferedReader br = new BufferedReader(new FileReader(path))) {
-            String line;
-            while ((line = br.readLine()) != null) {
-                if( ! line.isEmpty() && line.charAt(0) != '#' ) {
-                    String[] str_tmp = line.split(" ");
-                    String ASTNode = str_tmp[0];
-                    Vector<String> children = new Vector<>();
-                    for(int i=1; i< str_tmp.length; ++i)
-                        children.addElement(str_tmp[i]);
-
-                    _whiteLabels.put(ASTNode,children);
-
-                    //create blacklist
-                    if(_grammar.containsKey(ASTNode))
-                    {
-                        Vector<String> blackChildren = new Vector<>();
-                        blackChildren.addAll(_grammar.get(ASTNode).subList(2, _grammar.get(ASTNode).size()));
-
-                        for(int i=0; i<blackChildren.size();++i)
-                            blackChildren.set(i,blackChildren.elementAt(i).split(String.valueOf(uniChar))[0]);
-
-                        for(int i=0; i<children.size();++i)
-                            for(int j=0; j<blackChildren.size();++j)
-                                if(children.elementAt(i).equals(blackChildren.elementAt(j)))
-                                    blackChildren.remove(j);
-
-                        _blackLabels.put(ASTNode,blackChildren);
-                    }
-                }
-            }
-        }catch (IOException e) {System.out.println("Error: reading white list "+e);}
-    }
-
 
     private static int findIndex(String label, Map<Integer,String> labelIndex){
-        int index=0;
-
+        int index=-1;
         for(Map.Entry<Integer,String> entry : labelIndex.entrySet()){
             if(entry.getValue().equals(label)) {
                 index = entry.getKey();
             }
         }
-
         return index;
 
     }
@@ -196,7 +137,7 @@ public class Initial {
     /**
      * read whitelist and create blacklist
      */
-    public static void readWhiteLabel_Int(String path,
+    public static void readWhiteLabel(String path,
                                       Map<Integer,Vector<String>> _grammar,
                                       Map<Integer,ArrayList<Integer> > _whiteLabels,
                                       Map<Integer,ArrayList<Integer> > _blackLabels,
@@ -207,43 +148,38 @@ public class Initial {
             while ((line = br.readLine()) != null) {
                 if( ! line.isEmpty() && line.charAt(0) != '#' ) {
                     String[] str_tmp = line.split(" ");
-
                     String ASTNode = str_tmp[0];
                     int label_int = findIndex(ASTNode,labelIndex);
-
-                    ArrayList<Integer> whiteChildren_int = new ArrayList<>();
-                    Vector<String> children_str = new Vector<>();
-                    for(int i=1; i< str_tmp.length; ++i) {
-                        children_str.addElement(str_tmp[i]);
-                        int t = findIndex(str_tmp[i],labelIndex);
-                        whiteChildren_int.add(t);
-                    }
-                    _whiteLabels.put(label_int,whiteChildren_int);
-
-                    System.out.println("white labels: "+whiteChildren_int);
-
-                    //create blacklist
-                    if(_grammar.containsKey(label_int))
-                    {
-                        //get all children of label_int in grammar
-                        Vector<String> blackChildren = new Vector<>();
-                        blackChildren.addAll(_grammar.get(label_int).subList(2, _grammar.get(label_int).size()));
-                        System.out.println("grammar labels: "+blackChildren);
-
-                        //transform string to int
-                        ArrayList<Integer> blackChildren_int = new ArrayList<>();
-                        for(int i=0; i<blackChildren.size(); ++i) {
-                            blackChildren.set(i, blackChildren.elementAt(i).split(String.valueOf(uniChar))[0]);
-                            int index = Integer.valueOf(blackChildren.elementAt(i).split(String.valueOf(uniChar))[0]);
-                            blackChildren_int.add(index);
+                    if(label_int != -1){
+                        ArrayList<Integer> whiteChildren_int = new ArrayList<>();
+                        Vector<String> children_str = new Vector<>();
+                        for(int i=1; i< str_tmp.length; ++i) {
+                            children_str.addElement(str_tmp[i]);
+                            int t = findIndex(str_tmp[i],labelIndex);
+                            whiteChildren_int.add(t);
                         }
-                        System.out.println("grammar labels: "+blackChildren);
-
-                        for(int i=0; i<whiteChildren_int.size();++i)
-                            blackChildren_int.remove(whiteChildren_int.get(i));
-
-                        _blackLabels.put(label_int,blackChildren_int);
-                        System.out.println("black labels: "+blackChildren_int);
+                        _whiteLabels.put(label_int,whiteChildren_int);
+                        //System.out.println("white labels: "+whiteChildren_int);
+                        //create blacklist
+                        if(_grammar.containsKey(label_int))
+                        {
+                            //get all children of label_int in grammar
+                            Vector<String> blackChildren = new Vector<>();
+                            blackChildren.addAll(_grammar.get(label_int).subList(2, _grammar.get(label_int).size()));
+                            //System.out.println("grammar labels: "+blackChildren);
+                            //transform string to int
+                            ArrayList<Integer> blackChildren_int = new ArrayList<>();
+                            for(int i=0; i<blackChildren.size(); ++i) {
+                                blackChildren.set(i, blackChildren.elementAt(i).split(String.valueOf(uniChar))[0]);
+                                int index = Integer.valueOf(blackChildren.elementAt(i).split(String.valueOf(uniChar))[0]);
+                                blackChildren_int.add(index);
+                            }
+                            //System.out.println("grammar labels: "+blackChildren);
+                            for(int i=0; i<whiteChildren_int.size();++i)
+                                blackChildren_int.remove(whiteChildren_int.get(i));
+                            _blackLabels.put(label_int,blackChildren_int);
+                            //System.out.println("black labels: "+blackChildren_int);
+                        }
                     }
                 }
             }

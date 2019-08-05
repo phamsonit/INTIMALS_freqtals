@@ -1,32 +1,29 @@
 package be.intimals.freqt.core;
 
 import be.intimals.freqt.config.Config;
+import be.intimals.freqt.input.ReadFile;
+import be.intimals.freqt.input.ReadFile_Int;
 import be.intimals.freqt.structure.*;
-import be.intimals.freqt.output.*;
-import be.intimals.freqt.input.*;
 
-import java.io.BufferedReader;
-import java.io.FileReader;
-import java.io.IOException;
 import java.util.*;
 
 /*
     check subtree relationship of 2 input patterns
  */
 
-public class FreqT_subtree extends FreqT {
+public class FreqT_Int_subtree extends FreqT_Int {
 
-    private Vector < String > maximalPattern;
+    private ArrayList < Integer > maximalPattern;
     private Vector < Vector<NodeFreqT> > newTransaction = new Vector<>();
 
-    String inputPattern;
-    String outputPattern;
+    private ArrayList<Integer> inputPattern = new ArrayList<>();
+    private String outputPattern;
 
-    boolean found;
+    private boolean found;
 
     ////////////////////////////////////////////////////////////////////////////////
 
-    public FreqT_subtree(Config config){
+    public FreqT_Int_subtree(Config config){
         super(config);
     }
 
@@ -39,14 +36,17 @@ public class FreqT_subtree extends FreqT {
     private void project(Projected projected) {
         try{
             if(found) return;
+
+            //System.out.println(maximalPattern);
             //find all candidates of the current subtree
             int depth = projected.getProjectedDepth();
-            Map <String , Projected > candidate = new LinkedHashMap<>();
+            Map <ArrayList<Integer>, Projected > candidate = new LinkedHashMap<>();
             for(int i = 0; i < projected.getProjectLocationSize(); ++i ){
                 int id  = Location.getLocationId(projected.getProjectLocation(i));
                 int pos = Location.getLocationPos(projected.getProjectLocation(i));
 
-                String prefix = "";
+                //String prefix = "";
+                ArrayList<Integer> prefixInt = new ArrayList<>();
                 for(int d = -1; d < depth && pos != -1; ++d) {
                     int start = (d == -1) ?
                             newTransaction.elementAt(id).elementAt(pos).getNodeChild() :
@@ -54,48 +54,53 @@ public class FreqT_subtree extends FreqT {
                     int newdepth = depth - d;
                     for (int l = start; l != -1;
                          l = newTransaction.elementAt(id).elementAt(l).getNodeSibling()) {
-                        String item = prefix + uniChar + newTransaction.elementAt(id).elementAt(l).getNodeLabel();
+                        //String item = prefix + uniChar + newTransaction.elementAt(id).elementAt(l).getNodeLabel();
+                        ArrayList<Integer> itemInt = new ArrayList<>();
+                        itemInt.addAll(prefixInt);
+                        itemInt.add(newTransaction.elementAt(id).elementAt(l).getNode_label_int());
 
                         Projected tmp;// = new Projected();
-                        if(candidate.containsKey(item)) {
-                            candidate.get(item).setProjectLocation(id,l); //store right most positions
+                        if(candidate.containsKey(itemInt)) {
+                            candidate.get(itemInt).setProjectLocation(id,l); //store right most positions
+
                         }
                         else {
                             tmp = new Projected();
                             tmp.setProjectedDepth(newdepth);
                             tmp.setProjectLocation(id,l); //store right most positions
-                            candidate.put(item, tmp);
+                            candidate.put(itemInt, tmp);
                         }
                         //////////
 
                     }
                     if (d != -1) pos = newTransaction.elementAt(id).elementAt(pos).getNodeParent();
-                    prefix += uniChar+")";
+                    //prefix += uniChar+")";
+                    prefixInt.add(-1);
                 }
             }
 
             prune(candidate,2);
 
             if(candidate.isEmpty()){
-                if(Pattern.getPatternString1(maximalPattern).equals(inputPattern)) {
-                    outputPattern = Pattern.getPatternString1(maximalPattern);
+                //System.out.println("in find subtree "+maximalPattern+" - "+inputPattern);
+                if(maximalPattern.equals(inputPattern)) {
+                    //System.out.println("found subtree");
+                    outputPattern = "found subtree";
                 }
                 //not found and stop
                 found = true;
                 return;
+
             }else {
                 //expand the current pattern with each candidate
-                Iterator<Map.Entry<String, Projected>> iter = candidate.entrySet().iterator();
+                Iterator<Map.Entry<ArrayList<Integer>, Projected>> iter = candidate.entrySet().iterator();
                 while (iter.hasNext()) {
                     int oldSize = maximalPattern.size();
-                    Map.Entry<String, Projected> entry = iter.next();
+                    Map.Entry<ArrayList<Integer>, Projected> entry = iter.next();
                     // add new candidate to current pattern
-                    String[] p = entry.getKey().split(String.valueOf(uniChar));
-                    for (int i = 0; i < p.length; ++i) {
-                        if (!p[i].isEmpty())
-                            maximalPattern.addElement(p[i]);
-                    }
+                    maximalPattern.addAll(entry.getKey());
                     project(entry.getValue());
+                    //maximalPattern = new ArrayList<>(maximalPattern.subList(0,oldSize));
                     //maximalPattern.setSize(oldSize);
                 }
             }
@@ -109,34 +114,37 @@ public class FreqT_subtree extends FreqT {
      * @param pat1
      * @param pat2
      */
-    public void checkSubtrees(String pat1, String pat2) {
+    public void checkSubtrees(ArrayList<Integer> pat1, ArrayList<Integer> pat2) {
         try{
             //create input data
             found = false;
-            Map<String,String> inputPatterns = new LinkedHashMap<>();
-            if(pat1.length() <= pat2.length()){
-                inputPattern = pat1;
-                inputPatterns.put(pat1,"supports");
-                inputPatterns.put(pat2,"supports");
-            }else{
-                inputPattern = pat2;
-                inputPatterns.put(pat2,"supports");
-                inputPatterns.put(pat1,"supports");
-            }
-            //create tree database
+            inputPattern = new ArrayList<>(pat1);
+
+            Vector<ArrayList<Integer>> inputPatterns = new Vector<>();
+            inputPatterns.add(pat1);
+            inputPatterns.add(pat2);
             initDatabase(inputPatterns);
-            //System.out.println("root label candidates " + freq1.keySet());
-            maximalPattern = new Vector<>();
-            String rootLabel1 = newTransaction.elementAt(0).elementAt(0).getNodeLabel();
-            //String rootLabel2 = newTransaction.elementAt(1).elementAt(0).getNodeLabel();
-            maximalPattern.add(rootLabel1);
+
+//            System.out.println(pat1+" - "+ pat2);
+//            for (int i=0; i<newTransaction.size();++i) {
+//                for (int j = 0; j < newTransaction.elementAt(i).size(); ++j)
+//                    System.out.print(newTransaction.elementAt(i).elementAt(j).getNode_label_int()+",");
+//                System.out.println();
+//            }
+
+
+
+            maximalPattern = new ArrayList<>();
+            int rootLabel_int = pat1.get(0);
+
+            maximalPattern.add(rootLabel_int);
             //init locations of pattern
             Projected projected = new Projected();
             projected.setProjectedDepth(0);
             for(int i = 0; i < newTransaction.size(); ++i) {
                 for (int j = 0; j < newTransaction.elementAt(i).size(); ++j) {
-                    String node_label = newTransaction.elementAt(i).elementAt(j).getNodeLabel();
-                    if(node_label.equals(rootLabel1)){
+                    int node_label = newTransaction.elementAt(i).elementAt(j).getNode_label_int();
+                    if(node_label == rootLabel_int){
                         projected.setProjectLocation(i,j);
                         projected.setProjectRootLocation(i,j);
                     }
@@ -146,16 +154,15 @@ public class FreqT_subtree extends FreqT {
             project(projected);
         }
         catch (Exception e) {System.out.println("Error: check sub-trees");}
-
     }
 
     /**
      * create transaction from list of patterns
      * @param patterns
      */
-    private void initDatabase(Map<String,String> patterns) {
+    private void initDatabase(Vector<ArrayList<Integer>> patterns) {
         //System.out.println("reading input subtrees ...");
-        ReadFile readFile = new ReadFile();
+        ReadFile_Int readFile = new ReadFile_Int();
         readFile.createTransactionFromMap(patterns,newTransaction);
     }
 

@@ -20,6 +20,9 @@ public class Config {
         input.close();
     }
 
+    public boolean getTwoStep(){return Boolean.valueOf(prop.getProperty("twoStep"));}
+    public boolean getFilter(){return Boolean.valueOf(prop.getProperty("filter"));}
+
     public int getNbCores(){
         return Integer.valueOf(prop.getProperty("nbCores"));
     }
@@ -75,11 +78,11 @@ public class Config {
     }
 
     public int getMinLeaf() {
-        return Integer.valueOf(prop.getProperty("minLeafSize"));
+        return Integer.valueOf(prop.getProperty("minLeaf"));
     }
 
     public int getMaxLeaf() {
-        return Integer.valueOf(prop.getProperty("maxLeafSize"));
+        return Integer.valueOf(prop.getProperty("maxLeaf"));
     }
 
 
@@ -96,7 +99,7 @@ public class Config {
         return Boolean.valueOf(prop.getProperty("enc"));
     }
 
-    public boolean postProcess(){return Boolean.valueOf(prop.getProperty("post"));}
+    public boolean postProcess(){return Boolean.valueOf(prop.getProperty("pos"));}
 
     public  int getMaxRepeatLabel(){
         return Integer.valueOf(prop.getProperty("maxRepeatLabel"));

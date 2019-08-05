@@ -1,6 +1,7 @@
 package be.intimals.freqt.core;
 
 import be.intimals.freqt.input.CreateSingleTree;
+import be.intimals.freqt.input.ReadXML;
 import be.intimals.freqt.structure.*;
 import be.intimals.freqt.config.*;
 import be.intimals.freqt.util.*;
@@ -24,6 +25,11 @@ public class FreqT {
     protected Map <String,Vector<String> > blackLabels = new LinkedHashMap<>();
     protected Map <String,Vector<String> > whiteLabels = new LinkedHashMap<>();
     protected Map <String,String>          xmlCharacters  = new LinkedHashMap<>();
+
+
+    //store the indexes of all labels
+    protected Map<Integer,String> labelIndex = new HashMap<>();
+
     ///////////
     //store root labels
     private Set <String>    rootLabels  = new HashSet<>();
@@ -439,7 +445,7 @@ public class FreqT {
                                 //if(Pattern.checkLineDistance(pattern, entry.getKey(), entry.getValue(), config.getMinLineDistance(), config.getMaxLineDistance()))
                                 project(pattern,entry.getValue(),outputMaximalPatternsMap);
                             else{//output the current pattern
-                                chooseOutput(pattern,entry.getValue(),outputMaximalPatternsMap,true);
+                                chooseOutput(pattern,entry.getValue(),outputMaximalPatternsMap,config.postProcess());
                                 return;
                             }
                         }else
@@ -466,7 +472,7 @@ public class FreqT {
                         if (! Pattern.isMissedMandatoryChild(listOfChildrenPattern, listOfChildrenGrammar, blackLabelChildren, whiteLabelChildren)) {
                             project(pattern,entry.getValue(),outputMaximalPatternsMap);
                         }else {
-                            chooseOutput(pattern, entry.getValue(),outputMaximalPatternsMap,true);
+                            chooseOutput(pattern, entry.getValue(),outputMaximalPatternsMap,config.postProcess());
                             return;
                         }
 
@@ -493,10 +499,11 @@ public class FreqT {
             if(Pattern.countLeafNode(pattern) <= config.getMaxLeaf())
             {
                 if (Pattern.isMissedLeafNode(pattern)){
-                    chooseOutput(pattern,entry.getValue(),outputMaximalPatternsMap,true);
+                    chooseOutput(pattern,entry.getValue(),outputMaximalPatternsMap,config.postProcess());
                     return;
                 }else
                     grammarExpand(pattern,entry,outputMaximalPatternsMap);
+                    //project(pattern,entry.getValue(),outputMaximalPatternsMap);
             }
 
         }catch (Exception e){System.out.println("Error: expand candidate " + e);}
@@ -508,7 +515,7 @@ public class FreqT {
      */
     private void project(Vector<String> pattern, Projected projected, Map<String,String> outputMaximalPatternsMap) {
         try{
-            //System.out.println(pattern);
+            //System.out.println("pattern: "+ pattern);
             //find candidates
             Map<String, Projected> candidates = generateCandidates(projected,transaction);
             //System.out.println("all candidates     " + candidates.keySet());
@@ -520,7 +527,7 @@ public class FreqT {
 
             //if there is no candidate then report pattern and then stop
             if( candidates.isEmpty() ){
-                chooseOutput(pattern,projected,outputMaximalPatternsMap,true);
+                chooseOutput(pattern,projected,outputMaximalPatternsMap,config.postProcess());
                 return;
             }
             //expand the current pattern with each candidate
@@ -538,7 +545,8 @@ public class FreqT {
                     checkContinuousParagraph(pattern, entry, transaction);
                 }
 
-                expandCandidate(pattern, entry,outputMaximalPatternsMap);
+                //System.out.println("potential candidate: "+ entry.getKey());
+                expandCandidate(pattern, entry, outputMaximalPatternsMap);
 
                 pattern.setSize(oldSize);
             }
@@ -623,21 +631,17 @@ public class FreqT {
             Initial.readWhiteLabel(config.getWhiteLabelFile(), grammar, whiteLabels, blackLabels); //read white labels and create black labels
             Initial.readRootLabel(config.getRootLabelFile(), rootLabels);  //read root labels (AST Nodes)
             Initial.readXMLCharacter(config.getXmlCharacterFile(), xmlCharacters); //read list of special XML characters
-            Initial.readDatabase(config.getAbstractLeafs(),config.getInputFiles(),grammar,transaction);
-
-
+            Initial.readDatabase(config.getAbstractLeafs(),config.getInputFiles(),grammar,transaction,labelIndex);
+            //ReadXML.printTransaction(transaction);
 
 
 //            Vector<NodeFreqT> sTree = new Vector<>();
-//
 //            CreateSingleTree tree = new CreateSingleTree();
 //            tree.createTree(false,new File(config.getInputFiles()),grammar,sTree);
 //
 //            for(int i=0; i<sTree.size(); ++i){
 //                System.out.println(sTree.elementAt(i).getNodeLevel()+" "+sTree.elementAt(i).getNodeLabel());
 //            }
-//
-//            System.exit(2);
 
             //lineNrs = Initial.getLineNrs();
             //System.out.println(lineNrs);
@@ -675,6 +679,7 @@ public class FreqT {
             //expand 1-subtrees to find frequent subtrees with size constraints
             findFP(pattern, FP1, outputMaximalPatternsMap);
             /////////
+
             System.out.println("Mining maximal frequent subtrees ...");
             if(config.postProcess()){//for each group of root occurrences expand to find largest patterns
                 log(report,"");

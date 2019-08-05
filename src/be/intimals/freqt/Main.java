@@ -160,34 +160,35 @@ public class Main {
             //load new configuration;
             Config config = new Config(configPathTemp);
             //run Freqt to find maximal patterns
-            FreqT freqt = new FreqT(config);
+            FreqT_Int freqt = new FreqT_Int(config);
+            //FreqT freqt = new FreqT(config);
             freqt.run();
 
             //run forestmatcher to create matches.xml and clusters.xml
-            if(config.outputAsXML()){
-                System.out.println("Running forestmatcher ...");
-                String command = "java -jar forestmatcher.jar " +
-                        inputPath + " " + outputPath +" " + outputMatches + " " + outputClusters;
-                Process proc = Runtime.getRuntime().exec(command);
-                proc.waitFor();
 
-                //find common patterns in each cluster
-                System.out.println("Mining common patterns in clusters ...");
-                String outputPathTemp = outputPath+".txt";
-                FreqT_common inCluster = new FreqT_common(config,freqt.getGrammar(),freqt.getXmlCharacters());
-                inCluster.run(outputPathTemp, outputClustersTemp, outputCommonPatterns);
+            System.out.println("Running forestmatcher ...");
+            String command = "java -jar forestmatcher.jar " +
+                    inputPath + " " + outputPath +" " + outputMatches + " " + outputClusters;
+            Process proc = Runtime.getRuntime().exec(command);
+            proc.waitFor();
 
-                //find matches of common_patterns
-                command = "java -jar forestmatcher.jar " +
-                        inputPath + " " + outputCommonPatterns +" " + outputCommonMatches + " " + outputCommonClusters;
-                proc = Runtime.getRuntime().exec(command);
-                proc.waitFor();
+            //find common patterns in each cluster
+            System.out.println("Mining common patterns in clusters ...");
+            String outputPathTemp = outputPath+".txt";
+            FreqT_common inCluster = new FreqT_common(config,freqt.getGrammar(),freqt.getXmlCharacters());
+            inCluster.run(outputPathTemp, outputClustersTemp, outputCommonPatterns);
 
-                Files.deleteIfExists(Paths.get(outputPathTemp));
-                Files.deleteIfExists(Paths.get(outputCommonPatterns+".txt"));
-                Files.deleteIfExists(Paths.get(outputCommonClustersTemp));
-                System.out.println("Finished ...");
-            }
+            //find matches of common_patterns
+            command = "java -jar forestmatcher.jar " +
+                    inputPath + " " + outputCommonPatterns +" " + outputCommonMatches + " " + outputCommonClusters;
+            proc = Runtime.getRuntime().exec(command);
+            proc.waitFor();
+
+            Files.deleteIfExists(Paths.get(outputPathTemp));
+            Files.deleteIfExists(Paths.get(outputCommonPatterns+".txt"));
+            Files.deleteIfExists(Paths.get(outputCommonClustersTemp));
+            System.out.println("Finished ...");
+
             //System.out.println("===========================================================");
             //return;
         }

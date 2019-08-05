@@ -222,8 +222,8 @@ public class FreqT_ext_serial extends FreqT {
                 //log(_report,"===================");
                 //log(_report,"ROUND: "+ roundCount);
                 //output to check each round
-                //System.out.println("ROUND: "+ roundCount);
-                //System.out.println("groups: "+ _rootIDs.size());
+                System.out.println("ROUND: "+ roundCount);
+                System.out.println("groups: "+ _rootIDs.size());
                 //System.out.println("#patterns: "+ outputMaximalPatternsMap.size());
 
                 //log(_report,"- nbGroups = "+ _rootIDs.size());

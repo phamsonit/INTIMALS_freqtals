@@ -69,13 +69,169 @@ public class XMLOutput extends AOutputFormatter {
 
         }
     }
+
+    //new report function to print pattern of Integer format
+    public void report_Int(Vector<String> pat, String supports){
+        try{
+            //if( checkOutputConstraint(pat) ) return;
+            //System.out.print(pat);
+            ++nbPattern;
+
+            //keep meta-variables in pattern
+            Map<String,Integer> metaVariable = new HashMap<>();
+            //print support, wsupport, size
+
+
+            String[] sup = supports.split(",");
+            out.write("<subtree id=\"" + nbPattern + "\" support=\"" + sup[0] +
+                    "\" wsupport=\"" + sup[1] + "\" size=\"" + sup[2] + "\">\n");
+
+            //print pattern
+            int n = 0;
+            Vector < String > tmp = new Vector<>();
+            //number of meta-variable ???
+            for ( int i = 0; i < pat.size () - 1; ++i) {
+                //open a node
+                if (!pat.elementAt(i).equals(")") && !pat.elementAt(i + 1).equals(")") ) {
+
+                    String nodeOrder = grammar.get(pat.elementAt(i)).elementAt(0);
+                    String nodeDegree = grammar.get(pat.elementAt(i)).elementAt(1);
+                    Vector<String> childrenList = Pattern.findChildrenLabels(pat,i);
+
+                    if(nodeOrder.equals("unordered")){
+                        switch (nodeDegree){
+                            case "1":
+                                switch (childrenList.size()){
+                                    case 0:
+                                        String metaLabel = getMetaLabel(pat, metaVariable, i);
+                                        out.write("<" + pat.elementAt(i) + ">\n");
+                                        out.write("<Dummy>\n");
+                                        out.write("<__directives>\n");
+                                        out.write("<optional />\n");
+                                        out.write("<meta-variable>\n");
+                                        out.write("<parameter key=\"name\" value=\"?"+metaLabel+"\"/>\n");
+                                        out.write("</meta-variable>\n");
+                                        out.write("</__directives>\n");
+                                        out.write("</Dummy>\n");
+                                        break;
+
+                                    default:
+                                        out.write("<" + pat.elementAt(i) + ">\n");
+                                        break;
+                                }
+                                break;
+
+                            case "1..*":
+                                out.write("<" + pat.elementAt(i)+">\n");
+                                out.write("<__directives>");
+
+                                //add new directive for nodes which have children directly follow each others
+                                if(pat.elementAt(i).equals("TheBlocks")&& pat.elementAt(i-1).equals("SectionStatementBlock"))
+                                    out.write("<match-succession/>");
+                                else
+                                    out.write("<match-set/>");
+
+
+                                //out.write("<match-set/>");
+                                out.write("</__directives>\n");
+                                break;
+
+                            default:
+                                out.write("<" + pat.elementAt(i)+">\n");
+                                //out.write("<__directives>");
+                                //out.write("<match-set/>");
+                                //out.write("</__directives>\n");
+                                break;
+
+                        }
+                    }
+                    else{
+                        switch (nodeDegree){
+                            case "1":
+                                switch (childrenList.size()){
+                                    case 0:
+                                        String metaLabel = getMetaLabel(pat, metaVariable, i);
+                                        out.write("<" + pat.elementAt(i) + ">\n");
+                                        out.write("<Dummy>\n");
+                                        out.write("<__directives>\n");
+                                        out.write("<optional />\n");
+                                        out.write("<meta-variable>\n");
+                                        out.write("<parameter key=\"name\" value=\"?"+metaLabel+"\"/>\n");
+                                        out.write("</meta-variable>\n");
+                                        out.write("</__directives>\n");
+                                        out.write("</Dummy>\n");
+                                        break;
+
+                                    default:
+                                        out.write("<" + pat.elementAt(i) + ">\n");
+                                        break;
+                                }
+                                break;
+
+                            default: //N children: if this node has full children
+                                out.write("<" + pat.elementAt(i) + ">\n");
+                                out.write("<__directives>");
+                                out.write("<match-sequence/>");
+                                out.write("</__directives>\n");
+                                break;
+
+                        }
+
+                    }
+
+                    tmp.addElement(pat.elementAt(i));
+                    ++n;
+                }else {
+                    //print leaf node of subtree
+                    if (!pat.elementAt(i).equals(")") && pat.elementAt(i + 1).equals(")")) {
+                        //TODO: abstracting leafs of Cobol data
+                        if (pat.elementAt(i).charAt(0) == '*') {
+                            outputLeaf(pat, i);
+                        } else { //leaf of subtree is an internal node in the original tree
+                            outputNode(pat, metaVariable, i);
+                        }
+                    } else {
+                        //close a node
+                        if (pat.elementAt(i).equals(")") && pat.elementAt(i + 1).equals(")")) {
+                            out.write("</" + tmp.elementAt(n - 1) + ">\n");
+                            tmp.remove(n-1);
+                            --n;
+                        }
+                    }
+                }
+            }
+            //print the last node of pattern
+            if(pat.elementAt(pat.size() - 1).charAt(0) == '*')  {
+                outputLeaf(pat,pat.size() - 1);
+            }
+            else {
+                int i = pat.size() - 1;
+                outputNode(pat, metaVariable, i);
+            }
+
+            //close nodes
+            //System.out.println(tmp);
+            for (int i = n - 1; i >= 0; --i)
+                out.write( "</" + tmp.elementAt(i) + ">\n");
+
+            out.write("</subtree>\n");
+            out.write("\n");
+
+        }
+        catch (Exception e){
+            System.out.println("report xml error : " + e);
+            System.out.println(pat);
+
+        }
+    }
+
     /**
      * Represent subtrees in XML format + Ekeko
      * @param pat
      * @param projected
      */
     //@Override
-    private void report(Vector<String> pat, Projected projected){
+    public void report(Vector<String> pat, Projected projected){
         try{
             //if( checkOutputConstraint(pat) ) return;
             //System.out.print(pat);

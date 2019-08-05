@@ -8,6 +8,7 @@ import java.util.List;
 public class NodeFreqT { //can extends from Node of Ekeko ???
 
     private String node_label;
+    private int node_label_int;
     private String lineNr;
 
     private int parent;
@@ -22,55 +23,48 @@ public class NodeFreqT { //can extends from Node of Ekeko ???
     private int parentExt;
     private int childExt;
     private int siblingExt;
-
-
-
-
-
-
+    //keep all label ids of subtrees to build single larger tree --> not successful
     private List<Pair<Integer,Integer>> nodeIDs = new LinkedList<>();
 
 
+    public void setNode_label_int(int node_label_int) {
+        this.node_label_int = node_label_int;
+    }
 
+    public int getNode_label_int(){
+        return this.node_label_int;
+    }
+
+    //additional information for building single large tree
     public void setNodeLevel(int s) {
         this.level = s;
     }
-
     public void setNodeSiblingExt(int s) {
         this.siblingExt = s;
     }
-
     public void setNodeChildExt(int s)
     {
         this.childExt = s;
     }
-
     public void setNodeParentExt(int s)
     {
         this.parentExt = s;
     }
-
-
+    ///
     public int getNodeLevel() {
         return this.level;
     }
-
     public int getNodeSiblingExt() {
         return this.siblingExt;
     }
-
     public int getNodeChildExt()
     {
         return this.childExt;
     }
-
     public int getNodeParentExt()
     {
         return this.parentExt;
     }
-
-
-
 
     ////////////////
     public void setIds(Integer i, Integer j){
