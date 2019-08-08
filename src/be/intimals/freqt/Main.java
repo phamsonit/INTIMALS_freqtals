@@ -60,108 +60,74 @@ public class Main {
     }
 
     private void singleRun(String[] args) {
-
         try{
             //load basic configuration
             String configPathBasic = args[0];
             Config configBasic = new Config(configPathBasic);
             String inputMinSup = args[1];
             String inputFold = args[2];
-            //create temporary configuration
-            Properties prop;
-            OutputStream output = null;
-            String configPathTemp = "";
 
-            String inputPath = ""; //input data
-            String outputPath = ""; //output patterns
-
-            //paths for forestmatcher
-            String outputMatches = "";
-            String outputClusters = "";
-            String outputClustersTemp = "";
-
-            //output paths for mining common patterns in clusters
-            String outputCommonPatterns = "";
-            String outputCommonMatches = "";
-            String outputCommonClusters = "";
-            String outputCommonClustersTemp = "";
-
-            //String sep = File.separator; // replace "/"
             String sep = "/";
-            try {
-                prop = configBasic.getProp();
-                //update input path
-                inputPath = configBasic.getInputFiles().replace("\"", "") + sep + inputFold;
-                //update output file path
-                System.out.println(inputPath);
-                File directory = new File(configBasic.getOutputFile());
-                if(!directory.exists()) directory.mkdir();
 
-                outputPath = configBasic.getOutputFile().replace("\"","") +
-                        sep+inputFold.replaceAll(sep,"-")+"-" + inputMinSup +"-patterns.xml";
-                //delete output file if if exists
-                Files.deleteIfExists(Paths.get(outputPath));
+            //create final configuration as used by FreqT
+            Properties prop = configBasic.getProp();
+            //input data
+            String inputPath = configBasic.getInputFiles().replace("\"", "") + sep + inputFold;
+            System.out.println("Reading input from: " + inputPath);
 
-                //create parameters for forest matcher
-                outputMatches = configBasic.getOutputFile().replace("\"","") +
-                        sep+inputFold.replaceAll(sep,"-")+"-" +inputMinSup + "-matches.xml";
-                Files.deleteIfExists(Paths.get(outputMatches));
+            File outputDir = new File(configBasic.getOutputFile());
+            if(!outputDir.exists()) outputDir.mkdir();
 
-                outputClusters = configBasic.getOutputFile().replace("\"","") +
-                        sep+inputFold.replaceAll(sep,"-")+"-" +inputMinSup + "-clusters.xml";
-                Files.deleteIfExists(Paths.get(outputClusters));
+            //output patterns
+            String outputPath = configBasic.getOutputFile().replace("\"", "") +
+                    sep + inputFold.replaceAll(sep, "-") + "-" + inputMinSup + "-patterns.xml";
+            //delete output file if if exists
+            Files.deleteIfExists(Paths.get(outputPath));
 
-                outputClustersTemp = configBasic.getOutputFile().replace("\"","") +
-                        sep+inputFold.replaceAll(sep,"-")+"-" +inputMinSup + "-matches_clusters.xml";
-                Files.deleteIfExists(Paths.get(outputClustersTemp));
+            String outputPrefix = configBasic.getOutputFile().replace("\"", "") +
+                    sep + inputFold.replaceAll(sep, "-") + "-" + inputMinSup;
 
-                outputCommonPatterns = configBasic.getOutputFile().replace("\"","") +
-                        sep+inputFold.replaceAll(sep,"-")+"-" +inputMinSup + "-patterns_common.xml";
-                Files.deleteIfExists(Paths.get(outputCommonPatterns));
+            //final configuration as used by FreqT
+            String finalConfig =  outputPrefix + "-config.properties";
+            Files.deleteIfExists(Paths.get(finalConfig));
 
-                outputCommonMatches = configBasic.getOutputFile().replace("\"","") +
-                        sep+inputFold.replaceAll(sep,"-")+"-" +inputMinSup + "-matches_common.xml";
-                Files.deleteIfExists(Paths.get(outputCommonMatches));
+            //create parameters for forest matcher
+            String outputMatches = outputPrefix + "-matches.xml";
+            Files.deleteIfExists(Paths.get(outputPrefix));
 
-                outputCommonClusters = configBasic.getOutputFile().replace("\"","") +
-                        sep+inputFold.replaceAll(sep,"-")+"-" +inputMinSup + "-common_clusters.xml";
-                Files.deleteIfExists(Paths.get(outputCommonClusters));
+            String outputClusters = outputPrefix + "-clusters.xml";
+            Files.deleteIfExists(Paths.get(outputClusters));
 
-                outputCommonClustersTemp = configBasic.getOutputFile().replace("\"","") +
-                        sep+inputFold.replaceAll(sep,"-")+"-" +inputMinSup + "-matches_common_clusters.xml";
-                Files.deleteIfExists(Paths.get(outputCommonClustersTemp));
+            String outputClustersTemp = outputPrefix + "-matches_clusters.xml";
+            Files.deleteIfExists(Paths.get(outputClustersTemp));
 
-                //update path of temporary configuration
-                configPathTemp = configBasic.getOutputFile().replace("\"","") +
-                        sep+ inputFold.replaceAll(sep,"-")+"-"+ inputMinSup + "-config.properties";
-                Files.deleteIfExists(Paths.get(configPathTemp));
+            String outputCommonPatterns = outputPrefix + "-patterns_common.xml";
+            Files.deleteIfExists(Paths.get(outputCommonPatterns));
 
-                //update properties
-                //prop.replace("minSupport", inputMinSup);
-                prop.setProperty("minSupport",inputMinSup);
-                prop.replace("inputPath", inputPath);
-                prop.replace("outputPath", outputPath);
-                prop.remove("minSupportList");
-                prop.remove("inFilesList");
+            String outputCommonMatches = outputPrefix + "-matches_common.xml";
+            Files.deleteIfExists(Paths.get(outputCommonMatches));
 
-                //save new properties
-                output = new FileOutputStream(configPathTemp);
-                prop.store(output, null);
+            String outputCommonClusters = outputPrefix + "-common_clusters.xml";
+            Files.deleteIfExists(Paths.get(outputCommonClusters));
 
-            } catch (IOException io) {
-                io.printStackTrace();
-            } finally {
-                if (output != null) {
-                    try {
-                        output.close();
-                    } catch (IOException e) {
-                        e.printStackTrace();
-                    }
-                }
-            }
+            String outputCommonClustersTemp = outputPrefix + "-matches_common_clusters.xml";
+            Files.deleteIfExists(Paths.get(outputCommonClustersTemp));
 
-            //load new configuration;
-            Config config = new Config(configPathTemp);
+            //update properties
+            //prop.replace("minSupport", inputMinSup);
+            prop.setProperty("minSupport",inputMinSup);
+            prop.replace("inputPath", inputPath);
+            prop.replace("outputPath", outputPath);
+            prop.remove("minSupportList");
+            prop.remove("inFilesList");
+
+            //save new properties in the final configuration
+            OutputStream output = new FileOutputStream(finalConfig);
+            prop.store(output, null);
+            output.close();
+
+            //load final configuration as new configuration;
+            Config config = new Config(finalConfig);
             //run Freqt to find maximal patterns
             FreqT_Int freqt = new FreqT_Int(config);
             //FreqT freqt = new FreqT(config);
