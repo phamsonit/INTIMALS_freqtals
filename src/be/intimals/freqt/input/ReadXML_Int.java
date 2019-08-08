@@ -1,6 +1,7 @@
 package be.intimals.freqt.input;
 
 import be.intimals.freqt.structure.NodeFreqT;
+import be.intimals.freqt.util.XmlFormatter;
 import org.w3c.dom.Document;
 import org.w3c.dom.NamedNodeMap;
 import org.w3c.dom.Node;
@@ -9,6 +10,9 @@ import org.w3c.dom.NodeList;
 import javax.xml.parsers.DocumentBuilder;
 import javax.xml.parsers.DocumentBuilderFactory;
 import java.io.File;
+import java.io.FileReader;
+import java.nio.file.Files;
+import java.nio.file.Paths;
 import java.util.*;
 
 /*
@@ -24,26 +28,21 @@ public class ReadXML_Int {
     private Vector<Integer> sr;
     private Vector<Integer> sibling;
 
-    private Map <String, Vector<String> > grammar;
+
+    private List<String> labels = new LinkedList<>();
+    Vector<Integer> lineNrs = new Vector<>();
+    int countSection;
+    private boolean abstractLeafs = false;
     private int nbFiles = 0;
 
     public static  char uniChar = '\u00a5';// Japanese Yen symbol
-
-    boolean abstractLeafs = false;
-
-    Vector<Integer> lineNrs = new Vector<>();
-    int countSection;
-
-    private List<String> labels = new LinkedList<>();
-
+    private String sep = File.separator;
 
     //////////////////////////////
 
     //return total number of reading files
-    public Vector<Integer> getlineNrs(){
-        return this.lineNrs;
+    public Vector<Integer> getlineNrs(){return this.lineNrs;
     }
-
 
     //return total number of reading files
     public int getnbFiles(){
@@ -64,7 +63,6 @@ public class ReadXML_Int {
 
     //count total number of nodes of a tree
     public int countNBNodes(Node root) {
-
         NodeList childrenNodes = root.getChildNodes();
         int nbChildren = countNBChildren(root);
         int c = nbChildren; //node.getChildNodes().getLength();
@@ -76,11 +74,9 @@ public class ReadXML_Int {
                     result += countNBNodes(root.getChildNodes().item(i));
                 }
             }
-        }
-        else {
+        }else {
             result++;
         }
-
         return result;
     }
 
@@ -155,8 +151,6 @@ public class ReadXML_Int {
                         }else {
                             trans.elementAt(id).setNode_label_int(labels.indexOf(leafLabel)*(-1));
                         }
-
-
 
                         trans.elementAt(id).setLineNr("-1");
 
@@ -243,10 +237,8 @@ public class ReadXML_Int {
         try {
             //System.out.print("create tree data: ");
             abstractLeafs = _abstractLeafs;
-
             File[] subdir = f.listFiles();
             Arrays.sort(subdir);
-
             for (File fi : subdir) {
                 if (fi.isFile() && fi.getName().charAt(0)!='.' ) {
                     String[] split = fi.getName().split("\\.");
@@ -256,13 +248,20 @@ public class ReadXML_Int {
                         //System.out.println(f+"/"+fi.getName());
                         ++nbFiles;
                         countSection=0;
-                        //for each file in folder create one tree
-                        File fXmlFile = new File(f+"/"+fi.getName());
+
+                        //format XML file before create tree
+                        String inFile = f+sep+fi.getName();
+                        String inFileTemp = f+sep+"temp.xml";
+                        Files.deleteIfExists(Paths.get(inFileTemp));
+                        XmlFormatter formatter = new XmlFormatter();
+                        formatter.format(inFile,inFileTemp);
+
+                        //create tree
+                        File fXmlFile = new File(inFileTemp);
                         DocumentBuilderFactory dbFactory = DocumentBuilderFactory.newInstance();
                         DocumentBuilder dBuilder = dbFactory.newDocumentBuilder();
                         Document doc = dBuilder.parse(fXmlFile);
                         doc.getDocumentElement().normalize();
-
 
                         //get total number of nodes
                         int size = countNBNodes(doc.getDocumentElement())+1;
@@ -280,13 +279,11 @@ public class ReadXML_Int {
 
                         for (int i = 0; i < size; ++i) {
                             NodeFreqT nodeTemp = new NodeFreqT();
-
                             nodeTemp.setNodeParent(-1);
                             nodeTemp.setNodeChild(-1);
                             nodeTemp.setNodeSibling(-1);
                             nodeTemp.setNodeDegree("0");
                             nodeTemp.setNodeOrdered(true);
-
                             trans.setElementAt(nodeTemp, i);
                             sibling.setElementAt(-1, i);
                         }
@@ -296,58 +293,15 @@ public class ReadXML_Int {
                         readTreeDepthFirst(doc.getDocumentElement(), trans, labelIndex);
                         //add tree to transaction
                         transaction.addElement(trans);
+                        //delete temporary input file
+                        Files.deleteIfExists(Paths.get(inFileTemp));
                     }
-
                 }else
                     if (fi.isDirectory()) {
                         createTransaction(abstractLeafs, fi , transaction, labelIndex);
                     }
             }
-            //System.out.println("input : "+nbFiles);
-//            for(String t:labels)
-//                System.out.println(t);
-//
-//            Iterator < Map.Entry<Integer,String> > it = labelIndex.entrySet().iterator();
-//            while(it.hasNext()){
-//                Map.Entry<Integer,String> entry = it.next();
-//                System.out.println(entry.getKey()+" "+entry.getValue());
-//            }
-
-
         } catch (Exception e) { System.out.println("input error");}
-
-    }
-
-    private static void visitNode(Node node){
-        if (node.getNodeType() == Node.ELEMENT_NODE){
-            System.out.print("node: "+node.getNodeName()+" ; ");
-            if(node.hasChildNodes()){
-                System.out.print("children: ");
-                NodeList nodeList = node.getChildNodes();
-                if(nodeList.getLength()==1){
-                    if(node.getNodeType()==Node.ELEMENT_NODE){
-                        System.out.println("*"+node.getTextContent().trim());
-                    }
-                }else{
-                    for(int i=0; i<nodeList.getLength();++i)
-                    {
-                        if(nodeList.item(i).getNodeType()==Node.ELEMENT_NODE){
-                            System.out.print(nodeList.item(i).getNodeName()+" ");
-                        }
-                    }
-                    System.out.println();
-
-                    for(int i=0; i<nodeList.getLength();++i)
-                    {
-                        if(nodeList.item(i).getNodeType()==Node.ELEMENT_NODE){
-                            visitNode(nodeList.item(i));
-                        }
-                    }
-                }
-            }
-        }
-
-
     }
 
     public static void printTransaction(Vector < Vector<NodeFreqT> > trans){

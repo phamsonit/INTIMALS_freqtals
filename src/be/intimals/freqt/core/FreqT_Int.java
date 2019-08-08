@@ -718,6 +718,11 @@ public class FreqT_Int {
             Initial_Int.initGrammar(config.getInputFiles(),grammar, config.buildGrammar());
             //new grammar (labels are integers) is used to calculate patterns
             Initial_Int.initGrammar_Int(config.getInputFiles(),grammarInt,labelIndex);
+
+//            for(Map.Entry<Integer,Vector<String>> entry:grammarInt.entrySet()){
+//                System.out.println(entry.getValue());
+//            }
+
             Initial_Int.readWhiteLabel(config.getWhiteLabelFile(), grammarInt, whiteLabelsInt, blackLabelsInt, labelIndex); //read white labels and create black labels
             Initial_Int.readRootLabel(config.getRootLabelFile(), rootLabels);  //read root labels (AST Nodes)
             Initial_Int.readXMLCharacter(config.getXmlCharacterFile(), xmlCharacters); //read list of special XML characters
@@ -804,7 +809,7 @@ public class FreqT_Int {
             }
         }
         catch (Exception e) {
-            System.out.println("Error: running Freqt");
+            System.out.println("Error: running Freqt_Int");
             e.printStackTrace();
         }
     }

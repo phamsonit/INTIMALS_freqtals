@@ -86,51 +86,52 @@ public class Main {
             String outputCommonClusters = "";
             String outputCommonClustersTemp = "";
 
+            String sep = File.separator; // replace "/"
             try {
                 prop = configBasic.getProp();
                 //update input path
-                inputPath = configBasic.getInputFiles().replace("\"", "") + "/"+inputFold;
+                inputPath = configBasic.getInputFiles().replace("\"", "") + sep + inputFold;
                 //update output file path
                 File directory = new File(configBasic.getOutputFile());
                 if(!directory.exists()) directory.mkdir();
 
                 outputPath = configBasic.getOutputFile().replace("\"","") +
-                        "/"+inputFold.replaceAll("\\/","-")+"-" + inputMinSup +"-patterns.xml";
+                        sep+inputFold.replaceAll(sep,"-")+"-" + inputMinSup +"-patterns.xml";
                 //delete output file if if exists
                 Files.deleteIfExists(Paths.get(outputPath));
 
                 //create parameters for forest matcher
                 outputMatches = configBasic.getOutputFile().replace("\"","") +
-                        "/"+inputFold.replaceAll("\\/","-")+"-" +inputMinSup + "-matches.xml";
+                        sep+inputFold.replaceAll(sep,"-")+"-" +inputMinSup + "-matches.xml";
                 Files.deleteIfExists(Paths.get(outputMatches));
 
                 outputClusters = configBasic.getOutputFile().replace("\"","") +
-                        "/"+inputFold.replaceAll("\\/","-")+"-" +inputMinSup + "-clusters.xml";
+                        sep+inputFold.replaceAll(sep,"-")+"-" +inputMinSup + "-clusters.xml";
                 Files.deleteIfExists(Paths.get(outputClusters));
 
                 outputClustersTemp = configBasic.getOutputFile().replace("\"","") +
-                        "/"+inputFold.replaceAll("\\/","-")+"-" +inputMinSup + "-matches_clusters.xml";
+                        sep+inputFold.replaceAll(sep,"-")+"-" +inputMinSup + "-matches_clusters.xml";
                 Files.deleteIfExists(Paths.get(outputClustersTemp));
 
                 outputCommonPatterns = configBasic.getOutputFile().replace("\"","") +
-                        "/"+inputFold.replaceAll("\\/","-")+"-" +inputMinSup + "-patterns_common.xml";
+                        sep+inputFold.replaceAll(sep,"-")+"-" +inputMinSup + "-patterns_common.xml";
                 Files.deleteIfExists(Paths.get(outputCommonPatterns));
 
                 outputCommonMatches = configBasic.getOutputFile().replace("\"","") +
-                        "/"+inputFold.replaceAll("\\/","-")+"-" +inputMinSup + "-matches_common.xml";
+                        sep+inputFold.replaceAll(sep,"-")+"-" +inputMinSup + "-matches_common.xml";
                 Files.deleteIfExists(Paths.get(outputCommonMatches));
 
                 outputCommonClusters = configBasic.getOutputFile().replace("\"","") +
-                        "/"+inputFold.replaceAll("\\/","-")+"-" +inputMinSup + "-common_clusters.xml";
+                        sep+inputFold.replaceAll(sep,"-")+"-" +inputMinSup + "-common_clusters.xml";
                 Files.deleteIfExists(Paths.get(outputCommonClusters));
 
                 outputCommonClustersTemp = configBasic.getOutputFile().replace("\"","") +
-                        "/"+inputFold.replaceAll("\\/","-")+"-" +inputMinSup + "-matches_common_clusters.xml";
+                        sep+inputFold.replaceAll(sep,"-")+"-" +inputMinSup + "-matches_common_clusters.xml";
                 Files.deleteIfExists(Paths.get(outputCommonClustersTemp));
 
                 //update path of temporary configuration
-                configPathTemp = configBasic.getOutputFile().replace("\"","")
-                        + "/"+ inputFold.replaceAll("\\/","-")+"-"+ inputMinSup + "-config.properties";
+                configPathTemp = configBasic.getOutputFile().replace("\"","") +
+                        sep+ inputFold.replaceAll(sep,"-")+"-"+ inputMinSup + "-config.properties";
                 Files.deleteIfExists(Paths.get(configPathTemp));
 
                 //update properties

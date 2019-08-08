@@ -39,14 +39,13 @@ public class Initial_Int {
 
 
     /**
-     * Load the grammar from a given file or build it from a set of ASTs
+     * build grammar from a set of ASTs
      */
     public static void initGrammar_Int(String path, Map<Integer, Vector<String>> gram,
                                        Map<Integer, String> labelIndex ) throws Exception {
         try{
             //System.out.println("generating grammar ... ");
             Map<String, Vector<String>> gramTemp = new HashMap<>();
-
             CreateGrammar createGrammar = new CreateGrammar();
             createGrammar.createGrammar(path, gramTemp);
 
@@ -57,11 +56,12 @@ public class Initial_Int {
                     String[]temp = entry.getValue().elementAt(i).split(String.valueOf(uniChar));
                     if(!temp[0].equals("leaf-node")){
                         int childIndex = findIndex(temp[0],labelIndex);
-
                         String newChild = String.valueOf(childIndex)+uniChar+temp[1];
                         entry.getValue().set(i,newChild);
+                    }else{
+                        String newChild = String.valueOf(0)+uniChar+temp[1];
+                        entry.getValue().set(i,newChild);
                     }
-
                 }
 
                 gram.put(index,entry.getValue());
