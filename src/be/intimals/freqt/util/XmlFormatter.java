@@ -27,7 +27,7 @@ import javax.xml.transform.stream.StreamSource;
  */
 public class XmlFormatter {
 
-    private static String sep = File.separator;
+    private static String sep = "/";//File.separator;
 
 //    public String format(String input) {
 //        return prettyFormat(input, "2");
@@ -70,8 +70,6 @@ public class XmlFormatter {
             file.close();
 
         }catch (Exception e){System.out.println(e);}
-
-
     }
 
     //format all xml in the inPath directory

@@ -36,7 +36,7 @@ public class ReadXML_Int {
     private int nbFiles = 0;
 
     public static  char uniChar = '\u00a5';// Japanese Yen symbol
-    private String sep = File.separator;
+    private String sep = "/";//File.separator;
 
     //////////////////////////////
 

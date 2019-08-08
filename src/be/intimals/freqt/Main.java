@@ -55,7 +55,7 @@ public class Main {
                 m.singleRun(args);
             }
         }
-        System.exit(3);
+        System.exit(2);
 
     }
 
@@ -86,12 +86,14 @@ public class Main {
             String outputCommonClusters = "";
             String outputCommonClustersTemp = "";
 
-            String sep = File.separator; // replace "/"
+            //String sep = File.separator; // replace "/"
+            String sep = "/";
             try {
                 prop = configBasic.getProp();
                 //update input path
                 inputPath = configBasic.getInputFiles().replace("\"", "") + sep + inputFold;
                 //update output file path
+                System.out.println(inputPath);
                 File directory = new File(configBasic.getOutputFile());
                 if(!directory.exists()) directory.mkdir();
 
