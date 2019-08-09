@@ -33,7 +33,6 @@ public class ReadXML_Int {
     Vector<Integer> lineNrs = new Vector<>();
     int countSection;
     private boolean abstractLeafs = false;
-    private int nbFiles = 0;
 
     public static  char uniChar = '\u00a5';// Japanese Yen symbol
     private String sep = "/";//File.separator;
@@ -42,11 +41,6 @@ public class ReadXML_Int {
 
     //return total number of reading files
     public Vector<Integer> getlineNrs(){return this.lineNrs;
-    }
-
-    //return total number of reading files
-    public int getnbFiles(){
-        return this.nbFiles;
     }
 
     //count number children of a node
@@ -229,79 +223,74 @@ public class ReadXML_Int {
                 sibling.setElementAt(child, parent);
                 sr.setSize(top);
             }
-        }catch (Exception e){System.out.println("readTreeDepthFirst "+ e);}
+        }catch (Exception e){
+            e.printStackTrace();
+            System.exit(-1);
+        }
     }
 
     //create transaction from ASTs in multiple folders
-    public void createTransaction(boolean _abstractLeafs, File f, Vector < Vector<NodeFreqT> > transaction, Map <Integer, String> labelIndex) {
+    public Vector <Vector<NodeFreqT>> readDatabase(boolean _abstractLeafs, File rootDirectory, Map <Integer, String> labelIndex) {
+        Vector < Vector<NodeFreqT> > database = new Vector < Vector<NodeFreqT> >();
+        abstractLeafs = _abstractLeafs;
+        Vector<File> files = new Vector<File>();
+        populateFileList(rootDirectory,files);
+        System.out.print("Reading " + files.size() +" files ");
+        XmlFormatter formatter = new XmlFormatter();
+        DocumentBuilderFactory dbFactory = DocumentBuilderFactory.newInstance();
         try {
-            //System.out.print("create tree data: ");
-            abstractLeafs = _abstractLeafs;
-            File[] subdir = f.listFiles();
-            Arrays.sort(subdir);
-            for (File fi : subdir) {
-                if (fi.isFile() && fi.getName().charAt(0)!='.' ) {
-                    String[] split = fi.getName().split("\\.");
-                    String ext = split[split.length - 1];
-                    if(ext.toLowerCase().equals("xml")){
-                        //System.out.print("reading file ---------------- ");
-                        //System.out.println(f+"/"+fi.getName());
-                        ++nbFiles;
-                        countSection=0;
+            for (File fi : files) {
+                countSection=0;
 
-                        //format XML file before create tree
-                        String inFile = f+sep+fi.getName();
-                        String inFileTemp = f+sep+"temp.xml";
-                        Files.deleteIfExists(Paths.get(inFileTemp));
-                        XmlFormatter formatter = new XmlFormatter();
-                        formatter.format(inFile,inFileTemp);
+                //format XML file before create tree
+                String inFileTemp = rootDirectory+sep+"temp.xml";
+                Files.deleteIfExists(Paths.get(inFileTemp));
+                formatter.format(rootDirectory+sep+fi.getName(),inFileTemp);
 
-                        //create tree
-                        File fXmlFile = new File(inFileTemp);
-                        DocumentBuilderFactory dbFactory = DocumentBuilderFactory.newInstance();
-                        DocumentBuilder dBuilder = dbFactory.newDocumentBuilder();
-                        Document doc = dBuilder.parse(fXmlFile);
-                        doc.getDocumentElement().normalize();
+                //create tree
+                File fXmlFile = new File(inFileTemp);
+                DocumentBuilder dBuilder = dbFactory.newDocumentBuilder();
+                Document doc = dBuilder.parse(fXmlFile);
+                doc.getDocumentElement().normalize();
 
-                        //get total number of nodes
-                        int size = countNBNodes(doc.getDocumentElement())+1;
+                //get total number of nodes
+                int size = countNBNodes(doc.getDocumentElement())+1;
 
-                        //init trans and sibling
-                        id = 0;
-                        top = 0;
-                        sr = new Vector<>();
-                        sibling = new Vector<>();
+                id = 0;
+                top = 0;
+                sr = new Vector<>();
+                sibling = new Vector<>(size);
+                sibling.setSize(size);
+                Vector<NodeFreqT> trans = new Vector<NodeFreqT>(size);
+                trans.setSize(size);
 
-                        Vector<NodeFreqT> trans = new Vector<>();
-
-                        trans.setSize(size);
-                        sibling.setSize(size);
-
-                        for (int i = 0; i < size; ++i) {
-                            NodeFreqT nodeTemp = new NodeFreqT();
-                            nodeTemp.setNodeParent(-1);
-                            nodeTemp.setNodeChild(-1);
-                            nodeTemp.setNodeSibling(-1);
-                            nodeTemp.setNodeDegree("0");
-                            nodeTemp.setNodeOrdered(true);
-                            trans.setElementAt(nodeTemp, i);
-                            sibling.setElementAt(-1, i);
-                        }
-                        //test xml parsing
-                        //visitNode(doc.getDocumentElement());
-                        //create tree
-                        readTreeDepthFirst(doc.getDocumentElement(), trans, labelIndex);
-                        //add tree to transaction
-                        transaction.addElement(trans);
-                        //delete temporary input file
-                        Files.deleteIfExists(Paths.get(inFileTemp));
-                    }
-                }else
-                    if (fi.isDirectory()) {
-                        createTransaction(abstractLeafs, fi , transaction, labelIndex);
-                    }
+                for (int i = 0; i < size; ++i) {
+                    NodeFreqT nodeTemp = new NodeFreqT(-1,-1,-1,"0",true);
+                    trans.setElementAt(nodeTemp, i);
+                    sibling.setElementAt(-1, i);
+                }
+                //create tree
+                readTreeDepthFirst(doc.getDocumentElement(), trans, labelIndex);
+                //add tree to database
+                database.addElement(trans);
+                //delete temporary input file
+                Files.deleteIfExists(Paths.get(inFileTemp));
+                System.out.print(".");
             }
-        } catch (Exception e) { System.out.println("input error");}
+            System.out.println(" reading ended.");
+        } catch (Exception e) {
+            System.out.println(" read error.");
+            e.printStackTrace();
+            System.exit(-1);
+        }
+        return database;
+    }
+
+    private void populateFileList(File directory, Vector<File> list){
+        File[] files = directory.listFiles((dir, name) -> name.toLowerCase().endsWith(".xml"));
+        Collections.addAll(list, files);
+        File[] directories = directory.listFiles(File::isDirectory);
+        for (File dir : directories) populateFileList(dir,list);
     }
 
     public static void printTransaction(Vector < Vector<NodeFreqT> > trans){

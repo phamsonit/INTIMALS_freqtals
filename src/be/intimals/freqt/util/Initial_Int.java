@@ -14,29 +14,6 @@ import java.util.*;
 
 public class Initial_Int {
     private  static  char uniChar = '\u00a5';// Japanese Yen symbol
-    private static Vector<Integer> lineNrs = new Vector<>();
-    public static Vector<Integer> getLineNrs(){
-        return lineNrs;
-    }
-
-
-    /**
-     * Loads data from folders
-     */
-    public static void readDatabase(boolean abstractLeafs, String path,
-                                    Vector < Vector<NodeFreqT> > trans,
-                                    Map<Integer,String> labelIndex) {
-
-        //System.out.println("reading data ...");
-        ReadXML_Int readXML = new ReadXML_Int();
-        readXML.createTransaction(abstractLeafs, new File(path), trans,labelIndex);
-        lineNrs = readXML.getlineNrs();
-
-        //create transaction from single input file
-        //ReadFile r = new ReadFile();
-        //r.createTransaction(inFile,transaction);
-    }
-
 
     /**
      * build grammar from a set of ASTs

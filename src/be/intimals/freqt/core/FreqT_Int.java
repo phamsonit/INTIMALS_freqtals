@@ -1,16 +1,15 @@
 package be.intimals.freqt.core;
 
 import be.intimals.freqt.config.Config;
+import be.intimals.freqt.input.ReadXML_Int;
 import be.intimals.freqt.output.AOutputFormatter;
 import be.intimals.freqt.output.XMLOutput;
 import be.intimals.freqt.structure.*;
-import be.intimals.freqt.util.Initial;
-import be.intimals.freqt.input.ReadXML;
 import be.intimals.freqt.util.Initial_Int;
 
+import java.io.File;
 import java.io.FileWriter;
 import java.io.IOException;
-import java.lang.reflect.Array;
 import java.util.*;
 import java.util.concurrent.ConcurrentHashMap;
 
@@ -44,7 +43,7 @@ public class FreqT_Int {
     //store file ids of patterns
     private Map<String,String>  fileIDs = new HashMap<>();
     /////
-    private int nbInputFiles;
+    //int nbInputFiles;
     private int nbFP;
 
     Vector<Integer> lineNrs = new Vector<>();
@@ -713,7 +712,8 @@ public class FreqT_Int {
     public void run() {
         try{
             //System.out.println("=========running FreqT==========");
-            Initial_Int.readDatabase(config.getAbstractLeafs(),config.getInputFiles(),transaction,labelIndex);
+            transaction = new ReadXML_Int().readDatabase(config.getAbstractLeafs(), new File(config.getInputFiles()), labelIndex);
+
             //normal grammar (labels are strings) is used to print patterns
             Initial_Int.initGrammar(config.getInputFiles(),grammar, config.buildGrammar());
             //new grammar (labels are integers) is used to calculate patterns
@@ -731,18 +731,19 @@ public class FreqT_Int {
             String reportFile = config.getOutputFile().replaceAll("\"","") +"-report.txt";
             FileWriter report = new FileWriter(reportFile);
 
+            log(report,"INPUT");
+            log(report,"===================");
+            log(report,"- data sources : " + config.getInputFiles());
+            log(report,"- input files : " +  transaction.size());
+            log(report,"- minSupport : " + config.getMinSupport());
+
+            report.flush();
+
             timeStart = System.currentTimeMillis();
             timeout = config.getTimeout()*(60*1000);
             finished = true;
 
             long start = System.currentTimeMillis( );
-            nbInputFiles = transaction.size();
-
-            log(report,"INPUT");
-            log(report,"===================");
-            log(report,"- data sources : " + config.getInputFiles());
-            log(report,"- input files : " + nbInputFiles);
-            log(report,"- minSupport : " + config.getMinSupport());
 
             System.out.println("Mining frequent subtrees ...");
             //find 1-subtrees
