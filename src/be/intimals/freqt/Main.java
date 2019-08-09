@@ -78,14 +78,12 @@ public class Main {
             File outputDir = new File(configBasic.getOutputFile());
             if(!outputDir.exists()) outputDir.mkdir();
 
-            //output patterns
-            String outputPath = configBasic.getOutputFile().replace("\"", "") +
-                    sep + inputFold.replaceAll(sep, "-") + "-" + inputMinSup + "-patterns.xml";
-            //delete output file if if exists
-            Files.deleteIfExists(Paths.get(outputPath));
-
             String outputPrefix = configBasic.getOutputFile().replace("\"", "") +
                     sep + inputFold.replaceAll(sep, "-") + "-" + inputMinSup;
+
+            //output patterns
+            String outputPath = outputPrefix + "-patterns.xml";
+            Files.deleteIfExists(Paths.get(outputPath));
 
             //final configuration as used by FreqT
             String finalConfig =  outputPrefix + "-config.properties";

@@ -26,6 +26,17 @@ public class NodeFreqT { //can extends from Node of Ekeko ???
     //keep all label ids of subtrees to build single larger tree --> not successful
     private List<Pair<Integer,Integer>> nodeIDs = new LinkedList<>();
 
+    public NodeFreqT(){
+
+    }
+
+    public NodeFreqT(int _parent, int _child, int _sibling, String _degree, boolean _ordered){
+        parent = _parent;
+        child = _child;
+        sibling = _sibling;
+        degree = _degree;
+        ordered = _ordered;
+    }
 
     public void setNode_label_int(int node_label_int) {
         this.node_label_int = node_label_int;
