@@ -1,7 +1,6 @@
 package be.intimals.freqt.core;
 
 import be.intimals.freqt.config.Config;
-import be.intimals.freqt.input.ReadFile;
 import be.intimals.freqt.input.ReadFile_Int;
 import be.intimals.freqt.structure.*;
 
@@ -62,7 +61,6 @@ public class FreqT_Int_subtree extends FreqT_Int {
                         Projected tmp;// = new Projected();
                         if(candidate.containsKey(itemInt)) {
                             candidate.get(itemInt).setProjectLocation(id,l); //store right most positions
-
                         }
                         else {
                             tmp = new Projected();
@@ -71,7 +69,6 @@ public class FreqT_Int_subtree extends FreqT_Int {
                             candidate.put(itemInt, tmp);
                         }
                         //////////
-
                     }
                     if (d != -1) pos = newTransaction.elementAt(id).elementAt(pos).getNodeParent();
                     //prefix += uniChar+")";
@@ -100,8 +97,6 @@ public class FreqT_Int_subtree extends FreqT_Int {
                     // add new candidate to current pattern
                     maximalPattern.addAll(entry.getKey());
                     project(entry.getValue());
-                    //maximalPattern = new ArrayList<>(maximalPattern.subList(0,oldSize));
-                    //maximalPattern.setSize(oldSize);
                 }
             }
         }catch (Exception e){
@@ -124,15 +119,6 @@ public class FreqT_Int_subtree extends FreqT_Int {
             inputPatterns.add(pat1);
             inputPatterns.add(pat2);
             initDatabase(inputPatterns);
-
-//            System.out.println(pat1+" - "+ pat2);
-//            for (int i=0; i<newTransaction.size();++i) {
-//                for (int j = 0; j < newTransaction.elementAt(i).size(); ++j)
-//                    System.out.print(newTransaction.elementAt(i).elementAt(j).getNode_label_int()+",");
-//                System.out.println();
-//            }
-
-
 
             maximalPattern = new ArrayList<>();
             int rootLabel_int = pat1.get(0);

@@ -2,18 +2,13 @@ package be.intimals.freqt.util;
 
 import be.intimals.freqt.grammar.CreateGrammar;
 import be.intimals.freqt.grammar.ReadGrammar;
-import be.intimals.freqt.input.ReadXML;
-import be.intimals.freqt.input.ReadXML_Int;
-import be.intimals.freqt.structure.NodeFreqT;
 
 import java.io.BufferedReader;
-import java.io.File;
 import java.io.FileReader;
 import java.io.IOException;
 import java.util.*;
 
 public class Initial_Int {
-    private  static  char uniChar = '\u00a5';// Japanese Yen symbol
 
     /**
      * build grammar from a set of ASTs
@@ -25,22 +20,19 @@ public class Initial_Int {
             Map<String, Vector<String>> gramTemp = new HashMap<>();
             CreateGrammar createGrammar = new CreateGrammar();
             createGrammar.createGrammar(path, gramTemp);
-
             for (Map.Entry<String,Vector<String >> entry : gramTemp.entrySet()){
                 int index = findIndex(entry.getKey(),labelIndex);
-
                 for(int i=2; i<entry.getValue().size(); ++i){
-                    String[]temp = entry.getValue().elementAt(i).split(String.valueOf(uniChar));
+                    String[]temp = entry.getValue().elementAt(i).split(Variables.uniChar);
                     if(!temp[0].equals("leaf-node")){
                         int childIndex = findIndex(temp[0],labelIndex);
-                        String newChild = String.valueOf(childIndex)+uniChar+temp[1];
+                        String newChild = String.valueOf(childIndex)+Variables.uniChar+temp[1];
                         entry.getValue().set(i,newChild);
                     }else{
-                        String newChild = String.valueOf(0)+uniChar+temp[1];
+                        String newChild = String.valueOf(0)+Variables.uniChar+temp[1];
                         entry.getValue().set(i,newChild);
                     }
                 }
-
                 gram.put(index,entry.getValue());
             }
         }catch (Exception e){ System.out.println("Error: reading grammar "+e);}
@@ -80,7 +72,6 @@ public class Initial_Int {
                 }
             }
         }catch (IOException e) {System.out.println("Error: reading listRootLabel "+e);}
-
     }
 
     /**
@@ -108,7 +99,6 @@ public class Initial_Int {
             }
         }
         return index;
-
     }
 
     /**
@@ -147,8 +137,8 @@ public class Initial_Int {
                             //transform string to int
                             ArrayList<Integer> blackChildren_int = new ArrayList<>();
                             for(int i=0; i<blackChildren.size(); ++i) {
-                                blackChildren.set(i, blackChildren.elementAt(i).split(String.valueOf(uniChar))[0]);
-                                int index = Integer.valueOf(blackChildren.elementAt(i).split(String.valueOf(uniChar))[0]);
+                                blackChildren.set(i, blackChildren.elementAt(i).split(Variables.uniChar)[0]);
+                                int index = Integer.valueOf(blackChildren.elementAt(i).split(Variables.uniChar)[0]);
                                 blackChildren_int.add(index);
                             }
                             //System.out.println("grammar labels: "+blackChildren);
@@ -162,7 +152,4 @@ public class Initial_Int {
             }
         }catch (IOException e) {System.out.println("Error: reading white list "+e);}
     }
-
-
-
 }

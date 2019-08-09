@@ -25,7 +25,6 @@
 
 package be.intimals.freqt;
 
-import be.intimals.freqt.input.CreateSingleTree;
 import be.intimals.freqt.util.*;
 import be.intimals.freqt.core.*;
 import be.intimals.freqt.config.*;

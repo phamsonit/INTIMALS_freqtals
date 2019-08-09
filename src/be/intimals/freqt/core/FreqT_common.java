@@ -4,10 +4,9 @@ import be.intimals.freqt.config.Config;
 import be.intimals.freqt.input.ReadFile;
 import be.intimals.freqt.output.AOutputFormatter;
 import be.intimals.freqt.output.XMLOutput;
-import be.intimals.freqt.structure.Location;
-import be.intimals.freqt.structure.NodeFreqT;
-import be.intimals.freqt.structure.Pattern;
-import be.intimals.freqt.structure.Projected;
+import be.intimals.freqt.structure.*;
+import be.intimals.freqt.util.Variables;
+
 import org.w3c.dom.Document;
 import org.w3c.dom.NamedNodeMap;
 import org.w3c.dom.Node;
@@ -18,12 +17,17 @@ import javax.xml.parsers.DocumentBuilderFactory;
 import java.io.BufferedReader;
 import java.io.File;
 import java.io.FileReader;
+import java.io.FileWriter;
 import java.util.*;
 
 /*
     find a common pattern in each cluster
  */
-public class FreqT_common extends FreqT {
+public class FreqT_common {
+
+    private Config config;
+    private Map <String,Vector<String> > grammar;
+    private Map <String,String> xmlCharacters;
 
     private Map<String,String> commonOutputPatterns = null;
     private Vector < String > maximalPattern = null;
@@ -33,13 +37,67 @@ public class FreqT_common extends FreqT {
 
     ////////////////////////////////////////////////////////////////////////////////
 
-    public FreqT_common(Config config,
-                           Map<String,Vector<String>> grammar,
-                           Map<String,String> xmlCharacters) {
-        super(config);
-        this.grammar = grammar;
-        this.xmlCharacters = xmlCharacters;
+    public FreqT_common(Config _config, Map <String,Vector<String> > _grammar, Map <String,String> _xmlCharacters){
+        config = _config;
+        grammar = _grammar;
+        xmlCharacters = _xmlCharacters;
+    }
 
+    /**
+     * calculate the support of a pattern = number of files
+     * @param projected
+     * @return
+     */
+    public int support(Projected projected){
+        //if(weighted) return projected.getProjectLocationSize();
+        int old = 0xffffffff;
+        int sup = 0;
+        for(int i=0; i<projected.getProjectLocationSize(); ++i) {
+            if (Location.getLocationId(projected.getProjectLocation(i)) != old)
+                ++sup;
+            old = Location.getLocationId(projected.getProjectLocation(i));
+        }
+        return sup;
+    }
+
+    /**
+     * calculate the root support of a pattern = number of root occurrences
+     * @param projected
+     * @return
+     */
+    public int rootSupport(Projected projected){
+        int rootSup = 1;
+        for(int i=0; i< projected.getProjectRootLocationSize()-1;++i) {
+            int[] location1 = projected.getProjectRootLocation(i);
+            int[] location2 = projected.getProjectRootLocation(i+1);
+
+            if( (Location.getLocationId(location1) == Location.getLocationId(location2) &&
+                    Location.getLocationPos(location1) != Location.getLocationPos(location2)) ||
+                    Location.getLocationId(location1) != Location.getLocationId(location2)
+                    )
+                ++rootSup;
+        }
+        return rootSup;
+    }
+    /**
+     * prune candidates based on minimal support
+     * @param candidates
+     */
+    public void prune (Map <String, Projected > candidates, int minSup){
+
+        Iterator < Map.Entry<String,Projected> > iter = candidates.entrySet().iterator();
+        while (iter.hasNext()) {
+            Map.Entry<String,Projected> entry = iter.next();
+            int sup = support(entry.getValue());
+            int wsup = rootSupport(entry.getValue());
+            if(sup < minSup){
+                iter.remove();
+            }
+            else {
+                entry.getValue().setProjectedSupport(sup);
+                entry.getValue().setProjectedRootSupport(wsup);
+            }
+        }
     }
 
     /**
@@ -63,7 +121,7 @@ public class FreqT_common extends FreqT {
                     int newdepth = depth - d;
                     for (int l = start; l != -1;
                          l = newTransaction.elementAt(id).elementAt(l).getNodeSibling()) {
-                        String item = prefix + uniChar + newTransaction.elementAt(id).elementAt(l).getNodeLabel();
+                        String item = prefix + Variables.uniChar + newTransaction.elementAt(id).elementAt(l).getNodeLabel();
 
                         Projected tmp;// = new Projected();
                         if(candidate.containsKey(item)) {
@@ -75,26 +133,16 @@ public class FreqT_common extends FreqT {
                             tmp.setProjectLocation(id,l); //store right most positions
                             candidate.put(item, tmp);
                         }
-                        //////////
-
                     }
                     if (d != -1) pos = newTransaction.elementAt(id).elementAt(pos).getNodeParent();
-                    prefix += uniChar+")";
+                    prefix += Variables.uniChar+")";
                 }
             }
 
             prune(candidate,minsup);
 
             if(candidate.isEmpty()){
-                //outputPattern = Pattern.getPatternString1(maximalPattern);
-                //String pattern = maximalPattern.toString(); //Pattern.getPatternString(maximalPattern);
-//                String patString = maximalPattern.elementAt(0);
-//                for(int i=1; i< maximalPattern.size(); ++i)
-//                    patString = patString+"," + maximalPattern.elementAt(i);
-//                commonOutputPatterns.put(patString,patString);
-
                 addCommonPattern(maximalPattern,projected);
-
                 //System.out.println("common pattern "+maximalPattern);
                 found = true;
                 return;
@@ -105,7 +153,7 @@ public class FreqT_common extends FreqT {
                     int oldSize = maximalPattern.size();
                     Map.Entry<String, Projected> entry = iter.next();
                     // add new candidate to current pattern
-                    String[] p = entry.getKey().split(String.valueOf(uniChar));
+                    String[] p = entry.getKey().split(Variables.uniChar);
                     for (int i = 0; i < p.length; ++i) {
                         if (!p[i].isEmpty())
                             maximalPattern.addElement(p[i]);
@@ -119,27 +167,6 @@ public class FreqT_common extends FreqT {
         }
     }
 
-    private void addCommonPattern(Vector<String> pat, Projected projected){
-
-        int support = projected.getProjectedSupport();
-        int wsupport = projected.getProjectedRootSupport(); //=> root location
-        int size = Pattern.getPatternSize(pat);
-
-        //replace "," in the leafs by uniChar
-        String patString = pat.elementAt(0);
-        for (int i = 1; i < pat.size(); ++i)
-            patString = patString + "," + pat.elementAt(i);
-        //patString = patString + uniChar + pat.elementAt(i);
-        String patternSupport =
-                "rootOccurrences" + "," +
-                        String.valueOf(support) + "," +
-                        String.valueOf(wsupport) + "," +
-                        String.valueOf(size) + "\t" +
-                        patString;//pat.toString(); //keeping for XML output
-        commonOutputPatterns.put(pat.toString(), patternSupport);
-        //System.out.println(patString);
-        //System.out.println(Pattern.getPatternString(pat));
-    }
 
     //1. for each cluster find a set of patterns
     //2. create a tree data
@@ -192,6 +219,89 @@ public class FreqT_common extends FreqT {
 
         }catch (Exception e){  }
 
+    }
+
+
+    /**
+     * Return all frequent subtrees of size 1
+     * @return
+     */
+    public Map<String, Projected> buildFP1Set(Vector < Vector<NodeFreqT> > trans) {
+        Map<String, Projected> freq1 = new LinkedHashMap<>();
+        for(int i = 0; i < trans.size(); ++i) {
+            for (int j = 0; j < trans.elementAt(i).size(); ++j) {
+                String node_label = trans.elementAt(i).elementAt(j).getNodeLabel();
+                String lineNr = trans.elementAt(i).elementAt(j).getLineNr();
+                //if node_label in rootLabels and lineNr > lineNr threshold
+                //if(rootLabels.contains(node_label) || rootLabels.isEmpty()){
+                    //System.out.println(lineNr+"  "+lineNrs.elementAt(i));
+                    //if(Integer.valueOf(lineNr) > lineNrs.elementAt(i)){ //using only for Cobol data
+                    //find a list of locations then add it to freq1[node_label].locations
+                    if (node_label != null) {
+                        //System.out.println("Node "+ node_label+" "+lineNr);
+                        //if node_label already exists
+                        if (freq1.containsKey(node_label)) {
+                            freq1.get(node_label).setProjectLocation(i, j);
+                            //freq1.get(node_label).setProjectLineNr(Integer.valueOf(lineNr)); //add to keep the line number
+                            freq1.get(node_label).setProjectRootLocation(i, j);
+                        } else {
+                            Projected projected = new Projected();
+                            projected.setProjectLocation(i, j);
+                            //projected.setProjectLineNr(Integer.valueOf(lineNr)); //add to keep the line number
+                            projected.setProjectRootLocation(i, j);
+                            freq1.put(node_label, projected);
+                        }
+                    }
+                    //}
+                //}
+            }
+        }
+        return freq1;
+    }
+
+    private void addCommonPattern(Vector<String> pat, Projected projected){
+
+        int support = projected.getProjectedSupport();
+        int wsupport = projected.getProjectedRootSupport(); //=> root location
+        int size = Pattern.getPatternSize(pat);
+
+        //replace "," in the leafs by uniChar
+        String patString = pat.elementAt(0);
+        for (int i = 1; i < pat.size(); ++i)
+            patString = patString + "," + pat.elementAt(i);
+        //patString = patString + uniChar + pat.elementAt(i);
+        String patternSupport =
+                "rootOccurrences" + "," +
+                        String.valueOf(support) + "," +
+                        String.valueOf(wsupport) + "," +
+                        String.valueOf(size) + "\t" +
+                        patString;//pat.toString(); //keeping for XML output
+        commonOutputPatterns.put(pat.toString(), patternSupport);
+        //System.out.println(patString);
+        //System.out.println(Pattern.getPatternString(pat));
+    }
+
+    //filter and print maximal patterns
+    public void outputMFP(Map<String,String> maximalPatterns,String outFile){
+        try{
+
+            FileWriter outputCommonPatterns = new FileWriter(outFile+".txt");
+            //output maximal patterns
+            AOutputFormatter outputMaximalPatterns =  new XMLOutput(outFile,config, grammar, xmlCharacters);
+            Iterator < Map.Entry<String,String> > iter1 = maximalPatterns.entrySet().iterator();
+            while(iter1.hasNext()){
+                Map.Entry<String,String> entry = iter1.next();
+                outputMaximalPatterns.printPattern(entry.getValue());
+                //System.out.println(entry.getKey());
+                outputCommonPatterns.write(entry.getKey()+"\n");
+            }
+            outputMaximalPatterns.close();
+
+            outputCommonPatterns.flush();
+            outputCommonPatterns.close();
+
+        }
+        catch(Exception e){System.out.println("error print maximal patterns");}
     }
 
     /**

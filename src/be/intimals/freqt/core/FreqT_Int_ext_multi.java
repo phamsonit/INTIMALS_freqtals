@@ -215,6 +215,7 @@ public class FreqT_Int_ext_multi extends FreqT_Int {
                 //for each group of root occurrences find patterns without max size constraints
                 //int groupCount = 1;
 
+                //TODO: add maximal pattern in the parallel mining process
                 expandGroupParallel(_rootIDs);
 
                 //update running time

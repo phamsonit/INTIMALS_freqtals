@@ -1,6 +1,7 @@
 package be.intimals.freqt.input;
 
 import be.intimals.freqt.structure.NodeFreqT;
+import be.intimals.freqt.util.Variables;
 import be.intimals.freqt.util.XmlFormatter;
 import org.w3c.dom.Document;
 import org.w3c.dom.NamedNodeMap;
@@ -28,13 +29,11 @@ public class ReadXML_Int {
     private Vector<Integer> sr;
     private Vector<Integer> sibling;
 
-
     private List<String> labels = new LinkedList<>();
     Vector<Integer> lineNrs = new Vector<>();
     int countSection;
     private boolean abstractLeafs = false;
 
-    public static  char uniChar = '\u00a5';// Japanese Yen symbol
     private String sep = "/";//File.separator;
 
     //////////////////////////////
@@ -134,10 +133,10 @@ public class ReadXML_Int {
                         if(abstractLeafs) //abstract leafs of Cobol: change all leafs to **
                             trans.elementAt(id).setNodeLabel("**");
                         else
-                            trans.elementAt(id).setNodeLabel("*" + node.getTextContent().replace(",",String.valueOf(uniChar)).trim());
+                            trans.elementAt(id).setNodeLabel("*" + node.getTextContent().replace(",",Variables.uniChar).trim());
 
                         //update labelIndex for leaf labels
-                        String leafLabel = "*" + node.getTextContent().replace(",",String.valueOf(uniChar)).trim();
+                        String leafLabel = "*" + node.getTextContent().replace(",",Variables.uniChar).trim();
                         if(!labels.contains(leafLabel)) {
                             trans.elementAt(id).setNode_label_int(labelIndex.size()*(-1));
                             labelIndex.put(labelIndex.size()*(-1), leafLabel);
@@ -234,6 +233,7 @@ public class ReadXML_Int {
         Vector < Vector<NodeFreqT> > database = new Vector < Vector<NodeFreqT> >();
         abstractLeafs = _abstractLeafs;
         Vector<File> files = new Vector<File>();
+        //TODO: problem when files located in sub-directory
         populateFileList(rootDirectory,files);
         System.out.print("Reading " + files.size() +" files ");
         XmlFormatter formatter = new XmlFormatter();

@@ -11,8 +11,6 @@ import java.util.*;
 
 public class ReadFile_Int {
 
-
-
     //create transaction from list of patterns
     public void createTransactionFromMap(Vector<ArrayList<Integer>> inPatterns,
                                          Vector<Vector<NodeFreqT>> trans){

@@ -6,18 +6,17 @@ package be.intimals.freqt.grammar;
 import be.intimals.freqt.input.*;
 
 import java.util.*;
-import java.io.BufferedReader;
-import java.io.FileReader;
 
 import java.io.File;
 import javax.xml.parsers.DocumentBuilderFactory;
 import javax.xml.parsers.DocumentBuilder;
+
+import be.intimals.freqt.util.Variables;
 import org.w3c.dom.Document;
 import org.w3c.dom.NodeList;
 import org.w3c.dom.Node;
-import org.w3c.dom.NamedNodeMap;
 
-public class CreateGrammar extends ReadXML {
+public class CreateGrammar extends ReadXML_Int {
 
 
     private void addNewNode(Node node , Map <String, Vector<String> > grammar){
@@ -32,7 +31,7 @@ public class CreateGrammar extends ReadXML {
                 tmp.addElement("1");
                 //keep leaf node in grammar if necessary
                 //tmp.addElement(node.getTextContent().trim() + uniChar + "false");
-                tmp.addElement("leaf-node" + uniChar + "false");
+                tmp.addElement("leaf-node" + Variables.uniChar + "false");
             }
         } else { //add internal node
             //1 - find children
@@ -69,7 +68,7 @@ public class CreateGrammar extends ReadXML {
                 Iterator<Map.Entry<String, String>> iter = childrenTemp.entrySet().iterator();
                 while (iter.hasNext()) {
                     Map.Entry<String, String> entry = iter.next();
-                    tmp.addElement(entry.getKey() + uniChar + "*");
+                    tmp.addElement(entry.getKey() + Variables.uniChar + "*");
                     //tmp.addElement("*" + uniChar + "*");
                 }
             }else{
@@ -79,7 +78,7 @@ public class CreateGrammar extends ReadXML {
                 Iterator<Map.Entry<String, String>> iter = childrenTemp.entrySet().iterator();
                 while (iter.hasNext()) {
                     Map.Entry<String, String> entry = iter.next();
-                    tmp.addElement(entry.getKey() + uniChar + entry.getValue());
+                    tmp.addElement(entry.getKey() + Variables.uniChar + entry.getValue());
                 }
             }
         }
@@ -92,7 +91,7 @@ public class CreateGrammar extends ReadXML {
         tmp.addElement("ordered");
         //tmp.addElement("unordered");
         tmp.addElement("1");
-        tmp.addElement("leaf-node"+uniChar+"false");
+        tmp.addElement("leaf-node"+Variables.uniChar+"false");
         /*
         //collect all leaf nodes if necessary
         oldChildren.put(node.getTextContent().trim(), "false");
@@ -146,7 +145,7 @@ public class CreateGrammar extends ReadXML {
         //find children of the current node in grammar
         Map<String, String> oldChildren = new LinkedHashMap<>();
         for (int i = 2; i < oldGrammar.size(); ++i) {
-            String[] temp = oldGrammar.elementAt(i).split(String.valueOf(uniChar));
+            String[] temp = oldGrammar.elementAt(i).split(Variables.uniChar);
             oldChildren.put(temp[0], temp[1]);
         }
 
@@ -198,7 +197,7 @@ public class CreateGrammar extends ReadXML {
             Iterator<Map.Entry<String, String>> iter1 = oldChildren.entrySet().iterator();
             while (iter1.hasNext()) {
                 Map.Entry<String, String> entry = iter1.next();
-                tmp.addElement(entry.getKey() + uniChar + "false");
+                tmp.addElement(entry.getKey() + Variables.uniChar + "false");
             }
             grammar.replace(node.getNodeName(), grammar.get(node.getNodeName()), tmp);
         }else{
@@ -226,13 +225,13 @@ public class CreateGrammar extends ReadXML {
                     Iterator<Map.Entry<String, String>> iter2 = newChildren.entrySet().iterator();
                     while (iter2.hasNext()) {
                         Map.Entry<String, String> entry = iter2.next();
-                        tmp.addElement(entry.getKey() + uniChar + "false");
+                        tmp.addElement(entry.getKey() + Variables.uniChar + "false");
                     }
                 }else{
                     Iterator<Map.Entry<String, String>> iter2 = newChildren.entrySet().iterator();
                     while (iter2.hasNext()) {
                         Map.Entry<String, String> entry = iter2.next();
-                        tmp.addElement(entry.getKey() + uniChar + "true");
+                        tmp.addElement(entry.getKey() + Variables.uniChar + "true");
                     }
                 }
                 grammar.replace(node.getNodeName(), grammar.get(node.getNodeName()), tmp);
@@ -249,7 +248,7 @@ public class CreateGrammar extends ReadXML {
                     Iterator<Map.Entry<String, String>> iter1 = oldChildren.entrySet().iterator();
                     while (iter1.hasNext()) {
                         Map.Entry<String, String> entry = iter1.next();
-                        tmp.addElement(entry.getKey() + uniChar + "false");
+                        tmp.addElement(entry.getKey() + Variables.uniChar + "false");
                     }
                     grammar.replace(node.getNodeName(), grammar.get(node.getNodeName()), tmp);
                 }else { // update grammar [unordered, N..M, list of children]
@@ -267,9 +266,9 @@ public class CreateGrammar extends ReadXML {
                         while (iterTemp1.hasNext()) {
                             Map.Entry<String, String> entry1 = iterTemp1.next();
                             if (inter.containsKey(entry1.getKey()))
-                                tmp.addElement(entry1.getKey() + uniChar + "true");
+                                tmp.addElement(entry1.getKey() + Variables.uniChar + "true");
                             else
-                                tmp.addElement(entry1.getKey() + uniChar + "false");
+                                tmp.addElement(entry1.getKey() + Variables.uniChar + "false");
                         }
                     } else {
                         //update degree
@@ -278,7 +277,7 @@ public class CreateGrammar extends ReadXML {
                         iterTemp1 = union.entrySet().iterator();
                         while (iterTemp1.hasNext()) {
                             Map.Entry<String, String> entry1 = iterTemp1.next();
-                            tmp.addElement(entry1.getKey() + uniChar + "true");
+                            tmp.addElement(entry1.getKey() + Variables.uniChar + "true");
                         }
                     }
                     grammar.replace(node.getNodeName(), grammar.get(node.getNodeName()), tmp);

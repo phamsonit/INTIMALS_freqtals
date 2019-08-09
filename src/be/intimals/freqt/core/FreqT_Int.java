@@ -6,6 +6,7 @@ import be.intimals.freqt.output.AOutputFormatter;
 import be.intimals.freqt.output.XMLOutput;
 import be.intimals.freqt.structure.*;
 import be.intimals.freqt.util.Initial_Int;
+import be.intimals.freqt.util.Variables;
 
 import java.io.File;
 import java.io.FileWriter;
@@ -18,14 +19,10 @@ import java.util.concurrent.ConcurrentHashMap;
     extended FREQT: replace string labels by int labels
  */
 public class FreqT_Int {
-    static char uniChar = '\u00a5';// Japanese Yen symbol
     protected Config config;
     protected Vector <Vector<NodeFreqT> >  transaction = new Vector<>();
     protected Map <String,Vector<String> > grammar    = new LinkedHashMap<>();
-    //protected Map <String,Vector<String> > blackLabels = new LinkedHashMap<>();
-    //protected Map <String,Vector<String> > whiteLabels = new LinkedHashMap<>();
     protected Map <String,String>          xmlCharacters  = new LinkedHashMap<>();
-
 
     //new variables for Integer
     protected Map<Integer,String> labelIndex = new HashMap<>();
@@ -38,13 +35,11 @@ public class FreqT_Int {
     //store root labels
     private Set <String>    rootLabels  = new HashSet<>();
     //store root occurrences of patterns
-    //private Map<String,String>  rootIDs = new HashMap<>();
     private Map<String,ArrayList<Integer> >  rootIDs = new HashMap<>();
     //store file ids of patterns
     private Map<String,String>  fileIDs = new HashMap<>();
     /////
     //int nbInputFiles;
-    private int nbFP;
 
     Vector<Integer> lineNrs = new Vector<>();
 
@@ -104,7 +99,6 @@ public class FreqT_Int {
     private boolean compareTwoRootOccurrences(String str1, String str2){
         Collection<String> l1 = Arrays.asList(str1.split(";"));
         Collection<String> l2 = Arrays.asList(str2.split(";"));
-
         if(l2.containsAll(l1))
             return true;
         else
@@ -127,7 +121,6 @@ public class FreqT_Int {
                             Location.getLocationPos(projected.getProjectRootLocation(i)) + ";";
                 }
                 //keep only the root occurrences and root label
-
                 ArrayList<Integer> rootLabel_int = new ArrayList<>(pat.subList(0,1));
                 _rootIDs.put(rootOccurrences, rootLabel_int);
             }
@@ -178,7 +171,6 @@ public class FreqT_Int {
         }
     }
 
-
     //check output patterns by using minLeaf and minNode
     private boolean checkOutput(ArrayList<Integer> pat){
         if(Pattern_Int.countLeafNode(pat) >= config.getMinLeaf() &&
@@ -204,9 +196,7 @@ public class FreqT_Int {
             boolean found = false;
             //keep left parts of pattern which have real leaf
             ArrayList<Integer> patTemp = Pattern_Int.getPatternString1(pat);
-
             if(_MFP.containsKey(patTemp)) return;
-
             //pair-wise compare the input pattern to every pattern in _MFP
             Iterator < Map.Entry<ArrayList<Integer>,String> > p = _MFP.entrySet().iterator();
             while(p.hasNext() && !found){
@@ -320,11 +310,8 @@ public class FreqT_Int {
                     MFP.put(fpEntry.getKey(), fpEntry.getValue());
                 }
             }
-
         });
-
         return MFP;
-
     }
 
 
@@ -379,7 +366,6 @@ public class FreqT_Int {
                     )
                 ++rootSup;
         }
-
         return rootSup;
     }
     /**
@@ -428,7 +414,6 @@ public class FreqT_Int {
         try{
             Iterator < Map.Entry<ArrayList<Integer>,Projected> > can = candidate.entrySet().iterator();
             while (can.hasNext()) {
-
                 Map.Entry<ArrayList<Integer>, Projected> entry = can.next();
                 int candidateLabel_int = entry.getKey().get(entry.getKey().size()-1);
                 //check if it is in the blackListLabel
@@ -439,11 +424,9 @@ public class FreqT_Int {
                     }
                 }
             }
-
         }catch (Exception e){
             System.out.println("PrungBlackList error "+e);
         }
-
     }
 
     //return true if pattern misses obligatory child
@@ -453,7 +436,6 @@ public class FreqT_Int {
                                         Map <Integer,ArrayList<Integer> > _blackLabelsInt){
 
         boolean missMandatoryChild = false;
-
         try{
             //1. find all siblings of candidate
             //System.out.println("pattern: "+pat);
@@ -482,7 +464,7 @@ public class FreqT_Int {
                 int i=0;
                 int j=2;
                 while(i<childrenP.size() && j<childrenG.size() && !missMandatoryChild) {
-                    String[] childGrammarTemp = childrenG.elementAt(j).split(String.valueOf(uniChar));
+                    String[] childGrammarTemp = childrenG.elementAt(j).split(Variables.uniChar);
                     int label_int = Integer.valueOf(childGrammarTemp[0]);
                     if(pat.get(childrenP.get(i)).equals(label_int)) {
                         ++i;

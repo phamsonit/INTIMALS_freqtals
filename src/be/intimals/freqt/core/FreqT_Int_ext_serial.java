@@ -4,9 +4,7 @@ import be.intimals.freqt.config.Config;
 import be.intimals.freqt.structure.*;
 
 import java.io.FileWriter;
-import java.lang.reflect.Array;
 import java.util.*;
-import java.util.concurrent.ConcurrentHashMap;
 
 /*
     extended FREQT + without using max size constraints
@@ -14,11 +12,6 @@ import java.util.concurrent.ConcurrentHashMap;
 
 public class FreqT_Int_ext_serial extends FreqT_Int {
 
-    //private AOutputFormatter outputMaximalPatterns;
-    //private Vector <String> _largestPattern;
-    //private Vector <Vector<NodeFreqT> >  transaction = new Vector<>();
-    //private int largestMinSup; //How to use for parallel computing
-    //private Map<String,String> outputMaximalPatternsMap = new HashMap<>();
     private Map<ArrayList<Integer>,String> MFP = new HashMap<>();
 
     private long timeout;
@@ -27,8 +20,6 @@ public class FreqT_Int_ext_serial extends FreqT_Int {
     private long timePerGroup;
     private long timeStartGroup;
     private boolean finished;
-
-
 
     //store root occurrences for the second round
     private Map<String,ArrayList<Integer>> interruptedRootID = new LinkedHashMap<>();
@@ -68,7 +59,6 @@ public class FreqT_Int_ext_serial extends FreqT_Int {
                 finished = false;
                 return;
             }
-
             //check timeout for the current group
             long timeGroupSpent = System.currentTimeMillis( ) - timeStartGroup;
             if( timeGroupSpent  > timePerGroup) {

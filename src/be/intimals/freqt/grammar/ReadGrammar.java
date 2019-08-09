@@ -15,6 +15,8 @@ import java.util.*;
 import java.io.File;
 import javax.xml.parsers.DocumentBuilderFactory;
 import javax.xml.parsers.DocumentBuilder;
+
+import be.intimals.freqt.util.Variables;
 import org.w3c.dom.Document;
 import org.w3c.dom.NodeList;
 import org.w3c.dom.Node;
@@ -22,7 +24,7 @@ import org.w3c.dom.NamedNodeMap;
 
 
 
-public class ReadGrammar extends ReadXML {
+public class ReadGrammar extends ReadXML_Int {
 
 
     private static String readAttribute1(Node child, Map < String, Vector<String> > grammar){
@@ -54,7 +56,7 @@ public class ReadGrammar extends ReadXML {
                     if (grammar.containsKey(child.getNodeName()))
                         tmp.addAll(grammar.get(child.getNodeName()).subList(2,
                                 grammar.get(child.getNodeName()).size() - 1));
-                    tmp.add(n.getNodeValue() + uniChar + "false");
+                    tmp.add(n.getNodeValue() + Variables.uniChar + "false");
                     grammar.put(child.getNodeName(), new Vector<>(tmp));
 
                     break;
@@ -66,7 +68,7 @@ public class ReadGrammar extends ReadXML {
                     if (grammar.containsKey(child.getNodeName()))
                         tmp.addAll(grammar.get(child.getNodeName()).subList(2,
                                 grammar.get(child.getNodeName()).size() - 1));
-                    tmp.add(n.getNodeValue() + uniChar + "false");
+                    tmp.add(n.getNodeValue() + Variables.uniChar + "false");
                     grammar.put(child.getNodeName(), new Vector<>(tmp));
                     break;
 
@@ -76,14 +78,14 @@ public class ReadGrammar extends ReadXML {
                     if (grammar.containsKey(child.getNodeName()))
                         tmp.addAll(grammar.get(child.getNodeName()).subList(2,
                                 grammar.get(child.getNodeName()).size() - 1));
-                    tmp.add(n.getNodeValue() + uniChar + "false");
+                    tmp.add(n.getNodeValue() + Variables.uniChar + "false");
                     grammar.put(child.getNodeName(), new Vector<>(tmp));
                     break;
 
                 case "simplevalue":
                     tmp.add("unordered");
                     tmp.add("1");
-                    tmp.add(n.getNodeValue() + uniChar + "false");
+                    tmp.add(n.getNodeValue() + Variables.uniChar + "false");
                     grammar.put(child.getNodeName(), new Vector<>(tmp));
                     break;
             }
@@ -110,7 +112,7 @@ public class ReadGrammar extends ReadXML {
                         tmp.addAll(abstractNodes.get(n.getNodeValue()));
                         grammar.put(child.getNodeName(), new Vector<>(tmp));
                     } else {
-                        tmp.add(n.getNodeValue()+uniChar+"false");
+                        tmp.add(n.getNodeValue()+Variables.uniChar+"false");
                         grammar.put(child.getNodeName(), new Vector<>(tmp));
                     }
                     break;
@@ -122,7 +124,7 @@ public class ReadGrammar extends ReadXML {
                         tmp.addAll(abstractNodes.get(n.getNodeValue()));
                         grammar.put(child.getNodeName(), new Vector<>(tmp));
                     } else {
-                        tmp.add(n.getNodeValue() + uniChar + "false");
+                        tmp.add(n.getNodeValue() + Variables.uniChar + "false");
                         grammar.put(child.getNodeName(), new Vector<>(tmp));
                     }
                     break;
@@ -134,7 +136,7 @@ public class ReadGrammar extends ReadXML {
                         tmp.addAll(abstractNodes.get(n.getNodeValue()));
                         grammar.put(child.getNodeName(), new Vector<>(tmp));
                     } else {
-                        tmp.add(n.getNodeValue() + uniChar + "false");
+                        tmp.add(n.getNodeValue() + Variables.uniChar + "false");
                         grammar.put(child.getNodeName(), new Vector<>(tmp));
                     }
 
@@ -172,7 +174,7 @@ public class ReadGrammar extends ReadXML {
                    n.getNodeName().equals("ordered-nodelist") ||
                    n.getNodeName().equals("unordered-nodelist")
                    )
-                   newChildren.add(n.getNodeValue()+uniChar+"false");
+                   newChildren.add(n.getNodeValue()+Variables.uniChar+"false");
         }
         oldChildren.addAll(newChildren);
         //System.out.println("all child " + oldChildren);
@@ -209,7 +211,7 @@ public class ReadGrammar extends ReadXML {
         Integer index = 0;
         Set<String> keySet = grammar.keySet();
         for (String s : keySet) {
-            String[] ss = s.split(String.valueOf(uniChar));
+            String[] ss = s.split(Variables.uniChar);
             if (ss[0].equals(node)) {
                 if (ss.length == 2)
                     index = Integer.valueOf(ss[1]) + 1;
@@ -246,11 +248,11 @@ public class ReadGrammar extends ReadXML {
                             for(int k=0; k<childrenList.getLength(); ++k){//for each child of Abstract
                                 if(childrenList.item(k).getNodeType() == Node.ELEMENT_NODE){
                                     if(!abstractNodes.containsKey(childrenNodes.item(i).getNodeName())) {
-                                        tmp1.add(childrenList.item(k).getNodeName()+uniChar+"false");
+                                        tmp1.add(childrenList.item(k).getNodeName()+Variables.uniChar+"false");
                                         abstractNodes.put(childrenNodes.item(i).getNodeName(), tmp1);
                                     }else {
                                         abstractNodes.get(childrenNodes.item(i).getNodeName()).add(
-                                                childrenList.item(k).getNodeName()+uniChar+"false");
+                                                childrenList.item(k).getNodeName()+Variables.uniChar+"false");
                                     }
                                 }
                             }
@@ -294,7 +296,7 @@ public class ReadGrammar extends ReadXML {
                         for(int k=0; k<childrenList.getLength(); ++k){//for each child of Synthetic node
                             if(childrenList.item(k).getNodeType() == Node.ELEMENT_NODE) {
                                 String mandatory = readMandatoryAttribute(childrenList.item(k));
-                                syntheticChildren.add(childrenList.item(k).getNodeName()+uniChar+mandatory);
+                                syntheticChildren.add(childrenList.item(k).getNodeName()+Variables.uniChar+mandatory);
                                 readAttribute(childrenList.item(k),abstractNodes,grammar);
                             }
                         }
@@ -302,7 +304,7 @@ public class ReadGrammar extends ReadXML {
                         if(syntheticNodes.containsKey(childrenNodes.item(i).getNodeName())) {
                             //find the index of rule, //create new synthetic rule
                             int index = findIndex(childrenNodes.item(i).getNodeName(),syntheticNodes);
-                            syntheticNodes.put(childrenNodes.item(i).getNodeName()+uniChar+String.valueOf(index),
+                            syntheticNodes.put(childrenNodes.item(i).getNodeName()+Variables.uniChar+String.valueOf(index),
                                                 new Vector<>(syntheticChildren));
                         }else
                             syntheticNodes.put(childrenNodes.item(i).getNodeName(),new Vector<>(syntheticChildren));
@@ -341,7 +343,7 @@ public class ReadGrammar extends ReadXML {
                     childrenList.item(i).getNodeType() == Node.ELEMENT_NODE) {
                 String mandatory = readMandatoryAttribute(childrenList.item(i));
                 String currentChildLabel = childrenList.item(i).getNodeName();
-                childrenListTmp.add(currentChildLabel + uniChar + String.valueOf(mandatory));
+                childrenListTmp.add(currentChildLabel + Variables.uniChar + String.valueOf(mandatory));
                 readAttribute(childrenList.item(i),abstractNodes,grammar);
             }
         }
@@ -353,7 +355,7 @@ public class ReadGrammar extends ReadXML {
             //if this node exists in grammar then increase index
             if (grammar.containsKey(node.getNodeName())) {
                 int index = findIndex(node.getNodeName(),grammar);
-                grammar.put(node.getNodeName() + uniChar + String.valueOf(index), childrenListTmpVector);
+                grammar.put(node.getNodeName() + Variables.uniChar + String.valueOf(index), childrenListTmpVector);
             } else
                 grammar.put(node.getNodeName(), childrenListTmpVector);
         }
@@ -367,7 +369,7 @@ public class ReadGrammar extends ReadXML {
         Map<String,Vector<String> > rules = new LinkedHashMap<>();
         Set<String> keyList = maps.keySet();
         for(String s:keyList){
-            String[] ss = s.split(String.valueOf(uniChar));
+            String[] ss = s.split(Variables.uniChar);
             if(ss[0].equals(label))
                 rules.put(s,maps.get(s));
         }
@@ -438,7 +440,7 @@ public class ReadGrammar extends ReadXML {
                 }
                 else{//normal child
                     String mandatory = readMandatoryAttribute(childrenNodes.item(i));
-                    normalChildren.add(childrenNodes.item(i).getNodeName()+uniChar+mandatory);
+                    normalChildren.add(childrenNodes.item(i).getNodeName()+Variables.uniChar+mandatory);
                 }
             }
         }
@@ -473,7 +475,7 @@ public class ReadGrammar extends ReadXML {
                         grammar.put(node.getNodeName(),allChildren);
                     }
                     else {
-                        grammar.put(node.getNodeName()+uniChar+String.valueOf(index), allChildren);
+                        grammar.put(node.getNodeName()+Variables.uniChar+String.valueOf(index), allChildren);
                     }
                     index++;
                 }
@@ -599,7 +601,7 @@ public class ReadGrammar extends ReadXML {
                                 //find current children label
                                 currentChildList = abstractNodes.get(abstractChildLabel);
                                 for(int k=0; k< currentChildList.size();++k){
-                                    childrenListTmp.add(currentChildList.elementAt(k)+uniChar+"false");
+                                    childrenListTmp.add(currentChildList.elementAt(k)+Variables.uniChar+"false");
                                 }
 
 
@@ -643,7 +645,7 @@ public class ReadGrammar extends ReadXML {
                                                 if (grammar.containsKey(childrenList.item(i).getNodeName()))
                                                     tmp.addAll(grammar.get(childrenList.item(i).getNodeName()).subList(2,
                                                             grammar.get(childrenList.item(i).getNodeName()).size()-1));
-                                                tmp.add(n.getNodeValue()+ uniChar + "false");
+                                                tmp.add(n.getNodeValue()+ Variables.uniChar + "false");
                                                 grammar.put(childrenList.item(i).getNodeName(), new Vector<>(tmp));
                                             }
                                             break;
@@ -660,7 +662,7 @@ public class ReadGrammar extends ReadXML {
                                                 if (grammar.containsKey(childrenList.item(i).getNodeName()))
                                                     tmp.addAll(grammar.get(childrenList.item(i).getNodeName()).subList(2,
                                                             grammar.get(childrenList.item(i).getNodeName()).size()-1));
-                                                tmp.add(n.getNodeValue()+ uniChar + "false");
+                                                tmp.add(n.getNodeValue()+ Variables.uniChar + "false");
                                                 grammar.put(childrenList.item(i).getNodeName(), new Vector<>(tmp));
                                             }
 
@@ -677,7 +679,7 @@ public class ReadGrammar extends ReadXML {
                                                 if (grammar.containsKey(childrenList.item(i).getNodeName()))
                                                     tmp.addAll(grammar.get(childrenList.item(i).getNodeName()).subList(2,
                                                             grammar.get(childrenList.item(i).getNodeName()).size()-1));
-                                                tmp.add(n.getNodeValue()+ uniChar + "false");
+                                                tmp.add(n.getNodeValue()+ Variables.uniChar + "false");
                                                 grammar.put(childrenList.item(i).getNodeName(), new Vector<>(tmp));
                                             }
 
@@ -685,7 +687,7 @@ public class ReadGrammar extends ReadXML {
                                         case "simplevalue":
                                             tmp.add("unordered");
                                             tmp.add("1");
-                                            tmp.add(n.getNodeValue() + uniChar + "false");
+                                            tmp.add(n.getNodeValue() + Variables.uniChar + "false");
                                             grammar.put(childrenList.item(i).getNodeName(), new Vector<>(tmp));
                                             break;
                                     }
@@ -693,7 +695,7 @@ public class ReadGrammar extends ReadXML {
                                 if (grammar.containsKey(childrenNodes.item(t).getNodeName())) {
                                     childrenListTmp.addAll(grammar.get(childrenNodes.item(t).getNodeName()));
                                 }
-                                childrenListTmp.add(currentChildLabel + uniChar + String.valueOf(mandatory));
+                                childrenListTmp.add(currentChildLabel + Variables.uniChar + String.valueOf(mandatory));
                             }
                         }
                     }

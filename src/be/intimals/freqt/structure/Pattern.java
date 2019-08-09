@@ -1,12 +1,13 @@
 package be.intimals.freqt.structure;
 
+import be.intimals.freqt.util.Variables;
+
 import java.util.*;
 import java.util.concurrent.ConcurrentSkipListSet;
 import java.util.Set;
 
 
 public class Pattern {
-    private  static  char uniChar = '\u00a5';// Japanese Yen symbol
 
     //subtree representation
     //input subtree
@@ -226,13 +227,13 @@ public class Pattern {
      * @return
      */
     public static String getPotentialCandidateLabel(String candidate){
-        String[] p = candidate.split(String.valueOf(uniChar));
+        String[] p = candidate.split(Variables.uniChar);
         return p[p.length-1];
     }
 
     public static void addCandidate(Vector<String> pat, String candidate){
         //add a candidate to the current pattern
-        String[] p = candidate.split(String.valueOf(uniChar));
+        String[] p = candidate.split(Variables.uniChar);
         for (int i = 0; i < p.length; ++i) {
             if (!p[i].isEmpty())
                 pat.addElement(p[i]);
@@ -250,7 +251,7 @@ public class Pattern {
         int nodeLevel = 0;
         int candidateSize = 0;
         try {
-            String[] p = candidate.split(String.valueOf(uniChar));
+            String[] p = candidate.split(Variables.uniChar);
             for (int i = 0; i < p.length; ++i) {
                 if (p[i].equals(")"))
                     ++nodeLevel;
@@ -337,7 +338,7 @@ public class Pattern {
     private String findTheFirstMandatoryChild(Vector<String> listOfChildrenGrammar){
         String firstMandatoryChildGrammar = "";
         for (int i = 0; i < listOfChildrenGrammar.size(); ++i) {
-            String[] tmpChild = listOfChildrenGrammar.elementAt(i).split(String.valueOf(uniChar));
+            String[] tmpChild = listOfChildrenGrammar.elementAt(i).split(Variables.uniChar);
             if (tmpChild[1].equals("true")) {
                 firstMandatoryChildGrammar = tmpChild[0];
                 break;
@@ -356,7 +357,7 @@ public class Pattern {
      */
     public static boolean isRepeatedLabel(Vector<String> pat, String candidate, int n){
 
-        String[] Temp = candidate.split( String.valueOf(uniChar) );
+        String[] Temp = candidate.split(Variables.uniChar);
         String label = Temp[Temp.length-1];
         int parentPos = findParentPosition(pat,candidate);
         Vector<String> children = findChildrenLabels(pat,parentPos);
@@ -429,7 +430,7 @@ public class Pattern {
         int j=0;
         boolean missMandatoryChild = false;
         while(i<childrenInPattern.size() && j<childrenInGrammar.size()) {
-            String[] tmpChild = childrenInGrammar.elementAt(j).split(String.valueOf(uniChar));
+            String[] tmpChild = childrenInGrammar.elementAt(j).split(Variables.uniChar);
             if(childrenInPattern.elementAt(i).equals(tmpChild[0])) {
                 ++i;
                 ++j;
@@ -459,7 +460,7 @@ public class Pattern {
         //add current candidate to pattern
         Set<String> childrenTemp = new ConcurrentSkipListSet<>(); //LinkedHashSet<>();
 
-        String[] candidateTemp = candidate.split(String.valueOf(uniChar));
+        String[] candidateTemp = candidate.split(Variables.uniChar);
         Vector<String> patternTemp = new Vector<>(pat);
         for (int i = 0; i < candidateTemp.length; ++i) {
             if (!candidateTemp[i].isEmpty())
@@ -467,7 +468,7 @@ public class Pattern {
         }
         //find parent's position of potentialCandidate in patternTemp
         int parentPos = findParentPosition(patternTemp, candidate);
-        String parentLabel = patternTemp.elementAt(parentPos).split(String.valueOf(uniChar))[0];
+        String parentLabel = patternTemp.elementAt(parentPos).split(Variables.uniChar)[0];
         //find children of the parentLabel
         if(ListNode.containsKey(parentLabel)){
             childrenTemp.addAll(ListNode.get(parentLabel));
