@@ -173,7 +173,6 @@ public class FreqT_common {
     //3. find the common pattern
     //4. write cluster-common pattern to file
     public void run(String inPatterns, String inClusters, String outCommonFile){
-        try{
             commonOutputPatterns = new LinkedHashMap<>();
             List<List<Integer>> clusters = readClusters(inClusters);
             List<String> patterns = readPatterns(inPatterns);
@@ -216,9 +215,6 @@ public class FreqT_common {
             }
             //output common pattern in each cluster
             outputMFP(commonOutputPatterns,outCommonFile);
-
-        }catch (Exception e){  }
-
     }
 
 
@@ -318,20 +314,26 @@ public class FreqT_common {
     private List<String> readPatterns(String inPatterns){
         List<String> patterns = new LinkedList<>();
         try{
-            BufferedReader br = new BufferedReader(new FileReader(inPatterns));
+            FileReader fr = new FileReader(inPatterns);
+            BufferedReader br = new BufferedReader(fr);
             String line;
             while ((line = br.readLine()) != null) {
                 if( ! line.isEmpty() )
                     patterns.add(line);
             }
-        }catch (Exception e){System.out.println(e);}
+            br.close();
+            fr.close();
+        }catch (Exception e){
+            e.printStackTrace();
+            System.exit(-1);
+        }
         return  patterns;
     }
 
     private List<List<Integer>> readClusters(String inClusters){
         List<List<Integer> > temp = new LinkedList<>();
 
-        try{
+       try{
             File fXmlFile = new File(inClusters);
             DocumentBuilderFactory dbFactory = DocumentBuilderFactory.newInstance();
             DocumentBuilder dBuilder = dbFactory.newDocumentBuilder();
@@ -354,8 +356,10 @@ public class FreqT_common {
                     temp.add(t);
                 }
             }
-
-        }catch (Exception e){System.out.println("file cluster not found "+e); }
+        }catch (Exception e){
+            e.printStackTrace();
+            System.exit(-1);
+        }
 
         return temp;
     }
