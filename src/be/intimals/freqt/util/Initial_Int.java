@@ -13,17 +13,17 @@ public class Initial_Int {
     /**
      * build grammar from a set of ASTs
      */
-    public static void initGrammar_Int(String path, Map<Integer, Vector<String>> gram,
+    public static void initGrammar_Int(String path, Map<Integer, ArrayList<String>> gram,
                                        Map<Integer, String> labelIndex ) throws Exception {
         try{
             //System.out.println("generating grammar ... ");
-            Map<String, Vector<String>> gramTemp = new HashMap<>();
+            Map<String, ArrayList<String>> gramTemp = new HashMap<>();
             CreateGrammar createGrammar = new CreateGrammar();
             createGrammar.createGrammar(path, gramTemp);
-            for (Map.Entry<String,Vector<String >> entry : gramTemp.entrySet()){
+            for (Map.Entry<String,ArrayList<String >> entry : gramTemp.entrySet()){
                 int index = findIndex(entry.getKey(),labelIndex);
                 for(int i=2; i<entry.getValue().size(); ++i){
-                    String[]temp = entry.getValue().elementAt(i).split(Variables.uniChar);
+                    String[]temp = entry.getValue().get(i).split(Variables.uniChar);
                     if(!temp[0].equals("leaf-node")){
                         int childIndex = findIndex(temp[0],labelIndex);
                         String newChild = String.valueOf(childIndex)+Variables.uniChar+temp[1];
@@ -43,7 +43,7 @@ public class Initial_Int {
     /**
      * Load the grammar from a given file or build it from a set of ASTs
      */
-    public static void initGrammar(String path, Map<String, Vector<String>> gram, boolean _buildGrammar) throws Exception {
+    public static void initGrammar(String path, Map<String, ArrayList<String>> gram, boolean _buildGrammar) throws Exception {
         //read grammar from grammarFile
         try{
             //System.out.println("generating grammar ... ");
@@ -105,7 +105,7 @@ public class Initial_Int {
      * read whitelist and create blacklist
      */
     public static void readWhiteLabel(String path,
-                                      Map<Integer,Vector<String>> _grammar,
+                                      Map<Integer,ArrayList<String>> _grammar,
                                       Map<Integer,ArrayList<Integer> > _whiteLabels,
                                       Map<Integer,ArrayList<Integer> > _blackLabels,
                                       Map<Integer,String> labelIndex){
@@ -119,9 +119,9 @@ public class Initial_Int {
                     int label_int = findIndex(ASTNode,labelIndex);
                     if(label_int != -1){
                         ArrayList<Integer> whiteChildren_int = new ArrayList<>();
-                        Vector<String> children_str = new Vector<>();
+                        ArrayList<String> children_str = new ArrayList<>();
                         for(int i=1; i< str_tmp.length; ++i) {
-                            children_str.addElement(str_tmp[i]);
+                            children_str.add(str_tmp[i]);
                             int t = findIndex(str_tmp[i],labelIndex);
                             whiteChildren_int.add(t);
                         }
@@ -131,14 +131,14 @@ public class Initial_Int {
                         if(_grammar.containsKey(label_int))
                         {
                             //get all children of label_int in grammar
-                            Vector<String> blackChildren = new Vector<>();
+                            ArrayList<String> blackChildren = new ArrayList<>();
                             blackChildren.addAll(_grammar.get(label_int).subList(2, _grammar.get(label_int).size()));
                             //System.out.println("grammar labels: "+blackChildren);
                             //transform string to int
                             ArrayList<Integer> blackChildren_int = new ArrayList<>();
                             for(int i=0; i<blackChildren.size(); ++i) {
-                                blackChildren.set(i, blackChildren.elementAt(i).split(Variables.uniChar)[0]);
-                                int index = Integer.valueOf(blackChildren.elementAt(i).split(Variables.uniChar)[0]);
+                                blackChildren.set(i, blackChildren.get(i).split(Variables.uniChar)[0]);
+                                int index = Integer.valueOf(blackChildren.get(i).split(Variables.uniChar)[0]);
                                 blackChildren_int.add(index);
                             }
                             //System.out.println("grammar labels: "+blackChildren);

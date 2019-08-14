@@ -108,23 +108,4 @@ public class Projected {
         return this.rootLocations.size();
     }
 
-    /////////////lineNr//////////////////////
-    //add 1 line number
-    public void setProjectLineNr(int a){
-        List<Integer> l = new ArrayList<>();
-        l.add(a);
-        this.lineNr.add(l);
-    }
-    //add set of line numbers
-    public void addProjectLineNr (Integer a, List<Integer> lines){
-        List<Integer> l = new ArrayList<>(lines);
-        l.add(a);
-        this.lineNr.add(l);
-    }
-    //get a list of line numbers
-    public List<Integer> getProjectLineNr(int a){
-        return this.lineNr.get(a);
-    }
-
-
 }

@@ -26,11 +26,11 @@ public class ReadXML_Int {
 
     private int top;
     private int id;
-    private Vector<Integer> sr;
-    private Vector<Integer> sibling;
+    private ArrayList<Integer> sr;
+    private ArrayList<Integer> sibling;
 
     private List<String> labels = new LinkedList<>();
-    Vector<Integer> lineNrs = new Vector<>();
+    ArrayList<Integer> lineNrs = new ArrayList<>();
     int countSection;
     private boolean abstractLeafs = false;
 
@@ -39,7 +39,7 @@ public class ReadXML_Int {
     //////////////////////////////
 
     //return total number of reading files
-    public Vector<Integer> getlineNrs(){return this.lineNrs;
+    public ArrayList<Integer> getlineNrs(){return this.lineNrs;
     }
 
     //count number children of a node
@@ -74,26 +74,26 @@ public class ReadXML_Int {
     }
 
     //read tree by breadth first traversal
-    private void readTreeDepthFirst(Node node , Vector <NodeFreqT> trans, Map <Integer, String> labelIndex ) {
+    private void readTreeDepthFirst(Node node , ArrayList <NodeFreqT> trans, Map <Integer, String> labelIndex ) {
         try {
             if (node.getNodeType() == Node.ELEMENT_NODE) {
                 // add this node label into trans
-                trans.elementAt(id).setNodeLabel(node.getNodeName());
+                trans.get(id).setNodeLabel(node.getNodeName());
                 //System.out.print(node.getNodeName());
 
                 //update labelIndex for internal labels
                 if(labelIndex.isEmpty() && labels.isEmpty()) {
-                    trans.elementAt(id).setNode_label_int(0);
+                    trans.get(id).setNode_label_int(0);
                     labelIndex.put(0, node.getNodeName());
                     labels.add(node.getNodeName());
                 }
                 else{
                     if(!labels.contains(node.getNodeName())) {
-                        trans.elementAt(id).setNode_label_int(labelIndex.size());
+                        trans.get(id).setNode_label_int(labelIndex.size());
                         labelIndex.put(labelIndex.size(), node.getNodeName());
                         labels.add(node.getNodeName());
                     }else{
-                        trans.elementAt(id).setNode_label_int(labels.indexOf(node.getNodeName()));
+                        trans.get(id).setNode_label_int(labels.indexOf(node.getNodeName()));
                     }
                 }
 
@@ -117,11 +117,11 @@ public class ReadXML_Int {
                         countSection++;
                     }
                 //System.out.println(" "+lineNbTemp);
-                trans.elementAt(id).setLineNr(lineNbTemp);
+                trans.get(id).setLineNr(lineNbTemp);
                 ///////////////////////////////////////////////////////////
 
                 //keep positions to calculate relationships: parent - child - sibling
-                sr.addElement(id);
+                sr.add(id);
                 ++id;
                 if (node.hasChildNodes()) {
                     //get list of children
@@ -131,36 +131,36 @@ public class ReadXML_Int {
                         //add leaf node label
                         //System.out.println(node.getTextContent().trim());
                         if(abstractLeafs) //abstract leafs of Cobol: change all leafs to **
-                            trans.elementAt(id).setNodeLabel("**");
+                            trans.get(id).setNodeLabel("**");
                         else
-                            trans.elementAt(id).setNodeLabel("*" + node.getTextContent().replace(",",Variables.uniChar).trim());
+                            trans.get(id).setNodeLabel("*" + node.getTextContent().replace(",",Variables.uniChar).trim());
 
                         //update labelIndex for leaf labels
                         String leafLabel = "*" + node.getTextContent().replace(",",Variables.uniChar).trim();
                         if(!labels.contains(leafLabel)) {
-                            trans.elementAt(id).setNode_label_int(labelIndex.size()*(-1));
+                            trans.get(id).setNode_label_int(labelIndex.size()*(-1));
                             labelIndex.put(labelIndex.size()*(-1), leafLabel);
                             labels.add(leafLabel);
                         }else {
-                            trans.elementAt(id).setNode_label_int(labels.indexOf(leafLabel)*(-1));
+                            trans.get(id).setNode_label_int(labels.indexOf(leafLabel)*(-1));
                         }
 
-                        trans.elementAt(id).setLineNr("-1");
+                        trans.get(id).setLineNr("-1");
 
                         //System.out.println("node "+trans.elementAt(id).getNodeLabel());
-                        sr.addElement(id);
+                        sr.add(id);
                         ++id;
                         //////close a node and calculate parent, child, sibling
                         top = sr.size() - 1;
-                        int child = sr.elementAt(top);
-                        int parent = sr.elementAt(top - 1);
-                        trans.elementAt(child).setNodeParent(parent);
-                        if (trans.elementAt(parent).getNodeChild() == -1)
-                            trans.elementAt(parent).setNodeChild(child);
-                        if (sibling.elementAt(parent) != -1)
-                            trans.elementAt(sibling.elementAt(parent)).setNodeSibling(child);
-                        sibling.setElementAt(child, parent);
-                        sr.setSize(top);
+                        int child = sr.get(top);
+                        int parent = sr.get(top - 1);
+                        trans.get(child).setNodeParent(parent);
+                        if (trans.get(parent).getNodeChild() == -1)
+                            trans.get(parent).setNodeChild(child);
+                        if (sibling.get(parent) != -1)
+                            trans.get(sibling.get(parent)).setNodeSibling(child);
+                        sibling.set(parent,child);
+                        sr.remove(top);
                         ///////////////
                     } else {//internal node
                         //add children without sorting
@@ -212,15 +212,15 @@ public class ReadXML_Int {
                 //System.out.println(" )");
                 top = sr.size() - 1;
                 if (top < 1) return;
-                int child = sr.elementAt(top);
-                int parent = sr.elementAt(top - 1);
-                trans.elementAt(child).setNodeParent(parent);
-                if (trans.elementAt(parent).getNodeChild() == -1)
-                    trans.elementAt(parent).setNodeChild(child);
-                if (sibling.elementAt(parent) != -1)
-                    trans.elementAt(sibling.elementAt(parent)).setNodeSibling(child);
-                sibling.setElementAt(child, parent);
-                sr.setSize(top);
+                int child = sr.get(top);
+                int parent = sr.get(top - 1);
+                trans.get(child).setNodeParent(parent);
+                if (trans.get(parent).getNodeChild() == -1)
+                    trans.get(parent).setNodeChild(child);
+                if (sibling.get(parent) != -1)
+                    trans.get(sibling.get(parent)).setNodeSibling(child);
+                sibling.set(parent,child);
+                sr.remove(top);
             }
         }catch (Exception e){
             e.printStackTrace();
@@ -229,10 +229,10 @@ public class ReadXML_Int {
     }
 
     //create transaction from ASTs in multiple folders
-    public Vector <Vector<NodeFreqT>> readDatabase(boolean _abstractLeafs, File rootDirectory, Map <Integer, String> labelIndex) {
-        Vector < Vector<NodeFreqT> > database = new Vector < Vector<NodeFreqT> >();
+    public ArrayList <ArrayList<NodeFreqT>> readDatabase(boolean _abstractLeafs, File rootDirectory, Map <Integer, String> labelIndex) {
+        ArrayList < ArrayList<NodeFreqT> > database = new ArrayList < ArrayList<NodeFreqT> >();
         abstractLeafs = _abstractLeafs;
-        Vector<File> files = new Vector<File>();
+        ArrayList<File> files = new ArrayList<File>();
         //TODO: problem when files located in sub-directory
         populateFileList(rootDirectory,files);
         System.out.print("Reading " + files.size() +" files ");
@@ -258,21 +258,19 @@ public class ReadXML_Int {
 
                 id = 0;
                 top = 0;
-                sr = new Vector<>();
-                sibling = new Vector<>(size);
-                sibling.setSize(size);
-                Vector<NodeFreqT> trans = new Vector<NodeFreqT>(size);
-                trans.setSize(size);
+                sr = new ArrayList<>();
+                sibling = new ArrayList<>(size);
+                ArrayList<NodeFreqT> trans = new ArrayList<NodeFreqT>(size);
 
                 for (int i = 0; i < size; ++i) {
                     NodeFreqT nodeTemp = new NodeFreqT(-1,-1,-1,"0",true);
-                    trans.setElementAt(nodeTemp, i);
-                    sibling.setElementAt(-1, i);
+                    trans.add(nodeTemp);
+                    sibling.add(-1);
                 }
                 //create tree
                 readTreeDepthFirst(doc.getDocumentElement(), trans, labelIndex);
                 //add tree to database
-                database.addElement(trans);
+                database.add(trans);
                 //delete temporary input file
                 Files.deleteIfExists(Paths.get(inFileTemp));
                 System.out.print(".");
@@ -286,17 +284,17 @@ public class ReadXML_Int {
         return database;
     }
 
-    private void populateFileList(File directory, Vector<File> list){
+    private void populateFileList(File directory, ArrayList<File> list){
         File[] files = directory.listFiles((dir, name) -> name.toLowerCase().endsWith(".xml"));
         Collections.addAll(list, files);
         File[] directories = directory.listFiles(File::isDirectory);
         for (File dir : directories) populateFileList(dir,list);
     }
 
-    public static void printTransaction(Vector < Vector<NodeFreqT> > trans){
+    public static void printTransaction(ArrayList < ArrayList<NodeFreqT> > trans){
         for(int i=0; i<trans.size(); ++i){
-            for(int j=0; j<trans.elementAt(i).size(); ++j)
-                System.out.print((trans.elementAt(i).elementAt(j).getNodeLabel())+"-"+trans.elementAt(i).elementAt(j).getNode_label_int()+" , ");
+            for(int j=0; j<trans.get(i).size(); ++j)
+                System.out.print((trans.get(i).get(j).getNodeLabel())+"-"+trans.get(i).get(j).getNode_label_int()+" , ");
             System.out.println();
         }
     }

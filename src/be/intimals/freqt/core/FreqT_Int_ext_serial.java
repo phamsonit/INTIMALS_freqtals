@@ -27,13 +27,13 @@ public class FreqT_Int_ext_serial extends FreqT_Int {
     ////////////////////////////////////////////////////////////////////////////////
 
     public FreqT_Int_ext_serial(Config _config,
-                                Map<String,Vector<String>> _grammar,
-                                Map<Integer,Vector<String>> _grammarInt,
+                                Map<String,ArrayList<String>> _grammar,
+                                Map<Integer,ArrayList<String>> _grammarInt,
                                 Map<Integer,ArrayList<Integer>> _blackLabelsInt,
                                 Map<Integer,ArrayList<Integer>> _whiteLabelsInt,
                                 Map<String,String> _xmlCharacters,
                                 Map<Integer,String> _labelIndex,
-                                Vector <Vector<NodeFreqT> >  _transaction) {
+                                ArrayList <ArrayList<NodeFreqT> >  _transaction) {
         super(_config);
         this.grammar = _grammar;
         this.grammarInt = _grammarInt;

@@ -3,17 +3,14 @@ package be.intimals.freqt.input;
 import be.intimals.freqt.structure.*;
 
 import java.io.IOException;
-import java.util.Iterator;
-import java.util.Set;
-import java.util.Map;
-import java.util.Vector;
+import java.util.*;
 import java.io.FileReader;
 import java.io.BufferedReader;
 
 public class ReadFile {
-
+/*
     //create transaction data for a XML file, each line is a input tree
-    public void createTransaction (String path, Vector < Vector<NodeFreqT> > trans){
+    public void createTransaction (String path, ArrayList< ArrayList<NodeFreqT> > trans){
         String file = path;
         try (BufferedReader br = new BufferedReader(new FileReader(file))) {
             String line;
@@ -22,34 +19,34 @@ public class ReadFile {
                 {
                     String[] str_tmp = line.split("\t");
                     String str = str_tmp[1];
-                    Vector <NodeFreqT> tmp = new Vector<>();
+                    ArrayList <NodeFreqT> tmp = new ArrayList<>();
                     str2node(str,tmp);
-                    trans.addElement(tmp);
+                    trans.add(tmp);
                 }
             }
         }catch (IOException e) {System.out.println("Reading file error ");}
-    }
+    }*/
 
     //create transaction from Map < pattern, supports>
     public void createTransactionFromMap(Map<String, String > inPatterns,
-                                         Vector<Vector<NodeFreqT>> trans){
+                                         ArrayList<ArrayList<NodeFreqT>> trans){
 
         Iterator <Map.Entry<String,String> > iterMap = inPatterns.entrySet().iterator();
         while(iterMap.hasNext()){
             for(int i=0; i<inPatterns.size(); ++i){
                 Map.Entry<String,String> temp = iterMap.next();
                 String str_pattern = temp.getKey();
-                Vector <NodeFreqT> tran_tmp = new Vector<>();
+                ArrayList <NodeFreqT> tran_tmp = new ArrayList<>();
                 str2node(str_pattern,tran_tmp);
-                trans.addElement(tran_tmp);
+                trans.add(tran_tmp);
             }
         }
     }
 
-
+/*
     //create transaction from Map < pattern, supports>
     public void createTransactionFromMap(Map<String, String > inPatterns,
-                                     Vector<Vector<NodeFreqT>> trans,
+                                         ArrayList<ArrayList<NodeFreqT>> trans,
                                      Map<String,String> patSup,
                                      Set<String> rootLabel){
 
@@ -72,16 +69,16 @@ public class ReadFile {
                 }
                 rootLabel.add(root);
 
-                Vector <NodeFreqT> tran_tmp = new Vector<>();
+                ArrayList <NodeFreqT> tran_tmp = new ArrayList<>();
                 str2node(str_pattern,tran_tmp);
-                trans.addElement(tran_tmp);
+                trans.add(tran_tmp);
             }
         }
-    }
-
+    }*/
+/*
     //create transaction for freqt-post
     public void createTransactionFromSet(Set< String > inPatterns,
-                                     Vector<Vector<NodeFreqT>> trans,
+                                         ArrayList<ArrayList<NodeFreqT>> trans,
                                      Map<String,String> patSup,
                                      Set<String> rootLabel){
 
@@ -101,21 +98,21 @@ public class ReadFile {
                 }
                 rootLabel.add(root);
 
-                Vector <NodeFreqT> tran_tmp = new Vector<>();
+                ArrayList <NodeFreqT> tran_tmp = new ArrayList<>();
                 str2node(str_temp[1],tran_tmp);
-                trans.addElement(tran_tmp);
+                trans.add(tran_tmp);
             }
         }
     }
+*/
 
+    private void str2node(String str, ArrayList<NodeFreqT> trans){
 
-    private void str2node(String str, Vector<NodeFreqT> trans){
-
-        try{
+        //try{
             int len = str.length();
             int size = 0;
             String buff = ""; //individual node
-            Vector<String> tmp = new Vector<>(); //a list of node
+            ArrayList<String> tmp = new ArrayList<>(); //a list of node
 
             int ii=0;
             while (ii<len){
@@ -125,16 +122,16 @@ public class ReadFile {
                 if(str.charAt(ii) == '(' || str.charAt(ii) == ')'){
                     if(! buff.isEmpty()){
                         if(buff.charAt(0)=='*'){
-                            tmp.addElement(buff);
+                            tmp.add(buff);
                         }
                         else{
                             String[] label = buff.split("_");
-                            tmp.addElement(label[0]);
+                            tmp.add(label[0]);
                         }
                         buff = "";
                         ++size;
                     }
-                    if(str.charAt(ii) == ')') tmp.addElement(")");
+                    if(str.charAt(ii) == ')') tmp.add(")");
                 }
                 else
                     if(str.charAt(ii) == '\t' || str.charAt(ii) == ' ') {buff += "_";}
@@ -167,51 +164,52 @@ public class ReadFile {
             if (! buff.isEmpty()) throw new ArithmeticException("error !");
 
             //init a list of node
-            trans.setSize(size);
-            Vector<Integer> sibling = new Vector<>(size);
-            sibling.setSize(size);
+            //trans.setSize(size);
+            ArrayList<Integer> sibling = new ArrayList<>(size);
+            //sibling.setSize(size);
             for(int i = 0; i < size; ++i){
                 NodeFreqT nodeTemp = new NodeFreqT();
                 nodeTemp.setNodeSibling(-1);
                 nodeTemp.setNodeParent(-1);
                 nodeTemp.setNodeChild(-1);
-                trans.setElementAt(nodeTemp,i);
+                trans.add(nodeTemp);
                 //node.elementAt(i).setNodeChild(-1);
                 //node.elementAt(i).setNodeParent(-1);
                 //node.elementAt(i).setNodeSibling(-1);
-                sibling.setElementAt(-1,i);
+                sibling.add(-1);
 
             }
             //create tree
-            Vector<Integer> sr = new Vector<>();
+            ArrayList<Integer> sr = new ArrayList<>();
             int id = 0;
             int top = 0;
 
             for(int i = 0; i< tmp.size(); ++i){
-                if( tmp.elementAt(i).equals(")") ){
+                if( tmp.get(i).equals(")") ){
                     top = sr.size() - 1;
                     if (top < 1) continue;
-                    int child = sr.elementAt(top);
-                    int parent = sr.elementAt(top-1);
-                    trans.elementAt(child).setNodeParent(parent);
-                    if(trans.elementAt(parent).getNodeChild() == -1)
-                        trans.elementAt(parent).setNodeChild(child);
-                    if(sibling.elementAt(parent) != -1)
-                        trans.elementAt(sibling.elementAt(parent)).setNodeSibling(child);
-                    sibling.setElementAt(child,parent);
-                    sr.setSize(top);
+                    int child = sr.get(top);
+                    int parent = sr.get(top-1);
+                    trans.get(child).setNodeParent(parent);
+                    if(trans.get(parent).getNodeChild() == -1)
+                        trans.get(parent).setNodeChild(child);
+                    if(sibling.get(parent) != -1)
+                        trans.get(sibling.get(parent)).setNodeSibling(child);
+                    sibling.set(parent,child);
+                    sr.remove(top);
                 }
                 else {
-                    trans.elementAt(id).setNodeLabel(tmp.elementAt(i));
-                    sr.addElement(id);
+                    trans.get(id).setNodeLabel(tmp.get(i));
+                    sr.add(id);
                     id ++;
                 }
             }
 
-        }catch (Exception e) {
+        /*}catch (IOException e) {
             System.out.println("Fatal: parse error << ["+ str +"]\n");
+            e.printStackTrace();
             System.exit(-1);
-        }
+        }*/
     }
 
 }
