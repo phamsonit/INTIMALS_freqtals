@@ -316,14 +316,14 @@ public class FreqT_Int {
 
 
     /**
-     * choose output
+     * Add the tree to the root IDs or the MFP
      * @param pat
      * @param projected
      */
-    private void chooseOutput(ArrayList<Integer> pat,Projected projected){
+    private void addTree(ArrayList<Integer> pat, Projected projected){
 
         if (config.getTwoStep()) { //store root occurrences for next step
-            addRootIDs(pat, projected, rootIDs);
+            addRootIDs(pat, projected);
         } else{ //check and store pattern to maximal pattern list
             if(config.getFilter())
                 addMFP(pat, projected, MFP);
@@ -582,7 +582,7 @@ public class FreqT_Int {
 
             //if there is no candidate then report the pattern and then stop
             if( candidates.isEmpty() ){
-                chooseOutput(pattern,projected);
+                addTree(pattern,projected);
                 //System.out.println("no candidate "+pattern);
                 return;
             }
@@ -608,17 +608,17 @@ public class FreqT_Int {
                 //constraint on maximal number of leafs
                 if(Pattern_Int.countLeafNode(pattern) > config.getMaxLeaf()){
                     //System.out.println("max leaf size "+pattern);
-                    chooseOutput(pattern,entry.getValue());
+                    addTree(pattern,entry.getValue());
                 }else{
                     //constraint on real leaf node
                     if(Pattern_Int.checkMissingLeaf(pattern)) {
                         //System.out.println("missing leaf "+ pattern);
-                        chooseOutput(pattern,entry.getValue());
+                        addTree(pattern,entry.getValue());
                     }else{
                         //constraint on obligatory children
                         if(checkObligatoryChild(pattern,entry.getKey(),grammarInt,blackLabelsInt)){
                             //System.out.println("missing obligatory child "+pattern);
-                            chooseOutput(pattern,entry.getValue());
+                            addTree(pattern,entry.getValue());
                         }else{
                             project(pattern, entry.getValue());
                         }
