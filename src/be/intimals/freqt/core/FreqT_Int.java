@@ -20,13 +20,13 @@ import java.util.concurrent.ConcurrentHashMap;
  */
 public class FreqT_Int {
     protected Config config;
-    protected Vector <Vector<NodeFreqT> >  transaction = new Vector<>();
-    protected Map <String,Vector<String> > grammar    = new LinkedHashMap<>();
+    protected ArrayList  <ArrayList <NodeFreqT> >  transaction = new ArrayList <>();
+    protected Map <String,ArrayList <String> > grammar    = new LinkedHashMap<>();
     protected Map <String,String>          xmlCharacters  = new LinkedHashMap<>();
 
     //new variables for Integer
     protected Map<Integer,String> labelIndex = new HashMap<>();
-    protected Map <Integer,Vector<String> > grammarInt    = new LinkedHashMap<>();
+    protected Map <Integer,ArrayList <String> > grammarInt    = new LinkedHashMap<>();
     protected Map <Integer,ArrayList<Integer> > blackLabelsInt = new LinkedHashMap<>();
     protected Map <Integer,ArrayList<Integer> > whiteLabelsInt = new LinkedHashMap<>();
 
@@ -41,7 +41,7 @@ public class FreqT_Int {
     /////
     //int nbInputFiles;
 
-    Vector<Integer> lineNrs = new Vector<>();
+    ArrayList <Integer> lineNrs = new ArrayList <>();
 
     private long timeStart;
     private long timeout;
@@ -53,7 +53,7 @@ public class FreqT_Int {
     }
 
     public Map <String,String> getXmlCharacters(){return this.xmlCharacters;}
-    public Map <String,Vector<String>> getGrammar(){return this.grammar;}
+    public Map <String,ArrayList <String>> getGrammar(){return this.grammar;}
 
 
     /**
@@ -110,7 +110,7 @@ public class FreqT_Int {
      * @param pat
      * @param projected
      */
-    private void addRootIDs(ArrayList<Integer> pat, Projected projected, Map<String,ArrayList<Integer>> _rootIDs){
+    private void addRootIDs(ArrayList<Integer> pat, Projected projected){
         try {
             if(Pattern_Int.countLeafNode(pat) > config.getMinLeaf()){
                 //find root occurrences (id-pos) of pattern
@@ -122,7 +122,7 @@ public class FreqT_Int {
                 }
                 //keep only the root occurrences and root label
                 ArrayList<Integer> rootLabel_int = new ArrayList<>(pat.subList(0,1));
-                _rootIDs.put(rootOccurrences, rootLabel_int);
+                rootIDs.put(rootOccurrences, rootLabel_int);
             }
 
         }catch (Exception e){System.out.println("Error: adding rootIDs "+e);}
@@ -432,7 +432,7 @@ public class FreqT_Int {
     //return true if pattern misses obligatory child
     public boolean checkObligatoryChild(ArrayList<Integer> pat,
                                         ArrayList<Integer> candidate,
-                                        Map <Integer,Vector<String> > _grammarInt,
+                                        Map <Integer,ArrayList <String> > _grammarInt,
                                         Map <Integer,ArrayList<Integer> > _blackLabelsInt){
 
         boolean missMandatoryChild = false;
@@ -447,7 +447,7 @@ public class FreqT_Int {
             //System.out.println("parent pos: "+ parentPos+" label "+parentLabel);
 
             //find all children of patternLabel in grammar
-            Vector<String> childrenG = _grammarInt.get(pat.get(parentPos));
+            ArrayList <String> childrenG = _grammarInt.get(pat.get(parentPos));
             //System.out.println("children in grammar: "+childrenG);
 
             if(childrenG.get(0).equals("ordered") && !childrenG.get(1).equals("1")){
@@ -464,7 +464,7 @@ public class FreqT_Int {
                 int i=0;
                 int j=2;
                 while(i<childrenP.size() && j<childrenG.size() && !missMandatoryChild) {
-                    String[] childGrammarTemp = childrenG.elementAt(j).split(Variables.uniChar);
+                    String[] childGrammarTemp = childrenG.get(j).split(Variables.uniChar);
                     int label_int = Integer.valueOf(childGrammarTemp[0]);
                     if(pat.get(childrenP.get(i)).equals(label_int)) {
                         ++i;
@@ -494,7 +494,7 @@ public class FreqT_Int {
      * @param projected
      * @return
      */
-    public Map< ArrayList<Integer>, Projected> generateCandidates(Projected projected, Vector <Vector<NodeFreqT> >  _transaction) {
+    public Map< ArrayList<Integer>, Projected> generateCandidates(Projected projected, ArrayList  <ArrayList <NodeFreqT> >  _transaction) {
         Map<ArrayList<Integer>, Projected> candidates = new LinkedHashMap<>();
         //Map<ArrayList<Integer>, Projected> candidates = new ConcurrentHashMap<>();
         //keep the order of elements
@@ -514,16 +514,16 @@ public class FreqT_Int {
                 ArrayList<Integer> prefixInt = new ArrayList<>();
                 //ArrayList<Integer> prefixInt = new ArrayList<>();
                 for (int d = -1; d < depth && pos != -1; ++d) {
-                    int start = (d == -1) ? _transaction.elementAt(id).elementAt(pos).getNodeChild() :
-                            _transaction.elementAt(id).elementAt(pos).getNodeSibling();
+                    int start = (d == -1) ? _transaction.get(id).get(pos).getNodeChild() :
+                            _transaction.get(id).get(pos).getNodeSibling();
                     int newDepth = depth - d;
                     for (int l = start; l != -1;
-                         l = _transaction.elementAt(id).elementAt(l).getNodeSibling()) {
+                         l = _transaction.get(id).get(l).getNodeSibling()) {
                         //String item = prefix + uniChar + _transaction.elementAt(id).elementAt(l).getNodeLabel();
                         //System.out.println(item);
                         ArrayList<Integer> itemInt = new ArrayList<>();
                         itemInt.addAll(prefixInt);
-                        itemInt.add(_transaction.elementAt(id).elementAt(l).getNode_label_int());
+                        itemInt.add(_transaction.get(id).get(l).getNode_label_int());
                         //System.out.println(_transaction.elementAt(id).elementAt(l).getNode_label_int());
                         //String lineNrTemp = transaction.elementAt(id).elementAt(l).getLineNr();
                         Projected tmp;
@@ -541,7 +541,7 @@ public class FreqT_Int {
                         }
                     }
                     if (d != -1) {
-                        pos = _transaction.elementAt(id).elementAt(pos).getNodeParent();
+                        pos = _transaction.get(id).get(pos).getNodeParent();
                     }
                     //prefix += uniChar + ")";
                     prefixInt.add(-1);
@@ -634,7 +634,7 @@ public class FreqT_Int {
      * @param freq1
      */
     private void findFP(Map < ArrayList<Integer> , Projected > freq1){
-        //pattern = new Vector<>();
+        //pattern = new ArrayList <>();
         ArrayList<Integer> pattern = new ArrayList<>();
         Iterator < Map.Entry<ArrayList<Integer>,Projected> > iter = freq1.entrySet().iterator();
         while (iter.hasNext()) {
@@ -650,14 +650,14 @@ public class FreqT_Int {
      * Return all frequent subtrees of size 1
      * @return
      */
-    private Map<ArrayList<Integer>, Projected> buildFP1(Vector < Vector<NodeFreqT> > trans) {
+    private Map<ArrayList<Integer>, Projected> buildFP1(ArrayList  < ArrayList <NodeFreqT> > trans) {
         Map<ArrayList<Integer>, Projected> freq1 = new LinkedHashMap<>();
         for(int i = 0; i < trans.size(); ++i) {
-            for (int j = 0; j < trans.elementAt(i).size(); ++j) {
+            for (int j = 0; j < trans.get(i).size(); ++j) {
                 //String node_label = trans.elementAt(i).elementAt(j).getNodeLabel();
 
-                String node_label = trans.elementAt(i).elementAt(j).getNodeLabel();
-                int node_label_id = trans.elementAt(i).elementAt(j).getNode_label_int();
+                String node_label = trans.get(i).get(j).getNodeLabel();
+                int node_label_id = trans.get(i).get(j).getNode_label_int();
                 //String lineNr = trans.elementAt(i).elementAt(j).getLineNr();
                 //if node_label in rootLabels and lineNr > lineNr threshold
                 if(rootLabels.contains(node_label) || rootLabels.isEmpty()){
@@ -701,7 +701,7 @@ public class FreqT_Int {
             //new grammar (labels are integers) is used to calculate patterns
             Initial_Int.initGrammar_Int(config.getInputFiles(),grammarInt,labelIndex);
 
-//            for(Map.Entry<Integer,Vector<String>> entry:grammarInt.entrySet()){
+//            for(Map.Entry<Integer,ArrayList <String>> entry:grammarInt.entrySet()){
 //                System.out.println(entry.getValue());
 //            }
 
@@ -808,7 +808,7 @@ public class FreqT_Int {
             Iterator < Map.Entry<ArrayList<Integer>,String> > iter1 = maximalPatterns.entrySet().iterator();
             while(iter1.hasNext()){
                 Map.Entry<ArrayList<Integer>,String> entry = iter1.next();
-                Vector<String> pat = Pattern_Int.getPatternStr(entry.getKey(),labelIndex);
+                ArrayList <String> pat = Pattern_Int.getPatternStr(entry.getKey(),labelIndex);
                 String supports = entry.getValue();
                 ((XMLOutput) outputMaximalPatterns).report_Int(pat,supports);
                 //System.out.println(pat);
@@ -832,7 +832,7 @@ public class FreqT_Int {
     /////////// specific functions for COBOL source code //////////////////
     public void checkContinuousParagraph(ArrayList<Integer> pat,
                                          Map.Entry<ArrayList<Integer>, Projected> entry,
-                                         Vector <Vector<NodeFreqT> >  _transaction){
+                                         ArrayList <ArrayList <NodeFreqT> >  _transaction){
         try{
             //System.out.println(pat);
             Projected projected = entry.getValue();
@@ -854,14 +854,14 @@ public class FreqT_Int {
 
                 int firstPos=0;
                 for(int j=pos.size()-2; j>0; --j){
-                    if(_transaction.elementAt(id).elementAt(pos.get(j)).getNode_label_int() == pat.get(childrenPos.get(childrenPos.size()-2))) {
+                    if(_transaction.get(id).get(pos.get(j)).getNode_label_int() == pat.get(childrenPos.get(childrenPos.size()-2))) {
                         firstPos = pos.get(j);
                         break;
                     }
                 }
                 int lastPos = pos.get(pos.size()-1);
                 //System.out.println(firstPos+" "+lastPost);
-                if (_transaction.elementAt(id).elementAt(firstPos).getNodeSibling() != lastPos){
+                if (_transaction.get(id).get(firstPos).getNodeSibling() != lastPos){
                     //remove paragraph location
                     projected.deleteProjectLocation(i);
                     i--;
@@ -876,7 +876,7 @@ public class FreqT_Int {
     /**
      * delete locations of a label that belongs to black-section?
      */
-    public void checkBlackSection(Map.Entry<ArrayList<Integer>, Projected> entry, Vector <Vector<NodeFreqT> >  _transaction){
+    public void checkBlackSection(Map.Entry<ArrayList<Integer>, Projected> entry, ArrayList  <ArrayList <NodeFreqT> >  _transaction){
         //TODO: read black-section from file
         Set<String> blackSectionList = new HashSet<>();
         blackSectionList.add("*CCVS1");
@@ -894,13 +894,13 @@ public class FreqT_Int {
                 //check if label of section is in black-section or not
                 while (currentPos != -1) {
                     //System.out.println("search label " + transaction.elementAt(id).elementAt(searchPos).getNodeLabel());
-                    if (blackSectionList.contains(_transaction.elementAt(id).elementAt(currentPos).getNodeLabel())) {
+                    if (blackSectionList.contains(_transaction.get(id).get(currentPos).getNodeLabel())) {
                         //System.out.println("found " + id + " " + searchPos);
                         projected.deleteProjectLocation(i);
                         i--;
                         break;
                     } else {
-                        currentPos = _transaction.elementAt(id).elementAt(currentPos).getNodeChild();
+                        currentPos = _transaction.get(id).get(currentPos).getNodeChild();
                     }
                 }
                 i++;

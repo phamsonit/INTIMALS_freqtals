@@ -6,6 +6,7 @@ import be.intimals.freqt.config.*;
 
 import java.io.FileWriter;
 import java.io.IOException;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 import java.util.Vector;
@@ -15,13 +16,13 @@ import be.intimals.freqt.config.*;
 public class LineOutput extends AOutputFormatter {
     private char uniChar;
     //Map<String,String> patSupMap = new LinkedHashMap<>();;
-
+/*
     public LineOutput(String _file,Config _config, Map<String, Vector<String>> _grammar, Map<String,String> _xmlCharacters, char _uniChar) throws IOException {
         super(_file,_config, _grammar,_xmlCharacters);
         uniChar = _uniChar;
-    }
+    }*/
 
-    public LineOutput(String _file, Config _config, Map<String, Vector<String>> _grammar, Map<String,String> _xmlCharacters, Map<String,String> _patSupMap, char _uniChar) throws IOException {
+    public LineOutput(String _file, Config _config, Map<String, ArrayList<String>> _grammar, Map<String,String> _xmlCharacters, Map<String,String> _patSupMap, char _uniChar) throws IOException {
         super(_file,_config, _grammar,_xmlCharacters);
         uniChar = _uniChar;
         this.patSupMap = _patSupMap;
@@ -33,7 +34,7 @@ public class LineOutput extends AOutputFormatter {
      * @param projected
      */
     //@Override
-    private void report(Vector<String> pat, Projected projected){
+    private void report(ArrayList<String> pat, Projected projected){
         try{
 
             if(checkOutputConstraint(pat)) return;
@@ -73,13 +74,13 @@ public class LineOutput extends AOutputFormatter {
             else{*/
                 int n = 0;
                 for(int i = 0; i<pat.size(); ++i){
-                    if(pat.elementAt(i).equals(")")) {
-                        out.write(pat.elementAt(i));
+                    if(pat.get(i).equals(")")) {
+                        out.write(pat.get(i));
                         --n;
                     }
                     else{
                         ++n;
-                        out.write("(" + pat.elementAt(i));
+                        out.write("(" + pat.get(i));
                     }
                 }
                 for(int i = 0 ; i < n; ++i) {
@@ -114,7 +115,7 @@ public class LineOutput extends AOutputFormatter {
             String[] supports = strTmp[0].split(",");
             String[] pattern = strTmp[1].substring(1,strTmp[1].length()-1).split(",");
 
-            Vector<String> pat = new Vector<>();
+            ArrayList<String> pat = new ArrayList<>();
             for(int i=0; i<pattern.length;++i)
                 pat.add(pattern[i].trim());
 

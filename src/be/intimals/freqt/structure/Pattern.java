@@ -22,7 +22,7 @@ public class Pattern {
 
     //TODO: convert format 2 to format 1
   public static String covert(String str){
-      Vector<String> tmp = new Vector<>(); //a list of node labels
+      ArrayList<String> tmp = new ArrayList<>(); //a list of node labels
       try {
           int len = str.length();
           int size = 0;
@@ -36,15 +36,15 @@ public class Pattern {
               if (str.charAt(ii) == '(' || str.charAt(ii) == ')') {
                   if (!buff.isEmpty()) {
                       if (buff.charAt(0) == '*') {
-                          tmp.addElement(buff);
+                          tmp.add(buff);
                       } else {
                           String[] label = buff.split("_");
-                          tmp.addElement(label[0]);
+                          tmp.add(label[0]);
                       }
                       buff = "";
                       ++size;
                   }
-                  if (str.charAt(ii) == ')') tmp.addElement(")");
+                  if (str.charAt(ii) == ')') tmp.add(")");
               } else
                   if (str.charAt(ii) == '\t' || str.charAt(ii) == ' ') {
                   buff += "_";
@@ -74,7 +74,7 @@ public class Pattern {
           }
 
           for (int i = tmp.size()-1; i >= 0; --i) {
-              if (tmp.elementAt(i).equals(")"))
+              if (tmp.get(i).equals(")"))
                   tmp.remove(i);
               else
                   break;
@@ -92,24 +92,24 @@ public class Pattern {
      * @param pat
      * @return
      */
-    public static Vector<String> filter(Vector<String> pat){
-        Vector<String> result = new Vector<>();
+    public static ArrayList<String> filter(ArrayList<String> pat){
+        ArrayList<String> result = new ArrayList<>();
         //find the last leaf
         //System.out.println(pat);
         int pos=0;
         for(int i=0; i<pat.size();++i){
-            if(pat.elementAt(i).charAt(0)=='*')
+            if(pat.get(i).charAt(0)=='*')
                 pos = i;
         }
         //System.out.println("post leaf "+pos);
         //output patterns
         int n = 0;
         for(int i = 0; i <= pos; ++i){
-            result.add(pat.elementAt(i));
+            result.add(pat.get(i));
         }
 
         for(int i = pos ; i < pat.size(); ++i) {
-            if(pat.elementAt(i).equals(")"))
+            if(pat.get(i).equals(")"))
                 result.add(")");
             else
                 break;
@@ -125,26 +125,26 @@ public class Pattern {
      * @return
      */
     //all leaf nodes of patterns are also the real leaf nodes in ASTs
-    public static String getPatternString1(Vector<String> pat){
+    public static String getPatternString1(ArrayList<String> pat){
         String result="";
         //find the last leaf
         //System.out.println(pat);
         int pos=0;
         for(int i=0; i<pat.size();++i){
-            if(pat.elementAt(i).charAt(0)=='*')
+            if(pat.get(i).charAt(0)=='*')
                 pos = i;
         }
         //System.out.println("post leaf "+pos);
         //output patterns
         int n = 0;
         for(int i = 0; i <= pos; ++i){
-            if(pat.elementAt(i).equals(")")) {
-                result += pat.elementAt(i);
+            if(pat.get(i).equals(")")) {
+                result += pat.get(i);
                 --n;
             }
             else{
                 ++n;
-                result += "(" + pat.elementAt(i);
+                result += "(" + pat.get(i);
             }
         }
         for(int i = 0 ; i < n; ++i) {
@@ -158,17 +158,17 @@ public class Pattern {
      * @param pat
      * @return
      */
-    public static String getPatternString(Vector<String> pat){
+    public static String getPatternString(ArrayList<String> pat){
         String result="";
         int n = 0;
         for(int i = 0; i<pat.size(); ++i){
-            if(pat.elementAt(i).equals(")")) {
-                result += pat.elementAt(i);
+            if(pat.get(i).equals(")")) {
+                result += pat.get(i);
                 --n;
             }
             else{
                 ++n;
-                result += "(" + pat.elementAt(i);
+                result += "(" + pat.get(i);
             }
         }
         for(int i = 0 ; i < n; ++i) {
@@ -185,7 +185,19 @@ public class Pattern {
     public static int getPatternSize(Vector<String > pat){
         int size = 0;
         for(int i = 0; i < pat.size(); ++i)
-            if( ! pat.elementAt(i).equals(")") ) ++size;
+            if( ! pat.get(i).equals(")") ) ++size;
+        return size;
+    }
+
+    /**
+     * calculate size (total nodes) of a pattern
+     * @param pat
+     * @return
+     */
+    public static int getPatternSize(ArrayList<String > pat){
+        int size = 0;
+        for(int i = 0; i < pat.size(); ++i)
+            if( ! pat.get(i).equals(")") ) ++size;
         return size;
     }
 
@@ -194,11 +206,11 @@ public class Pattern {
      * @param pat
      * @return
      */
-    public static int countLeafNode(Vector<String> pat){
+    public static int countLeafNode(ArrayList<String> pat){
         int result=0;
 
         for(int i=0; i<pat.size(); ++i)
-            if(pat.elementAt(i).charAt(0)=='*')
+            if(pat.get(i).charAt(0)=='*')
                 result++;
 
         return result;
@@ -209,11 +221,11 @@ public class Pattern {
      * @param pat
      * @return
      */
-    public static int countIdentifiers(Vector<String> pat){
+    public static int countIdentifiers(ArrayList<String> pat){
         int count=0;
 
         for(int i=0; i<pat.size(); ++i){
-            if(pat.elementAt(i).equals("identifier"))
+            if(pat.get(i).equals("identifier"))
                 ++count;
         }
 
@@ -231,12 +243,12 @@ public class Pattern {
         return p[p.length-1];
     }
 
-    public static void addCandidate(Vector<String> pat, String candidate){
+    public static void addCandidate(ArrayList<String> pat, String candidate){
         //add a candidate to the current pattern
         String[] p = candidate.split(Variables.uniChar);
         for (int i = 0; i < p.length; ++i) {
             if (!p[i].isEmpty())
-                pat.addElement(p[i]);
+                pat.add(p[i]);
         }
     }
 
@@ -246,7 +258,7 @@ public class Pattern {
      * @param candidate
      * @return
      */
-    public static int findParentPosition(Vector<String> pat, String candidate){
+    public static int findParentPosition(ArrayList<String> pat, String candidate){
         int parentPos = 0;
         int nodeLevel = 0;
         int candidateSize = 0;
@@ -264,7 +276,7 @@ public class Pattern {
                 parentPos = size - 1;
             } else {
                 for (int i = size - 1; i > 0; --i) {
-                    if (pat.elementAt(i).equals(")"))
+                    if (pat.get(i).equals(")"))
                         ++nodeLevel;
                     else --nodeLevel;
                     if (nodeLevel == -1) {
@@ -279,7 +291,7 @@ public class Pattern {
         return parentPos;
     }
 
-    public static List<Integer> findChildrenPosition(Vector<String> pat, Integer parentPos){
+    public static List<Integer> findChildrenPosition(ArrayList<String> pat, Integer parentPos){
         int top = -1;
 
         List<Integer> tmp = new ArrayList<>();
@@ -287,13 +299,13 @@ public class Pattern {
         if(parentPos < pat.size()-1){
             int count = parentPos;
             for(int i = parentPos+1; i < pat.size(); ++i){
-                if(pat.elementAt(i).equals(")"))
+                if(pat.get(i).equals(")"))
                     --top;
                 else {
                     ++top;
                     ++count;
                 }
-                if(top == 0 && !pat.elementAt(i).equals(")")) {
+                if(top == 0 && !pat.get(i).equals(")")) {
                     tmp.add(i);//before: add(count)
                 }
                 if(top == -2) break;
@@ -308,21 +320,21 @@ public class Pattern {
      * @param parentPos
      * @return
      */
-    public static Vector<String > findChildrenLabels(Vector<String> pat, Integer parentPos){
+    public static ArrayList<String > findChildrenLabels(ArrayList<String> pat, Integer parentPos){
         int top = -1;
 
         //Set<String> children = new ConcurrentSkipListSet<>();
-        Vector<String > children1 = new Vector<>();
+        ArrayList<String > children1 = new ArrayList<>();
 
         if(parentPos < pat.size()-1){
             for(int i = parentPos+1; i < pat.size(); ++i){
-                if(pat.elementAt(i).equals(")"))
+                if(pat.get(i).equals(")"))
                     --top;
                 else
                     ++top;
-                if(top == 0 && !pat.elementAt(i).equals(")"))
-                    //children.add(pat.elementAt(i));
-                    children1.add(pat.elementAt(i));
+                if(top == 0 && !pat.get(i).equals(")"))
+                    //children.add(pat.get(i));
+                    children1.add(pat.get(i));
                 if(top == -2) break;
             }
         }
@@ -335,10 +347,10 @@ public class Pattern {
      * @param listOfChildrenGrammar
      * @return
      */
-    private String findTheFirstMandatoryChild(Vector<String> listOfChildrenGrammar){
+    private String findTheFirstMandatoryChild(ArrayList<String> listOfChildrenGrammar){
         String firstMandatoryChildGrammar = "";
         for (int i = 0; i < listOfChildrenGrammar.size(); ++i) {
-            String[] tmpChild = listOfChildrenGrammar.elementAt(i).split(Variables.uniChar);
+            String[] tmpChild = listOfChildrenGrammar.get(i).split(Variables.uniChar);
             if (tmpChild[1].equals("true")) {
                 firstMandatoryChildGrammar = tmpChild[0];
                 break;
@@ -355,16 +367,16 @@ public class Pattern {
      * @param n
      * @return
      */
-    public static boolean isRepeatedLabel(Vector<String> pat, String candidate, int n){
+    public static boolean isRepeatedLabel(ArrayList<String> pat, String candidate, int n){
 
         String[] Temp = candidate.split(Variables.uniChar);
         String label = Temp[Temp.length-1];
         int parentPos = findParentPosition(pat,candidate);
-        Vector<String> children = findChildrenLabels(pat,parentPos);
+        ArrayList<String> children = findChildrenLabels(pat,parentPos);
 
         int count=0;
         for(int i=0; i<children.size();++i){
-            if(children.elementAt(i).equals(label))
+            if(children.get(i).equals(label))
                 ++count;
         }
         if(count <= n)
@@ -379,12 +391,12 @@ public class Pattern {
      * @param n
      * @return
      */
-    public static boolean checkNumberLabel(Vector<String> pat, Integer n){
+    public static boolean checkNumberLabel(ArrayList<String> pat, Integer n){
         boolean result = false;
         for(int i=0;i<pat.size()-1;++i){
             int num=0;
             for(int j=i+1; j<pat.size();++j){
-                if(!pat.elementAt(i).equals(")") && pat.elementAt(i).equals(pat.elementAt(j)))
+                if(!pat.get(i).equals(")") && pat.get(i).equals(pat.get(j)))
                     num ++;
             }
             if(num >= n) {
@@ -401,12 +413,12 @@ public class Pattern {
      * @param pat
      * @return true if the pattern misses a leaf node
      */
-    public static boolean isMissedLeafNode(Vector<String> pat){
+    public static boolean isMissedLeafNode(ArrayList<String> pat){
         boolean result = false;
         for(int i=0; i<pat.size()-1;++i) {
-            if (!pat.elementAt(i).equals(")") &&
-                    pat.elementAt(i+1).equals(")"))
-                if (pat.elementAt(i).charAt(0) != '*') {
+            if (!pat.get(i).equals(")") &&
+                    pat.get(i+1).equals(")"))
+                if (pat.get(i).charAt(0) != '*') {
                     result = true;
                 }
         }
@@ -422,16 +434,16 @@ public class Pattern {
      * @param whiteChildrenList
      * @return
      */
-    public static boolean isMissedMandatoryChild(Vector<String> childrenInPattern,
-                                                   Vector<String> childrenInGrammar,
+    public static boolean isMissedMandatoryChild(ArrayList<String> childrenInPattern,
+                                                 ArrayList<String> childrenInGrammar,
                                                    Set<String> blackChildrenList,
                                                    Set<String> whiteChildrenList){
         int i=0;
         int j=0;
         boolean missMandatoryChild = false;
         while(i<childrenInPattern.size() && j<childrenInGrammar.size()) {
-            String[] tmpChild = childrenInGrammar.elementAt(j).split(Variables.uniChar);
-            if(childrenInPattern.elementAt(i).equals(tmpChild[0])) {
+            String[] tmpChild = childrenInGrammar.get(j).split(Variables.uniChar);
+            if(childrenInPattern.get(i).equals(tmpChild[0])) {
                 ++i;
                 ++j;
             }
@@ -455,20 +467,20 @@ public class Pattern {
      * @param candidate
      * @return
      */
-    public static Set<String> getChildrenLabels(Map<String,Vector<String>> ListNode, Vector<String> pat, String candidate){
+    public static Set<String> getChildrenLabels(Map<String,ArrayList<String>> ListNode, ArrayList<String> pat, String candidate){
 
         //add current candidate to pattern
         Set<String> childrenTemp = new ConcurrentSkipListSet<>(); //LinkedHashSet<>();
 
         String[] candidateTemp = candidate.split(Variables.uniChar);
-        Vector<String> patternTemp = new Vector<>(pat);
+        ArrayList<String> patternTemp = new ArrayList<>(pat);
         for (int i = 0; i < candidateTemp.length; ++i) {
             if (!candidateTemp[i].isEmpty())
-                patternTemp.addElement(candidateTemp[i]);
+                patternTemp.add(candidateTemp[i]);
         }
         //find parent's position of potentialCandidate in patternTemp
         int parentPos = findParentPosition(patternTemp, candidate);
-        String parentLabel = patternTemp.elementAt(parentPos).split(Variables.uniChar)[0];
+        String parentLabel = patternTemp.get(parentPos).split(Variables.uniChar)[0];
         //find children of the parentLabel
         if(ListNode.containsKey(parentLabel)){
             childrenTemp.addAll(ListNode.get(parentLabel));
@@ -477,7 +489,7 @@ public class Pattern {
     }
 
     //checkLineDistance(pattern, candidate, projected, threshold)
-    public boolean checkLineDistance(Vector<String> pat,
+    public boolean checkLineDistance(ArrayList<String> pat,
                                       String candidate,
                                       Projected projected,
                                       int _minLineDistance,
@@ -495,7 +507,7 @@ public class Pattern {
         int index = 0;
         for (int i = 0; i < pat.size(); ++i) {
             List<Integer> temp = new LinkedList<>();
-            if (pat.elementAt(i).equals(p)) {
+            if (pat.get(i).equals(p)) {
                 for (int j = 0; j < projected.getProjectLocationSize(); ++j) {
                     //System.out.print(projected.getProjectLineNr(j).get(index)+" ");
                     temp.add(projected.getProjectLineNr(j).get(index));
@@ -503,7 +515,7 @@ public class Pattern {
                 ++index;
                 lines.add(temp);
                 //System.out.println();
-            } else if (!pat.elementAt(i).equals(")"))
+            } else if (!pat.get(i).equals(")"))
                 ++index;
         }
 /*
@@ -544,7 +556,7 @@ public class Pattern {
      * @param maxLeaf
      * @return
      */
-    public  boolean checkConstraints(Vector<String> pat, int maxLeaf) {
+    public  boolean checkConstraints(ArrayList<String> pat, int maxLeaf) {
 
         if(isMissedLeafNode(pat) ||
                 (countLeafNode(pat)  >  maxLeaf) )
@@ -556,8 +568,8 @@ public class Pattern {
     }
 
 
-    public static Vector<String> formatPattern(String[] pat){
-        Vector<String> _pat = new Vector<>();
+    public static ArrayList<String> formatPattern(String[] pat){
+        ArrayList<String> _pat = new ArrayList<>();
 
         for(int i=0; i<pat.length;++i)
             _pat.add(pat[i].trim());

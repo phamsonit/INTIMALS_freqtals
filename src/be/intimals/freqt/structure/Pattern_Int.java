@@ -40,8 +40,8 @@ public class Pattern_Int {
 
 
     //return pattern of string format
-    public static Vector<String> getPatternStr(ArrayList<Integer> pat, Map<Integer,String> labelIndex){
-        Vector<String> patStr = new Vector<>();
+    public static ArrayList<String> getPatternStr(ArrayList<Integer> pat, Map<Integer,String> labelIndex){
+        ArrayList<String> patStr = new ArrayList<>();
         for(int i=0; i<pat.size(); ++i){
             if(pat.get(i)==-1)
                 patStr.add(")");

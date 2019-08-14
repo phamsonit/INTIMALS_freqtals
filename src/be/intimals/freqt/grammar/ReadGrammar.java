@@ -27,7 +27,7 @@ import org.w3c.dom.NamedNodeMap;
 public class ReadGrammar extends ReadXML_Int {
 
 
-    private static String readAttribute1(Node child, Map < String, Vector<String> > grammar){
+    private static String readAttribute1(Node child, Map < String, ArrayList<String> > grammar){
         //add this child to grammar
         String mandatory="true";
         Set<String> tmp = new LinkedHashSet<>();
@@ -42,9 +42,9 @@ public class ReadGrammar extends ReadXML_Int {
                 case "node": //a node has many values ???
                     //if the previous degree is 1..* ?
                     if (grammar.containsKey(child.getNodeName())) {
-                        if (grammar.get(child.getNodeName()).elementAt(1).equals("1..*")) {
-                            tmp.add(grammar.get(child.getNodeName()).elementAt(0));
-                            tmp.add(grammar.get(child.getNodeName()).elementAt(1));
+                        if (grammar.get(child.getNodeName()).get(1).equals("1..*")) {
+                            tmp.add(grammar.get(child.getNodeName()).get(0));
+                            tmp.add(grammar.get(child.getNodeName()).get(1));
                         } else {
                             tmp.add("unordered");
                             tmp.add("1");
@@ -57,7 +57,7 @@ public class ReadGrammar extends ReadXML_Int {
                         tmp.addAll(grammar.get(child.getNodeName()).subList(2,
                                 grammar.get(child.getNodeName()).size() - 1));
                     tmp.add(n.getNodeValue() + Variables.uniChar + "false");
-                    grammar.put(child.getNodeName(), new Vector<>(tmp));
+                    grammar.put(child.getNodeName(), new ArrayList<>(tmp));
 
                     break;
 
@@ -69,7 +69,7 @@ public class ReadGrammar extends ReadXML_Int {
                         tmp.addAll(grammar.get(child.getNodeName()).subList(2,
                                 grammar.get(child.getNodeName()).size() - 1));
                     tmp.add(n.getNodeValue() + Variables.uniChar + "false");
-                    grammar.put(child.getNodeName(), new Vector<>(tmp));
+                    grammar.put(child.getNodeName(), new ArrayList<>(tmp));
                     break;
 
                 case "unordered-nodelist":
@@ -79,14 +79,14 @@ public class ReadGrammar extends ReadXML_Int {
                         tmp.addAll(grammar.get(child.getNodeName()).subList(2,
                                 grammar.get(child.getNodeName()).size() - 1));
                     tmp.add(n.getNodeValue() + Variables.uniChar + "false");
-                    grammar.put(child.getNodeName(), new Vector<>(tmp));
+                    grammar.put(child.getNodeName(), new ArrayList<>(tmp));
                     break;
 
                 case "simplevalue":
                     tmp.add("unordered");
                     tmp.add("1");
                     tmp.add(n.getNodeValue() + Variables.uniChar + "false");
-                    grammar.put(child.getNodeName(), new Vector<>(tmp));
+                    grammar.put(child.getNodeName(), new ArrayList<>(tmp));
                     break;
             }
 
@@ -98,8 +98,8 @@ public class ReadGrammar extends ReadXML_Int {
 
 
     private static void addAttribute(Node child,
-                                     Map < String, Vector<String> > abstractNodes,
-                                     Map < String, Vector<String> > grammar){
+                                     Map < String, ArrayList<String> > abstractNodes,
+                                     Map < String, ArrayList<String> > grammar){
         NamedNodeMap nodeMap = child.getAttributes(); //get attributes
         Set<String> tmp = new LinkedHashSet<>();
         for (int j = 0; j < nodeMap.getLength(); ++j) { //for each attribute
@@ -110,10 +110,10 @@ public class ReadGrammar extends ReadXML_Int {
                     tmp.add("1");
                     if (abstractNodes.containsKey(n.getNodeValue())) {
                         tmp.addAll(abstractNodes.get(n.getNodeValue()));
-                        grammar.put(child.getNodeName(), new Vector<>(tmp));
+                        grammar.put(child.getNodeName(), new ArrayList<>(tmp));
                     } else {
                         tmp.add(n.getNodeValue()+Variables.uniChar+"false");
-                        grammar.put(child.getNodeName(), new Vector<>(tmp));
+                        grammar.put(child.getNodeName(), new ArrayList<>(tmp));
                     }
                     break;
 
@@ -122,10 +122,10 @@ public class ReadGrammar extends ReadXML_Int {
                     tmp.add("1..*");
                     if (abstractNodes.containsKey(n.getNodeValue())) {
                         tmp.addAll(abstractNodes.get(n.getNodeValue()));
-                        grammar.put(child.getNodeName(), new Vector<>(tmp));
+                        grammar.put(child.getNodeName(), new ArrayList<>(tmp));
                     } else {
                         tmp.add(n.getNodeValue() + Variables.uniChar + "false");
-                        grammar.put(child.getNodeName(), new Vector<>(tmp));
+                        grammar.put(child.getNodeName(), new ArrayList<>(tmp));
                     }
                     break;
 
@@ -134,10 +134,10 @@ public class ReadGrammar extends ReadXML_Int {
                     tmp.add("1..*");
                     if (abstractNodes.containsKey(n.getNodeValue())) {
                         tmp.addAll(abstractNodes.get(n.getNodeValue()));
-                        grammar.put(child.getNodeName(), new Vector<>(tmp));
+                        grammar.put(child.getNodeName(), new ArrayList<>(tmp));
                     } else {
                         tmp.add(n.getNodeValue() + Variables.uniChar + "false");
-                        grammar.put(child.getNodeName(), new Vector<>(tmp));
+                        grammar.put(child.getNodeName(), new ArrayList<>(tmp));
                     }
 
                     break;
@@ -145,7 +145,7 @@ public class ReadGrammar extends ReadXML_Int {
                     tmp.add("unordered");
                     tmp.add("1");
                     tmp.add(n.getNodeValue());
-                    grammar.put(child.getNodeName(), new Vector<>(tmp));
+                    grammar.put(child.getNodeName(), new ArrayList<>(tmp));
                     break;
             }
         }
@@ -153,8 +153,8 @@ public class ReadGrammar extends ReadXML_Int {
     }
 
     private static void updateAttribute(Node child,
-                                        Map < String, Vector<String> > abstractNodes,
-                                        Map < String, Vector<String> > grammar){
+                                        Map < String, ArrayList<String> > abstractNodes,
+                                        Map < String, ArrayList<String> > grammar){
         //TODO: ??? a node is either node, node-list, keyword
         //System.out.println("update attribute "+child.getNodeName() );
         //check if old children == new children
@@ -178,14 +178,14 @@ public class ReadGrammar extends ReadXML_Int {
         }
         oldChildren.addAll(newChildren);
         //System.out.println("all child " + oldChildren);
-        grammar.put(child.getNodeName(),new Vector<>(oldChildren));
+        grammar.put(child.getNodeName(),new ArrayList<>(oldChildren));
     }
 
 
     //add a child of AST or Synthetic node to grammar
     private static void readAttribute(Node child,
-                                        Map < String, Vector<String> > abstractNodes,
-                                        Map < String, Vector<String> > grammar){
+                                        Map < String, ArrayList<String> > abstractNodes,
+                                        Map < String, ArrayList<String> > grammar){
         if(grammar.containsKey(child.getNodeName())){
             updateAttribute(child,abstractNodes,grammar);
         }else{
@@ -207,7 +207,7 @@ public class ReadGrammar extends ReadXML_Int {
         return mandatory;
     }
 
-    private static int findIndex(String node,Map < String, Vector<String> > grammar){
+    private static int findIndex(String node,Map < String, ArrayList<String> > grammar){
         Integer index = 0;
         Set<String> keySet = grammar.keySet();
         for (String s : keySet) {
@@ -228,8 +228,8 @@ public class ReadGrammar extends ReadXML_Int {
      * @param root
      * @return
      */
-    private Map < String, Vector<String> > readAbstractNodes(Node root){
-        Map<String,Vector<String> > abstractNodes = new LinkedHashMap<>();
+    private Map < String, ArrayList<String> > readAbstractNodes(Node root){
+        Map<String,ArrayList<String> > abstractNodes = new LinkedHashMap<>();
         try{
             NodeList childrenNodes = root.getChildNodes();
             for(int i=0; i<childrenNodes.getLength();++i) { //for each abstract node
@@ -243,7 +243,7 @@ public class ReadGrammar extends ReadXML_Int {
                         if( (node.getNodeName().equals("abstract") &&
                                 String.valueOf(node.getNodeValue()).equals("true")) ){
 
-                            Vector<String> tmp1 = new Vector<>();
+                            ArrayList<String> tmp1 = new ArrayList<>();
                             NodeList childrenList = childrenNodes.item(i).getChildNodes();
                             for(int k=0; k<childrenList.getLength(); ++k){//for each child of Abstract
                                 if(childrenList.item(k).getNodeType() == Node.ELEMENT_NODE){
@@ -274,11 +274,11 @@ public class ReadGrammar extends ReadXML_Int {
      * @param grammar
      * @return
      */
-    private static Map < String, Vector<String> > readSyntheticNodes(Node root,
-                                                              Map < String, Vector<String> > abstractNodes,
-                                                               Map < String, Vector<String> > grammar){
+    private static Map < String, ArrayList<String> > readSyntheticNodes(Node root,
+                                                              Map < String, ArrayList<String> > abstractNodes,
+                                                               Map < String, ArrayList<String> > grammar){
         //find abstract/synthetic nodes
-        Map<String,Vector<String> > syntheticNodes = new LinkedHashMap<>();
+        Map<String,ArrayList<String> > syntheticNodes = new LinkedHashMap<>();
 
         NodeList childrenNodes = root.getChildNodes();
         for(int i=0; i<childrenNodes.getLength();++i) { //for each node
@@ -305,9 +305,9 @@ public class ReadGrammar extends ReadXML_Int {
                             //find the index of rule, //create new synthetic rule
                             int index = findIndex(childrenNodes.item(i).getNodeName(),syntheticNodes);
                             syntheticNodes.put(childrenNodes.item(i).getNodeName()+Variables.uniChar+String.valueOf(index),
-                                                new Vector<>(syntheticChildren));
+                                                new ArrayList<>(syntheticChildren));
                         }else
-                            syntheticNodes.put(childrenNodes.item(i).getNodeName(),new Vector<>(syntheticChildren));
+                            syntheticNodes.put(childrenNodes.item(i).getNodeName(),new ArrayList<>(syntheticChildren));
                     }
                 }
             }
@@ -332,8 +332,8 @@ public class ReadGrammar extends ReadXML_Int {
     }
 
     private static void readSimpleNode(Node node,
-                                      Map < String, Vector<String> > abstractNodes,
-                                      Map<String,Vector<String> > grammar)
+                                      Map < String, ArrayList<String> > abstractNodes,
+                                      Map<String,ArrayList<String> > grammar)
     {
         Set<String> childrenListTmp = new LinkedHashSet<>(); //find all its children
         NodeList childrenList = node.getChildNodes();//create grammar for each child
@@ -349,7 +349,7 @@ public class ReadGrammar extends ReadXML_Int {
         }
         //add the current node to grammar
         if(!childrenListTmp.isEmpty()){
-            Vector<String> childrenListTmpVector = new Vector<>(childrenListTmp);
+            ArrayList<String> childrenListTmpVector = new ArrayList<>(childrenListTmp);
             childrenListTmpVector.add(0, "unordered");
             childrenListTmpVector.add(1, String.valueOf(childrenListTmpVector.size() - 1));
             //if this node exists in grammar then increase index
@@ -362,11 +362,11 @@ public class ReadGrammar extends ReadXML_Int {
 
     }
 
-    private static Map<String, Vector<String>> getRules(String label, Map<String, Vector<String>> maps){
+    private static Map<String, ArrayList<String>> getRules(String label, Map<String, ArrayList<String>> maps){
 
         //System.out.println("syntheticLabel "+label);
 
-        Map<String,Vector<String> > rules = new LinkedHashMap<>();
+        Map<String,ArrayList<String> > rules = new LinkedHashMap<>();
         Set<String> keyList = maps.keySet();
         for(String s:keyList){
             String[] ss = s.split(Variables.uniChar);
@@ -379,9 +379,9 @@ public class ReadGrammar extends ReadXML_Int {
 
     }
 
-    private static void combineSyntheticNodes (Map<String, Map<String, Vector<String>>> syntheticChildren){
+    private static void combineSyntheticNodes (Map<String, Map<String, ArrayList<String>>> syntheticChildren){
 
-        Set<Vector<String>> combinations = new LinkedHashSet<>();
+        Set<ArrayList<String>> combinations = new LinkedHashSet<>();
         int size = syntheticChildren.size();
         //for each synthetic rule we have some sub-rules (each rule is a new vector>
         //if having 1 vector --> oK
@@ -402,14 +402,14 @@ public class ReadGrammar extends ReadXML_Int {
         }
 
          */
-            Iterator<Map.Entry<String, Map<String, Vector<String>> >> iter1 = syntheticChildren.entrySet().iterator();
-            Map.Entry<String, Map<String, Vector<String>> > entry = iter1.next();
+            Iterator<Map.Entry<String, Map<String, ArrayList<String>> >> iter1 = syntheticChildren.entrySet().iterator();
+            Map.Entry<String, Map<String, ArrayList<String>> > entry = iter1.next();
 
             //for each rule of synthetic node create a rule in grammar
-            Iterator<Map.Entry<String, Vector<String>> > iter2 = entry.getValue().entrySet().iterator();
+            Iterator<Map.Entry<String, ArrayList<String>> > iter2 = entry.getValue().entrySet().iterator();
             while(iter2.hasNext()){
-                Vector<String> allChildren = new Vector<>();
-                Map.Entry<String, Vector<String> > entry2 = iter2.next();
+                ArrayList<String> allChildren = new ArrayList<>();
+                Map.Entry<String, ArrayList<String> > entry2 = iter2.next();
                 System.out.println(entry2.getKey()+" "+entry2.getValue());
                 allChildren.addAll(entry2.getValue());
             }
@@ -417,14 +417,14 @@ public class ReadGrammar extends ReadXML_Int {
     }
 
     private static void readSpecialNode(Node node,
-                                       Map<String,Vector<String> > syntheticNodes,
-                                       Map<String,Vector<String> > grammar){
+                                       Map<String,ArrayList<String> > syntheticNodes,
+                                       Map<String,ArrayList<String> > grammar){
         //get the set of children
         NodeList childrenNodes = node.getChildNodes();
         //find normal children
         //find set of rules of each synthetic node://example: WhiteStatement has 2 synthetic nodes
-        Vector<String> normalChildren = new Vector<>();
-        Map<String, Map<String, Vector<String>>> syntheticChildren = new LinkedHashMap<>();
+        ArrayList<String> normalChildren = new ArrayList<>();
+        Map<String, Map<String, ArrayList<String>>> syntheticChildren = new LinkedHashMap<>();
         for(int i=0; i<childrenNodes.getLength(); ++i){
             if (childrenNodes.item(i).hasAttributes() &&
                     childrenNodes.item(i).getNodeType() == Node.ELEMENT_NODE) {
@@ -458,14 +458,14 @@ public class ReadGrammar extends ReadXML_Int {
         int size = syntheticChildren.size();
         int index=0;
         if (size == 1){//node has only one synthetic child
-            Iterator<Map.Entry<String, Map<String, Vector<String>> >> iter1 = syntheticChildren.entrySet().iterator();
+            Iterator<Map.Entry<String, Map<String, ArrayList<String>> >> iter1 = syntheticChildren.entrySet().iterator();
             while (iter1.hasNext()) {
-                Map.Entry<String, Map<String, Vector<String>> > entry = iter1.next();
+                Map.Entry<String, Map<String, ArrayList<String>> > entry = iter1.next();
                 //for each rule of synthetic node create a rule in grammar
-                Iterator<Map.Entry<String, Vector<String>> > iter2 = entry.getValue().entrySet().iterator();
+                Iterator<Map.Entry<String, ArrayList<String>> > iter2 = entry.getValue().entrySet().iterator();
                 while(iter2.hasNext()){
-                    Vector<String> allChildren = new Vector<>(normalChildren);
-                    Map.Entry<String, Vector<String> > entry2 = iter2.next();
+                    ArrayList<String> allChildren = new ArrayList<>(normalChildren);
+                    Map.Entry<String, ArrayList<String> > entry2 = iter2.next();
                     //System.out.println(entry2.getKey()+" "+entry2.getValue());
                     allChildren.addAll(entry2.getValue());
                     //create one rule in grammar
@@ -498,9 +498,9 @@ public class ReadGrammar extends ReadXML_Int {
      * @param grammar
      */
     private static void readASTNodes(Node root,
-                                     Map<String,Vector<String> > abstractNodes,
-                                     Map<String,Vector<String> > syntheticNodes,
-                                     Map<String,Vector<String> > grammar){
+                                     Map<String,ArrayList<String> > abstractNodes,
+                                     Map<String,ArrayList<String> > syntheticNodes,
+                                     Map<String,ArrayList<String> > grammar){
 
         NodeList childrenNodes = root.getChildNodes();
         for(int t=0; t<childrenNodes.getLength(); ++t) {//for each child (AST node)
@@ -519,7 +519,7 @@ public class ReadGrammar extends ReadXML_Int {
 
 
     //create grammar from file
-    public void readGrammar(String path, Map < String, Vector<String> > grammar) {
+    public void readGrammar(String path, Map < String, ArrayList<String> > grammar) {
         try {
 
             //for each file in folder create one tree
@@ -530,25 +530,25 @@ public class ReadGrammar extends ReadXML_Int {
             doc.getDocumentElement().normalize();
 
             Node root = doc.getDocumentElement();
-            Map< String,Vector<String> > abstractNodes = readAbstractNodes(root);
-            Map< String,Vector<String> > syntheticNodes = readSyntheticNodes(root,abstractNodes,grammar);
+            Map< String,ArrayList<String> > abstractNodes = readAbstractNodes(root);
+            Map< String,ArrayList<String> > syntheticNodes = readSyntheticNodes(root,abstractNodes,grammar);
             //printGrammar(syntheticNodes);
             readASTNodes(root,abstractNodes,syntheticNodes,grammar);
 
         } catch (Exception e) { System.out.println("read grammar file error "+e);}
     }
 
-    public static void printGrammar(Map<String,Vector<String> > grammar) {
+    public static void printGrammar(Map<String,ArrayList<String> > grammar) {
         System.out.println("INPUT GRAMMAR");
-        Iterator<Map.Entry<String, Vector<String>>> iter1 = grammar.entrySet().iterator();
+        Iterator<Map.Entry<String, ArrayList<String>>> iter1 = grammar.entrySet().iterator();
         while (iter1.hasNext()) {
-            Map.Entry<String, Vector<String>> entry = iter1.next();
+            Map.Entry<String, ArrayList<String>> entry = iter1.next();
             System.out.println(entry.getKey() + " " + entry.getValue());
         }
     }
 
     //create grammar from file
-    public void readGrammarOld(String path, Map < String, Vector<String> > grammar) {
+    public void readGrammarOld(String path, Map < String, ArrayList<String> > grammar) {
         try {
 
             //for each file in folder create one tree
@@ -562,7 +562,7 @@ public class ReadGrammar extends ReadXML_Int {
             NodeList childrenNodes = root.getChildNodes();
 
             //find abstract/synthetic nodes and all attribute of synthetic nodes
-            Map<String,Vector<String> > abstractNodes = readAbstractNodes(root);
+            Map<String,ArrayList<String> > abstractNodes = readAbstractNodes(root);
 
             //find all AST nodes and attributes
             for(int t=0; t<childrenNodes.getLength(); ++t){
@@ -590,7 +590,7 @@ public class ReadGrammar extends ReadXML_Int {
                         if (childrenList.item(i).hasAttributes() &&
                                 childrenList.item(i).getNodeType() == Node.ELEMENT_NODE) {
                             String currentChildLabel;
-                            Vector<String> currentChildList;// = new Vector<>();
+                            ArrayList<String> currentChildList;// = new Vector<>();
                             String mandatory="true"; //edited in java: optional="true" --> mandatory="false"
                             //check abstract/synthetic attributes; don't add these nodes to grammar
                             //if this child is Adhoc replace this node with its children in abstractNodes
@@ -601,7 +601,7 @@ public class ReadGrammar extends ReadXML_Int {
                                 //find current children label
                                 currentChildList = abstractNodes.get(abstractChildLabel);
                                 for(int k=0; k< currentChildList.size();++k){
-                                    childrenListTmp.add(currentChildList.elementAt(k)+Variables.uniChar+"false");
+                                    childrenListTmp.add(currentChildList.get(k)+Variables.uniChar+"false");
                                 }
 
 
@@ -625,9 +625,9 @@ public class ReadGrammar extends ReadXML_Int {
                                             //if the previous degree is 1..* ?
                                             if (grammar.containsKey(childrenList.item(i).getNodeName()))
                                             {
-                                                if(grammar.get(childrenList.item(i).getNodeName()).elementAt(1).equals("1..*")) {
-                                                    tmp.add(grammar.get(childrenList.item(i).getNodeName()).elementAt(0));
-                                                    tmp.add(grammar.get(childrenList.item(i).getNodeName()).elementAt(1));
+                                                if(grammar.get(childrenList.item(i).getNodeName()).get(1).equals("1..*")) {
+                                                    tmp.add(grammar.get(childrenList.item(i).getNodeName()).get(0));
+                                                    tmp.add(grammar.get(childrenList.item(i).getNodeName()).get(1));
                                                 }else{
                                                     tmp.add("unordered");
                                                     tmp.add("1");
@@ -640,13 +640,13 @@ public class ReadGrammar extends ReadXML_Int {
 
                                             if (abstractNodes.containsKey(n.getNodeValue())) {
                                                 tmp.addAll(abstractNodes.get(n.getNodeValue()));
-                                                grammar.put(childrenList.item(i).getNodeName(), new Vector<>(tmp));
+                                                grammar.put(childrenList.item(i).getNodeName(), new ArrayList<>(tmp));
                                             } else {
                                                 if (grammar.containsKey(childrenList.item(i).getNodeName()))
                                                     tmp.addAll(grammar.get(childrenList.item(i).getNodeName()).subList(2,
                                                             grammar.get(childrenList.item(i).getNodeName()).size()-1));
                                                 tmp.add(n.getNodeValue()+ Variables.uniChar + "false");
-                                                grammar.put(childrenList.item(i).getNodeName(), new Vector<>(tmp));
+                                                grammar.put(childrenList.item(i).getNodeName(), new ArrayList<>(tmp));
                                             }
                                             break;
 
@@ -656,14 +656,14 @@ public class ReadGrammar extends ReadXML_Int {
 
                                             if (abstractNodes.containsKey(n.getNodeValue())) {
                                                 tmp.addAll(abstractNodes.get(n.getNodeValue()));
-                                                grammar.put(childrenList.item(i).getNodeName(), new Vector<>(tmp));
+                                                grammar.put(childrenList.item(i).getNodeName(), new ArrayList<>(tmp));
                                             } else {
                                                 //temp.addElement(n.getNodeValue() + uniChar + "*");
                                                 if (grammar.containsKey(childrenList.item(i).getNodeName()))
                                                     tmp.addAll(grammar.get(childrenList.item(i).getNodeName()).subList(2,
                                                             grammar.get(childrenList.item(i).getNodeName()).size()-1));
                                                 tmp.add(n.getNodeValue()+ Variables.uniChar + "false");
-                                                grammar.put(childrenList.item(i).getNodeName(), new Vector<>(tmp));
+                                                grammar.put(childrenList.item(i).getNodeName(), new ArrayList<>(tmp));
                                             }
 
                                             break;
@@ -674,13 +674,13 @@ public class ReadGrammar extends ReadXML_Int {
 
                                             if (abstractNodes.containsKey(n.getNodeValue())) {
                                                 tmp.addAll(abstractNodes.get(n.getNodeValue()));
-                                                grammar.put(childrenList.item(i).getNodeName(), new Vector<>(tmp));
+                                                grammar.put(childrenList.item(i).getNodeName(), new ArrayList<>(tmp));
                                             } else {
                                                 if (grammar.containsKey(childrenList.item(i).getNodeName()))
                                                     tmp.addAll(grammar.get(childrenList.item(i).getNodeName()).subList(2,
                                                             grammar.get(childrenList.item(i).getNodeName()).size()-1));
                                                 tmp.add(n.getNodeValue()+ Variables.uniChar + "false");
-                                                grammar.put(childrenList.item(i).getNodeName(), new Vector<>(tmp));
+                                                grammar.put(childrenList.item(i).getNodeName(), new ArrayList<>(tmp));
                                             }
 
                                             break;
@@ -688,7 +688,7 @@ public class ReadGrammar extends ReadXML_Int {
                                             tmp.add("unordered");
                                             tmp.add("1");
                                             tmp.add(n.getNodeValue() + Variables.uniChar + "false");
-                                            grammar.put(childrenList.item(i).getNodeName(), new Vector<>(tmp));
+                                            grammar.put(childrenList.item(i).getNodeName(), new ArrayList<>(tmp));
                                             break;
                                     }
                                 }
@@ -700,7 +700,7 @@ public class ReadGrammar extends ReadXML_Int {
                         }
                     }
                     //add the current node to grammar
-                    grammar.put(childrenNodes.item(t).getNodeName(),new Vector<>(childrenListTmp));
+                    grammar.put(childrenNodes.item(t).getNodeName(),new ArrayList<>(childrenListTmp));
                 }
             }
         } catch (Exception e) {

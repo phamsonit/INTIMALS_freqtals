@@ -26,18 +26,18 @@ import java.util.*;
 public class FreqT_common {
 
     private Config config;
-    private Map <String,Vector<String> > grammar;
+    private Map <String,ArrayList<String> > grammar;
     private Map <String,String> xmlCharacters;
 
     private Map<String,String> commonOutputPatterns = null;
     private Vector < String > maximalPattern = null;
-    private Vector < Vector<NodeFreqT> > newTransaction = null;
+    private ArrayList < ArrayList<NodeFreqT> > newTransaction = null;
     private int minsup;
     private boolean found;
 
     ////////////////////////////////////////////////////////////////////////////////
 
-    public FreqT_common(Config _config, Map <String,Vector<String> > _grammar, Map <String,String> _xmlCharacters){
+    public FreqT_common(Config _config, Map <String,ArrayList<String> > _grammar, Map <String,String> _xmlCharacters){
         config = _config;
         grammar = _grammar;
         xmlCharacters = _xmlCharacters;
@@ -105,7 +105,6 @@ public class FreqT_common {
      * @param projected
      */
     private void project(Projected projected) {
-        try{
             if(found) return;
             //find all candidates of the current subtree
             int depth = projected.getProjectedDepth();
@@ -116,12 +115,12 @@ public class FreqT_common {
                 String prefix = "";
                 for(int d = -1; d < depth && pos != -1; ++d) {
                     int start = (d == -1) ?
-                            newTransaction.elementAt(id).elementAt(pos).getNodeChild() :
-                            newTransaction.elementAt(id).elementAt(pos).getNodeSibling();
+                            newTransaction.get(id).get(pos).getNodeChild() :
+                            newTransaction.get(id).get(pos).getNodeSibling();
                     int newdepth = depth - d;
                     for (int l = start; l != -1;
-                         l = newTransaction.elementAt(id).elementAt(l).getNodeSibling()) {
-                        String item = prefix + Variables.uniChar + newTransaction.elementAt(id).elementAt(l).getNodeLabel();
+                         l = newTransaction.get(id).get(l).getNodeSibling()) {
+                        String item = prefix + Variables.uniChar + newTransaction.get(id).get(l).getNodeLabel();
 
                         Projected tmp;// = new Projected();
                         if(candidate.containsKey(item)) {
@@ -134,7 +133,7 @@ public class FreqT_common {
                             candidate.put(item, tmp);
                         }
                     }
-                    if (d != -1) pos = newTransaction.elementAt(id).elementAt(pos).getNodeParent();
+                    if (d != -1) pos = newTransaction.get(id).get(pos).getNodeParent();
                     prefix += Variables.uniChar+")";
                 }
             }
@@ -156,15 +155,12 @@ public class FreqT_common {
                     String[] p = entry.getKey().split(Variables.uniChar);
                     for (int i = 0; i < p.length; ++i) {
                         if (!p[i].isEmpty())
-                            maximalPattern.addElement(p[i]);
+                            maximalPattern.add(p[i]);
                     }
                     project(entry.getValue());
                     maximalPattern.setSize(oldSize);
                 }
             }
-        }catch (Exception e){
-            System.out.println("ERROR: FREQT_common project " + e);
-        }
     }
 
 
@@ -195,7 +191,7 @@ public class FreqT_common {
                         tempDatabase.put(patterns.get(clusters.get(i).get(j)-1),"nothing");
                     }
                     found = false;
-                    newTransaction = new Vector<>();
+                    newTransaction = new ArrayList<>();
                     initDatabase(tempDatabase);
                     minsup = tempDatabase.size();
                     Map<String,Projected > FP1 = buildFP1Set(newTransaction);
@@ -206,9 +202,9 @@ public class FreqT_common {
                         Map.Entry<String,Projected> entry = iter.next();
                         if(entry.getKey() != null && entry.getKey().charAt(0) != '*'){
                             entry.getValue().setProjectedDepth(0);
-                            maximalPattern.addElement(entry.getKey());
+                            maximalPattern.add(entry.getKey());
                             project(entry.getValue());
-                            maximalPattern.setSize(maximalPattern.size() - 1);
+                            maximalPattern.remove(maximalPattern.size() - 1);
                         }
                     }
                 }
@@ -222,12 +218,12 @@ public class FreqT_common {
      * Return all frequent subtrees of size 1
      * @return
      */
-    public Map<String, Projected> buildFP1Set(Vector < Vector<NodeFreqT> > trans) {
+    public Map<String, Projected> buildFP1Set(ArrayList < ArrayList<NodeFreqT> > trans) {
         Map<String, Projected> freq1 = new LinkedHashMap<>();
         for(int i = 0; i < trans.size(); ++i) {
-            for (int j = 0; j < trans.elementAt(i).size(); ++j) {
-                String node_label = trans.elementAt(i).elementAt(j).getNodeLabel();
-                String lineNr = trans.elementAt(i).elementAt(j).getLineNr();
+            for (int j = 0; j < trans.get(i).size(); ++j) {
+                String node_label = trans.get(i).get(j).getNodeLabel();
+                String lineNr = trans.get(i).get(j).getLineNr();
                 //if node_label in rootLabels and lineNr > lineNr threshold
                 //if(rootLabels.contains(node_label) || rootLabels.isEmpty()){
                     //System.out.println(lineNr+"  "+lineNrs.elementAt(i));
@@ -262,9 +258,9 @@ public class FreqT_common {
         int size = Pattern.getPatternSize(pat);
 
         //replace "," in the leafs by uniChar
-        String patString = pat.elementAt(0);
+        String patString = pat.get(0);
         for (int i = 1; i < pat.size(); ++i)
-            patString = patString + "," + pat.elementAt(i);
+            patString = patString + "," + pat.get(i);
         //patString = patString + uniChar + pat.elementAt(i);
         String patternSupport =
                 "rootOccurrences" + "," +

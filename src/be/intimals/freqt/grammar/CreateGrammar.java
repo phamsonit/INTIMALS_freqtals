@@ -19,19 +19,19 @@ import org.w3c.dom.Node;
 public class CreateGrammar extends ReadXML_Int {
 
 
-    private void addNewNode(Node node , Map <String, Vector<String> > grammar){
+    private void addNewNode(Node node , Map <String, ArrayList<String> > grammar){
 
         int nbChildren = countNBChildren(node);
         NodeList childrenList = node.getChildNodes();
-        Vector<String> tmp = new Vector<>();
+        ArrayList<String> tmp = new ArrayList<>();
         if (nbChildren == 0) {//add leaf node
             if (node.getNodeType() == Node.ELEMENT_NODE){
-                tmp.addElement("ordered");
+                tmp.add("ordered");
                 //tmp.addElement("unordered");
-                tmp.addElement("1");
+                tmp.add("1");
                 //keep leaf node in grammar if necessary
                 //tmp.addElement(node.getTextContent().trim() + uniChar + "false");
-                tmp.addElement("leaf-node" + Variables.uniChar + "false");
+                tmp.add("leaf-node" + Variables.uniChar + "false");
             }
         } else { //add internal node
             //1 - find children
@@ -63,22 +63,22 @@ public class CreateGrammar extends ReadXML_Int {
                 }
             }
             if(repeatedChild){
-                tmp.addElement("unordered");
-                tmp.addElement("1..*");
+                tmp.add("unordered");
+                tmp.add("1..*");
                 Iterator<Map.Entry<String, String>> iter = childrenTemp.entrySet().iterator();
                 while (iter.hasNext()) {
                     Map.Entry<String, String> entry = iter.next();
-                    tmp.addElement(entry.getKey() + Variables.uniChar + "*");
+                    tmp.add(entry.getKey() + Variables.uniChar + "*");
                     //tmp.addElement("*" + uniChar + "*");
                 }
             }else{
-                tmp.addElement("ordered");
+                tmp.add("ordered");
                 //tmp.addElement("unordered");
-                tmp.addElement(String.valueOf(childNumber-1));
+                tmp.add(String.valueOf(childNumber-1));
                 Iterator<Map.Entry<String, String>> iter = childrenTemp.entrySet().iterator();
                 while (iter.hasNext()) {
                     Map.Entry<String, String> entry = iter.next();
-                    tmp.addElement(entry.getKey() + Variables.uniChar + entry.getValue());
+                    tmp.add(entry.getKey() + Variables.uniChar + entry.getValue());
                 }
             }
         }
@@ -86,12 +86,12 @@ public class CreateGrammar extends ReadXML_Int {
         grammar.put(node.getNodeName(), tmp);
     }
 
-    private void updateLeafNode(Node node , Map <String, Vector<String> > grammar ){
-        Vector<String> tmp = new Vector<>();
-        tmp.addElement("ordered");
+    private void updateLeafNode(Node node , Map <String, ArrayList<String> > grammar ){
+        ArrayList<String> tmp = new ArrayList<>();
+        tmp.add("ordered");
         //tmp.addElement("unordered");
-        tmp.addElement("1");
-        tmp.addElement("leaf-node"+Variables.uniChar+"false");
+        tmp.add("1");
+        tmp.add("leaf-node"+Variables.uniChar+"false");
         /*
         //collect all leaf nodes if necessary
         oldChildren.put(node.getTextContent().trim(), "false");
@@ -137,15 +137,15 @@ public class CreateGrammar extends ReadXML_Int {
 
 
 
-     private void updateInternalNode(Node node , Map <String, Vector<String> > grammar){
+     private void updateInternalNode(Node node , Map <String, ArrayList<String> > grammar){
 
         //find grammar of this current node
-        Vector<String> oldGrammar = grammar.get(node.getNodeName());
-        String oldDegree = oldGrammar.elementAt(1);
+         ArrayList<String> oldGrammar = grammar.get(node.getNodeName());
+        String oldDegree = oldGrammar.get(1);
         //find children of the current node in grammar
         Map<String, String> oldChildren = new LinkedHashMap<>();
         for (int i = 2; i < oldGrammar.size(); ++i) {
-            String[] temp = oldGrammar.elementAt(i).split(Variables.uniChar);
+            String[] temp = oldGrammar.get(i).split(Variables.uniChar);
             oldChildren.put(temp[0], temp[1]);
         }
 
@@ -186,9 +186,9 @@ public class CreateGrammar extends ReadXML_Int {
         //if new node has repeated child--> update grammar [unordered, 1..*,list of children]
 
         if(repeatedChild){
-            Vector<String> tmp = new Vector<>();
-            tmp.addElement("unordered");
-            tmp.addElement("1..*");
+            ArrayList<String> tmp = new ArrayList<>();
+            tmp.add("unordered");
+            tmp.add("1..*");
             Iterator<Map.Entry<String, String>> iter = newChildren.entrySet().iterator();
             while (iter.hasNext()) {
                 Map.Entry<String, String> entry = iter.next();
@@ -197,16 +197,16 @@ public class CreateGrammar extends ReadXML_Int {
             Iterator<Map.Entry<String, String>> iter1 = oldChildren.entrySet().iterator();
             while (iter1.hasNext()) {
                 Map.Entry<String, String> entry = iter1.next();
-                tmp.addElement(entry.getKey() + Variables.uniChar + "false");
+                tmp.add(entry.getKey() + Variables.uniChar + "false");
             }
             grammar.replace(node.getNodeName(), grammar.get(node.getNodeName()), tmp);
         }else{
             int nbChildren = countNBChildren(node);
-            Vector<String> tmp = new Vector<>();
+            ArrayList<String> tmp = new ArrayList<>();
             if(nbChildren == 1 && oldDegree.equals("1")){
                 //System.out.println(node.getNodeName()+" internal node has only 1 child");
-                tmp.addElement("ordered");
-                tmp.addElement("1");
+                tmp.add("ordered");
+                tmp.add("1");
 
                 Iterator<Map.Entry<String, String>> iter = newChildren.entrySet().iterator();
                 while (iter.hasNext()) {
@@ -225,20 +225,20 @@ public class CreateGrammar extends ReadXML_Int {
                     Iterator<Map.Entry<String, String>> iter2 = newChildren.entrySet().iterator();
                     while (iter2.hasNext()) {
                         Map.Entry<String, String> entry = iter2.next();
-                        tmp.addElement(entry.getKey() + Variables.uniChar + "false");
+                        tmp.add(entry.getKey() + Variables.uniChar + "false");
                     }
                 }else{
                     Iterator<Map.Entry<String, String>> iter2 = newChildren.entrySet().iterator();
                     while (iter2.hasNext()) {
                         Map.Entry<String, String> entry = iter2.next();
-                        tmp.addElement(entry.getKey() + Variables.uniChar + "true");
+                        tmp.add(entry.getKey() + Variables.uniChar + "true");
                     }
                 }
                 grammar.replace(node.getNodeName(), grammar.get(node.getNodeName()), tmp);
             }else{
                 if(oldDegree.equals("1..*")){
-                    tmp.addElement("unordered");
-                    tmp.addElement("1..*");
+                    tmp.add("unordered");
+                    tmp.add("1..*");
                     Iterator<Map.Entry<String, String>> iter = newChildren.entrySet().iterator();
                     while (iter.hasNext()) {
                         Map.Entry<String, String> entry = iter.next();
@@ -248,7 +248,7 @@ public class CreateGrammar extends ReadXML_Int {
                     Iterator<Map.Entry<String, String>> iter1 = oldChildren.entrySet().iterator();
                     while (iter1.hasNext()) {
                         Map.Entry<String, String> entry = iter1.next();
-                        tmp.addElement(entry.getKey() + Variables.uniChar + "false");
+                        tmp.add(entry.getKey() + Variables.uniChar + "false");
                     }
                     grammar.replace(node.getNodeName(), grammar.get(node.getNodeName()), tmp);
                 }else { // update grammar [unordered, N..M, list of children]
@@ -257,27 +257,27 @@ public class CreateGrammar extends ReadXML_Int {
                     //calculate union of old and new children
                     Map<String,String> union = union(oldChildren,newChildren);
                     Iterator<Map.Entry<String, String>> iterTemp1;
-                    tmp.addElement("ordered");
+                    tmp.add("ordered");
                     if (inter.size() != union.size()) {
                         //update degree
-                        tmp.addElement(String.valueOf(inter.size() + ".." + union.size()));
+                        tmp.add(String.valueOf(inter.size() + ".." + union.size()));
                         //update children
                         iterTemp1 = union.entrySet().iterator();
                         while (iterTemp1.hasNext()) {
                             Map.Entry<String, String> entry1 = iterTemp1.next();
                             if (inter.containsKey(entry1.getKey()))
-                                tmp.addElement(entry1.getKey() + Variables.uniChar + "true");
+                                tmp.add(entry1.getKey() + Variables.uniChar + "true");
                             else
-                                tmp.addElement(entry1.getKey() + Variables.uniChar + "false");
+                                tmp.add(entry1.getKey() + Variables.uniChar + "false");
                         }
                     } else {
                         //update degree
-                        tmp.addElement(String.valueOf(inter.size()));
+                        tmp.add(String.valueOf(inter.size()));
                         //update children
                         iterTemp1 = union.entrySet().iterator();
                         while (iterTemp1.hasNext()) {
                             Map.Entry<String, String> entry1 = iterTemp1.next();
-                            tmp.addElement(entry1.getKey() + Variables.uniChar + "true");
+                            tmp.add(entry1.getKey() + Variables.uniChar + "true");
                         }
                     }
                     grammar.replace(node.getNodeName(), grammar.get(node.getNodeName()), tmp);
@@ -286,7 +286,7 @@ public class CreateGrammar extends ReadXML_Int {
         }
     }
 
-    private void updateNode(Node node , Map <String, Vector<String> > grammar ){
+    private void updateNode(Node node , Map <String, ArrayList<String> > grammar ){
 
 
         int nbChildren = countNBChildren(node);
@@ -300,7 +300,7 @@ public class CreateGrammar extends ReadXML_Int {
     }
 
     //read grammar from ASTs
-    private void readGrammarDepthFirstNew(Node node , Map <String, Vector<String> > grammar ) {
+    private void readGrammarDepthFirstNew(Node node , Map <String, ArrayList<String> > grammar ) {
         try {
             // make sure it's element is a node type.
             if (node.getNodeType() == Node.ELEMENT_NODE) {
@@ -328,7 +328,7 @@ public class CreateGrammar extends ReadXML_Int {
     }
 
     //create grammar from multiple folder
-    public void createGrammar(File f, Map <String, Vector<String> > grammar) throws Exception {
+    public void createGrammar(File f, Map <String, ArrayList<String> > grammar) throws Exception {
 
         File[] subdir = f.listFiles();
         Arrays.sort(subdir);
@@ -365,7 +365,7 @@ public class CreateGrammar extends ReadXML_Int {
      * @param grammar
      * @throws Exception
      */
-    public void createGrammar(String path, Map <String, Vector<String> > grammar) throws Exception {
+    public void createGrammar(String path, Map <String, ArrayList<String> > grammar) throws Exception {
         createGrammar(new File(path), grammar);
     }
 

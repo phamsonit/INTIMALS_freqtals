@@ -12,12 +12,12 @@ public abstract class AOutputFormatter {
     String fileName;
     FileWriter out;
     Config config;
-    Map<String, Vector<String>> grammar;
+    Map<String, ArrayList<String>> grammar;
     Map<String,String> xmlCharacters;
     Map<String,String> patSupMap = new LinkedHashMap<>();
 
 
-    public AOutputFormatter(String _fileName, Config _config, Map<String, Vector<String>> _grammar, Map<String,String> _xmlCharacters)
+    public AOutputFormatter(String _fileName, Config _config, Map<String, ArrayList<String>> _grammar, Map<String,String> _xmlCharacters)
             throws IOException {
         nbPattern = 0;
         fileName = _fileName;
@@ -41,7 +41,7 @@ public abstract class AOutputFormatter {
      * @param pat
      * @return
      */
-    public boolean checkOutputConstraint(Vector<String> pat){
+    public boolean checkOutputConstraint(ArrayList<String> pat){
 
         /*if(Pattern.isMissedLeafNode(pat) ||
                 (Pattern.countLeafNode(pat) < config.getMinLeaf()) )
@@ -102,14 +102,14 @@ public abstract class AOutputFormatter {
      * @param nodeName
      * @return
      */
-    private boolean checkMandatoryChild(Vector<String> pat, String nodeName){
+    private boolean checkMandatoryChild(ArrayList<String> pat, String nodeName){
 
         boolean result = false;
         for(int i=0; i<pat.size(); ++i)
-            if(pat.elementAt(i).equals(nodeName))
+            if(pat.get(i).equals(nodeName))
             {
-                Vector<String> listOfChild = Pattern.findChildrenLabels(pat,i);
-                String degree = grammar.get(nodeName).elementAt(1);
+                ArrayList<String> listOfChild = Pattern.findChildrenLabels(pat,i);
+                String degree = grammar.get(nodeName).get(1);
                 if(!degree.equals(String.valueOf(listOfChild.size())))
                     return true;//result = true;
                 else
