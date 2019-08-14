@@ -185,8 +185,6 @@ public class FreqT_Int_ext_multi extends FreqT_Int {
 
     }
 
-
-
     public void run(Map <String, ArrayList<Integer> > _rootIDs,long start1st,FileWriter _report){
         try{
             //calculate times for incremental maximal pattern mining

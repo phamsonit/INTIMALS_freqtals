@@ -232,20 +232,22 @@ public class ReadXML_Int {
     public ArrayList <ArrayList<NodeFreqT>> readDatabase(boolean _abstractLeafs, File rootDirectory, Map <Integer, String> labelIndex) {
         ArrayList < ArrayList<NodeFreqT> > database = new ArrayList < ArrayList<NodeFreqT> >();
         abstractLeafs = _abstractLeafs;
-        ArrayList<File> files = new ArrayList<File>();
-        //TODO: problem when files located in sub-directory
-        populateFileList(rootDirectory,files);
+
+        ArrayList<String> files = new ArrayList<>();
+        populateFileListNew(rootDirectory,files);
+        //ArrayList<File> files = new ArrayList<File>();
+        //populateFileList(rootDirectory,files);
         System.out.print("Reading " + files.size() +" files ");
         XmlFormatter formatter = new XmlFormatter();
         DocumentBuilderFactory dbFactory = DocumentBuilderFactory.newInstance();
         try {
-            for (File fi : files) {
+            //for (File fi : files) {
+            for (String fi : files) {
                 countSection=0;
-
                 //format XML file before create tree
                 String inFileTemp = rootDirectory+sep+"temp.xml";
                 Files.deleteIfExists(Paths.get(inFileTemp));
-                formatter.format(rootDirectory+sep+fi.getName(),inFileTemp);
+                formatter.format(fi,inFileTemp);
 
                 //create tree
                 File fXmlFile = new File(inFileTemp);
@@ -289,6 +291,17 @@ public class ReadXML_Int {
         Collections.addAll(list, files);
         File[] directories = directory.listFiles(File::isDirectory);
         for (File dir : directories) populateFileList(dir,list);
+    }
+	
+    //collect full name of files in the directory
+    private void populateFileListNew(File directory, ArrayList<String> list){
+        File[] files = directory.listFiles((dir, name) -> name.toLowerCase().endsWith(".xml"));
+        ArrayList<String> fullNames = new ArrayList<>();
+        for(int i=0; i<files.length; ++i)
+            fullNames.add(files[i].getAbsolutePath());
+        list.addAll(fullNames);
+        File[] directories = directory.listFiles(File::isDirectory);
+        for (File dir : directories) populateFileListNew(dir,list);
     }
 
     public static void printTransaction(ArrayList < ArrayList<NodeFreqT> > trans){

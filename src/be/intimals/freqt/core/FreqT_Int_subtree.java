@@ -12,8 +12,8 @@ import java.util.*;
 
 public class FreqT_Int_subtree extends FreqT_Int {
 
-    private ArrayList < Integer > maximalPattern;
-    private Vector < Vector<NodeFreqT> > newTransaction = new Vector<>();
+    private ArrayList<Integer> maximalPattern;
+    private Vector<Vector<NodeFreqT> > newTransaction = new Vector<>();
 
     private ArrayList<Integer> inputPattern = new ArrayList<>();
     private String outputPattern;

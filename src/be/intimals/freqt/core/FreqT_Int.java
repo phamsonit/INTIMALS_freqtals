@@ -21,19 +21,19 @@ import java.util.concurrent.ConcurrentHashMap;
 public class FreqT_Int {
     protected Config config;
     protected ArrayList  <ArrayList <NodeFreqT> >  transaction = new ArrayList <>();
-    protected Map <String,ArrayList <String> > grammar    = new LinkedHashMap<>();
-    protected Map <String,String>          xmlCharacters  = new LinkedHashMap<>();
+    protected Map<String,ArrayList <String> > grammar    = new LinkedHashMap<>();
+    protected Map<String,String>          xmlCharacters  = new LinkedHashMap<>();
 
     //new variables for Integer
     protected Map<Integer,String> labelIndex = new HashMap<>();
-    protected Map <Integer,ArrayList <String> > grammarInt    = new LinkedHashMap<>();
-    protected Map <Integer,ArrayList<Integer> > blackLabelsInt = new LinkedHashMap<>();
-    protected Map <Integer,ArrayList<Integer> > whiteLabelsInt = new LinkedHashMap<>();
+    protected Map<Integer,ArrayList<String> > grammarInt    = new LinkedHashMap<>();
+    protected Map<Integer,ArrayList<Integer> > blackLabelsInt = new LinkedHashMap<>();
+    protected Map<Integer,ArrayList<Integer> > whiteLabelsInt = new LinkedHashMap<>();
 
     ///////////
     private Map<ArrayList<Integer>,String> MFP = new HashMap<>();
     //store root labels
-    private Set <String>    rootLabels  = new HashSet<>();
+    private Set<String>    rootLabels  = new HashSet<>();
     //store root occurrences of patterns
     private Map<String,ArrayList<Integer> >  rootIDs = new HashMap<>();
     //store file ids of patterns
@@ -425,7 +425,7 @@ public class FreqT_Int {
                 }
             }
         }catch (Exception e){
-            System.out.println("PrungBlackList error "+e);
+            System.out.println("PruneBlackList error "+e);
         }
     }
 
