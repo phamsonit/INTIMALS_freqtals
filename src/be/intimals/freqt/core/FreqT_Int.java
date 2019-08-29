@@ -507,7 +507,7 @@ public class FreqT_Int {
                 //keep only the root id and rightmost locations
                 //List<Integer> occurrences = Location.getLocationList(projected.getProjectLocation(i)).subList(0,1);
                 //keep all locations of pattern
-                List<Integer> occurrences = Location.getLocationList(projected.getProjectLocation(i));
+                int[] occurrences = Location.getLocationArr(projected.getProjectLocation(i));
                 //keep lineNr to calculate distance of two nodes
                 //List<Integer> lines = projected.getProjectLineNr(i);
                 //String prefix = "";
@@ -529,13 +529,13 @@ public class FreqT_Int {
                         Projected tmp;
                         if (candidates.containsKey(itemInt)) {
                             candidates.get(itemInt).addProjectLocation(id, l, occurrences);//keeping all locations
-                            int rootPos = Location.getLocationList(projected.getProjectLocation(i)).get(0);
+                            int rootPos = Location.getRoot(projected.getProjectLocation(i));
                             candidates.get(itemInt).setProjectRootLocation(id, rootPos);//keeping root locations
                         } else {
                             tmp = new Projected();
                             tmp.setProjectedDepth(newDepth);
                             tmp.addProjectLocation(id, l, occurrences); //keeping all locations
-                            int rootPos = Location.getLocationList(projected.getProjectLocation(i)).get(0);
+                            int rootPos = Location.getRoot(projected.getProjectLocation(i));
                             tmp.setProjectRootLocation(id, rootPos); //keeping root locations
                             candidates.put(itemInt, tmp);
                         }
@@ -849,17 +849,17 @@ public class FreqT_Int {
             int i=0;
             while(i < projected.getProjectLocationSize()){
                 int id = Location.getLocationId(projected.getProjectLocation(i));
-                List<Integer> pos = Location.getLocationList(projected.getProjectLocation(i));
+               int[] pos = Location.getLocationArr(projected.getProjectLocation(i));
                 //System.out.println(pos);
 
                 int firstPos=0;
-                for(int j=pos.size()-2; j>0; --j){
-                    if(_transaction.get(id).get(pos.get(j)).getNode_label_int() == pat.get(childrenPos.get(childrenPos.size()-2))) {
-                        firstPos = pos.get(j);
+                for(int j=pos.length-2; j>0; --j){
+                    if(_transaction.get(id).get(pos[j]).getNode_label_int() == pat.get(childrenPos.get(childrenPos.size()-2))) {
+                        firstPos = pos[j];
                         break;
                     }
                 }
-                int lastPos = pos.get(pos.size()-1);
+                int lastPos = pos[pos.length-1];
                 //System.out.println(firstPos+" "+lastPost);
                 if (_transaction.get(id).get(firstPos).getNodeSibling() != lastPos){
                     //remove paragraph location

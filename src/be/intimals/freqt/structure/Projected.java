@@ -63,7 +63,7 @@ public class Projected {
     }
 
     //keep positions of all occurrences
-    public void addProjectLocation(int i, int j, List<Integer> occurrences) {
+    public void addProjectLocation(int i, int j, int[] occurrences) {
         int[] l = Location.init(occurrences);
         Location.setLocationId(l, i);
         l = Location.addLocationPos(l, j);
