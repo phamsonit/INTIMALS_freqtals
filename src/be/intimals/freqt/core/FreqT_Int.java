@@ -389,17 +389,12 @@ public class FreqT_Int {
     }
 
 
-    //return true if the label_int is in the set of black lables
-    private static boolean checkBlackListLabel(Integer label_int, Map<Integer,ArrayList<Integer>> _blackLabels){
-        boolean found = false;
-        Iterator<Map.Entry<Integer,ArrayList<Integer>>> iter = _blackLabels.entrySet().iterator();
-        while(iter.hasNext() && !found){
-            Map.Entry<Integer,ArrayList<Integer>> entry = iter.next();
-            if(entry.getValue().contains(label_int)) {
-                found = true;
-            }
+    //return true if the label_int is in the set of black labels
+    private static boolean checkBlackListLabel(Integer label_int, Collection<ArrayList<Integer>> _blackLabels){
+        for(ArrayList<Integer> labels : _blackLabels){
+            if(labels.contains(label_int)) return true;
         }
-        return found;
+        return false;
     }
 
     /**
@@ -417,7 +412,7 @@ public class FreqT_Int {
                 Map.Entry<ArrayList<Integer>, Projected> entry = can.next();
                 int candidateLabel_int = entry.getKey().get(entry.getKey().size()-1);
                 //check if it is in the blackListLabel
-                if(checkBlackListLabel(candidateLabel_int,_blackLabels)){
+                if(checkBlackListLabel(candidateLabel_int,_blackLabels.values())){
                     ArrayList<Integer> blackListChildren = Pattern_Int.getChildrenLabels(pat,entry.getKey(),_blackLabels);
                     if(blackListChildren.contains(candidateLabel_int)){
                         can.remove();
@@ -587,42 +582,28 @@ public class FreqT_Int {
                 return;
             }
             //for each candidate expand to the current pattern
-            Iterator < Map.Entry<ArrayList<Integer>,Projected> > iter = candidates.entrySet().iterator();
-            while (iter.hasNext()) {
+            for(Map.Entry<ArrayList<Integer>, Projected> entry : candidates.entrySet()){
                 int oldSize = pattern.size();
-                Map.Entry<ArrayList<Integer>, Projected> entry = iter.next();
-                //System.out.println("potential candidate: "+entry.getKey());
+                ArrayList<Integer> key = entry.getKey() ;
                 //add candidate into pattern
-                pattern.addAll(entry.getKey());
+                pattern.addAll(key);
 
                 //check continuous paragraphs
                 //if potential candidate = SectionStatementBlock then check if candidate belongs to black-section or not
-                String candidateLabel = labelIndex.get(entry.getKey().get(entry.getKey().size()-1));
+                String candidateLabel = labelIndex.get(key.get(key.size()-1));
                 if(candidateLabel.equals("SectionStatementBlock"))
                     checkBlackSection(entry,transaction);
                 //expand the pattern if all paragraphs are continuous
-                if(candidateLabel.equals("ParagraphStatementBlock")) {
+                if(candidateLabel.equals("ParagraphStatementBlock"))
                     checkContinuousParagraph(pattern, entry, transaction);
-                }
 
-                //constraint on maximal number of leafs
-                if(Pattern_Int.countLeafNode(pattern) > config.getMaxLeaf()){
-                    //System.out.println("max leaf size "+pattern);
+                if(  (Pattern_Int.countLeafNode(pattern) > config.getMaxLeaf())             //constraint on maximal number of leafs
+                   || Pattern_Int.checkMissingLeaf(pattern)                                 //constraint on real leaf node
+                   || checkObligatoryChild(pattern,entry.getKey(),grammarInt,blackLabelsInt)//constraint on obligatory children
+                    ){
                     addTree(pattern,entry.getValue());
                 }else{
-                    //constraint on real leaf node
-                    if(Pattern_Int.checkMissingLeaf(pattern)) {
-                        //System.out.println("missing leaf "+ pattern);
-                        addTree(pattern,entry.getValue());
-                    }else{
-                        //constraint on obligatory children
-                        if(checkObligatoryChild(pattern,entry.getKey(),grammarInt,blackLabelsInt)){
-                            //System.out.println("missing obligatory child "+pattern);
-                            addTree(pattern,entry.getValue());
-                        }else{
-                            project(pattern, entry.getValue());
-                        }
-                    }
+                    project(pattern, entry.getValue());
                 }
                 pattern = new ArrayList<>(pattern.subList(0,oldSize));
             }
