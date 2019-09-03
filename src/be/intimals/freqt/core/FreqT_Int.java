@@ -388,6 +388,23 @@ public class FreqT_Int {
         }
     }
 
+    public void pruneDual(Map <ArrayList<Integer>, Projected > candidates,
+                          int minSup,
+                          ArrayList<Integer> pat,
+                          Map <Integer,ArrayList<Integer>> _blackLabels){
+        Iterator < Map.Entry<ArrayList<Integer>,Projected> > can = candidates.entrySet().iterator();
+        while (can.hasNext()) {
+            Map.Entry<ArrayList<Integer>, Projected> entry = can.next();
+            Projected value = entry.getValue();
+            int sup = support(value);
+            if((sup < minSup) || blacklisted(pat,  entry.getKey(), _blackLabels))
+                    can.remove();
+            else {
+                value.setProjectedSupport(sup);
+                value.setProjectedRootSupport(rootSupport(value));
+            }
+        }
+    }
 
     //return true if the label_int is in the set of black labels
     private static boolean checkBlackListLabel(Integer label_int, Collection<ArrayList<Integer>> _blackLabels){
@@ -400,29 +417,25 @@ public class FreqT_Int {
     /**
      * prune candidates based on blacklist children
      * blacklist is created in the readWhiteLabel procedure
-     * @param candidate
+     * @param candidates
      */
     public void pruneBlackList(ArrayList<Integer> pat,
-                               Map <ArrayList<Integer>, Projected > candidate,
+                               Map <ArrayList<Integer>, Projected > candidates,
                                Map <Integer,ArrayList<Integer>> _blackLabels){
-
-        try{
-            Iterator < Map.Entry<ArrayList<Integer>,Projected> > can = candidate.entrySet().iterator();
-            while (can.hasNext()) {
-                Map.Entry<ArrayList<Integer>, Projected> entry = can.next();
-                int candidateLabel_int = entry.getKey().get(entry.getKey().size()-1);
-                //check if it is in the blackListLabel
-                if(checkBlackListLabel(candidateLabel_int,_blackLabels.values())){
-                    ArrayList<Integer> blackListChildren = Pattern_Int.getChildrenLabels(pat,entry.getKey(),_blackLabels);
-                    if(blackListChildren.contains(candidateLabel_int)){
-                        can.remove();
-                    }
-                }
+        Iterator < Map.Entry<ArrayList<Integer>,Projected> > can = candidates.entrySet().iterator();
+        while (can.hasNext()) {
+            Map.Entry<ArrayList<Integer>, Projected> entry = can.next();
+            if (blacklisted(pat,  entry.getKey(), _blackLabels)){
+                 can.remove();
             }
-        }catch (Exception e){
-            System.out.println("PruneBlackList error "+e);
         }
     }
+
+    public boolean blacklisted(ArrayList<Integer> pat, ArrayList<Integer> key, Map <Integer,ArrayList<Integer>> _blackLabels){
+        int candidateLabel_int = key.get(key.size()-1);
+        return (checkBlackListLabel(candidateLabel_int,_blackLabels.values())) &&
+            (Pattern_Int.ChildrenLabelsContains(pat,key,_blackLabels,candidateLabel_int));
+}
 
     //return true if pattern misses obligatory child
     public boolean checkObligatoryChild(ArrayList<Integer> pat,
@@ -567,13 +580,18 @@ public class FreqT_Int {
             Map<ArrayList<Integer>, Projected> candidates = generateCandidates(projected,transaction);
             //System.out.println("all candidates     " + candidates.keySet());
 
+            /*
             //constraint 0: minimum support
-            prune(candidates, config.getMinSupport());
+            //prune(candidates, config.getMinSupport());
+            pruneInline(candidates,config.getMinSupport());
             //System.out.println("after support pruning " + candidates.keySet());
 
             //constraint on list of black labels
             pruneBlackList(pattern, candidates, blackLabelsInt);
             //System.out.println("after blacklist pruning " + candidates.keySet());
+            */
+            //prune on minimum support and list of black labels
+            pruneDual(candidates,config.getMinSupport(),pattern,blackLabelsInt);
 
             //if there is no candidate then report the pattern and then stop
             if( candidates.isEmpty() ){
