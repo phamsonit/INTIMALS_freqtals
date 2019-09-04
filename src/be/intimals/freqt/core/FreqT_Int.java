@@ -534,13 +534,13 @@ public class FreqT_Int {
                         itemInt.add(_transaction.get(id).get(l).getNode_label_int());
                         //System.out.println(_transaction.elementAt(id).elementAt(l).getNode_label_int());
                         //String lineNrTemp = transaction.elementAt(id).elementAt(l).getLineNr();
-                        Projected tmp;
-                        if (candidates.containsKey(itemInt)) {
-                            candidates.get(itemInt).addProjectLocation(id, l, occurrences);//keeping all locations
+                        Projected value = candidates.get(itemInt);
+                        if (value != null) {
+                            value.addProjectLocation(id, l, occurrences);//keeping all locations
                             int rootPos = Location.getRoot(projected.getProjectLocation(i));
-                            candidates.get(itemInt).setProjectRootLocation(id, rootPos);//keeping root locations
+                            value.setProjectRootLocation(id, rootPos);//keeping root locations
                         } else {
-                            tmp = new Projected();
+                            Projected tmp = new Projected();
                             tmp.setProjectedDepth(newDepth);
                             tmp.addProjectLocation(id, l, occurrences); //keeping all locations
                             int rootPos = Location.getRoot(projected.getProjectLocation(i));
@@ -583,7 +583,6 @@ public class FreqT_Int {
             /*
             //constraint 0: minimum support
             //prune(candidates, config.getMinSupport());
-            pruneInline(candidates,config.getMinSupport());
             //System.out.println("after support pruning " + candidates.keySet());
 
             //constraint on list of black labels
@@ -668,10 +667,11 @@ public class FreqT_Int {
                         //if node_label already exists
                         ArrayList<Integer> temp = new ArrayList<>();
                         temp.add(node_label_id);
-                        if (freq1.containsKey(temp)) {
-                            freq1.get(temp).setProjectLocation(i, j);
+                        Projected value = freq1.get(temp);
+                        if (value != null) {
+                            value.setProjectLocation(i, j);
                             //freq1.get(node_label).setProjectLineNr(Integer.valueOf(lineNr)); //add to keep the line number
-                            freq1.get(temp).setProjectRootLocation(i, j);
+                            value.setProjectRootLocation(i, j);
                         } else {
                             Projected projected = new Projected();
                             projected.setProjectLocation(i, j);

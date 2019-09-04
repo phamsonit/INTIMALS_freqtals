@@ -57,13 +57,12 @@ public class FreqT_Int_subtree extends FreqT_Int {
                         ArrayList<Integer> itemInt = new ArrayList<>();
                         itemInt.addAll(prefixInt);
                         itemInt.add(newTransaction.elementAt(id).elementAt(l).getNode_label_int());
-
-                        Projected tmp;// = new Projected();
-                        if(candidate.containsKey(itemInt)) {
-                            candidate.get(itemInt).setProjectLocation(id,l); //store right most positions
+                        Projected value = candidate.get(itemInt);
+                        if(value != null) {
+                            value.setProjectLocation(id,l); //store right most positions
                         }
                         else {
-                            tmp = new Projected();
+                            Projected tmp = new Projected();
                             tmp.setProjectedDepth(newdepth);
                             tmp.setProjectLocation(id,l); //store right most positions
                             candidate.put(itemInt, tmp);
@@ -92,7 +91,6 @@ public class FreqT_Int_subtree extends FreqT_Int {
                 //expand the current pattern with each candidate
                 Iterator<Map.Entry<ArrayList<Integer>, Projected>> iter = candidate.entrySet().iterator();
                 while (iter.hasNext()) {
-                    int oldSize = maximalPattern.size();
                     Map.Entry<ArrayList<Integer>, Projected> entry = iter.next();
                     // add new candidate to current pattern
                     maximalPattern.addAll(entry.getKey());
