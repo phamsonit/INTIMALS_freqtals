@@ -86,12 +86,16 @@ public class FreqT_Int_ext_serial extends FreqT_Int {
             //System.out.println(largestPattern);
             //find candidates
             Map<ArrayList<Integer>, Projected> candidates = generateCandidates(projected,transaction);
+            /*
             //System.out.println("all candidates     " + candidates.keySet());
             prune(candidates,config.getMinSupport());
             //System.out.println("after support pruning " + candidates.keySet());
             //pruning based on blacklist: for each candidate if it occurs in the blacklist --> remove
             pruneBlackList(largestPattern,candidates,blackLabelsInt);
             //System.out.println("after blacklist pruning " + candidates.keySet());
+            */
+            //prune on minimum support and list of black labels
+            pruneSupportAndBlacklist(candidates,config.getMinSupport(),largestPattern,blackLabelsInt);
             //if there is no candidate then report pattern --> stop
             if( candidates.isEmpty() ){
                 addPattern(largestPattern,projected,MFP);

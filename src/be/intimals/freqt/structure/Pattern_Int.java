@@ -6,36 +6,25 @@ import java.util.concurrent.ConcurrentSkipListSet;
 
 public class Pattern_Int {
 
-
-    //get a list of children from ListLabels, i.e., blackLabels or whiteLabels, ...
-    public static ArrayList<Integer> getChildrenLabels(ArrayList<Integer> pat,
-                                                ArrayList<Integer> candidate,
-                                                Map<Integer,ArrayList<Integer>> ListLabels){
-        ArrayList<Integer> childrenTemp = new ArrayList<>();
-        try{
-            //add current candidate to pattern
-
-            if(pat.size()==1){
-                return ListLabels.get(pat.get(0));
-            }else{
-                ArrayList<Integer> patternTemp = new ArrayList<>(pat);
-                patternTemp.addAll(candidate);
-                //find parent's position of potentialCandidate in patternTemp
-                int parentPos = findParentPosition(patternTemp, candidate);
-                int parentLabel_Int = patternTemp.get(parentPos);
-                //find children of the parentLabel
-                if(ListLabels.containsKey(parentLabel_Int)){
-                    childrenTemp.addAll(ListLabels.get(parentLabel_Int));
-                }
-
+    public static boolean ChildrenLabelsContains(ArrayList<Integer> pat,
+                                                       ArrayList<Integer> candidate,
+                                                       Map<Integer,ArrayList<Integer>> ListLabels,
+                                                       int label){
+        if(pat.size()==1){
+            return ListLabels.get(pat.get(0)).contains(label);
+        }else{
+            ArrayList<Integer> patternTemp = new ArrayList<>(pat);
+            patternTemp.addAll(candidate);
+            int parentPos = findParentPosition(patternTemp, candidate);
+            //find parent's position of potentialCandidate in patternTemp
+            int parentLabel_Int = patternTemp.get(parentPos);
+            //find children of the parentLabel
+            if(ListLabels.containsKey(parentLabel_Int)){
+                if (ListLabels.get(parentLabel_Int).contains(label))
+                    return true;
             }
-
-
-        }catch (Exception e){
-            System.out.println("getChirenLabels error: "+e);
         }
-
-        return childrenTemp;
+        return false;
     }
 
 

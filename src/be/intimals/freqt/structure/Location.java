@@ -18,10 +18,11 @@ public class Location {
         return new int[1]; // Reserve the first element to store location id
     }
 
-    public static int[] init(List<Integer> start) {
-        List<Integer> copy = new ArrayList<>(start);
-        copy.add(0, 0); // Reserve the first element to store location id
-        return toPrimitiveIntArray(copy);
+    public static int[] init(int[] start) {
+        int[] result = new int[start.length+1];
+        result[0] = 0;
+        System.arraycopy(start, 0, result, 1, start.length);
+        return result;
     }
 
     public static void setLocationId(int[]location , int a) {
@@ -36,13 +37,6 @@ public class Location {
         return appendArray(location, a);
     }
 
-    public static List<Integer> deleteLocationPos(int[] location, int a) {
-        List<Integer> list = toArrayList(location);
-        list.remove(a);
-        return list;
-    }
-
-
     public static int getLocationPos(int[] location) {
         return location[location.length-1];
     }
@@ -53,16 +47,12 @@ public class Location {
         return list;
     }
 
+    public static int[] getLocationArr(int[] location){
+        return Arrays.copyOfRange(location,1,location.length);
+    }
 
-    // Convert an int[] to a List<Integer>
-    private static int[] toPrimitiveIntArray(List<Integer> al) {
-        int[] converted = new int[al.size()];
-        Iterator<Integer> iterator = al.iterator();
-        for (int i = 0; i < converted.length; i++)
-        {
-            converted[i] = iterator.next().intValue();
-        }
-        return converted;
+    public static int getRoot(int[] location){
+        return location[1];
     }
 
     // Convert a List<Integer> to an int[]

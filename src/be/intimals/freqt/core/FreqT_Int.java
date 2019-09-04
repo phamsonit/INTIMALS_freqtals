@@ -337,7 +337,7 @@ public class FreqT_Int {
      * @param projected
      * @return
      */
-    private int support(Projected projected){
+    private int getSupport(Projected projected){
         //if(weighted) return projected.getProjectLocationSize();
         int old = 0xffffffff;
         int sup = 0;
@@ -354,7 +354,7 @@ public class FreqT_Int {
      * @param projected
      * @return
      */
-    private int rootSupport(Projected projected){
+    private int getRootSupport(Projected projected){
         int rootSup = 1;
         for(int i=0; i< projected.getProjectRootLocationSize()-1;++i) {
             int[] location1 = projected.getProjectRootLocation(i);
@@ -376,8 +376,8 @@ public class FreqT_Int {
         Iterator < Map.Entry<ArrayList<Integer>,Projected> > iter = candidates.entrySet().iterator();
         while (iter.hasNext()) {
             Map.Entry<ArrayList<Integer>,Projected> entry = iter.next();
-            int sup = support(entry.getValue());
-            int wsup = rootSupport(entry.getValue());
+            int sup = getSupport(entry.getValue());
+            int wsup = getRootSupport(entry.getValue());
             if(sup < minSup){
                 iter.remove();
             }
@@ -388,46 +388,54 @@ public class FreqT_Int {
         }
     }
 
-
-    //return true if the label_int is in the set of black lables
-    private static boolean checkBlackListLabel(Integer label_int, Map<Integer,ArrayList<Integer>> _blackLabels){
-        boolean found = false;
-        Iterator<Map.Entry<Integer,ArrayList<Integer>>> iter = _blackLabels.entrySet().iterator();
-        while(iter.hasNext() && !found){
-            Map.Entry<Integer,ArrayList<Integer>> entry = iter.next();
-            if(entry.getValue().contains(label_int)) {
-                found = true;
+    public void pruneSupportAndBlacklist(Map <ArrayList<Integer>, Projected > candidates,
+                                         int minSup,
+                                         ArrayList<Integer> pat,
+                                         Map <Integer,ArrayList<Integer>> _blackLabels){
+        Iterator < Map.Entry<ArrayList<Integer>,Projected> > can = candidates.entrySet().iterator();
+        while (can.hasNext()) {
+            Map.Entry<ArrayList<Integer>, Projected> entry = can.next();
+            Projected value = entry.getValue();
+            int sup = getSupport(value);
+            if((sup < minSup) || isBlacklisted(pat,  entry.getKey(), _blackLabels))
+                    can.remove();
+            else {
+                value.setProjectedSupport(sup);
+                value.setProjectedRootSupport(getRootSupport(value));
             }
         }
-        return found;
+    }
+
+    //return true if the label_int is in the set of black labels
+    private static boolean checkBlackListLabel(Integer label_int, Collection<ArrayList<Integer>> _blackLabels){
+        for(ArrayList<Integer> labels : _blackLabels){
+            if(labels.contains(label_int)) return true;
+        }
+        return false;
     }
 
     /**
      * prune candidates based on blacklist children
      * blacklist is created in the readWhiteLabel procedure
-     * @param candidate
+     * @param candidates
      */
     public void pruneBlackList(ArrayList<Integer> pat,
-                               Map <ArrayList<Integer>, Projected > candidate,
+                               Map <ArrayList<Integer>, Projected > candidates,
                                Map <Integer,ArrayList<Integer>> _blackLabels){
-
-        try{
-            Iterator < Map.Entry<ArrayList<Integer>,Projected> > can = candidate.entrySet().iterator();
-            while (can.hasNext()) {
-                Map.Entry<ArrayList<Integer>, Projected> entry = can.next();
-                int candidateLabel_int = entry.getKey().get(entry.getKey().size()-1);
-                //check if it is in the blackListLabel
-                if(checkBlackListLabel(candidateLabel_int,_blackLabels)){
-                    ArrayList<Integer> blackListChildren = Pattern_Int.getChildrenLabels(pat,entry.getKey(),_blackLabels);
-                    if(blackListChildren.contains(candidateLabel_int)){
-                        can.remove();
-                    }
-                }
+        Iterator < Map.Entry<ArrayList<Integer>,Projected> > can = candidates.entrySet().iterator();
+        while (can.hasNext()) {
+            Map.Entry<ArrayList<Integer>, Projected> entry = can.next();
+            if (isBlacklisted(pat,  entry.getKey(), _blackLabels)){
+                 can.remove();
             }
-        }catch (Exception e){
-            System.out.println("PruneBlackList error "+e);
         }
     }
+
+    public boolean isBlacklisted(ArrayList<Integer> pat, ArrayList<Integer> key, Map <Integer,ArrayList<Integer>> _blackLabels){
+        int candidateLabel_int = key.get(key.size()-1);
+        return (checkBlackListLabel(candidateLabel_int,_blackLabels.values())) &&
+            (Pattern_Int.ChildrenLabelsContains(pat,key,_blackLabels,candidateLabel_int));
+}
 
     //return true if pattern misses obligatory child
     public boolean checkObligatoryChild(ArrayList<Integer> pat,
@@ -507,7 +515,7 @@ public class FreqT_Int {
                 //keep only the root id and rightmost locations
                 //List<Integer> occurrences = Location.getLocationList(projected.getProjectLocation(i)).subList(0,1);
                 //keep all locations of pattern
-                List<Integer> occurrences = Location.getLocationList(projected.getProjectLocation(i));
+                int[] occurrences = Location.getLocationArr(projected.getProjectLocation(i));
                 //keep lineNr to calculate distance of two nodes
                 //List<Integer> lines = projected.getProjectLineNr(i);
                 //String prefix = "";
@@ -526,16 +534,16 @@ public class FreqT_Int {
                         itemInt.add(_transaction.get(id).get(l).getNode_label_int());
                         //System.out.println(_transaction.elementAt(id).elementAt(l).getNode_label_int());
                         //String lineNrTemp = transaction.elementAt(id).elementAt(l).getLineNr();
-                        Projected tmp;
-                        if (candidates.containsKey(itemInt)) {
-                            candidates.get(itemInt).addProjectLocation(id, l, occurrences);//keeping all locations
-                            int rootPos = Location.getLocationList(projected.getProjectLocation(i)).get(0);
-                            candidates.get(itemInt).setProjectRootLocation(id, rootPos);//keeping root locations
+                        Projected value = candidates.get(itemInt);
+                        if (value != null) {
+                            value.addProjectLocation(id, l, occurrences);//keeping all locations
+                            int rootPos = Location.getRoot(projected.getProjectLocation(i));
+                            value.setProjectRootLocation(id, rootPos);//keeping root locations
                         } else {
-                            tmp = new Projected();
+                            Projected tmp = new Projected();
                             tmp.setProjectedDepth(newDepth);
                             tmp.addProjectLocation(id, l, occurrences); //keeping all locations
-                            int rootPos = Location.getLocationList(projected.getProjectLocation(i)).get(0);
+                            int rootPos = Location.getRoot(projected.getProjectLocation(i));
                             tmp.setProjectRootLocation(id, rootPos); //keeping root locations
                             candidates.put(itemInt, tmp);
                         }
@@ -572,13 +580,17 @@ public class FreqT_Int {
             Map<ArrayList<Integer>, Projected> candidates = generateCandidates(projected,transaction);
             //System.out.println("all candidates     " + candidates.keySet());
 
+            /*
             //constraint 0: minimum support
-            prune(candidates, config.getMinSupport());
+            //prune(candidates, config.getMinSupport());
             //System.out.println("after support pruning " + candidates.keySet());
 
             //constraint on list of black labels
             pruneBlackList(pattern, candidates, blackLabelsInt);
             //System.out.println("after blacklist pruning " + candidates.keySet());
+            */
+            //prune on minimum support and list of black labels
+            pruneSupportAndBlacklist(candidates,config.getMinSupport(),pattern,blackLabelsInt);
 
             //if there is no candidate then report the pattern and then stop
             if( candidates.isEmpty() ){
@@ -587,42 +599,28 @@ public class FreqT_Int {
                 return;
             }
             //for each candidate expand to the current pattern
-            Iterator < Map.Entry<ArrayList<Integer>,Projected> > iter = candidates.entrySet().iterator();
-            while (iter.hasNext()) {
+            for(Map.Entry<ArrayList<Integer>, Projected> entry : candidates.entrySet()){
                 int oldSize = pattern.size();
-                Map.Entry<ArrayList<Integer>, Projected> entry = iter.next();
-                //System.out.println("potential candidate: "+entry.getKey());
+                ArrayList<Integer> key = entry.getKey() ;
                 //add candidate into pattern
-                pattern.addAll(entry.getKey());
+                pattern.addAll(key);
 
                 //check continuous paragraphs
                 //if potential candidate = SectionStatementBlock then check if candidate belongs to black-section or not
-                String candidateLabel = labelIndex.get(entry.getKey().get(entry.getKey().size()-1));
+                String candidateLabel = labelIndex.get(key.get(key.size()-1));
                 if(candidateLabel.equals("SectionStatementBlock"))
                     checkBlackSection(entry,transaction);
                 //expand the pattern if all paragraphs are continuous
-                if(candidateLabel.equals("ParagraphStatementBlock")) {
+                if(candidateLabel.equals("ParagraphStatementBlock"))
                     checkContinuousParagraph(pattern, entry, transaction);
-                }
 
-                //constraint on maximal number of leafs
-                if(Pattern_Int.countLeafNode(pattern) > config.getMaxLeaf()){
-                    //System.out.println("max leaf size "+pattern);
+                if(  (Pattern_Int.countLeafNode(pattern) > config.getMaxLeaf())             //constraint on maximal number of leafs
+                   || Pattern_Int.checkMissingLeaf(pattern)                                 //constraint on real leaf node
+                   || checkObligatoryChild(pattern,entry.getKey(),grammarInt,blackLabelsInt)//constraint on obligatory children
+                    ){
                     addTree(pattern,entry.getValue());
                 }else{
-                    //constraint on real leaf node
-                    if(Pattern_Int.checkMissingLeaf(pattern)) {
-                        //System.out.println("missing leaf "+ pattern);
-                        addTree(pattern,entry.getValue());
-                    }else{
-                        //constraint on obligatory children
-                        if(checkObligatoryChild(pattern,entry.getKey(),grammarInt,blackLabelsInt)){
-                            //System.out.println("missing obligatory child "+pattern);
-                            addTree(pattern,entry.getValue());
-                        }else{
-                            project(pattern, entry.getValue());
-                        }
-                    }
+                    project(pattern, entry.getValue());
                 }
                 pattern = new ArrayList<>(pattern.subList(0,oldSize));
             }
@@ -669,10 +667,11 @@ public class FreqT_Int {
                         //if node_label already exists
                         ArrayList<Integer> temp = new ArrayList<>();
                         temp.add(node_label_id);
-                        if (freq1.containsKey(temp)) {
-                            freq1.get(temp).setProjectLocation(i, j);
+                        Projected value = freq1.get(temp);
+                        if (value != null) {
+                            value.setProjectLocation(i, j);
                             //freq1.get(node_label).setProjectLineNr(Integer.valueOf(lineNr)); //add to keep the line number
-                            freq1.get(temp).setProjectRootLocation(i, j);
+                            value.setProjectRootLocation(i, j);
                         } else {
                             Projected projected = new Projected();
                             projected.setProjectLocation(i, j);
@@ -849,17 +848,17 @@ public class FreqT_Int {
             int i=0;
             while(i < projected.getProjectLocationSize()){
                 int id = Location.getLocationId(projected.getProjectLocation(i));
-                List<Integer> pos = Location.getLocationList(projected.getProjectLocation(i));
+               int[] pos = Location.getLocationArr(projected.getProjectLocation(i));
                 //System.out.println(pos);
 
                 int firstPos=0;
-                for(int j=pos.size()-2; j>0; --j){
-                    if(_transaction.get(id).get(pos.get(j)).getNode_label_int() == pat.get(childrenPos.get(childrenPos.size()-2))) {
-                        firstPos = pos.get(j);
+                for(int j=pos.length-2; j>0; --j){
+                    if(_transaction.get(id).get(pos[j]).getNode_label_int() == pat.get(childrenPos.get(childrenPos.size()-2))) {
+                        firstPos = pos[j];
                         break;
                     }
                 }
-                int lastPos = pos.get(pos.size()-1);
+                int lastPos = pos[pos.length-1];
                 //System.out.println(firstPos+" "+lastPost);
                 if (_transaction.get(id).get(firstPos).getNodeSibling() != lastPos){
                     //remove paragraph location
