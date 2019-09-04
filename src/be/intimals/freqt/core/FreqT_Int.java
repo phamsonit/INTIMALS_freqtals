@@ -337,7 +337,7 @@ public class FreqT_Int {
      * @param projected
      * @return
      */
-    private int support(Projected projected){
+    private int getSupport(Projected projected){
         //if(weighted) return projected.getProjectLocationSize();
         int old = 0xffffffff;
         int sup = 0;
@@ -354,7 +354,7 @@ public class FreqT_Int {
      * @param projected
      * @return
      */
-    private int rootSupport(Projected projected){
+    private int getRootSupport(Projected projected){
         int rootSup = 1;
         for(int i=0; i< projected.getProjectRootLocationSize()-1;++i) {
             int[] location1 = projected.getProjectRootLocation(i);
@@ -376,8 +376,8 @@ public class FreqT_Int {
         Iterator < Map.Entry<ArrayList<Integer>,Projected> > iter = candidates.entrySet().iterator();
         while (iter.hasNext()) {
             Map.Entry<ArrayList<Integer>,Projected> entry = iter.next();
-            int sup = support(entry.getValue());
-            int wsup = rootSupport(entry.getValue());
+            int sup = getSupport(entry.getValue());
+            int wsup = getRootSupport(entry.getValue());
             if(sup < minSup){
                 iter.remove();
             }
@@ -388,20 +388,20 @@ public class FreqT_Int {
         }
     }
 
-    public void pruneDual(Map <ArrayList<Integer>, Projected > candidates,
-                          int minSup,
-                          ArrayList<Integer> pat,
-                          Map <Integer,ArrayList<Integer>> _blackLabels){
+    public void pruneSupportAndBlacklist(Map <ArrayList<Integer>, Projected > candidates,
+                                         int minSup,
+                                         ArrayList<Integer> pat,
+                                         Map <Integer,ArrayList<Integer>> _blackLabels){
         Iterator < Map.Entry<ArrayList<Integer>,Projected> > can = candidates.entrySet().iterator();
         while (can.hasNext()) {
             Map.Entry<ArrayList<Integer>, Projected> entry = can.next();
             Projected value = entry.getValue();
-            int sup = support(value);
-            if((sup < minSup) || blacklisted(pat,  entry.getKey(), _blackLabels))
+            int sup = getSupport(value);
+            if((sup < minSup) || isBlacklisted(pat,  entry.getKey(), _blackLabels))
                     can.remove();
             else {
                 value.setProjectedSupport(sup);
-                value.setProjectedRootSupport(rootSupport(value));
+                value.setProjectedRootSupport(getRootSupport(value));
             }
         }
     }
@@ -425,13 +425,13 @@ public class FreqT_Int {
         Iterator < Map.Entry<ArrayList<Integer>,Projected> > can = candidates.entrySet().iterator();
         while (can.hasNext()) {
             Map.Entry<ArrayList<Integer>, Projected> entry = can.next();
-            if (blacklisted(pat,  entry.getKey(), _blackLabels)){
+            if (isBlacklisted(pat,  entry.getKey(), _blackLabels)){
                  can.remove();
             }
         }
     }
 
-    public boolean blacklisted(ArrayList<Integer> pat, ArrayList<Integer> key, Map <Integer,ArrayList<Integer>> _blackLabels){
+    public boolean isBlacklisted(ArrayList<Integer> pat, ArrayList<Integer> key, Map <Integer,ArrayList<Integer>> _blackLabels){
         int candidateLabel_int = key.get(key.size()-1);
         return (checkBlackListLabel(candidateLabel_int,_blackLabels.values())) &&
             (Pattern_Int.ChildrenLabelsContains(pat,key,_blackLabels,candidateLabel_int));
@@ -591,7 +591,7 @@ public class FreqT_Int {
             //System.out.println("after blacklist pruning " + candidates.keySet());
             */
             //prune on minimum support and list of black labels
-            pruneDual(candidates,config.getMinSupport(),pattern,blackLabelsInt);
+            pruneSupportAndBlacklist(candidates,config.getMinSupport(),pattern,blackLabelsInt);
 
             //if there is no candidate then report the pattern and then stop
             if( candidates.isEmpty() ){
