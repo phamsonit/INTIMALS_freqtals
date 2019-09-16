@@ -130,29 +130,34 @@ public class Main {
             //FreqT freqt = new FreqT(config);
             freqt.run();
 
-            //run forestmatcher to create matches.xml and clusters.xml
 
+            //run forestmatcher to create matches.xml and clusters.xml
             System.out.println("Running forestmatcher ...");
             String command = "java -jar forestmatcher.jar " +
                     inputPath + " " + outputPatterns +" " + outputMatches + " " + outputClusters;
             Process proc = Runtime.getRuntime().exec(command);
             proc.waitFor();
 
-            //find common patterns in each cluster
-            System.out.println("Mining common patterns in clusters ...");
-            String outputPatternsTemp = outputPatterns+".txt";
-            FreqT_common inCluster = new FreqT_common(config,freqt.getGrammar(),freqt.getXmlCharacters());
-            inCluster.run(outputPatternsTemp, outputClustersTemp, outputCommonPatterns);
 
-            //find matches of common_patterns
-            command = "java -jar forestmatcher.jar " +
-                    inputPath + " " + outputCommonPatterns +" " + outputCommonMatches + " " + outputCommonClusters;
-            proc = Runtime.getRuntime().exec(command);
-            proc.waitFor();
+            File pattern = new File(outputClustersTemp);
+            if(pattern.exists()){
+                //find common patterns in each cluster
+                System.out.println("Mining common patterns in clusters ...");
+                String outputPatternsTemp = outputPatterns+".txt";
+                FreqT_common inCluster = new FreqT_common(config,freqt.getGrammar(),freqt.getXmlCharacters());
+                inCluster.run(outputPatternsTemp, outputClustersTemp, outputCommonPatterns);
 
-            System.out.println("Cleaning up ...");
-            Files.deleteIfExists(Paths.get(outputPatternsTemp));
-            Files.deleteIfExists(Paths.get(outputCommonPatterns+".txt"));
+                //find matches of common_patterns
+                command = "java -jar forestmatcher.jar " +
+                        inputPath + " " + outputCommonPatterns +" " + outputCommonMatches + " " + outputCommonClusters;
+                proc = Runtime.getRuntime().exec(command);
+                proc.waitFor();
+
+                System.out.println("Cleaning up ...");
+                Files.deleteIfExists(Paths.get(outputPatternsTemp));
+                Files.deleteIfExists(Paths.get(outputCommonPatterns+".txt"));
+            }
+
             System.out.println("Finished ...");
 
             //System.out.println("===========================================================");
