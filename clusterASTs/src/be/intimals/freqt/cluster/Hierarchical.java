@@ -3,11 +3,13 @@ import java.io.BufferedReader;
 import java.io.File;
 import java.io.FileReader;
 import java.io.FileWriter;
+import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.nio.file.StandardCopyOption;
 import java.util.*;
+import java.util.regex.Pattern;
 
 public class Hierarchical extends Cluster {
     public Hierarchical(String _inputDir, String _outputDir, String _num){
@@ -99,10 +101,12 @@ public class Hierarchical extends Cluster {
 
                     //copy source to target using Files Class
                     for (int j = 0; j < entry.getValue().size(); ++j) {
-                        String sourceFileName = fileNames.get(Integer.valueOf(entry.getValue().get(j)));
-                        String targetFileName = folder + "/" + sourceFileName.replace('/', '_');
-                        Path sourceDirectory = Paths.get(sourceFileName);
-                        Path targetDirectory = Paths.get(targetFileName);
+                        String sourceFilePath = fileNames.get(Integer.valueOf(entry.getValue().get(j)));
+                        String[] splittedPath = sourceFilePath.split(Pattern.quote("\\"));
+                        String sourceFileName = splittedPath[splittedPath.length-1];
+                        String targetFilePath = folder.getAbsolutePath()+ "\\" + sourceFileName;
+                        Path sourceDirectory = Paths.get(sourceFilePath);
+                        Path targetDirectory = Paths.get(targetFilePath);
                         Files.copy(sourceDirectory, targetDirectory, StandardCopyOption.REPLACE_EXISTING);
                     }
                 }
@@ -133,10 +137,22 @@ public class Hierarchical extends Cluster {
                 outputDirectory.mkdirs();
             //run cluster algorithm
             String outputCluster = this.outputDir+"/outputCluster.txt";
-
-            String commandStr = "python3"+" "+"hierarchical.py"+" "+inputDataCSV+" "+outputCluster+" "+this.numberCluster;
-            Process proc = Runtime.getRuntime().exec(commandStr);
-            proc.waitFor();
+            String python3 = "python3 ";
+            String python = "python ";
+            String commandStr = "hierarchical.py "+inputDataCSV+" "+outputCluster+" "+this.numberCluster;
+            try{
+            	Process proc = Runtime.getRuntime().exec(python3+commandStr); //Run on Mac/Linux
+            	proc.waitFor();
+            }catch(IOException e) {
+            	try {
+            		Process proc = Runtime.getRuntime().exec(python+commandStr); //Run on Windows
+            		proc.waitFor();
+            	}catch(IOException f) {
+            		System.out.println("Couldn't run the python script to create clusters. Are you sure that python is installed ?\nIt should run with \"python\" or \"python3\"");
+            		System.out.println("You should also have the python packages numpy, pandas and scipy installed (pip install packageName)");
+            		System.exit(-1);
+            	}
+            }
 
             //create sub-directories
             createClusterDirPy(this.outputDir,outputCluster);
