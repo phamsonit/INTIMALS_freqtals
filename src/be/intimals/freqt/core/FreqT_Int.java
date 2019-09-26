@@ -750,7 +750,7 @@ public class FreqT_Int {
                 log(report, "\t + running time = "+ diff1/1000 +"s");
                 log(report,"\t + root occurrences groups = "+ rootIDs.size());
                 //filter root occurrences
-                filterRootIDs(rootIDs);
+                rootIDs = filterRootIDs(rootIDs);
                 //log(report,"#filtered root occurrences groups = "+ rootIDs.size());
                 //phase 2: find maximal patterns from rootIDs
                 log(report,"- Step 2: Mining maximal patterns WITHOUT max size constraint:");
