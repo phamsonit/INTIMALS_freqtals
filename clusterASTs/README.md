@@ -1,13 +1,20 @@
 ### USAGE ###
 
-`java -jar clusterAST.jar INPUT_DIRECTORY OUTPUT_DIRECTORY NUMBER_OF_CLUSTERS`
+`java -jar clusterAST.jar inputDirectory outputDirectory createDataBaseOption algorithmName numberCluster`
 
-where 
-- `INPUT_DIRECTORY`   : a root directory containing ASTs.
-- `OUTPUT_DIRECTORY`  : a directory containing ASTs of clusters 
-- `NUMBER_OF_CLUSTERS`: number of output clusters.
 
-Note: put the script `hierarchical.py` in the same directory as `clusterAST.jar`
+`inputDirectory` : a directory containing ASTs
+`outputDirectory` : a directory containing output clusters
+`createDataBaseOption` : 1 - keep all labels; 2 - keep only leafs
+`algorithmName` : 1 - hierarchical; 2 - KMeans
+`numberCluster` : number of output clusters
+
+Note: clusteringAST uses root labels and white labels to limit the labels considered by clustering algorithms.
+Thus, please be sure that you put the `listRootLabel.txt` and `listWhiteLabel.txt` in the same directory as clusterAST.jar
+
+
+### Input ###
+A set of ASTs in XML format
 
 ### Output ###
-The output is a list of sub-directories which contain ASTs of clusters.
+The output is a set of sub-directories. Each sub-directory contains a list of ASTs which belong to its cluster.

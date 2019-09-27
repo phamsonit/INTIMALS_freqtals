@@ -19,8 +19,8 @@
       <file leaf-file-name="Main.java" pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/src/be/intimals/freqt/cluster/Main.java">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="576">
-              <caret line="50" selection-start-line="50" selection-end-line="50" />
+            <state relative-caret-position="1">
+              <caret line="28" column="45" selection-start-line="28" selection-start-column="45" selection-end-line="28" selection-end-column="45" />
               <folding>
                 <element signature="imports" expanded="true" />
               </folding>
@@ -28,43 +28,16 @@
           </provider>
         </entry>
       </file>
-      <file leaf-file-name="Cluster.java" pinned="false" current-in-tab="false">
+      <file leaf-file-name="Cluster.java" pinned="false" current-in-tab="true">
         <entry file="file://$PROJECT_DIR$/src/be/intimals/freqt/cluster/Cluster.java">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="495">
-              <caret line="33" selection-start-line="33" selection-end-line="33" />
+            <state relative-caret-position="299">
+              <caret line="377" column="5" lean-forward="true" selection-start-line="377" selection-start-column="5" selection-end-line="377" selection-end-column="5" />
               <folding>
                 <element signature="imports" expanded="true" />
-                <element signature="method#readTreeDepthFirst#0;class#Cluster#0" />
-              </folding>
-            </state>
-          </provider>
-        </entry>
-      </file>
-      <file leaf-file-name="Hierarchical.java" pinned="false" current-in-tab="false">
-        <entry file="file://$PROJECT_DIR$/src/be/intimals/freqt/cluster/Hierarchical.java">
-          <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="330">
-              <caret line="117" column="22" selection-start-line="117" selection-start-column="22" selection-end-line="117" selection-end-column="22" />
-              <folding>
-                <element signature="imports" expanded="true" />
-                <element signature="e#170#171#0" expanded="true" />
-                <element signature="e#193#194#0" expanded="true" />
-                <element signature="method#createCSV#0;class#Hierarchical#0" />
-                <element signature="method#createClusterDirPy#0;class#Hierarchical#0" />
-              </folding>
-            </state>
-          </provider>
-        </entry>
-      </file>
-      <file leaf-file-name="SPMF.java" pinned="false" current-in-tab="true">
-        <entry file="file://$PROJECT_DIR$/src/be/intimals/freqt/cluster/SPMF.java">
-          <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="2655">
-              <caret line="205" column="27" selection-start-line="205" selection-start-column="27" selection-end-line="205" selection-end-column="27" />
-              <folding>
-                <element signature="imports" expanded="true" />
-                <element signature="method#filterCluster#0;class#ClusterSPMF#0" />
+                <element signature="method#readWhiteLabel#0;class#Cluster#0" />
+                <element signature="method#createCSV#0;class#Cluster#0" />
+                <element signature="method#createClusterDirPy#0;class#Cluster#0" />
               </folding>
             </state>
           </provider>
@@ -86,6 +59,7 @@
       <find>sep</find>
       <find>Hierarchical_clustering</find>
       <find />
+      <find>keepInternalLabels</find>
     </findStrings>
     <replaceStrings>
       <replace />
@@ -97,11 +71,6 @@
   <component name="IdeDocumentHistory">
     <option name="CHANGED_PATHS">
       <list>
-        <option value="$PROJECT_DIR$/src/be/intimals/freqt/grammar/CreateGrammar.java" />
-        <option value="$PROJECT_DIR$/src/be/intimals/freqt/core/FreqT_Int_subtree.java" />
-        <option value="$PROJECT_DIR$/src/be/intimals/freqt/core/FreqT_Int_ext_multi.java" />
-        <option value="$PROJECT_DIR$/src/be/intimals/freqt/input/ReadXML_Int.java" />
-        <option value="$PROJECT_DIR$/src/be/intimals/freqt/core/FreqT_Int.java" />
         <option value="$PROJECT_DIR$/conf/java/config.properties" />
         <option value="$PROJECT_DIR$/conf/cobol/config.properties" />
         <option value="$PROJECT_DIR$/src/be/intimals/freqt/cluster/ClusterXML.java" />
@@ -144,18 +113,23 @@
         <option value="$PROJECT_DIR$/outputCluster-py.txt" />
         <option value="$PROJECT_DIR$/src/be/intimals/freqt/cluster/ClusterSPMF.java" />
         <option value="$PROJECT_DIR$/src/be/intimals/freqt/cluster/ClusterDatabase.java" />
-        <option value="$PROJECT_DIR$/src/be/intimals/freqt/cluster/Cluster.java" />
-        <option value="$PROJECT_DIR$/src/be/intimals/freqt/cluster/Hierarchical.java" />
+        <option value="$PROJECT_DIR$/hierarchical.py" />
+        <option value="$PROJECT_DIR$/src/be/intimals/freqt/cluster/CreateGrammar.java" />
+        <option value="$PROJECT_DIR$/src/be/intimals/freqt/cluster/ReadXML_Int.java" />
+        <option value="$PROJECT_DIR$/src/be/intimals/freqt/cluster/Initial_Int.java" />
+        <option value="$PROJECT_DIR$/clustering/hierarchical.py" />
         <option value="$PROJECT_DIR$/src/be/intimals/freqt/cluster/SPMF.java" />
+        <option value="$PROJECT_DIR$/src/be/intimals/freqt/cluster/Hierarchical.java" />
         <option value="$PROJECT_DIR$/src/be/intimals/freqt/cluster/Main.java" />
+        <option value="$PROJECT_DIR$/src/be/intimals/freqt/cluster/Cluster.java" />
       </list>
     </option>
   </component>
   <component name="ProjectFrameBounds">
-    <option name="x" value="257" />
-    <option name="y" value="23" />
-    <option name="width" value="1626" />
-    <option name="height" value="975" />
+    <option name="x" value="147" />
+    <option name="y" value="27" />
+    <option name="width" value="1207" />
+    <option name="height" value="816" />
   </component>
   <component name="ProjectView">
     <navigator proportions="" version="1">
@@ -164,12 +138,18 @@
     <panes>
       <pane id="Scope" />
       <pane id="AndroidView" />
+      <pane id="PackagesPane" />
       <pane id="ProjectPane">
         <subPane>
           <expand>
             <path>
               <item name="clusterASTs" type="b2602c69:ProjectViewProjectNode" />
               <item name="clusterASTs" type="462c0819:PsiDirectoryNode" />
+            </path>
+            <path>
+              <item name="clusterASTs" type="b2602c69:ProjectViewProjectNode" />
+              <item name="clusterASTs" type="462c0819:PsiDirectoryNode" />
+              <item name="clustering" type="462c0819:PsiDirectoryNode" />
             </path>
             <path>
               <item name="clusterASTs" type="b2602c69:ProjectViewProjectNode" />
@@ -186,7 +166,6 @@
           <select />
         </subPane>
       </pane>
-      <pane id="PackagesPane" />
     </panes>
   </component>
   <component name="PropertiesComponent">
@@ -198,7 +177,7 @@
     <property name="project.structure.last.edited" value="Project" />
     <property name="project.structure.proportion" value="0.15" />
     <property name="project.structure.side.proportion" value="0.2" />
-    <property name="settings.editor.selected.configurable" value="preferences.lookFeel" />
+    <property name="settings.editor.selected.configurable" value="preferences.pluginManager" />
   </component>
   <component name="RecentsManager">
     <key name="CopyClassDialog.RECENTS_KEY">
@@ -294,23 +273,23 @@
     <servers />
   </component>
   <component name="ToolWindowManager">
-    <frame x="257" y="23" width="1626" height="975" extended-state="0" />
+    <frame x="147" y="27" width="1207" height="816" extended-state="0" />
     <editor active="true" />
     <layout>
       <window_info anchor="right" id="Palette" order="3" />
       <window_info anchor="bottom" id="TODO" order="6" />
-      <window_info anchor="bottom" id="Messages" order="7" weight="0.3257403" />
+      <window_info anchor="bottom" id="Messages" order="7" weight="0.32443532" />
       <window_info anchor="right" id="Palette&#9;" order="3" />
       <window_info id="Image Layers" order="2" />
       <window_info anchor="right" id="Capture Analysis" order="3" />
       <window_info anchor="bottom" id="Event Log" order="7" side_tool="true" weight="0.32969698" />
       <window_info anchor="right" id="Maven Projects" order="3" />
-      <window_info anchor="bottom" id="Run" order="2" weight="0.27448747" />
+      <window_info active="true" anchor="bottom" id="Run" order="2" visible="true" weight="0.31154382" />
       <window_info anchor="bottom" id="Version Control" order="7" />
       <window_info anchor="bottom" id="Terminal" order="7" weight="0.3297362" />
       <window_info id="Capture Tool" order="2" />
       <window_info id="Designer" order="2" />
-      <window_info active="true" content_ui="combo" id="Project" order="0" visible="true" weight="0.16666667" />
+      <window_info content_ui="combo" id="Project" order="0" visible="true" weight="0.22231759" />
       <window_info id="Structure" order="1" side_tool="true" weight="0.25" />
       <window_info anchor="right" id="Ant Build" order="1" weight="0.25" />
       <window_info id="UI Designer" order="2" />
@@ -334,12 +313,6 @@
     </breakpoint-manager>
   </component>
   <component name="editorHistoryManager">
-    <entry file="file://$PROJECT_DIR$/src/be/intimals/freqt/cluster/visualization/DendrogramPanel.java" />
-    <entry file="file://$PROJECT_DIR$/src/be/intimals/freqt/cluster/AverageLinkageStrategy.java" />
-    <entry file="file://$PROJECT_DIR$/src/be/intimals/freqt/cluster/ClusteringAlgorithm.java" />
-    <entry file="file://$PROJECT_DIR$/src/be/intimals/freqt/cluster/ClusterPair.java" />
-    <entry file="file://$PROJECT_DIR$/src/be/intimals/freqt/cluster/CompleteLinkageStrategy.java" />
-    <entry file="file://$PROJECT_DIR$/src/be/intimals/freqt/cluster/DefaultClusteringAlgorithm.java" />
     <entry file="file://$PROJECT_DIR$/src/be/intimals/freqt/cluster/Distance.java" />
     <entry file="file://$PROJECT_DIR$/src/be/intimals/freqt/cluster/DistanceMap.java" />
     <entry file="file://$PROJECT_DIR$/src/be/intimals/freqt/cluster/hierarchical/visualization/Paintable.java" />
@@ -405,10 +378,50 @@
         </state>
       </provider>
     </entry>
+    <entry file="file://$PROJECT_DIR$/hierarchical.py" />
+    <entry file="file://$PROJECT_DIR$/src/be/intimals/freqt/cluster/ReadXML_Int.java" />
+    <entry file="file://$PROJECT_DIR$/src/be/intimals/freqt/cluster/CreateGrammar.java" />
+    <entry file="file://$PROJECT_DIR$/src/be/intimals/freqt/cluster/Initial_Int.java" />
+    <entry file="file://$PROJECT_DIR$/clustering/hierarchical.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="33">
+          <caret line="7" column="19" selection-start-line="7" selection-start-column="19" selection-end-line="7" selection-end-column="19" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/src/be/intimals/freqt/cluster/SPMF.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="-915">
+          <caret line="15" column="64" selection-start-line="15" selection-start-column="64" selection-end-line="15" selection-end-column="64" />
+          <folding>
+            <element signature="imports" expanded="true" />
+            <element signature="method#createClusterDir#0;class#SPMF#0" />
+            <element signature="method#run#0;class#SPMF#0" />
+          </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/src/be/intimals/freqt/cluster/Hierarchical.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="428">
+          <caret line="180" column="5" lean-forward="true" selection-start-line="18" selection-start-column="4" selection-end-line="180" selection-end-column="5" />
+          <folding>
+            <element signature="imports" expanded="true" />
+          </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/clustering/clustering.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="88">
+          <caret line="40" column="26" selection-start-line="40" selection-start-column="26" selection-end-line="40" selection-end-column="26" />
+        </state>
+      </provider>
+    </entry>
     <entry file="file://$PROJECT_DIR$/src/be/intimals/freqt/cluster/Main.java">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="576">
-          <caret line="50" selection-start-line="50" selection-end-line="50" />
+        <state relative-caret-position="1">
+          <caret line="28" column="45" selection-start-line="28" selection-start-column="45" selection-end-line="28" selection-end-column="45" />
           <folding>
             <element signature="imports" expanded="true" />
           </folding>
@@ -417,36 +430,13 @@
     </entry>
     <entry file="file://$PROJECT_DIR$/src/be/intimals/freqt/cluster/Cluster.java">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="495">
-          <caret line="33" selection-start-line="33" selection-end-line="33" />
+        <state relative-caret-position="299">
+          <caret line="377" column="5" lean-forward="true" selection-start-line="377" selection-start-column="5" selection-end-line="377" selection-end-column="5" />
           <folding>
             <element signature="imports" expanded="true" />
-            <element signature="method#readTreeDepthFirst#0;class#Cluster#0" />
-          </folding>
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/src/be/intimals/freqt/cluster/Hierarchical.java">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="330">
-          <caret line="117" column="22" selection-start-line="117" selection-start-column="22" selection-end-line="117" selection-end-column="22" />
-          <folding>
-            <element signature="imports" expanded="true" />
-            <element signature="e#170#171#0" expanded="true" />
-            <element signature="e#193#194#0" expanded="true" />
-            <element signature="method#createCSV#0;class#Hierarchical#0" />
-            <element signature="method#createClusterDirPy#0;class#Hierarchical#0" />
-          </folding>
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/src/be/intimals/freqt/cluster/SPMF.java">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="2655">
-          <caret line="205" column="27" selection-start-line="205" selection-start-column="27" selection-end-line="205" selection-end-column="27" />
-          <folding>
-            <element signature="imports" expanded="true" />
-            <element signature="method#filterCluster#0;class#ClusterSPMF#0" />
+            <element signature="method#readWhiteLabel#0;class#Cluster#0" />
+            <element signature="method#createCSV#0;class#Cluster#0" />
+            <element signature="method#createClusterDirPy#0;class#Cluster#0" />
           </folding>
         </state>
       </provider>
