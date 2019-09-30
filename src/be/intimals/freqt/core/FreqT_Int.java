@@ -55,57 +55,7 @@ public class FreqT_Int {
     public Map <String,String> getXmlCharacters(){return this.xmlCharacters;}
     public Map <String,ArrayList <String>> getGrammar(){return this.grammar;}
 
-
-    /**
-     * filter root occurrences: keep the smallest root occurrences
-     * @param _rootIDs
-     */
-    private Map<String, ArrayList<Integer> >  filterRootIDs(Map<String, ArrayList<Integer> > _rootIDs){
-        /*for each element of rootIDs check
-        if rootOcc is a subset of an element of rootIDs then replace*/
-        List<String> ttt = new LinkedList(_rootIDs.keySet());
-        Collections.sort(ttt, new Comparator<String>() {
-            @Override
-            public int compare(String o1, String o2) {
-                return (Integer.valueOf(o1.length()).compareTo(o2.length()));
-            }
-        });
-
-        //System.out.println(ttt);
-        for(int i=0; i<ttt.size()-1; ++i) {
-            for (int j = i + 1; j < ttt.size(); ++j) {
-                if (compareTwoRootOccurrences(ttt.get(i), ttt.get(j)))
-                    ttt.remove(j);
-            }
-        }
-        //System.out.println(ttt);
-        Map<String, ArrayList<Integer> > _newRootIDs = new LinkedHashMap<>();
-         for(int i=0; i<ttt.size(); ++i)
-             if(_rootIDs.containsKey(ttt.get(i))) {
-                 _newRootIDs.put(ttt.get(i), _rootIDs.get(ttt.get(i)));
-             }
-
-         return _newRootIDs;
-         //garbage collector
-         //System.gc();
-    }
-
-    /**
-     * compare two sets of root occurrences
-     * @param str1
-     * @param str2
-     * @return
-     */
-    private boolean compareTwoRootOccurrences(String str1, String str2){
-        Collection<String> l1 = Arrays.asList(str1.split(";"));
-        Collection<String> l2 = Arrays.asList(str2.split(";"));
-        if(l2.containsAll(l1))
-            return true;
-        else
-            return false;
-    }
-
-    /**
+     /**
      * store root occurrences of pattern for the second step
      * @param pat
      * @param projected
@@ -120,13 +70,36 @@ public class FreqT_Int {
                             Location.getLocationId(projected.getProjectRootLocation(i)) + ("-") +
                             Location.getLocationPos(projected.getProjectRootLocation(i)) + ";";
                 }
-                //keep only the root occurrences and root label
-                ArrayList<Integer> rootLabel_int = new ArrayList<>(pat.subList(0,1));
-                rootIDs.put(rootOccurrences, rootLabel_int);
+                //check the current root occurrences
+                boolean isAdded = true;
+                Collection<String> l1 = Arrays.asList(rootOccurrences.split(";"));
+
+                Iterator<Map.Entry<String, ArrayList<Integer>>> iter = rootIDs.entrySet().iterator();
+                while (iter.hasNext()){
+                    Map.Entry<String, ArrayList<Integer>> entry = iter.next();
+                    Collection<String> l2 = Arrays.asList(entry.getKey().split(";"));
+                    //if l1 is super set of l2 then we don't need to add l1 to rootIDs
+                    if(l1.containsAll(l2)){
+                        isAdded = false;
+                        break;
+                    }else {
+                        //if l2 is a super set of l1 then remove l2 from rootIDs
+                        if (l2.containsAll(l1)) {
+                            iter.remove();
+                        }
+                    }
+                }
+
+                if(isAdded){
+                    //keep only the root occurrences and root label
+                    ArrayList<Integer> rootLabel_int = new ArrayList<>(pat.subList(0,1));
+                    rootIDs.put(rootOccurrences, rootLabel_int);
+                }
             }
 
         }catch (Exception e){System.out.println("Error: adding rootIDs "+e);}
     }
+
 
     //return true if either labels of pat1 contain labels of pat2 or labels of pat2 contain labels of pat1
     private boolean checkSubsetLabel(ArrayList<Integer> pat1, ArrayList<Integer> pat2){
@@ -243,7 +216,7 @@ public class FreqT_Int {
         }
     }
 
-    //find maximal patterns from FP
+    //filter maximal patterns from FP
     public Map<ArrayList<Integer>,String> filterFP(Map<ArrayList<Integer>,String> _FP){
         Map<ArrayList<Integer>,String> _MFP = new HashMap<>();
         try{
@@ -749,8 +722,6 @@ public class FreqT_Int {
                 //log(report,"\t + Frequent patterns = "+ nbFP);
                 log(report, "\t + running time = "+ diff1/1000 +"s");
                 log(report,"\t + root occurrences groups = "+ rootIDs.size());
-                //filter root occurrences
-                rootIDs = filterRootIDs(rootIDs);
                 //log(report,"#filtered root occurrences groups = "+ rootIDs.size());
                 //phase 2: find maximal patterns from rootIDs
                 log(report,"- Step 2: Mining maximal patterns WITHOUT max size constraint:");
