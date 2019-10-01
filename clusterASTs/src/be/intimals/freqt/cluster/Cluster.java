@@ -18,6 +18,7 @@ public class Cluster {
     private String outputDir;
     private String algorithmName;
     private String numberCluster;
+    private String svd;
 
     private List<String> labels = new LinkedList<>();
     private ArrayList<String> fileNames = new ArrayList<>();
@@ -30,12 +31,13 @@ public class Cluster {
 
     ////////////////////////
 
-    public Cluster(String _inputDir, String _outputDir, String _createDataBaseOption, String _algorithmName, String _numCluster){
+    public Cluster(String _inputDir, String _outputDir, String _createDataBaseOption, String _algorithmName, String _numCluster, String _svd){
         inputDir = _inputDir;
         outputDir = _outputDir;
         createDataBaseOption = _createDataBaseOption;
         algorithmName = _algorithmName;
         numberCluster = _numCluster;
+        svd = _svd;
     }
 
 
@@ -73,7 +75,7 @@ public class Cluster {
                     visitedRootLabel.add(lineNr);
                 }
 
-                if(createDataBaseOption.equals("1")){//update labels for internal labels
+                if(createDataBaseOption.equals("1")){//keep internal labels
                     if(labels.isEmpty()) {
                         trans.add(0);
                         labels.add(node.getNodeName());
@@ -134,6 +136,7 @@ public class Cluster {
         populateFileListNew(rootDirectory, files);
         //read white labels from file
         readWhiteLabel("listWhiteLabel.txt", whiteLabels);
+        readRootLabel("listRootLabel.txt", rootLabels);
         //create database
         System.out.print("Reading " + files.size() +" files ... ");
         //XmlFormatter formatter = new XmlFormatter();
@@ -152,35 +155,31 @@ public class Cluster {
                 DocumentBuilder dBuilder = dbFactory.newDocumentBuilder();
                 Document doc = dBuilder.parse(fXmlFile);
                 doc.getDocumentElement().normalize();
-
-
-                //rootLabels.add("TypeDeclaration");
-                //rootLabels.add("Block");
-                //TODO: sort rootLabels by LineNr
-                readRootLabel("listRootLabel.txt",rootLabels);
+                //store lineNr of visited labels which are in the given root labels
+                visitedRootLabel = new HashSet<>();
                 //for each file create an ArrayList of Integer
                 ArrayList<Integer> trans = new ArrayList<>();
                 for(String rootLabel : rootLabels){
-                    visitedRootLabel = new HashSet<>();
-                    currentRootLabel = rootLabel;
+                    //System.out.println(rootLabel);
+                    //get a list of nodes which have rootLabel as label
                     NodeList nList = doc.getElementsByTagName(rootLabel);
-                    //System.out.println(nList.getLength()+ " "+ rootLabel);
-                    for(int i=0; i<nList.getLength();++i){
-                        if(nList.item(i).hasAttributes()) {
-                            String lineNr = nList.item(i).getAttributes().getNamedItem("LineNr").getNodeValue();
-                            if (!visitedRootLabel.contains(lineNr)) {
-                                readTreeDepthFirst(nList.item(i), trans);
-                            }
+                    //for each node expand to collect the set of labels
+                    for(int i=0; i<nList.getLength(); ++i){
+                        //get lineNr of the current rootLabel
+                        String lineNr = nList.item(i).getAttributes().getNamedItem("LineNr").getNodeValue();
+                        if (!visitedRootLabel.contains(lineNr)) {
+                            readTreeDepthFirst(nList.item(i), trans);
                         }
                     }
                 }
                 //read from AST's root node
-                readTreeDepthFirst(doc.getDocumentElement(),trans);
+                //readTreeDepthFirst(doc.getDocumentElement(),trans);
                 //System.out.println(trans);
                 //add found ArrayList into database
                 database.add(trans);
             }
             //System.exit(-1);
+            //System.out.println(fileNames);
             //System.out.println(labels);
             System.out.println("end.");
         } catch (Exception e) {
@@ -314,11 +313,27 @@ public class Cluster {
                     for (int j = 0; j < entry.getValue().size(); ++j) {
                         String sourceFilePath = fileNames.get(Integer.valueOf(entry.getValue().get(j)));
                         String[] splittedPath = sourceFilePath.split(Pattern.quote(separator));
+
                         String sourceFileName = splittedPath[splittedPath.length-1];
                         String targetFilePath = folder.getAbsolutePath()+ separator + sourceFileName;
                         Path sourceDirectory = Paths.get(sourceFilePath);
                         Path targetDirectory = Paths.get(targetFilePath);
                         Files.copy(sourceDirectory, targetDirectory, StandardCopyOption.REPLACE_EXISTING);
+
+//                        try{
+//                            String sourceJavaFilePath = fileNames.get(Integer.valueOf(entry.getValue().get(j))).substring(0,
+//                                    fileNames.get(Integer.valueOf(entry.getValue().get(j))).length()-3)+"java";
+//                            String sourceJavaFileName = sourceFileName.substring(0,sourceFileName.length()-3)+"java";
+//                            String targetJavaFilePath = folder.getAbsolutePath()+ separator + sourceJavaFileName;
+//                            Path sourceJavaDirectory = Paths.get(sourceJavaFilePath);
+//                            Path targetJavaDirectory = Paths.get(targetJavaFilePath);
+//                            Files.copy(sourceJavaDirectory, targetJavaDirectory, StandardCopyOption.REPLACE_EXISTING);
+//
+//                        }catch (Exception e){
+//                            System.out.println("no java file "+e);
+//                        }
+
+
                     }
                 }
                 System.out.println("end.");
@@ -350,7 +365,7 @@ public class Cluster {
             String outputCluster = this.outputDir+"/outputCluster.txt";
             String python3 = "python3 ";
             String python = "python ";
-            String commandStr = "clustering/clustering.py " + inputDataCSV + " " + outputCluster + " " + this.algorithmName+ " " + this.numberCluster;
+            String commandStr = "clustering/clustering.py " + inputDataCSV + " " + outputCluster + " " + this.algorithmName+ " " + this.numberCluster + " "+ this.svd;
             try{
                 Process proc = Runtime.getRuntime().exec(python3+commandStr); //Run on Mac/Linux
                 proc.waitFor();
@@ -365,13 +380,11 @@ public class Cluster {
                 }
             }
             System.out.println(" end.");
-
             //create sub-directories
             createClusterDir(this.outputDir,outputCluster);
-
             //delete temporary files
             Files.deleteIfExists(Paths.get(inputDataCSV));
-            //Files.deleteIfExists(Paths.get(outputCluster));
+            Files.deleteIfExists(Paths.get(outputCluster));
         }catch (Exception e){
             System.out.println("error: running clustering algorithm "+e);
         }

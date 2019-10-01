@@ -100,7 +100,6 @@ public class FreqT_Int {
         }catch (Exception e){System.out.println("Error: adding rootIDs "+e);}
     }
 
-
     //return true if either labels of pat1 contain labels of pat2 or labels of pat2 contain labels of pat1
     private boolean checkSubsetLabel(ArrayList<Integer> pat1, ArrayList<Integer> pat2){
 

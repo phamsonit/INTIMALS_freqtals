@@ -13,6 +13,7 @@ inputFile = sys.argv[1]
 outputFile = sys.argv[2]
 algorithmName = sys.argv[3]
 numClusters = int(sys.argv[4])
+svd = sys.argv[5]
 
 #inputFile = "jhotdraw.csv"
 #outputFile = "output.txt"
@@ -31,26 +32,30 @@ u, s, v = np.linalg.svd(DF, full_matrices=True)
 
 #get a condensed distance matrix from input dataset
 #https://docs.scipy.org/doc/scipy/reference/generated/scipy.spatial.distance.pdist.html#scipy.spatial.distance.pdist
-#X = pdist(u, 'euclidean')
 
+
+if svd == "svd":
+    CD = u
+else:
+    CD = DF
 
 if algorithmName == "1":
     print("hierarchy")
     #create hierarchical clustering
     #https://docs.scipy.org/doc/scipy/reference/generated/scipy.cluster.hierarchy.linkage.html#scipy.cluster.hierarchy.linkage
-    Y = hierarchy.linkage(u, "ward")
+    Y = hierarchy.linkage(CD, method="ward", metric="euclidean")
     #create clusters from hierarchical cluster
     #https://docs.scipy.org/doc/scipy/reference/generated/scipy.cluster.hierarchy.fcluster.html
     Z = hierarchy.fcluster(Y, numClusters, 'maxclust')
 else:
     print("kmeans")
-    # https://scikit-learn.org/stable/modules/generated/sklearn.cluster.KMeans.html
+    #https://scikit-learn.org/stable/modules/generated/sklearn.cluster.KMeans.html
     kmeans = KMeans(n_clusters=numClusters, init='k-means++', max_iter=300, n_init=10, random_state=0)
-    kmeans.fit_predict(u)
+    kmeans.fit(CD)
     # get clusters information
     Z = kmeans.labels_
 
-print(Z)
+#print(Z)
 #write clusters to file
 with open(outputFile, "w") as f:
     for item in Z:
