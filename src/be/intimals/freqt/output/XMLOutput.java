@@ -131,7 +131,6 @@ public class XMLOutput extends AOutputFormatter {
                                 else
                                     out.write("<match-set/>");
 
-
                                 //out.write("<match-set/>");
                                 out.write("</__directives>\n");
                                 break;
@@ -142,7 +141,6 @@ public class XMLOutput extends AOutputFormatter {
                                 //out.write("<match-set/>");
                                 //out.write("</__directives>\n");
                                 break;
-
                         }
                     }
                     else{
@@ -174,7 +172,6 @@ public class XMLOutput extends AOutputFormatter {
                                 out.write("<match-sequence/>");
                                 out.write("</__directives>\n");
                                 break;
-
                         }
 
                     }

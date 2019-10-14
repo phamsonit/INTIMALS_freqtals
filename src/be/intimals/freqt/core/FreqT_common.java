@@ -144,7 +144,7 @@ public class FreqT_common {
                 addCommonPattern(maximalPattern,projected);
                 //System.out.println("common pattern "+maximalPattern);
                 found = true;
-                return;
+                //return;
             }else {
                 //expand the current pattern with each candidate
                 Iterator<Map.Entry<String, Projected>> iter = candidate.entrySet().iterator();

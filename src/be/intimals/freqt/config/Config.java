@@ -20,14 +20,15 @@ public class Config {
         input.close();
     }
 
+
     public boolean getTwoStep(){return Boolean.valueOf(prop.getProperty("twoStep"));}
     public boolean getFilter(){return Boolean.valueOf(prop.getProperty("filter"));}
+    public boolean getAbstractLeafs(){return Boolean.valueOf(prop.getProperty("abstractLeafs"));}
+
 
     public int getNbCores(){
         return Integer.valueOf(prop.getProperty("nbCores"));
     }
-
-    public boolean getAbstractLeafs(){return Boolean.valueOf(prop.getProperty("abstractLeafs"));}
 
     public int getNbIdentifiers(){return Integer.valueOf(prop.getProperty("nbIdentifiers"));}
 

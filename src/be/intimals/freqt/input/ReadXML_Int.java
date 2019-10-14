@@ -32,7 +32,7 @@ public class ReadXML_Int {
     private List<String> labels = new LinkedList<>();
     ArrayList<Integer> lineNrs = new ArrayList<>();
     int countSection;
-    private boolean abstractLeafs = false;
+    private boolean abstractLeafs;
 
     private String sep = "/";//File.separator;
 
@@ -128,15 +128,14 @@ public class ReadXML_Int {
                     NodeList nodeList = node.getChildNodes();
                     //if node is a parent of a leaf node
                     if (node.getChildNodes().getLength() == 1) {
-                        //add leaf node label
-                        //System.out.println(node.getTextContent().trim());
-                        if(abstractLeafs) //abstract leafs of Cobol: change all leafs to **
-                            trans.get(id).setNodeLabel("**");
+                        String leafLabel;
+                        if(abstractLeafs)
+                            leafLabel = "**";
                         else
-                            trans.get(id).setNodeLabel("*" + node.getTextContent().replace(",",Variables.uniChar).trim());
-
+                            leafLabel = "*" + node.getTextContent().replace(",",Variables.uniChar).trim();
+                        //add leaf node label
+                        trans.get(id).setNodeLabel(leafLabel);
                         //update labelIndex for leaf labels
-                        String leafLabel = "*" + node.getTextContent().replace(",",Variables.uniChar).trim();
                         if(!labels.contains(leafLabel)) {
                             trans.get(id).setNode_label_int(labelIndex.size()*(-1));
                             labelIndex.put(labelIndex.size()*(-1), leafLabel);
