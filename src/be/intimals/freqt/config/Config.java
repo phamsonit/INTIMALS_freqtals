@@ -21,6 +21,9 @@ public class Config {
     }
 
 
+    public int getBeamSize(){
+        return Integer.valueOf(prop.getProperty("beamSize"));
+    }
     public boolean getTwoStep(){return Boolean.valueOf(prop.getProperty("twoStep"));}
     public boolean getFilter(){return Boolean.valueOf(prop.getProperty("filter"));}
     public boolean getAbstractLeafs(){return Boolean.valueOf(prop.getProperty("abstractLeafs"));}

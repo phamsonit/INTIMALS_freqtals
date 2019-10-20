@@ -96,6 +96,12 @@ public class FreqT_Int_ext_serial extends FreqT_Int {
             */
             //prune on minimum support and list of black labels
             pruneSupportAndBlacklist(candidates,config.getMinSupport(),largestPattern,blackLabelsInt);
+
+            if (candidates.size() > config.getBeamSize()) {
+                candidates = beam(candidates, config.getBeamSize());
+                //System.out.println("candidates in beam " + candidates.keySet());
+            }
+
             //if there is no candidate then report pattern --> stop
             if( candidates.isEmpty() ){
                 addPattern(largestPattern,projected,MFP);

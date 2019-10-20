@@ -361,22 +361,69 @@ public class FreqT_Int {
     }
 
     public void pruneSupportAndBlacklist(Map <ArrayList<Integer>, Projected > candidates,
-                                         int minSup,
-                                         ArrayList<Integer> pat,
-                                         Map <Integer,ArrayList<Integer>> _blackLabels){
+                                          int minSup,
+                                          ArrayList<Integer> pat,
+                                          Map <Integer,ArrayList<Integer>> _blackLabels){
+
+        Map<ArrayList<Integer>,Integer> rootSupports = new HashMap<>();
+
         Iterator < Map.Entry<ArrayList<Integer>,Projected> > can = candidates.entrySet().iterator();
         while (can.hasNext()) {
             Map.Entry<ArrayList<Integer>, Projected> entry = can.next();
             Projected value = entry.getValue();
             int sup = getSupport(value);
             if((sup < minSup) || isBlacklisted(pat,  entry.getKey(), _blackLabels))
-                    can.remove();
+                can.remove();
             else {
                 value.setProjectedSupport(sup);
                 value.setProjectedRootSupport(getRootSupport(value));
+                rootSupports.put(entry.getKey(),getRootSupport(value));
             }
         }
     }
+
+    //combine minSup + blackLabels + beam to filter candidates
+    public Map <ArrayList<Integer>, Projected > beam(Map <ArrayList<Integer>, Projected > candidates, int k){
+
+        //keep maximum 5 candidates in the list?
+
+        Map<ArrayList<Integer>,Integer> rootSupports = new HashMap<>();
+        for(Map.Entry<ArrayList<Integer>,Projected> entry : candidates.entrySet()){
+            rootSupports.put(entry.getKey(),getRootSupport(entry.getValue()));
+        }
+        Map <ArrayList<Integer>, Projected > newCandidates = new HashMap<>();
+        //
+        ArrayList<Integer> minCandidate = new ArrayList<>();
+        int minWSup = 100000;
+
+        Iterator < Map.Entry<ArrayList<Integer>,Integer> > can1 = rootSupports.entrySet().iterator();
+        while (can1.hasNext()) {
+            Map.Entry<ArrayList<Integer>, Integer> entry = can1.next();
+            int value = entry.getValue();
+            if(newCandidates.size() < k){
+                newCandidates.put(entry.getKey(),candidates.get(entry.getKey()));
+                if(value < minWSup){
+                    minCandidate = entry.getKey();
+                    minWSup = value;
+                }
+            }else{
+                if(value > minWSup){
+                    //replace
+                    newCandidates.put(entry.getKey(),candidates.get(entry.getKey()));
+                    newCandidates.remove(minCandidate);
+                    //update minWsup and minCandidate
+                    for(Map.Entry<ArrayList<Integer>,Projected> entry1 : newCandidates.entrySet()){
+                        if(entry1.getValue().getProjectedRootSupport() < minWSup ){
+                            minWSup = entry1.getValue().getProjectedRootSupport();
+                            minCandidate = entry1.getKey();
+                        }
+                    }
+                }
+            }
+        }
+        return newCandidates;
+    }
+
 
     //return true if the label_int is in the set of black labels
     private static boolean checkBlackListLabel(Integer label_int, Collection<ArrayList<Integer>> _blackLabels){
@@ -563,6 +610,12 @@ public class FreqT_Int {
             */
             //prune on minimum support and list of black labels
             pruneSupportAndBlacklist(candidates,config.getMinSupport(),pattern,blackLabelsInt);
+            //System.out.println("after minsup + blacklist pruning " + candidates.keySet());
+
+            if (candidates.size() > config.getBeamSize()) {
+                candidates = beam(candidates, config.getBeamSize());
+                //System.out.println("candidates in beam " + candidates.keySet());
+            }
 
             //if there is no candidate then report the pattern and then stop
             if( candidates.isEmpty() ){
@@ -671,10 +724,6 @@ public class FreqT_Int {
             Initial_Int.initGrammar(config.getInputFiles(),grammar, config.buildGrammar());
             //new grammar (labels are integers) is used to calculate patterns
             Initial_Int.initGrammar_Int(config.getInputFiles(),grammarInt,labelIndex);
-
-//            for(Map.Entry<Integer,ArrayList <String>> entry:grammarInt.entrySet()){
-//                System.out.println(entry.getValue());
-//            }
 
             Initial_Int.readWhiteLabel(config.getWhiteLabelFile(), grammarInt, whiteLabelsInt, blackLabelsInt, labelIndex); //read white labels and create black labels
             Initial_Int.readRootLabel(config.getRootLabelFile(), rootLabels);  //read root labels (AST Nodes)
