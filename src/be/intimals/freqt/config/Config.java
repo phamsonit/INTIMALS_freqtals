@@ -21,6 +21,9 @@ public class Config {
     }
 
 
+    public int getIterations(){
+        return Integer.valueOf(prop.getProperty("iterations"));
+    }
     public int getBeamSize(){
         return Integer.valueOf(prop.getProperty("beamSize"));
     }
