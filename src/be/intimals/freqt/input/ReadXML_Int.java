@@ -234,6 +234,7 @@ public class ReadXML_Int {
 
         ArrayList<String> files = new ArrayList<>();
         populateFileListNew(rootDirectory,files);
+        Collections.sort(files);
         //ArrayList<File> files = new ArrayList<File>();
         //populateFileList(rootDirectory,files);
         System.out.print("Reading " + files.size() +" files ");
