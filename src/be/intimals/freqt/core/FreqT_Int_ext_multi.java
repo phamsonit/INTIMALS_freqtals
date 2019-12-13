@@ -111,9 +111,9 @@ public class FreqT_Int_ext_multi extends FreqT_Int {
                     addFP(largestPattern, entry.getValue(), MFP);
                 }else{
                     //constraint on obligatory children
-                    if(checkObligatoryChild(largestPattern, entry.getKey(), grammarInt, blackLabelsInt)){
+                    if(checkLeftObligatoryChild(largestPattern, entry.getKey(), grammarInt, blackLabelsInt)){
                         //System.out.println("missing obligatory child "+pattern);
-                        addFP(largestPattern, entry.getValue(), MFP);
+                        //addFP(largestPattern, entry.getValue(), MFP);
                     }else{
                         project(largestPattern, entry.getValue(), timeStartGroup);
                     }

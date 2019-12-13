@@ -130,7 +130,6 @@ public class Main {
             //FreqT freqt = new FreqT(config);
             freqt.run();
 
-
             //run forestmatcher to create matches.xml and clusters.xml
             System.out.println("Running forestmatcher ...");
             String command = "java -jar forestmatcher.jar " +
