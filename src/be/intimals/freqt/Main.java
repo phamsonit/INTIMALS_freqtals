@@ -137,7 +137,6 @@ public class Main {
             Process proc = Runtime.getRuntime().exec(command);
             proc.waitFor();
 
-
             File pattern = new File(outputClustersTemp);
             if(pattern.exists()){
                 //find common patterns in each cluster

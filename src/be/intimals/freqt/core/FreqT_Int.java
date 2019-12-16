@@ -68,7 +68,7 @@ public class FreqT_Int {
      */
     private void addRootIDs(ArrayList<Integer> pat, Projected projected){
         try {
-            if(Pattern_Int.countLeafNode(pat) > config.getMinLeaf()){
+            if(Pattern_Int.countLeafNode(pat) >= config.getMinLeaf()){
                 //find root occurrences (id-pos) of pattern
                 String rootOccurrences = "";
                 for (int i = 0; i < projected.getProjectRootLocationSize(); ++i) {
@@ -487,16 +487,14 @@ public class FreqT_Int {
         boolean missMandatoryChild = false;
         try{
             //System.out.println(pat);
-            for(int pos = 0; pos < pat.size(); ++pos) {
+            for(int pos = 0; pos < pat.size() && !missMandatoryChild; ++pos) {
                 int currentLabel = pat.get(pos);
-                if(currentLabel > 0 ){ //consider only internal label
+                if(currentLabel >= 0 ){ //consider only internal label
                     //find all children of patternLabel in grammar
                     ArrayList<String> childrenG = _grammarInt.get(currentLabel);
-                    //System.out.println("children in grammar: "+childrenG);
                     if (childrenG.get(0).equals("ordered") && !childrenG.get(1).equals("1")) {
                         //get all children of the current pos in pattern
                         ArrayList<Integer> childrenP = Pattern_Int.findChildrenPosition(pat, pos);
-                        //System.out.println(pos+" "+childrenP);
                         if(childrenP.size() > 0){
                             //get black children
                             ArrayList<Integer> blackLabelChildren = new ArrayList<>();
@@ -509,6 +507,7 @@ public class FreqT_Int {
                             while(i<childrenP.size() && j<childrenG.size() && !missMandatoryChild) {
                                 String[] childGrammarTemp = childrenG.get(j).split(Variables.uniChar);
                                 int label_int = Integer.valueOf(childGrammarTemp[0]);
+
                                 if(pat.get(childrenP.get(i)).equals(label_int)) {
                                     ++i;
                                     ++j;
@@ -537,9 +536,10 @@ public class FreqT_Int {
                             }
                         }
                     }
+
                 }
+
             }
-            //System.exit(-1);
         }catch (Exception e){
             System.out.println("checkRightObligatoryChildren error : "+e);
         }
@@ -635,8 +635,6 @@ public class FreqT_Int {
             //if there is no candidate then report the pattern and then stop
             if( candidates.isEmpty()){
                 addTree(pattern,projected);
-                if(DEBUG)
-                    System.out.println("output by no candidate "+pattern);
                 return;
             }
 
@@ -658,15 +656,11 @@ public class FreqT_Int {
 
                 if(checkLeftObligatoryChild(pattern, entry.getKey(), grammarInt,blackLabelsInt)){ //constraint on obligatory children
                     //do nothing = don't add pattern to MFP
-                    if(DEBUG)
-                        System.out.println("prune by mandatory constraint "+pattern);
                 }else{
                     if(  (Pattern_Int.countLeafNode(pattern) > config.getMaxLeaf())             //constraint on maximal number of leafs
                        || Pattern_Int.checkMissingLeaf(pattern)                                 //constraint on real leaf node
                         ){
                         addTree(pattern,entry.getValue());
-                        if(DEBUG)
-                            System.out.println("output by leaf constraint "+pattern);
                     }else{
                         project(pattern, entry.getValue());
                     }
@@ -756,11 +750,25 @@ public class FreqT_Int {
 
             if(DEBUG) {
                 //print grammar
+                System.out.println("extracted grammar");
                 for (Map.Entry<String, ArrayList<String>> g : grammar.entrySet()) {
                     System.out.println(g.getKey() + " " + g.getValue());
                 }
 
+                //print grammar
+                System.out.println("extracted grammar");
+                for (Map.Entry<Integer, ArrayList<String> > g : grammarInt.entrySet()) {
+                    System.out.println(g.getKey() + " " + g.getValue());
+                }
+
+                //print black list label
+                System.out.println("Black list labels");
+                for(Map.Entry<Integer,ArrayList<Integer> > entry: blackLabelsInt.entrySet()){
+                    System.out.println(entry.getKey()+" "+entry.getValue());
+                }
+
                 //print list of labels
+                System.out.println("Index labels");
                 for(Map.Entry<Integer,String> entry : labelIndex.entrySet()){
                     System.out.println(entry.getKey()+" "+entry.getValue());
                 }
