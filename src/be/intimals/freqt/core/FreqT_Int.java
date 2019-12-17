@@ -68,41 +68,38 @@ public class FreqT_Int {
      */
     private void addRootIDs(ArrayList<Integer> pat, Projected projected){
         try {
-            if(Pattern_Int.countLeafNode(pat) >= config.getMinLeaf()){
-                //find root occurrences (id-pos) of pattern
-                String rootOccurrences = "";
-                for (int i = 0; i < projected.getProjectRootLocationSize(); ++i) {
-                    rootOccurrences = rootOccurrences +
-                            Location.getLocationId(projected.getProjectRootLocation(i)) + ("-") +
-                            Location.getLocationPos(projected.getProjectRootLocation(i)) + ";";
-                }
-                //check the current root occurrences
-                boolean isAdded = true;
-                Collection<String> l1 = Arrays.asList(rootOccurrences.split(";"));
+            //find root occurrences (id-pos) of pattern
+            String rootOccurrences = "";
+            for (int i = 0; i < projected.getProjectRootLocationSize(); ++i) {
+                rootOccurrences = rootOccurrences +
+                        Location.getLocationId(projected.getProjectRootLocation(i)) + ("-") +
+                        Location.getLocationPos(projected.getProjectRootLocation(i)) + ";";
+            }
+            //check the current root occurrences
+            boolean isAdded = true;
+            Collection<String> l1 = Arrays.asList(rootOccurrences.split(";"));
 
-                Iterator<Map.Entry<String, ArrayList<Integer>>> iter = rootIDs.entrySet().iterator();
-                while (iter.hasNext()){
-                    Map.Entry<String, ArrayList<Integer>> entry = iter.next();
-                    Collection<String> l2 = Arrays.asList(entry.getKey().split(";"));
-                    //if l1 is super set of l2 then we don't need to add l1 to rootIDs
-                    if(l1.containsAll(l2)){
-                        isAdded = false;
-                        break;
-                    }else {
-                        //if l2 is a super set of l1 then remove l2 from rootIDs
-                        if (l2.containsAll(l1)) {
-                            iter.remove();
-                        }
+            Iterator<Map.Entry<String, ArrayList<Integer>>> iter = rootIDs.entrySet().iterator();
+            while (iter.hasNext()){
+                Map.Entry<String, ArrayList<Integer>> entry = iter.next();
+                Collection<String> l2 = Arrays.asList(entry.getKey().split(";"));
+                //if l1 is super set of l2 then we don't need to add l1 to rootIDs
+                if(l1.containsAll(l2)){
+                    isAdded = false;
+                    break;
+                }else {
+                    //if l2 is a super set of l1 then remove l2 from rootIDs
+                    if (l2.containsAll(l1)) {
+                        iter.remove();
                     }
-                }
-
-                if(isAdded){
-                    //keep only the root occurrences and root label
-                    ArrayList<Integer> rootLabel_int = new ArrayList<>(pat.subList(0,1));
-                    rootIDs.put(rootOccurrences, rootLabel_int);
                 }
             }
 
+            if(isAdded){
+                //keep only the root occurrences and root label
+                ArrayList<Integer> rootLabel_int = new ArrayList<>(pat.subList(0,1));
+                rootIDs.put(rootOccurrences, rootLabel_int);
+            }
         }catch (Exception e){System.out.println("Error: adding rootIDs "+e);}
     }
 
@@ -150,12 +147,12 @@ public class FreqT_Int {
     }
 
     //check output patterns by using minLeaf and minNode
-    private boolean checkOutput(ArrayList<Integer> pat){
-        if(Pattern_Int.countLeafNode(pat) >= config.getMinLeaf() &&
-                Pattern_Int.countNode(pat) >= config.getMinNode())
+    public boolean checkOutput(ArrayList<Integer> pat){
+        if(  Pattern_Int.countLeafNode(pat) >= config.getMinLeaf() &&
+             Pattern_Int.countNode(pat)     >= config.getMinNode())
             return true;
-        else return false;
-
+        else
+            return false;
     }
     /**
      * add a pattern to MFP
@@ -168,52 +165,48 @@ public class FreqT_Int {
      */
 
     public void addMFP(ArrayList<Integer> pat, Projected projected, Map<ArrayList<Integer>,String> _MFP){
-        //check minimal number of node/leaf
-        if(checkOutput(pat)){
-            boolean found = false;
-            if(_MFP.containsKey(pat)) return;
-            //pair-wise compare the input pattern to every pattern in _MFP
-            Iterator < Map.Entry<ArrayList<Integer>,String> > p = _MFP.entrySet().iterator();
-            while(p.hasNext() && !found){
-                Map.Entry<ArrayList<Integer>, String> entry = p.next();
-                switch (checkSubTree(pat,entry.getKey())){
-                    case 1:
-                        found = true; //patTemp is a subtree of entry.getKey
-                        break;
-                    case 2:
-                        p.remove(); //entry.getKey is a subtree of patTemp
-                        break;
-                }
+        boolean found = false;
+        //if pat is already existed in the MFP then return
+        if(_MFP.containsKey(pat)) return;
+        //pair-wise compare the input pattern to every pattern in _MFP
+        Iterator < Map.Entry<ArrayList<Integer>,String> > p = _MFP.entrySet().iterator();
+        while(p.hasNext() && !found){
+            Map.Entry<ArrayList<Integer>, String> entry = p.next();
+            switch (checkSubTree(pat,entry.getKey())){
+                case 1:
+                    found = true; //patTemp is a subtree of entry.getKey
+                    break;
+                case 2:
+                    p.remove(); //entry.getKey is a subtree of patTemp
+                    break;
             }
-            if(! found) {
-                int support = projected.getProjectedSupport();
-                int wsupport = projected.getProjectedRootSupport(); //=> root location
-                int size = Pattern_Int.countNode(pat);
-
-                String patternSupport =
-                        String.valueOf(support) + "," +
-                                String.valueOf(wsupport) + "," +
-                                String.valueOf(size);
-
-                _MFP.put(pat, patternSupport);
-            }
-
         }
-    }
-
-    //add frequent tree to FP
-    public void addFP(ArrayList<Integer> pat, Projected projected, Map<ArrayList<Integer>,String> _FP){
-        if (checkOutput(pat)) {
+        if(! found) {
             int support = projected.getProjectedSupport();
             int wsupport = projected.getProjectedRootSupport(); //=> root location
             int size = Pattern_Int.countNode(pat);
 
             String patternSupport =
-                            String.valueOf(support) + "," +
+                    String.valueOf(support) + "," +
                             String.valueOf(wsupport) + "," +
                             String.valueOf(size);
-            _FP.put(pat, patternSupport);
+
+            _MFP.put(pat, patternSupport);
         }
+    }
+
+    //add frequent tree to FP
+    public void addFP(ArrayList<Integer> pat, Projected projected, Map<ArrayList<Integer>,String> _FP){
+
+        int support = projected.getProjectedSupport();
+        int wsupport = projected.getProjectedRootSupport(); //=> root location
+        int size = Pattern_Int.countNode(pat);
+
+        String patternSupport =
+                        String.valueOf(support) + "," +
+                        String.valueOf(wsupport) + "," +
+                        String.valueOf(size);
+        _FP.put(pat, patternSupport);
     }
 
     //filter maximal patterns from FP
@@ -295,16 +288,17 @@ public class FreqT_Int {
     private void addTree(ArrayList<Integer> pat, Projected projected){
         //remove the right part of the pattern that misses leafs
         ArrayList<Integer> patTemp = Pattern_Int.getPatternString1(pat);
-        //check right mandatory children before adding pattern
-        if(checkRightObligatoryChild(patTemp, grammarInt, blackLabelsInt)) return;
 
-        if (config.getTwoStep()) { //store root occurrences for next step
-            addRootIDs(patTemp, projected);
-        } else{ //check and store pattern to maximal pattern list
-            if(config.getFilter())
-                addMFP(patTemp, projected, MFP);
-            else
-                addFP(patTemp, projected, MFP);
+        //check minsize constraints and right mandatory children before adding pattern
+        if(checkOutput(patTemp) && !checkRightObligatoryChild(patTemp, grammarInt, blackLabelsInt)){
+            if (config.getTwoStep()) { //store root occurrences for next step
+                addRootIDs(patTemp, projected);
+            } else{ //check and store pattern to maximal pattern list
+                if(config.getFilter())
+                    addMFP(patTemp, projected, MFP);
+                else
+                    addFP(patTemp, projected, MFP);
+            }
         }
     }
 
@@ -504,7 +498,7 @@ public class FreqT_Int {
                             //compare two sets of children to determine this pattern misses mandatory child or not
                             int i=0;
                             int j=2;
-                            while(i<childrenP.size() && j<childrenG.size() && !missMandatoryChild) {
+                            while(i<childrenP.size() && j<childrenG.size()) {
                                 String[] childGrammarTemp = childrenG.get(j).split(Variables.uniChar);
                                 int label_int = Integer.valueOf(childGrammarTemp[0]);
 
@@ -536,9 +530,7 @@ public class FreqT_Int {
                             }
                         }
                     }
-
                 }
-
             }
         }catch (Exception e){
             System.out.println("checkRightObligatoryChildren error : "+e);

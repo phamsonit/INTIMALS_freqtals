@@ -54,13 +54,14 @@ public class FreqT_Int_ext_serial extends FreqT_Int {
 
         //remove the part of the pattern missing leaf
         ArrayList<Integer> patTemp = Pattern_Int.getPatternString1(_largestPattern);
-        //check right mandatory children before adding pattern
-        if(checkRightObligatoryChild(patTemp, grammarInt, blackLabelsInt)) return;
 
-        if(config.getFilter())
-            addMFP(patTemp, projected, _outputPatterns);
-        else
-            addFP(patTemp, projected, _outputPatterns);
+        //check minsize constraints and right mandatory children before adding pattern
+        if(checkOutput(patTemp) && ! checkRightObligatoryChild(patTemp, grammarInt, blackLabelsInt)){
+            if(config.getFilter())
+                addMFP(patTemp, projected, _outputPatterns);
+            else
+                addFP(patTemp, projected, _outputPatterns);
+        }
     }
 
     private void project(ArrayList<Integer> largestPattern, Projected projected) {

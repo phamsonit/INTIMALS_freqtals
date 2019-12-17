@@ -1,0 +1,13 @@
+#This file contains a list of nodes and their children which are allowed to expand in the mining process
+#Each line corresponds to a node and its children. Lines begin with # are comments
+#i.e. SimpleName has 2 children, identifier and var.
+#.    If we want to expand identifier and ignore var we can create a line as SimpleName identifier
+
+#TypeDeclaration [unordered, 8, javadoc¥false, modifiers¥true, interface¥true, name¥true, typeParameters¥false, superclassType¥false, superInterfaceTypes¥false, bodyDeclarations¥true]
+TypeDeclaration bodyDeclarations
+
+#bodyDeclarations
+bodyDeclarations MethodDeclaration
+
+#MethodDeclaration [unordered, 12, javadoc¥false, modifiers¥true, constructor¥true, typeParameters¥false, returnType2¥false, name¥true, receiverType¥false, receiverQualifier¥false, parameters¥false, extraDimensions2¥false, thrownExceptionTypes¥false, body¥false]
+MethodDeclaration name body
