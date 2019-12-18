@@ -497,7 +497,8 @@ public class FreqT_Int {
         while (can.hasNext()) {
             Map.Entry<ArrayList<Integer>, Projected> entry = can.next();
             Projected value = entry.getValue();
-            int sup = getSupport(value);
+            int sup = getSupport(value); //5 different *files*
+            //int sup = getRootSupport(value); //5 different *things*
             if((sup < minSup) || isBlacklisted(pat,  entry.getKey(), _blackLabels))
                 can.remove();
             else {
