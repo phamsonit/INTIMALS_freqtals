@@ -51,6 +51,8 @@ public class FreqT_Int {
     private long timeout;
     private boolean finished;
 
+    private static boolean DEBUG = false;
+
     ////////////////////////////////////////////////////////////////////////////////
     public FreqT_Int(Config config) {
         this.config = config;
@@ -202,8 +204,6 @@ public class FreqT_Int {
     //add frequent tree to FP
     public void addFP(ArrayList<Integer> pat, Projected projected, Map<ArrayList<Integer>,String> _FP){
         if (checkOutput(pat)) {
-            //keep left parts of pattern which have real leaf
-            //ArrayList<Integer> patTemp = Pattern_Int.getPatternString1(pat);
             int support = projected.getProjectedSupport();
             int wsupport = projected.getProjectedRootSupport(); //=> root location
             int size = Pattern_Int.countNode(pat);
@@ -293,10 +293,10 @@ public class FreqT_Int {
      * @param projected
      */
     private void addTree(ArrayList<Integer> pat, Projected projected){
-        //remove the part of the pattern missing leaf
+        //remove the right part of the pattern that misses leafs
         ArrayList<Integer> patTemp = Pattern_Int.getPatternString1(pat);
         //check right mandatory children before adding pattern
-        if(checkRightObligatoryChildren(patTemp, grammarInt, blackLabelsInt)) return;
+        if(checkRightObligatoryChild(patTemp, grammarInt, blackLabelsInt)) return;
 
         if (config.getTwoStep()) { //store root occurrences for next step
             addRootIDs(patTemp, projected);
@@ -386,58 +386,6 @@ public class FreqT_Int {
             }
         }
     }
-
-    //select k candidates which have largest number of occurrences
-    public Map <ArrayList<Integer>, Projected > KBeam(Map <ArrayList<Integer>, Projected > candidates, int k){
-        Map<ArrayList<Integer>,Integer> rootSupports = new HashMap<>();
-        for(Map.Entry<ArrayList<Integer>,Projected> entry : candidates.entrySet()){
-            rootSupports.put(entry.getKey(),getRootSupport(entry.getValue()));
-        }
-        Map <ArrayList<Integer>, Projected > newCandidates = new HashMap<>();
-        //
-        ArrayList<Integer> minCandidate = new ArrayList<>();
-        int minWSup = 100000;
-
-        Iterator < Map.Entry<ArrayList<Integer>,Integer> > can1 = rootSupports.entrySet().iterator();
-        while (can1.hasNext()) {
-            Map.Entry<ArrayList<Integer>, Integer> entry = can1.next();
-            int value = entry.getValue();
-            if(newCandidates.size() < k){
-                newCandidates.put(entry.getKey(),candidates.get(entry.getKey()));
-                if(value < minWSup){
-                    minCandidate = entry.getKey();
-                    minWSup = value;
-                }
-            }else{
-                if(value > minWSup){
-                    //replace
-                    newCandidates.put(entry.getKey(),candidates.get(entry.getKey()));
-                    newCandidates.remove(minCandidate);
-                    //update minWsup and minCandidate
-                    for(Map.Entry<ArrayList<Integer>,Projected> entry1 : newCandidates.entrySet()){
-                        if(entry1.getValue().getProjectedRootSupport() < minWSup ){
-                            minWSup = entry1.getValue().getProjectedRootSupport();
-                            minCandidate = entry1.getKey();
-                        }
-                    }
-                }
-            }
-        }
-        return newCandidates;
-    }
-
-
-    //randomly select 1 candidate
-    public Map <ArrayList<Integer>, Projected > randomBeam(Map <ArrayList<Integer>, Projected > candidates){
-
-        Map <ArrayList<Integer>, Projected > newCandidates = new HashMap<>();
-        List<ArrayList<Integer>> allKeySet = new LinkedList<>(candidates.keySet());
-        Random rand = new Random();
-        int randomNum = rand.nextInt((allKeySet.size() - 1)+1);
-        newCandidates.put(allKeySet.get(randomNum),candidates.get(allKeySet.get(randomNum)));
-        return newCandidates;
-    }
-
 
     //return true if the label_int is in the set of black labels
     private static boolean checkBlackListLabel(Integer label_int, Collection<ArrayList<Integer>> _blackLabels){
@@ -533,7 +481,7 @@ public class FreqT_Int {
     //1. find children of the current node in the pattern
     //2. find children of the current node in the grammar
     //3. compare two set of children to determine the pattern missing mandatory child or not
-    public boolean checkRightObligatoryChildren(ArrayList<Integer> pat,
+    public boolean checkRightObligatoryChild(ArrayList<Integer> pat,
                                         Map <Integer,ArrayList <String> > _grammarInt,
                                         Map <Integer,ArrayList<Integer> > _blackLabelsInt){
 
@@ -681,15 +629,6 @@ public class FreqT_Int {
             Map<ArrayList<Integer>, Projected> candidates = generateCandidates(projected,transaction);
             //System.out.println("all candidates     " + candidates.keySet());
 
-            /*
-            //constraint 0: minimum support
-            //prune(candidates, config.getMinSupport());
-            //System.out.println("after support pruning " + candidates.keySet());
-
-            //constraint on list of black labels
-            pruneBlackList(pattern, candidates, blackLabelsInt);
-            //System.out.println("after blacklist pruning " + candidates.keySet());
-            */
             //prune on minimum support and list of black labels
             pruneSupportAndBlacklist(candidates,config.getMinSupport(),pattern,blackLabelsInt);
             //System.out.println("after minsup + blacklist pruning " + candidates.keySet());
@@ -697,25 +636,10 @@ public class FreqT_Int {
             //if there is no candidate then report the pattern and then stop
             if( candidates.isEmpty()){
                 addTree(pattern,projected);
-                //System.out.println("no candidate "+pattern);
+                if(DEBUG)
+                    System.out.println("output by no candidate "+pattern);
                 return;
             }
-
-            /*
-            //select k candidates (KBeam)
-            if (candidates.size() > config.getBeamSize()) {
-                candidates = KBeam(candidates, config.getBeamSize());
-                //System.out.println("candidates in beam " + candidates.keySet());
-            }
-            */
-
-            /*
-            //randomly select 1 candidate (randomBeam)
-            if(candidates.size() > 1) {
-                candidates = randomBeam(candidates);
-                System.out.println("random candidate in beam " + candidates.keySet());
-            }
-            */
 
             //for each candidate expand to the current pattern
             for(Map.Entry<ArrayList<Integer>, Projected> entry : candidates.entrySet()){
@@ -733,21 +657,21 @@ public class FreqT_Int {
                 if(candidateLabel.equals("ParagraphStatementBlock"))
                     checkContinuousParagraph(pattern, entry, transaction);
 
-                if(checkLeftObligatoryChild(pattern, entry.getKey(), grammarInt,blackLabelsInt)){
+                if(checkLeftObligatoryChild(pattern, entry.getKey(), grammarInt,blackLabelsInt)){ //constraint on obligatory children
                     //do nothing = don't add pattern to MFP
+                    if(DEBUG)
+                        System.out.println("prune by mandatory constraint "+pattern);
                 }else{
                     if(  (Pattern_Int.countLeafNode(pattern) > config.getMaxLeaf())             //constraint on maximal number of leafs
                        || Pattern_Int.checkMissingLeaf(pattern)                                 //constraint on real leaf node
-                     //|| checkLeftObligatoryChild(pattern,entry.getKey(),grammarInt,blackLabelsInt)//constraint on obligatory children
-                            ){
+                        ){
                         addTree(pattern,entry.getValue());
-                        //return;
+                        if(DEBUG)
+                            System.out.println("output by leaf constraint "+pattern);
                     }else{
                         project(pattern, entry.getValue());
                     }
                 }
-
-
 
                 pattern = new ArrayList<>(pattern.subList(0,oldSize));
             }
@@ -831,9 +755,17 @@ public class FreqT_Int {
             Initial_Int.readRootLabel(config.getRootLabelFile(), rootLabels);  //read root labels (AST Nodes)
             Initial_Int.readXMLCharacter(config.getXmlCharacterFile(), xmlCharacters); //read list of special XML characters
 
-//            for(Map.Entry<String,ArrayList<String>> g : grammar.entrySet()){
-//                System.out.println(g.getKey()+" "+g.getValue());
-//            }
+            if(DEBUG) {
+                //print grammar
+                for (Map.Entry<String, ArrayList<String>> g : grammar.entrySet()) {
+                    System.out.println(g.getKey() + " " + g.getValue());
+                }
+
+                //print list of labels
+                for(Map.Entry<Integer,String> entry : labelIndex.entrySet()){
+                    System.out.println(entry.getKey()+" "+entry.getValue());
+                }
+            }
 
             //create report file
             String reportFile = config.getOutputFile().replaceAll("\"","") +"-report.txt";
@@ -856,30 +788,12 @@ public class FreqT_Int {
             //find 1-subtrees
             Map < ArrayList<Integer> , Projected > FP1 = buildFP1(transaction);
             //System.out.println("all candidates " + freq1.keySet());
+
             //prune 1-subtrees
             prune(FP1, config.getMinSupport() );
             //System.out.println("all candidates after pruning " + FP1.keySet());
+
             //expand 1-subtrees to find frequent subtrees with size constraints
-
-            /*
-            //test using beam search
-            List<Integer> numbers = Stream.iterate(1, n -> n + 1)
-                    .limit(config.getIterations())
-                    .collect(Collectors.toList());
-
-            numbers.parallelStream().forEach((i) -> {
-                //System.out.println("Iteration "+i+" ......................");
-                findFP(FP1);
-            });
-            */
-
-            /*
-            for(int i=0; i<config.getIterations(); ++i) {
-                System.out.println("Iteration " + i + " ......................");
-                findFP(FP1);
-            }
-            */
-            /////////
             findFP(FP1);
 
             System.out.println("Mining maximal frequent subtrees ...");
@@ -901,7 +815,6 @@ public class FreqT_Int {
                 FreqT_Int_ext_serial freqT_ext = new FreqT_Int_ext_serial(config, this.grammar, this.grammarInt, this.blackLabelsInt, this.whiteLabelsInt,this.xmlCharacters,this.labelIndex,this.transaction);
                 //parallel running
                 //FreqT_Int_ext_multi freqT_ext = new FreqT_Int_ext_multi(config, this.grammar, this.grammarInt, this.blackLabelsInt, this.whiteLabelsInt,this.xmlCharacters,this.labelIndex,this.transaction);
-                //freqT_ext.beamRun(rootIDs,start,report);
                 freqT_ext.run(rootIDs, start, report);
 
             }else{//output maximal patterns in the first step
