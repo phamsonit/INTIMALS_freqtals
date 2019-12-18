@@ -43,10 +43,10 @@ public class Main {
 
         if (args.length==0) {
             System.out.println("Single-run Freq-T usage:\n" +
-                    "java -jar freqt_java.jar CONFIG_FILE [MIN_SUPPORT] [INPUT_FOLDER]\n" +
+                    "java -jar freqt_java.jar CONFIG_FILE [MIN_SUPPORT] [INPUT_FOLDER] (--memory [VALUE])\n" +
                     "\n" +
                     "Multi-run Freq-T usage:\n" +
-                    "java -jar freqt_java.jar -multi CONFIG_FILE");
+                    "java -jar freqt_java.jar -multi CONFIG_FILE (--memory [VALUE])");
         } else {
             if (args[0].equals("-multi")) {
                 m.multiRun(args);
@@ -65,7 +65,9 @@ public class Main {
             Config configBasic = new Config(configPathBasic);
             String inputMinSup = args[1];
             String inputFold = args[2];
-
+            String memory = null;
+            if(args.length == 4)
+            	memory = args[3];
             String sep = "/";
 
             //create final configuration as used by FreqT
@@ -132,8 +134,13 @@ public class Main {
 
             //run forestmatcher to create matches.xml and clusters.xml
             System.out.println("Running forestmatcher ...");
-            String command = "java -jar forestmatcher.jar " +
-                    inputPath + " " + outputPatterns +" " + outputMatches + " " + outputClusters;
+            String command = "";
+            if(memory != null)
+            	command = "java "+memory+" -jar forestmatcher.jar \"" +
+                        inputPath + "\" \"" + outputPatterns +"\" \"" + outputMatches + "\" \"" + outputClusters+"\"";
+            else
+            	command = "java -jar forestmatcher.jar \"" +
+                    inputPath + "\" \"" + outputPatterns +"\" \"" + outputMatches + "\" \"" + outputClusters+"\"";
             Process proc = Runtime.getRuntime().exec(command);
             proc.waitFor();
 
@@ -180,12 +187,16 @@ public class Main {
     private class MultiRunConfig{
         public Integer minSupport;
         public String inFolder;
+        public String memory = null;
     }
 
     private void multiRun(String[] args) throws IOException {
         String configPathBasic = args[1];
         //String timeOut = args[2];
-
+        String memory = null;
+        if(args.length > 2 && args[2].contentEquals("--memory")) {
+        	memory = "-Xmx"+args[3];
+        }
         Config conf = new Config(configPathBasic);
         List<Integer> minSupports = conf.getMinSupportList();
         List<String> folders = conf.getInputFilesList();
@@ -197,6 +208,8 @@ public class Main {
                 MultiRunConfig run = new MultiRunConfig();
                 run.minSupport = minSupport;
                 run.inFolder = folder;
+                if(memory != null)
+                	run.memory = memory;
                 runs.add(run);
             }
         }
@@ -204,8 +217,14 @@ public class Main {
         runs.parallelStream().forEach((run) -> {
             String runDescr = "(minimum support:" + run.minSupport + " ; input:" + run.inFolder + ")";
             System.out.println("Starting run " + runDescr);
-            String[] runArgs = {args[1], run.minSupport.toString(), run.inFolder};
-            singleRun(runArgs);
+            List<String> runArgs = new ArrayList<String>();
+            runArgs.add(args[1]);
+            runArgs.add(run.minSupport.toString());
+            runArgs.add(run.inFolder);
+            if(run.memory != null)
+            	runArgs.add(run.memory);
+            String[] params = new String[runArgs.size()];
+            singleRun(runArgs.toArray(params));
             System.out.println("Finished run " + runDescr);
         });
     }
