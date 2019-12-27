@@ -70,14 +70,16 @@ public class Main {
             	if(args[3].contains("file")) { //debug file
             		PrintStream o = new PrintStream(new File(inputFold+"-debug-log.txt")); 
                     // Assign o to output stream to redirect to file
-                    System.setOut(o); 
+                    System.setOut(o);
+                    System.setErr(o);
             	}else //memory value
             		memory = args[3];
             if(args.length == 5) { //memory and debug file
             	memory = args[3];
             	PrintStream o = new PrintStream(new File(inputFold+"-debug-log.txt")); 
             	// Assign o to output stream to redirect to file
-            	System.setOut(o); 
+            	System.setOut(o);
+                System.setErr(o);
             }
             String sep = "/";
 
