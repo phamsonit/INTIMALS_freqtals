@@ -43,10 +43,10 @@ public class Main {
 
         if (args.length==0) {
             System.out.println("Single-run Freq-T usage:\n" +
-                    "java -jar freqt_java.jar CONFIG_FILE [MIN_SUPPORT] [INPUT_FOLDER] (--memory [VALUE])\n" +
+                    "java -jar freqt_java.jar CONFIG_FILE [MIN_SUPPORT] [INPUT_FOLDER] (--memory [VALUE]) (--debug-file)\n" +
                     "\n" +
                     "Multi-run Freq-T usage:\n" +
-                    "java -jar freqt_java.jar -multi CONFIG_FILE (--memory [VALUE])");
+                    "java -jar freqt_java.jar -multi CONFIG_FILE (--memory [VALUE]) (--debug-file)");
         } else {
             if (args[0].equals("-multi")) {
                 m.multiRun(args);
@@ -66,8 +66,19 @@ public class Main {
             String inputMinSup = args[1];
             String inputFold = args[2];
             String memory = null;
-            if(args.length == 4)
+            if(args.length == 4) //memory flag or debug is set
+            	if(args[3].contains("file")) { //debug file
+            		PrintStream o = new PrintStream(new File(inputFold+"-debug-log.txt")); 
+                    // Assign o to output stream to redirect to file
+                    System.setOut(o); 
+            	}else //memory value
+            		memory = args[3];
+            if(args.length == 5) { //memory and debug file
             	memory = args[3];
+            	PrintStream o = new PrintStream(new File(inputFold+"-debug-log.txt")); 
+            	// Assign o to output stream to redirect to file
+            	System.setOut(o); 
+            }
             String sep = "/";
 
             //create final configuration as used by FreqT
@@ -141,7 +152,23 @@ public class Main {
             else
             	command = "java -jar forestmatcher.jar \"" +
                     inputPath + "\" \"" + outputPatterns +"\" \"" + outputMatches + "\" \"" + outputClusters+"\"";
+            System.out.println("With command: "+command);
             Process proc = Runtime.getRuntime().exec(command);
+            //Get output of forestMatcher
+            BufferedReader stdInput = new BufferedReader(new InputStreamReader(proc.getInputStream()));
+            BufferedReader stdError = new BufferedReader(new InputStreamReader(proc.getErrorStream()));
+
+            // Read the output from the command
+            System.out.println("Here is the standard output of the command:\n");
+            String s = null;
+            while ((s = stdInput.readLine()) != null) {
+                System.out.println(s);
+            }
+            // Read any errors from the attempted command
+            System.out.println("Here is the standard error of the command (if any):\n");
+            while ((s = stdError.readLine()) != null) {
+                System.out.println(s);
+            }
             proc.waitFor();
 
             File pattern = new File(outputClustersTemp);
@@ -155,9 +182,24 @@ public class Main {
                 //find matches of common_patterns
                 command = "java -jar forestmatcher.jar " +
                         inputPath + " " + outputCommonPatterns +" " + outputCommonMatches + " " + outputCommonClusters;
-                proc = Runtime.getRuntime().exec(command);
-                proc.waitFor();
+                System.out.println("With command: "+command);
+                 proc = Runtime.getRuntime().exec(command);
+                //Get output of forestMatcher
+                stdInput = new BufferedReader(new InputStreamReader(proc.getInputStream()));
+                stdError = new BufferedReader(new InputStreamReader(proc.getErrorStream()));
 
+                // Read the output from the command
+                System.out.println("Here is the standard output of the command:\n");
+                s = null;
+                while ((s = stdInput.readLine()) != null) {
+                    System.out.println(s);
+                }
+                // Read any errors from the attempted command
+                System.out.println("Here is the standard error of the command (if any):\n");
+                while ((s = stdError.readLine()) != null) {
+                    System.out.println(s);
+                }
+                proc.waitFor();
                 System.out.println("Cleaning up ...");
                 Files.deleteIfExists(Paths.get(outputPatternsTemp));
                 Files.deleteIfExists(Paths.get(outputCommonPatterns+".txt"));
@@ -187,15 +229,20 @@ public class Main {
         public Integer minSupport;
         public String inFolder;
         public String memory = null;
+        public String debugFile = null;
     }
 
     private void multiRun(String[] args) throws IOException {
         String configPathBasic = args[1];
         //String timeOut = args[2];
         String memory = null;
-        if(args.length > 2 && args[2].contentEquals("--memory")) {
+        if(args.length > 2 && args[2].contentEquals("--memory"))//Try and set memory arg
         	memory = "-Xmx"+args[3];
-        }
+        String debug = null;
+        if(args.length > 2 && args[2].contentEquals("--debug-file")) {//Try and set debug arg
+        	debug = args[2];
+        }else if(args.length > 4 && args[4].contentEquals("--debug-file"))//Try and set memory and debug arg
+        	debug = args[4];
         Config conf = new Config(configPathBasic);
         List<Integer> minSupports = conf.getMinSupportList();
         List<String> folders = conf.getInputFilesList();
@@ -209,6 +256,8 @@ public class Main {
                 run.inFolder = folder;
                 if(memory != null)
                 	run.memory = memory;
+                if(debug != null)
+                	run.debugFile = debug;
                 runs.add(run);
             }
         }
@@ -222,6 +271,8 @@ public class Main {
             runArgs.add(run.inFolder);
             if(run.memory != null)
             	runArgs.add(run.memory);
+            if(run.debugFile != null)
+            	runArgs.add(run.debugFile);
             String[] params = new String[runArgs.size()];
             singleRun(runArgs.toArray(params));
             System.out.println("Finished run " + runDescr);
