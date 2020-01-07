@@ -7,16 +7,13 @@ import be.intimals.freqt.output.XMLOutput;
 import be.intimals.freqt.structure.*;
 import be.intimals.freqt.util.Initial_Int;
 import be.intimals.freqt.util.Variables;
+import be.intimals.freqt.FTArray;
 
 import java.io.File;
 import java.io.FileWriter;
 import java.io.IOException;
-import java.lang.reflect.Array;
 import java.util.*;
 import java.util.concurrent.ConcurrentHashMap;
-
-import java.util.stream.Stream;
-import java.util.stream.Collectors;
 
 
 /*
@@ -35,11 +32,11 @@ public class FreqT_Int {
     protected Map<Integer,ArrayList<Integer> > whiteLabelsInt = new LinkedHashMap<>();
 
     ///////////
-    private Map<ArrayList<Integer>,String> MFP = new HashMap<>();
+    private Map<FTArray,String> MFP = new HashMap<>();
     //store root labels
     private Set<String>    rootLabels  = new HashSet<>();
     //store root occurrences of patterns
-    private Map<String,ArrayList<Integer> >  rootIDs = new HashMap<>();
+    private Map<String, FTArray>  rootIDs = new HashMap<>();
     //store file ids of patterns
     private Map<String,String>  fileIDs = new HashMap<>();
     /////
@@ -66,7 +63,7 @@ public class FreqT_Int {
      * @param pat
      * @param projected
      */
-    private void addRootIDs(ArrayList<Integer> pat, Projected projected){
+    private void addRootIDs(FTArray pat, Projected projected){
         try {
             //find root occurrences (id-pos) of pattern
             String rootOccurrences = "";
@@ -79,9 +76,9 @@ public class FreqT_Int {
             boolean isAdded = true;
             Collection<String> l1 = Arrays.asList(rootOccurrences.split(";"));
 
-            Iterator<Map.Entry<String, ArrayList<Integer>>> iter = rootIDs.entrySet().iterator();
+            Iterator<Map.Entry<String, FTArray>> iter = rootIDs.entrySet().iterator();
             while (iter.hasNext()){
-                Map.Entry<String, ArrayList<Integer>> entry = iter.next();
+                Map.Entry<String, FTArray> entry = iter.next();
                 Collection<String> l2 = Arrays.asList(entry.getKey().split(";"));
                 //if l1 is super set of l2 then we don't need to add l1 to rootIDs
                 if(l1.containsAll(l2)){
@@ -97,14 +94,15 @@ public class FreqT_Int {
 
             if(isAdded){
                 //keep only the root occurrences and root label
-                ArrayList<Integer> rootLabel_int = new ArrayList<>(pat.subList(0,1));
+                FTArray rootLabel_int = pat.subList(0,1);
                 rootIDs.put(rootOccurrences, rootLabel_int);
             }
         }catch (Exception e){System.out.println("Error: adding rootIDs "+e);}
     }
 
+    /*
     //return true if either labels of pat1 contain labels of pat2 or labels of pat2 contain labels of pat1
-    private boolean checkSubsetLabel(ArrayList<Integer> pat1, ArrayList<Integer> pat2){
+    private boolean checkSubsetLabel(FTArray pat1, FTArray pat2){
 
         if( Pattern_Int.countNode(pat1) >= Pattern_Int.countNode(pat2) ){
             return  pat1.containsAll(pat2);
@@ -112,7 +110,7 @@ public class FreqT_Int {
         else {
             return pat2.containsAll(pat1);
         }
-    }
+    }*/
 
     /**
      * check if pat1 is a subtree of pat2 ?
@@ -121,13 +119,13 @@ public class FreqT_Int {
      * @param pat2
      * @return
      */
-    private int checkSubTree(ArrayList<Integer> pat1, ArrayList<Integer> pat2) {
+    private int checkSubTree(FTArray pat1, FTArray pat2) {
 
         int fastResult = fastCheckSubTree(pat1,pat2);
         if (fastResult != -1) return fastResult;
 
         //check subset of labels before check maximality
-        if (checkSubsetLabel(pat1, pat2)) {
+ //       if (checkSubsetLabel(pat1, pat2)) {
             //maximality check
             FreqT_Int_subtree fr = new FreqT_Int_subtree(this.config);
             int pat1Size = pat1.size();
@@ -151,11 +149,11 @@ public class FreqT_Int {
                     return 2; //pat2 is a subtree of pat1
                 }
             }
-        }else {
+ /*       }else {
     //        if (fastResult != 0)
     //            fastCheckSubTree(pat1,pat2);  //for debugging: put a breakpoint here
             return 0;
-        }
+        }*/
     }
 
     public int hitCount,missCount;
@@ -163,7 +161,7 @@ public class FreqT_Int {
     // 0 = no subtree
     // 1 = pat1 is a subtree of pat2
     // 2 = pat2 is a subtree of pat1
-    private int fastCheckSubTree(ArrayList<Integer> pat1, ArrayList<Integer> pat2){
+    private int fastCheckSubTree(FTArray pat1, FTArray pat2){
         hitCount++;
         if(pat1.size() == pat2.size())
         {
@@ -190,13 +188,13 @@ public class FreqT_Int {
         }
     }
 
-    protected boolean hasSubtree(List<Integer> big, List<Integer> small){
+    protected boolean hasSubtree(FTArray big, FTArray small){
         int root = small.get(0); //the root of small
         int smallSize = small.size();
         int bigSize = big.size();
         int startIdx = 0;
 
-        List<Integer> bigPart = big;
+        FTArray bigPart = big;
         while(true) //loop over big, searching for the root
         {
             int rootIdx = bigPart.indexOf(root);
@@ -214,7 +212,7 @@ public class FreqT_Int {
 
     //both big and small have the same root
     //inclusion check ignores sub-trees that are in big but not in small
-    private boolean treeIncludes(List<Integer> big, List<Integer> small){
+    private boolean treeIncludes(FTArray big, FTArray small){
         if (big.size() == small.size()) return big.equals(small);
 
         int smallSize = small.size();
@@ -256,7 +254,7 @@ public class FreqT_Int {
 
     // in the tree at offset-1 there is the start of a subtree that we should skip over
     // return the offset in the tree after that subtree
-    private int skipOver(List<Integer> tree, int offset){
+    private int skipOver(FTArray tree, int offset){
         offset++;
         int treeSize = tree.size();
         int recursion = 1; //how deep are we recursing in the subtree
@@ -275,7 +273,7 @@ public class FreqT_Int {
     }
 
     //check output patterns by using minLeaf and minNode
-    public boolean checkOutput(ArrayList<Integer> pat){
+    public boolean checkOutput(FTArray pat){
         if(  Pattern_Int.countLeafNode(pat) >= config.getMinLeaf() &&
              Pattern_Int.countNode(pat)     >= config.getMinNode())
             return true;
@@ -292,14 +290,14 @@ public class FreqT_Int {
      * @param _MFP
      */
 
-    public void addMFP(ArrayList<Integer> pat, Projected projected, Map<ArrayList<Integer>,String> _MFP){
+    public void addMFP(FTArray pat, Projected projected, Map<FTArray,String> _MFP){
         boolean found = false;
         //if pat is already existed in the MFP then return
         if(_MFP.containsKey(pat)) return;
         //pair-wise compare the input pattern to every pattern in _MFP
-        Iterator < Map.Entry<ArrayList<Integer>,String> > p = _MFP.entrySet().iterator();
+        Iterator < Map.Entry<FTArray,String> > p = _MFP.entrySet().iterator();
         while(p.hasNext() && !found){
-            Map.Entry<ArrayList<Integer>, String> entry = p.next();
+            Map.Entry<FTArray, String> entry = p.next();
             switch (checkSubTree(pat,entry.getKey())){
                 case 1:
                     found = true; //patTemp is a subtree of entry.getKey
@@ -324,7 +322,7 @@ public class FreqT_Int {
     }
 
     //add frequent tree to FP
-    public void addFP(ArrayList<Integer> pat, Projected projected, Map<ArrayList<Integer>,String> _FP){
+    public void addFP(FTArray pat, Projected projected, Map<FTArray,String> _FP){
 
         int support = projected.getProjectedSupport();
         int wsupport = projected.getProjectedRootSupport(); //=> root location
@@ -338,25 +336,25 @@ public class FreqT_Int {
     }
 
     //filter maximal patterns from FP
-    public Map<ArrayList<Integer>,String> filterFP(Map<ArrayList<Integer>,String> _FP){
-        Map<ArrayList<Integer>,String> _MFP = new HashMap<>();
+    public Map<FTArray,String> filterFP(Map<FTArray,String> _FP){
+        Map<FTArray,String> _MFP = new HashMap<>();
         try{
-            Iterator < Map.Entry<ArrayList<Integer>,String> > fp = _FP.entrySet().iterator();
+            Iterator < Map.Entry<FTArray,String> > fp = _FP.entrySet().iterator();
             //for each pattern
             while(fp.hasNext()){
                 boolean found = false;
-                Map.Entry<ArrayList<Integer>, String> fpEntry = fp.next();
+                Map.Entry<FTArray, String> fpEntry = fp.next();
 
                 if(_MFP.isEmpty()){
                     _MFP.put(fpEntry.getKey(), fpEntry.getValue());
                 }
                 else {
                     //check the pattern existing in MFP list ?
-                    Iterator<Map.Entry<ArrayList<Integer>, String>> mfp = _MFP.entrySet().iterator();
+                    Iterator<Map.Entry<FTArray, String>> mfp = _MFP.entrySet().iterator();
                     while (mfp.hasNext()) {
-                        Map.Entry<ArrayList<Integer>, String> mfpEntry = mfp.next();
+                        Map.Entry<FTArray, String> mfpEntry = mfp.next();
                         //check the labels of two subtrees before check maximal subtree
-                        if(checkSubsetLabel(fpEntry.getKey(), mfpEntry.getKey())) {
+//                        if(checkSubsetLabel(fpEntry.getKey(), mfpEntry.getKey())) {
                             switch (checkSubTree(fpEntry.getKey(), mfpEntry.getKey())) {
                                 case 1:
                                     found = true;
@@ -365,7 +363,7 @@ public class FreqT_Int {
                                     mfp.remove();
                                     break;
                             }
-                        }
+//                        }
                     }
                     if (!found) {
                         _MFP.put(fpEntry.getKey(), fpEntry.getValue());
@@ -377,19 +375,19 @@ public class FreqT_Int {
     }
 
     //parallel filter maximal patterns by using pair-wise checking
-    public Map<ArrayList<Integer>,String> filterFP_multi(Map<ArrayList<Integer>,String> FP){
-        Map<ArrayList<Integer>,String> MFP = new ConcurrentHashMap<>();
+    public Map<FTArray,String> filterFP_multi(Map<FTArray,String> FP){
+        Map<FTArray,String> MFP = new ConcurrentHashMap<>();
         FP.entrySet().parallelStream().forEach(fpEntry-> {
             boolean found = false;
             if (MFP.isEmpty()) {
                 MFP.put(fpEntry.getKey(), fpEntry.getValue());
             } else {
                 //check the maximality in MFP list ?
-                Iterator<Map.Entry<ArrayList<Integer>,String>> mfp = MFP.entrySet().iterator();
+                Iterator<Map.Entry<FTArray,String>> mfp = MFP.entrySet().iterator();
                 while (mfp.hasNext()) {
-                    Map.Entry<ArrayList<Integer>,String> mfpEntry = mfp.next();
+                    Map.Entry<FTArray,String> mfpEntry = mfp.next();
                     //check labels of pat is subset of labels of mfpEntry
-                    if(checkSubsetLabel(fpEntry.getKey(), mfpEntry.getKey())) {
+//                    if(checkSubsetLabel(fpEntry.getKey(), mfpEntry.getKey())) {
                         switch (checkSubTree(fpEntry.getKey(), mfpEntry.getKey())) {
                             case 1:
                                 found = true;
@@ -398,7 +396,7 @@ public class FreqT_Int {
                                 mfp.remove();
                                 break;
                         }
-                    }
+//                    }
                 }
                 if (!found) {
                     MFP.put(fpEntry.getKey(), fpEntry.getValue());
@@ -413,9 +411,9 @@ public class FreqT_Int {
      * @param pat
      * @param projected
      */
-    private void addTree(ArrayList<Integer> pat, Projected projected){
+    private void addTree(FTArray pat, Projected projected){
         //remove the right part of the pattern that misses leafs
-        ArrayList<Integer> patTemp = Pattern_Int.getPatternString1(pat);
+        FTArray patTemp = Pattern_Int.getPatternString1(pat);
 
         //check minsize constraints and right mandatory children before adding pattern
         if(checkOutput(patTemp) && !checkRightObligatoryChild(patTemp, grammarInt, blackLabelsInt)){
@@ -470,10 +468,10 @@ public class FreqT_Int {
      * prune candidates based on minimal support
      * @param candidates
      */
-    public void prune (Map <ArrayList<Integer>, Projected > candidates, int minSup){
-        Iterator < Map.Entry<ArrayList<Integer>,Projected> > iter = candidates.entrySet().iterator();
+    public void prune (Map <FTArray, Projected > candidates, int minSup){
+        Iterator < Map.Entry<FTArray,Projected> > iter = candidates.entrySet().iterator();
         while (iter.hasNext()) {
-            Map.Entry<ArrayList<Integer>,Projected> entry = iter.next();
+            Map.Entry<FTArray,Projected> entry = iter.next();
             int sup = getSupport(entry.getValue());
             int wsup = getRootSupport(entry.getValue());
             if(sup < minSup){
@@ -486,16 +484,16 @@ public class FreqT_Int {
         }
     }
 
-    public void pruneSupportAndBlacklist(Map <ArrayList<Integer>, Projected > candidates,
+    public void pruneSupportAndBlacklist(Map <FTArray, Projected > candidates,
                                           int minSup,
-                                          ArrayList<Integer> pat,
+                                          FTArray pat,
                                           Map <Integer,ArrayList<Integer>> _blackLabels){
 
-        Map<ArrayList<Integer>,Integer> rootSupports = new HashMap<>();
+        Map<FTArray,Integer> rootSupports = new HashMap<>();
 
-        Iterator < Map.Entry<ArrayList<Integer>,Projected> > can = candidates.entrySet().iterator();
+        Iterator < Map.Entry<FTArray,Projected> > can = candidates.entrySet().iterator();
         while (can.hasNext()) {
-            Map.Entry<ArrayList<Integer>, Projected> entry = can.next();
+            Map.Entry<FTArray, Projected> entry = can.next();
             Projected value = entry.getValue();
             int sup = getSupport(value); //5 different *files*
             //int sup = getRootSupport(value); //5 different *things*
@@ -522,29 +520,29 @@ public class FreqT_Int {
      * blacklist is created in the readWhiteLabel procedure
      * @param candidates
      */
-    public void pruneBlackList(ArrayList<Integer> pat,
-                               Map <ArrayList<Integer>, Projected > candidates,
+    public void pruneBlackList(FTArray pat,
+                               Map <FTArray, Projected > candidates,
                                Map <Integer,ArrayList<Integer>> _blackLabels){
-        Iterator < Map.Entry<ArrayList<Integer>,Projected> > can = candidates.entrySet().iterator();
+        Iterator < Map.Entry<FTArray,Projected> > can = candidates.entrySet().iterator();
         while (can.hasNext()) {
-            Map.Entry<ArrayList<Integer>, Projected> entry = can.next();
+            Map.Entry<FTArray, Projected> entry = can.next();
             if (isBlacklisted(pat,  entry.getKey(), _blackLabels)){
                  can.remove();
             }
         }
     }
 
-    public boolean isBlacklisted(ArrayList<Integer> pat, ArrayList<Integer> key, Map <Integer,ArrayList<Integer>> _blackLabels){
+    public boolean isBlacklisted(FTArray pat, FTArray key, Map <Integer,ArrayList<Integer>> _blackLabels){
         int candidateLabel_int = key.get(key.size()-1);
         return (checkBlackListLabel(candidateLabel_int,_blackLabels.values())) &&
             (Pattern_Int.ChildrenLabelsContains(pat,key,_blackLabels,candidateLabel_int));
 }
 
     //return true if pattern misses obligatory child
-    public boolean checkLeftObligatoryChild(ArrayList<Integer> pat,
-                                        ArrayList<Integer> candidate,
-                                        Map <Integer,ArrayList <String> > _grammarInt,
-                                        Map <Integer,ArrayList<Integer> > _blackLabelsInt){
+    public boolean checkLeftObligatoryChild(FTArray pat,
+                                            FTArray candidate,
+                                            Map <Integer,ArrayList <String> > _grammarInt,
+                                            Map <Integer,ArrayList<Integer> > _blackLabelsInt){
 
         boolean missMandatoryChild = false;
         try{
@@ -564,9 +562,9 @@ public class FreqT_Int {
             if(childrenG.get(0).equals("ordered") && !childrenG.get(1).equals("1")){
                 //System.out.println("must check obligatory children");
                 //get all children of parentPos in pattern
-                ArrayList<Integer> childrenP = Pattern_Int.findChildrenPosition(pat,parentPos);
+                FTArray childrenP = Pattern_Int.findChildrenPosition(pat,parentPos);
 
-                ArrayList<Integer> blackLabelChildren = new ArrayList<>();
+                ArrayList<Integer> blackLabelChildren = new ArrayList<Integer>();
                 if(_blackLabelsInt.containsKey(pat.get(parentPos)))
                     blackLabelChildren = _blackLabelsInt.get(pat.get(parentPos));
                 //System.out.println("blackLabel "+blackLabelChildren);
@@ -577,7 +575,7 @@ public class FreqT_Int {
                 while(i<childrenP.size() && j<childrenG.size() && !missMandatoryChild) {
                     String[] childGrammarTemp = childrenG.get(j).split(Variables.uniChar);
                     int label_int = Integer.valueOf(childGrammarTemp[0]);
-                    if(pat.get(childrenP.get(i)).equals(label_int)) {
+                    if(pat.get(childrenP.get(i)) == label_int) {
                         ++i;
                         ++j;
                     }
@@ -603,9 +601,9 @@ public class FreqT_Int {
     //1. find children of the current node in the pattern
     //2. find children of the current node in the grammar
     //3. compare two set of children to determine the pattern missing mandatory child or not
-    public boolean checkRightObligatoryChild(ArrayList<Integer> pat,
-                                        Map <Integer,ArrayList <String> > _grammarInt,
-                                        Map <Integer,ArrayList<Integer> > _blackLabelsInt){
+    public boolean checkRightObligatoryChild(FTArray pat,
+                                             Map <Integer,ArrayList <String> > _grammarInt,
+                                             Map <Integer,ArrayList<Integer> > _blackLabelsInt){
 
         boolean missMandatoryChild = false;
         try{
@@ -617,10 +615,10 @@ public class FreqT_Int {
                     ArrayList<String> childrenG = _grammarInt.get(currentLabel);
                     if (childrenG.get(0).equals("ordered") && !childrenG.get(1).equals("1")) {
                         //get all children of the current pos in pattern
-                        ArrayList<Integer> childrenP = Pattern_Int.findChildrenPosition(pat, pos);
+                        FTArray childrenP = Pattern_Int.findChildrenPosition(pat, pos);
                         if(childrenP.size() > 0){
                             //get black children
-                            ArrayList<Integer> blackLabelChildren = new ArrayList<>();
+                            ArrayList<Integer> blackLabelChildren = new ArrayList<Integer>();
                             if (_blackLabelsInt.containsKey(currentLabel))
                                 blackLabelChildren = _blackLabelsInt.get(currentLabel);
 
@@ -631,7 +629,7 @@ public class FreqT_Int {
                                 String[] childGrammarTemp = childrenG.get(j).split(Variables.uniChar);
                                 int label_int = Integer.valueOf(childGrammarTemp[0]);
 
-                                if(pat.get(childrenP.get(i)).equals(label_int)) {
+                                if(pat.get(childrenP.get(i)) == label_int) {
                                     ++i;
                                     ++j;
                                 }
@@ -671,9 +669,9 @@ public class FreqT_Int {
      * @param projected
      * @return
      */
-    public Map< ArrayList<Integer>, Projected> generateCandidates(Projected projected, ArrayList  <ArrayList <NodeFreqT> >  _transaction) {
-        Map<ArrayList<Integer>, Projected> candidates = new LinkedHashMap<>();
-        //Map<ArrayList<Integer>, Projected> candidates = new ConcurrentHashMap<>();
+    public Map<FTArray, Projected> generateCandidates(Projected projected, ArrayList  <ArrayList <NodeFreqT> >  _transaction) {
+        Map<FTArray, Projected> candidates = new LinkedHashMap<>();
+        //Map<FreqTMemory, Projected> candidates = new ConcurrentHashMap<>();
         //keep the order of elements
         try{
             // For each location, find all candidates
@@ -688,8 +686,8 @@ public class FreqT_Int {
                 //keep lineNr to calculate distance of two nodes
                 //List<Integer> lines = projected.getProjectLineNr(i);
                 //String prefix = "";
-                ArrayList<Integer> prefixInt = new ArrayList<>();
-                //ArrayList<Integer> prefixInt = new ArrayList<>();
+                FTArray prefixInt = new FTArray();
+                //FreqTMemory prefixInt = new ArrayList<>();
                 for (int d = -1; d < depth && pos != -1; ++d) {
                     int start = (d == -1) ? _transaction.get(id).get(pos).getNodeChild() :
                             _transaction.get(id).get(pos).getNodeSibling();
@@ -698,7 +696,7 @@ public class FreqT_Int {
                          l = _transaction.get(id).get(l).getNodeSibling()) {
                         //String item = prefix + uniChar + _transaction.elementAt(id).elementAt(l).getNodeLabel();
                         //System.out.println(item);
-                        ArrayList<Integer> itemInt = new ArrayList<>();
+                        FTArray itemInt = new FTArray();
                         itemInt.addAll(prefixInt);
                         itemInt.add(_transaction.get(id).get(l).getNode_label_int());
                         //System.out.println(_transaction.elementAt(id).elementAt(l).getNode_label_int());
@@ -725,7 +723,11 @@ public class FreqT_Int {
                 }
             }
         }
-        catch (Exception e){System.out.println("Error: generate candidates " + e);}
+        catch (Exception e){
+            System.out.println("Error: generate candidates " + e);
+            e.printStackTrace();
+            System.exit(-1);
+        }
         return candidates;
     }
 
@@ -733,7 +735,7 @@ public class FreqT_Int {
      * expand a subtree
      * @param projected
      */
-    private void project(ArrayList<Integer> pattern, Projected projected) {
+    private void project(FTArray pattern, Projected projected) {
         try{
 
             //check time out: if current time - timeStar > timeout the return;
@@ -746,7 +748,7 @@ public class FreqT_Int {
 
             //System.out.println("pattern "+pattern);
             //find candidates
-            Map<ArrayList<Integer>, Projected> candidates = generateCandidates(projected,transaction);
+            Map<FTArray, Projected> candidates = generateCandidates(projected,transaction);
             //System.out.println("all candidates     " + candidates.keySet());
 
             //prune on minimum support and list of black labels
@@ -760,9 +762,9 @@ public class FreqT_Int {
             }
 
             //for each candidate expand to the current pattern
-            for(Map.Entry<ArrayList<Integer>, Projected> entry : candidates.entrySet()){
+            for(Map.Entry<FTArray, Projected> entry : candidates.entrySet()){
                 int oldSize = pattern.size();
-                ArrayList<Integer> key = entry.getKey() ;
+                FTArray key = entry.getKey() ;
                 //add candidate into pattern
                 pattern.addAll(key);
 
@@ -787,25 +789,29 @@ public class FreqT_Int {
                     }
                 }
 
-                pattern = new ArrayList<>(pattern.subList(0,oldSize));
+                pattern = pattern.subList(0,oldSize);
             }
-        }catch (Exception e){System.out.println("Error: Freqt_Int - projected " + e);}
+        }catch (Exception e){
+            System.out.println("Error: Freqt_Int - projected " + e);
+            e.printStackTrace();
+            System.exit(-1);
+        }
     }
 
     /**
      * expand single-subtrees to find frequent subtrees based on input parameters
      * @param freq1
      */
-    private void findFP(Map < ArrayList<Integer> , Projected > freq1){
+    private void findFP(Map <FTArray, Projected > freq1){
         //pattern = new ArrayList <>();
-        ArrayList<Integer> pattern = new ArrayList<>();
-        Iterator < Map.Entry<ArrayList<Integer>,Projected> > iter = freq1.entrySet().iterator();
+        FTArray pattern = new FTArray();
+        Iterator < Map.Entry<FTArray,Projected> > iter = freq1.entrySet().iterator();
         while (iter.hasNext()) {
-            Map.Entry< ArrayList<Integer>,Projected> entry = iter.next();
+            Map.Entry<FTArray,Projected> entry = iter.next();
             entry.getValue().setProjectedDepth(0);
             pattern.addAll(entry.getKey());
             project(pattern, entry.getValue());
-            pattern = new ArrayList<>();
+            pattern = new FTArray();
         }
     }
 
@@ -813,8 +819,8 @@ public class FreqT_Int {
      * Return all frequent subtrees of size 1
      * @return
      */
-    private Map<ArrayList<Integer>, Projected> buildFP1(ArrayList  < ArrayList <NodeFreqT> > trans) {
-        Map<ArrayList<Integer>, Projected> freq1 = new LinkedHashMap<>();
+    private Map<FTArray, Projected> buildFP1(ArrayList  < ArrayList <NodeFreqT> > trans) {
+        Map<FTArray, Projected> freq1 = new LinkedHashMap<>();
         for(int i = 0; i < trans.size(); ++i) {
             for (int j = 0; j < trans.get(i).size(); ++j) {
                 //String node_label = trans.elementAt(i).elementAt(j).getNodeLabel();
@@ -830,7 +836,7 @@ public class FreqT_Int {
                     if (node_label != null) {
                         //System.out.println("Node "+ node_label+" "+lineNr);
                         //if node_label already exists
-                        ArrayList<Integer> temp = new ArrayList<>();
+                        FTArray temp = new FTArray();
                         temp.add(node_label_id);
                         Projected value = freq1.get(temp);
                         if (value != null) {
@@ -914,7 +920,7 @@ public class FreqT_Int {
 
             System.out.println("Mining frequent subtrees ...");
             //find 1-subtrees
-            Map < ArrayList<Integer> , Projected > FP1 = buildFP1(transaction);
+            Map <FTArray, Projected > FP1 = buildFP1(transaction);
             //System.out.println("all candidates " + freq1.keySet());
 
             //prune 1-subtrees
@@ -965,7 +971,7 @@ public class FreqT_Int {
                 }else {
                     System.out.println("filter FP: "+MFP.size());
                     long startFilter = System.currentTimeMillis();
-                    Map<ArrayList<Integer>,String> mfpTemp = filterFP_multi(MFP);
+                    Map<FTArray,String> mfpTemp = filterFP_multi(MFP);
                     log(report,"filtering time: "+(System.currentTimeMillis()-startFilter)/1000+"s");
                     nbMFP = mfpTemp.size();
                     outputPatterns(mfpTemp,outFile);
@@ -985,15 +991,15 @@ public class FreqT_Int {
 
 
     //print maximal patterns
-    public void outputPatterns(Map< ArrayList<Integer>, String> maximalPatterns, String outFile){
+    public void outputPatterns(Map<FTArray, String> maximalPatterns, String outFile){
         try{
             //create output file to store patterns for mining common patterns
             FileWriter outputCommonPatterns = new FileWriter(outFile+".txt");
             //output maximal patterns
             AOutputFormatter outputMaximalPatterns =  new XMLOutput(outFile, config, grammar, xmlCharacters);
-            Iterator < Map.Entry<ArrayList<Integer>,String> > iter1 = maximalPatterns.entrySet().iterator();
+            Iterator < Map.Entry<FTArray,String> > iter1 = maximalPatterns.entrySet().iterator();
             while(iter1.hasNext()){
-                Map.Entry<ArrayList<Integer>,String> entry = iter1.next();
+                Map.Entry<FTArray,String> entry = iter1.next();
                 ArrayList <String> pat = Pattern_Int.getPatternStr(entry.getKey(),labelIndex);
                 String supports = entry.getValue();
                 ((XMLOutput) outputMaximalPatterns).report_Int(pat,supports);
@@ -1016,8 +1022,8 @@ public class FreqT_Int {
     }
 
     /////////// specific functions for COBOL source code //////////////////
-    public void checkContinuousParagraph(ArrayList<Integer> pat,
-                                         Map.Entry<ArrayList<Integer>, Projected> entry,
+    public void checkContinuousParagraph(FTArray pat,
+                                         Map.Entry<FTArray, Projected> entry,
                                          ArrayList <ArrayList <NodeFreqT> >  _transaction){
         try{
             //System.out.println(pat);
@@ -1026,7 +1032,7 @@ public class FreqT_Int {
             int parentPos = Pattern_Int.findParentPosition(pat,entry.getKey());
             //System.out.println("parent "+parentPos);
             //find Paragraph locations
-            List<Integer> childrenPos = Pattern_Int.findChildrenPosition(pat,parentPos);
+            FTArray childrenPos = Pattern_Int.findChildrenPosition(pat,parentPos);
             //System.out.println("number of paragraphs "+childrenPos.size());
             if (childrenPos.size()==1) return;
             //check continuous paragraphs
@@ -1035,7 +1041,7 @@ public class FreqT_Int {
             int i=0;
             while(i < projected.getProjectLocationSize()){
                 int id = Location.getLocationId(projected.getProjectLocation(i));
-               int[] pos = Location.getLocationArr(projected.getProjectLocation(i));
+                int[] pos = Location.getLocationArr(projected.getProjectLocation(i));
                 //System.out.println(pos);
 
                 int firstPos=0;
@@ -1062,7 +1068,7 @@ public class FreqT_Int {
     /**
      * delete locations of a label that belongs to black-section?
      */
-    public void checkBlackSection(Map.Entry<ArrayList<Integer>, Projected> entry, ArrayList  <ArrayList <NodeFreqT> >  _transaction){
+    public void checkBlackSection(Map.Entry<FTArray, Projected> entry, ArrayList  <ArrayList <NodeFreqT> >  _transaction){
         //TODO: read black-section from file
         Set<String> blackSectionList = new HashSet<>();
         blackSectionList.add("*CCVS1");

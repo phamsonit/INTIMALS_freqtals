@@ -2,12 +2,11 @@ package be.intimals.freqt.core;
 
 import be.intimals.freqt.config.Config;
 import be.intimals.freqt.structure.*;
+import be.intimals.freqt.FTArray;
 
 import java.io.FileWriter;
 import java.util.*;
 import java.util.concurrent.ConcurrentHashMap;
-import java.util.stream.Collectors;
-import java.util.stream.Stream;
 
 /*
     extended FREQT + without using max size constraints
@@ -15,11 +14,11 @@ import java.util.stream.Stream;
 
 public class FreqT_Int_ext_serial extends FreqT_Int {
 
-    //private Map<ArrayList<Integer>,String> MFP = new HashMap<>();
-    //private Map<String,ArrayList<Integer>> interruptedRootID = new LinkedHashMap<>();
+    //private Map<FreqTMemory,String> MFP = new HashMap<>();
+    //private Map<String,FreqTMemory> interruptedRootID = new LinkedHashMap<>();
 
-    private Map<ArrayList<Integer>,String> MFP = new ConcurrentHashMap<>();
-    private Map<String,ArrayList<Integer>> interruptedRootID = new ConcurrentHashMap<>();
+    private Map<FTArray,String> MFP = new ConcurrentHashMap<>();
+    private Map<String, FTArray> interruptedRootID = new ConcurrentHashMap<>();
 
     private long timeout;
     private long timeStart2nd;
@@ -50,10 +49,10 @@ public class FreqT_Int_ext_serial extends FreqT_Int {
         this.transaction = _transaction;
     }
 
-    private void addPattern(ArrayList<Integer> _largestPattern, Projected projected, Map<ArrayList<Integer>,String> _outputPatterns){
+    private void addPattern(FTArray _largestPattern, Projected projected, Map<FTArray,String> _outputPatterns){
 
         //remove the part of the pattern missing leaf
-        ArrayList<Integer> patTemp = Pattern_Int.getPatternString1(_largestPattern);
+        FTArray patTemp = Pattern_Int.getPatternString1(_largestPattern);
 
         //check minsize constraints and right mandatory children before adding pattern
         if(checkOutput(patTemp) && ! checkRightObligatoryChild(patTemp, grammarInt, blackLabelsInt)){
@@ -64,7 +63,7 @@ public class FreqT_Int_ext_serial extends FreqT_Int {
         }
     }
 
-    private void project(ArrayList<Integer> largestPattern, Projected projected) {
+    private void project(FTArray largestPattern, Projected projected) {
         try{
 
             timeSpent = System.currentTimeMillis() - timeStart2nd;
@@ -98,7 +97,7 @@ public class FreqT_Int_ext_serial extends FreqT_Int {
             }
             //System.out.println(largestPattern);
             //find candidates
-            Map<ArrayList<Integer>, Projected> candidates = generateCandidates(projected,transaction);
+            Map<FTArray, Projected> candidates = generateCandidates(projected,transaction);
 
             //prune on minimum support and list of black labels
             pruneSupportAndBlacklist(candidates,config.getMinSupport(),largestPattern,blackLabelsInt);
@@ -109,10 +108,10 @@ public class FreqT_Int_ext_serial extends FreqT_Int {
             }
 
             //expand the current pattern with each candidate
-            Iterator < Map.Entry<ArrayList<Integer>,Projected> > iter = candidates.entrySet().iterator();
+            Iterator < Map.Entry<FTArray,Projected> > iter = candidates.entrySet().iterator();
             while (iter.hasNext()) {
                 int oldSize = largestPattern.size();
-                Map.Entry<ArrayList<Integer>, Projected> entry = iter.next();
+                Map.Entry<FTArray, Projected> entry = iter.next();
                 largestPattern.addAll(entry.getKey());
                 //check continuous paragraphs
                 //if potential candidate = SectionStatementBlock then check if candidate belongs to black-section or not
@@ -136,7 +135,7 @@ public class FreqT_Int_ext_serial extends FreqT_Int {
                     }
                 }
 
-                largestPattern = new ArrayList<>(largestPattern.subList(0,oldSize));
+                largestPattern = largestPattern.subList(0,oldSize);
             }
         }catch (Exception e){
             System.out.println("Error: Freqt_ext projected " + e);
@@ -144,7 +143,7 @@ public class FreqT_Int_ext_serial extends FreqT_Int {
         }
     }
 
-    public void run(Map <String, ArrayList<Integer> > _rootIDs, long start1st, FileWriter _report){
+    public void run(Map <String, FTArray> _rootIDs, long start1st, FileWriter _report){
         try{
             //calculate times for incremental maximal pattern mining
             int roundCount = 1;
@@ -162,14 +161,14 @@ public class FreqT_Int_ext_serial extends FreqT_Int {
                 timePerGroup = (timeout - timeSpent) / _rootIDs.size() ;
 
                 //for each group of root occurrences find patterns without max size constraints
-                Iterator < Map.Entry<String,ArrayList<Integer>> > rootId = _rootIDs.entrySet().iterator();
+                Iterator < Map.Entry<String, FTArray> > rootId = _rootIDs.entrySet().iterator();
                 while(rootId.hasNext()){
                     //start expanding a group
                     timeStartGroup = System.currentTimeMillis( );
                     //log(_report,"- Group: "+groupCount);
-                    Map.Entry<String,ArrayList<Integer> > entry = rootId.next();
+                    Map.Entry<String, FTArray> entry = rootId.next();
                     //Vector<String> largestPattern = new Vector<>();
-                    ArrayList<Integer> largestPattern = new ArrayList<>();
+                    FTArray largestPattern = new FTArray();
                     Projected projected = new Projected();
 
                     if(roundCount == 1) {
@@ -219,7 +218,7 @@ public class FreqT_Int_ext_serial extends FreqT_Int {
                 outputPatterns(MFP, outFile);
             }else {
                 System.out.println("filter FP: "+MFP.size());
-                Map<ArrayList<Integer>,String> mfpTemp = filterFP_multi(MFP);
+                Map<FTArray,String> mfpTemp = filterFP_multi(MFP);
                 nbMFP = mfpTemp.size();
                 outputPatterns(mfpTemp,outFile);
             }

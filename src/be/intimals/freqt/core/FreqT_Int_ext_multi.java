@@ -2,6 +2,7 @@ package be.intimals.freqt.core;
 
 import be.intimals.freqt.config.Config;
 import be.intimals.freqt.structure.*;
+import be.intimals.freqt.FTArray;
 
 import java.io.FileWriter;
 import java.util.*;
@@ -14,9 +15,9 @@ import java.util.concurrent.ConcurrentHashMap;
 
 public class FreqT_Int_ext_multi extends FreqT_Int {
 
-    private Map<ArrayList<Integer>,String> MFP = new ConcurrentHashMap<>();
+    private Map<FTArray,String> MFP = new ConcurrentHashMap<>();
     //store root occurrences for the second round
-    private Map<String,ArrayList<Integer>> interruptedRootID = null;
+    private Map<String, FTArray> interruptedRootID = null;
 
     private long timePerGroup;
     private long timeStart2nd;
@@ -46,7 +47,7 @@ public class FreqT_Int_ext_multi extends FreqT_Int {
         this.transaction = _transaction;
     }
 
-    private void project(ArrayList<Integer> largestPattern, Projected projected,long timeStartGroup) {
+    private void project(FTArray largestPattern, Projected projected, long timeStartGroup) {
         try{
             //check timeout for the current group
             long diff = System.currentTimeMillis( )-timeStartGroup;
@@ -76,7 +77,7 @@ public class FreqT_Int_ext_multi extends FreqT_Int {
             }
             //System.out.println(largestPattern);
             //find candidates
-            Map<ArrayList<Integer>, Projected> candidates = generateCandidates(projected,transaction);
+            Map<FTArray, Projected> candidates = generateCandidates(projected,transaction);
             //System.out.println("all candidates     " + candidates.keySet());
             prune(candidates,config.getMinSupport());
             //System.out.println("after support pruning " + candidates.keySet());
@@ -89,10 +90,10 @@ public class FreqT_Int_ext_multi extends FreqT_Int {
                 return;
             }
             //expand the current pattern with each candidate
-            Iterator < Map.Entry<ArrayList<Integer>,Projected> > iter = candidates.entrySet().iterator();
+            Iterator < Map.Entry<FTArray,Projected> > iter = candidates.entrySet().iterator();
             while (iter.hasNext()) {
                 int oldSize = largestPattern.size();
-                Map.Entry<ArrayList<Integer>, Projected> entry = iter.next();
+                Map.Entry<FTArray, Projected> entry = iter.next();
                 //constraints for mining COBOL
                 //delete candidate that belongs to black-section
                 //String candidateLabel = Pattern.getPotentialCandidateLabel(entry.getKey());
@@ -119,7 +120,7 @@ public class FreqT_Int_ext_multi extends FreqT_Int {
                     }
                 }
                 //largestPattern.setSize(oldSize);
-                largestPattern = new ArrayList<>(largestPattern.subList(0,oldSize));
+                largestPattern = largestPattern.subList(0,oldSize);
             }
         }catch (Exception e){
             System.out.println("Error: Freqt_ext projected " + e);
@@ -129,7 +130,7 @@ public class FreqT_Int_ext_multi extends FreqT_Int {
 
 
     //parallel expand groups of root occurrences
-    private void expandGroupParallel(Map <String, ArrayList<Integer> > _rootIDs) {
+    private void expandGroupParallel(Map <String, FTArray> _rootIDs) {
 
         _rootIDs.entrySet().parallelStream().forEach(entry -> {
             //check total running time of the second step
@@ -143,7 +144,7 @@ public class FreqT_Int_ext_multi extends FreqT_Int {
             //boolean finished = true;
             //System.out.println("Group "+entry.getKey());
             //System.out.println(frequentPatterns.size()+" - "+ nbOutputMaximalPatterns);
-            ArrayList<Integer> largestPattern = new ArrayList<>();
+            FTArray largestPattern = new FTArray();
             Projected projected = new Projected();
             if (roundCount == 1) {
                 largestPattern.addAll(entry.getValue());
@@ -185,7 +186,7 @@ public class FreqT_Int_ext_multi extends FreqT_Int {
 
     }
 
-    public void run(Map <String, ArrayList<Integer> > _rootIDs,long start1st,FileWriter _report){
+    public void run(Map <String, FTArray> _rootIDs, long start1st, FileWriter _report){
         try{
             //calculate times for incremental maximal pattern mining
             roundCount = 1;
@@ -233,7 +234,7 @@ public class FreqT_Int_ext_multi extends FreqT_Int {
             int nbMFP;
             String outFile = config.getOutputFile();
             long startFilter = System.currentTimeMillis();
-            Map<ArrayList<Integer>,String> mfpTemp = filterFP_multi(MFP);
+            Map<FTArray,String> mfpTemp = filterFP_multi(MFP);
             log(_report,"\t + filtering time: "+(System.currentTimeMillis() - startFilter)/1000+"s");
 
             //print maximal patterns

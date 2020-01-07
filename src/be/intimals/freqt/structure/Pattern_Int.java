@@ -1,19 +1,19 @@
 package be.intimals.freqt.structure;
 
-import java.lang.reflect.Array;
+import be.intimals.freqt.FTArray;
+
 import java.util.*;
-import java.util.concurrent.ConcurrentSkipListSet;
 
 public class Pattern_Int {
 
-    public static boolean ChildrenLabelsContains(ArrayList<Integer> pat,
-                                                       ArrayList<Integer> candidate,
-                                                       Map<Integer,ArrayList<Integer>> ListLabels,
-                                                       int label){
+    public static boolean ChildrenLabelsContains(FTArray pat,
+                                                 FTArray candidate,
+                                                 Map<Integer,ArrayList<Integer>> ListLabels,
+                                                 int label){
         if(pat.size()==1){
             return ListLabels.get(pat.get(0)).contains(label);
         }else{
-            ArrayList<Integer> patternTemp = new ArrayList<>(pat);
+            FTArray patternTemp = new FTArray(pat);
             patternTemp.addAll(candidate);
             int parentPos = findParentPosition(patternTemp, candidate);
             //find parent's position of potentialCandidate in patternTemp
@@ -29,7 +29,7 @@ public class Pattern_Int {
 
 
     //return pattern of string format
-    public static ArrayList<String> getPatternStr(ArrayList<Integer> pat, Map<Integer,String> labelIndex){
+    public static ArrayList<String> getPatternStr(FTArray pat, Map<Integer,String> labelIndex){
         ArrayList<String> patStr = new ArrayList<>();
         for(int i=0; i<pat.size(); ++i){
             if(pat.get(i)==-1)
@@ -40,7 +40,7 @@ public class Pattern_Int {
     }
 
     //remove right-path missed leafs
-    public static ArrayList<Integer> getPatternString1(ArrayList<Integer> pat){
+    public static FTArray getPatternString1(FTArray pat){
 
         //find the last leaf
         //System.out.println(pat);
@@ -50,11 +50,11 @@ public class Pattern_Int {
                 pos = i;
         }
 
-        return new ArrayList<>(pat.subList(0,pos+1));
+        return pat.subList(0,pos+1);
     }
 
 
-    public static boolean checkMissingLeaf(ArrayList<Integer> pat){
+    public static boolean checkMissingLeaf(FTArray pat){
         boolean result = false;
         ///System.out.println(pat);
         for(int i=0; i<pat.size()-1;++i) {
@@ -69,7 +69,7 @@ public class Pattern_Int {
     }
 
 
-    public static int countLeafNode(ArrayList<Integer> pat){
+    public static int countLeafNode(FTArray pat){
         int count=0;
         for(int i=0; i<pat.size(); ++i)
             if(pat.get(i) < -1 ) ++count;
@@ -78,7 +78,7 @@ public class Pattern_Int {
     }
 
 
-    public static int countNode(ArrayList<Integer> pat){
+    public static int countNode(FTArray pat){
         int count=0;
         for(int i=0; i<pat.size(); ++i)
             if(pat.get(i) != -1 ) ++count;
@@ -86,7 +86,7 @@ public class Pattern_Int {
         return count;
     }
 
-    public static int findParentPosition(ArrayList<Integer> pat, ArrayList<Integer> candidate){
+    public static int findParentPosition(FTArray pat, FTArray candidate){
         int parentPos = 0;
         int nodeLevel = 0;
         int candidateSize = 0;
@@ -121,7 +121,29 @@ public class Pattern_Int {
 
     public static ArrayList<Integer> findChildrenPosition(ArrayList<Integer> pat, Integer parentPos){
         int top = -1;
-        ArrayList<Integer> tmp = new ArrayList<>();
+        ArrayList<Integer> tmp = new ArrayList<Integer>();
+
+        if(parentPos < pat.size()-1){
+            int count = parentPos;
+            for(int i = parentPos+1; i < pat.size(); ++i){
+                if(pat.get(i) == -1)
+                    --top;
+                else {
+                    ++top;
+                    ++count;
+                }
+                if(top == 0 && pat.get(i) != -1) {
+                    tmp.add(i);
+                }
+                if(top == -2) break;
+            }
+        }
+        return tmp;
+    }
+
+    public static FTArray findChildrenPosition(FTArray pat, Integer parentPos){
+        int top = -1;
+        FTArray tmp = new FTArray();
 
         if(parentPos < pat.size()-1){
             int count = parentPos;
