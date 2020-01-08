@@ -25,16 +25,16 @@
 
 package be.intimals.freqt;
 
-import be.intimals.freqt.util.*;
-import be.intimals.freqt.core.*;
-import be.intimals.freqt.config.*;
+import be.intimals.freqt.config.Config;
+import be.intimals.freqt.core.FreqT_Int;
+import be.intimals.freqt.core.FreqT_common;
 
 import java.io.*;
 import java.nio.file.Files;
 import java.nio.file.Paths;
-import java.util.*;
-
-import java.lang.String;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Properties;
 
 public class Main {
 
@@ -149,11 +149,11 @@ public class Main {
             System.out.println("Running forestmatcher ...");
             String command = "";
             if(memory != null)
-            	command = "java "+memory+" -jar forestmatcher.jar \"" +
-                        inputPath + "\" \"" + outputPatterns +"\" \"" + outputMatches + "\" \"" + outputClusters+"\"";
+            	command = "java -jar -Xmx"+memory+"m"+ " forestmatcher.jar " +
+                        inputPath + " " + outputPatterns +" " + outputMatches + " " + outputClusters;
             else
-            	command = "java -jar forestmatcher.jar \"" +
-                    inputPath + "\" \"" + outputPatterns +"\" \"" + outputMatches + "\" \"" + outputClusters+"\"";
+            	command = "java -jar forestmatcher.jar " +
+                    inputPath + " " + outputPatterns +" " + outputMatches + " " + outputClusters;
             System.out.println("With command: "+command);
             Process proc = Runtime.getRuntime().exec(command);
             //Get output of forestMatcher
