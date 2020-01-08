@@ -1,18 +1,15 @@
 package be.intimals.freqt.input;
 
+import be.intimals.freqt.FTArray;
 import be.intimals.freqt.structure.NodeFreqT;
 import be.intimals.freqt.structure.Pattern_Int;
 
-import java.io.BufferedReader;
-import java.io.FileReader;
-import java.io.IOException;
-import java.lang.reflect.Array;
 import java.util.*;
 
 public class ReadFile_Int {
 
     //create transaction from list of patterns
-    public void createTransactionFromMap(Vector<ArrayList<Integer>> inPatterns,
+    public void createTransactionFromMap(Vector<FTArray> inPatterns,
                                          Vector<Vector<NodeFreqT>> trans){
 
         for(int i=0; i< inPatterns.size(); ++i){
@@ -23,7 +20,7 @@ public class ReadFile_Int {
     }
 
 
-    private void str2node(ArrayList<Integer> pat, Vector<NodeFreqT> trans){
+    private void str2node(FTArray pat, Vector<NodeFreqT> trans){
         try{
             int size_int = Pattern_Int.countNode(pat);
             //init a list of node

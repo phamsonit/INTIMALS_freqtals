@@ -3,6 +3,7 @@ package be.intimals.freqt.core;
 import be.intimals.freqt.config.Config;
 import be.intimals.freqt.input.ReadFile_Int;
 import be.intimals.freqt.structure.*;
+import be.intimals.freqt.FTArray;
 
 import java.util.*;
 
@@ -12,10 +13,10 @@ import java.util.*;
 
 public class FreqT_Int_subtree extends FreqT_Int {
 
-    private ArrayList<Integer> maximalPattern;
+    private FTArray maximalPattern;
     private Vector<Vector<NodeFreqT> > newTransaction = new Vector<>();
 
-    private ArrayList<Integer> inputPattern = new ArrayList<>();
+    private FTArray inputPattern = new FTArray();
     private String outputPattern;
 
     private boolean found;
@@ -39,13 +40,13 @@ public class FreqT_Int_subtree extends FreqT_Int {
             //System.out.println(maximalPattern);
             //find all candidates of the current subtree
             int depth = projected.getProjectedDepth();
-            Map <ArrayList<Integer>, Projected > candidate = new LinkedHashMap<>();
+            Map <FTArray, Projected > candidate = new LinkedHashMap<>();
             for(int i = 0; i < projected.getProjectLocationSize(); ++i ){
                 int id  = Location.getLocationId(projected.getProjectLocation(i));
                 int pos = Location.getLocationPos(projected.getProjectLocation(i));
 
                 //String prefix = "";
-                ArrayList<Integer> prefixInt = new ArrayList<>();
+                FTArray prefixInt = new FTArray();
                 for(int d = -1; d < depth && pos != -1; ++d) {
                     int start = (d == -1) ?
                             newTransaction.elementAt(id).elementAt(pos).getNodeChild() :
@@ -54,7 +55,7 @@ public class FreqT_Int_subtree extends FreqT_Int {
                     for (int l = start; l != -1;
                          l = newTransaction.elementAt(id).elementAt(l).getNodeSibling()) {
                         //String item = prefix + uniChar + newTransaction.elementAt(id).elementAt(l).getNodeLabel();
-                        ArrayList<Integer> itemInt = new ArrayList<>();
+                        FTArray itemInt = new FTArray();
                         itemInt.addAll(prefixInt);
                         itemInt.add(newTransaction.elementAt(id).elementAt(l).getNode_label_int());
                         Projected value = candidate.get(itemInt);
@@ -89,9 +90,9 @@ public class FreqT_Int_subtree extends FreqT_Int {
 
             }else {
                 //expand the current pattern with each candidate
-                Iterator<Map.Entry<ArrayList<Integer>, Projected>> iter = candidate.entrySet().iterator();
+                Iterator<Map.Entry<FTArray, Projected>> iter = candidate.entrySet().iterator();
                 while (iter.hasNext()) {
-                    Map.Entry<ArrayList<Integer>, Projected> entry = iter.next();
+                    Map.Entry<FTArray, Projected> entry = iter.next();
                     // add new candidate to current pattern
                     maximalPattern.addAll(entry.getKey());
                     project(entry.getValue());
@@ -107,18 +108,18 @@ public class FreqT_Int_subtree extends FreqT_Int {
      * @param pat1
      * @param pat2
      */
-    public void checkSubtrees(ArrayList<Integer> pat1, ArrayList<Integer> pat2) {
+    public void checkSubtrees(FTArray pat1, FTArray pat2) {
         try{
             //create input data
             found = false;
-            inputPattern = new ArrayList<>(pat1);
+            inputPattern = new FTArray(pat1);
 
-            Vector<ArrayList<Integer>> inputPatterns = new Vector<>();
+            Vector<FTArray> inputPatterns = new Vector<>();
             inputPatterns.add(pat1);
             inputPatterns.add(pat2);
             initDatabase(inputPatterns);
 
-            maximalPattern = new ArrayList<>();
+            maximalPattern = new FTArray();
             int rootLabel_int = pat1.get(0);
 
             maximalPattern.add(rootLabel_int);
@@ -144,7 +145,7 @@ public class FreqT_Int_subtree extends FreqT_Int {
      * create transaction from list of patterns
      * @param patterns
      */
-    private void initDatabase(Vector<ArrayList<Integer>> patterns) {
+    private void initDatabase(Vector<FTArray> patterns) {
         //System.out.println("reading input subtrees ...");
         ReadFile_Int readFile = new ReadFile_Int();
         readFile.createTransactionFromMap(patterns,newTransaction);

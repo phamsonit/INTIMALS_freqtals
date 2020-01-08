@@ -34,6 +34,7 @@ public class Location {
     }
 
     public static int[] addLocationPos(int[] location, int a) {
+        //should use Arrays.copy
         return appendArray(location, a);
     }
 
