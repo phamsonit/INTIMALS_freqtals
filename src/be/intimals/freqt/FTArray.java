@@ -45,13 +45,13 @@ public class FTArray {
 
     public int get(int i){
         if ( i< 0 || i>= firstFree){
-            System.out.println("Out of bounds access in FTArray.get(i). i is " + i + ", size is " + firstFree );
+            throw new ArrayIndexOutOfBoundsException("Out of bounds access in FTArray.get(i). i is " + i + ", size is " + firstFree);
         }
         if (memory != null) return memory[i];
         return intMemory[i];
     }
 
-     public void set(int index, int element){
+     private void set(int index, int element){
         if ((memory != null) &&
             (element > Short.MAX_VALUE || element < Short.MIN_VALUE))
             migrateMemory();
@@ -86,8 +86,13 @@ public class FTArray {
                 add(other.memory[i]);
         } else {
             if (this.memory != null) migrateMemory();
-            for(int i = 0; i<other.firstFree; i++)
-                this.setIntMemory(firstFree,other.intMemory[i]);
+            if (other.memory != null) {
+                for (int i = 0; i < other.firstFree; i++)
+                    this.setIntMemory(firstFree, other.memory[i]);
+            } else {
+                for (int i = 0; i < other.firstFree; i++)
+                    this.setIntMemory(firstFree, other.intMemory[i]);
+            }
         }
     }
 
@@ -103,6 +108,7 @@ public class FTArray {
         }
         else{
             result.memory = null;
+            result.intMemory = new int[chunkSize];
             result.ensureSpaceInt(result.firstFree);
             System.arraycopy(intMemory,start,result.intMemory,0, result.firstFree);
         }

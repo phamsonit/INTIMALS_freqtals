@@ -3,8 +3,6 @@ package be.intimals.freqt.core;
 import be.intimals.freqt.FTArray;
 import org.junit.jupiter.api.Test;
 
-import java.util.ArrayList;
-import java.util.Arrays;
 
 import static org.junit.jupiter.api.Assertions.*;
 
