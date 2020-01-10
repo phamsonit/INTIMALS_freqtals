@@ -671,7 +671,7 @@ public class FreqT_Int {
      */
     public Map<FTArray, Projected> generateCandidates(Projected projected, ArrayList  <ArrayList <NodeFreqT> >  _transaction) {
         Map<FTArray, Projected> candidates = new LinkedHashMap<>();
-        //Map<FreqTMemory, Projected> candidates = new ConcurrentHashMap<>();
+        //Map<FTArray, Projected> candidates = new ConcurrentHashMap<>();
         //keep the order of elements
         try{
             // For each location, find all candidates

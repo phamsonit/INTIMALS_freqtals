@@ -25,6 +25,14 @@ public class FTArray {
     public FTArray(){
     }
 
+    /**
+     * Create an FTArray from an array of integers. !! THIS IS ONLY FOR TESTS !!
+     * @param testData
+     */
+    public FTArray(int[] testData){
+        for(int datum:testData) add(datum);
+    }
+
     public FTArray(FTArray source){
         firstFree = source.firstFree;
         if (source.memory != null){
