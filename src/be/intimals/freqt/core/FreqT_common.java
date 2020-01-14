@@ -53,9 +53,9 @@ public class FreqT_common {
         int old = 0xffffffff;
         int sup = 0;
         for(int i=0; i<projected.getProjectLocationSize(); ++i) {
-            if (Location.getLocationId(projected.getProjectLocation(i)) != old)
+            if (projected.getProjectLocation(i).getLocationId() != old)
                 ++sup;
-            old = Location.getLocationId(projected.getProjectLocation(i));
+            old = projected.getProjectLocation(i).getLocationId();
         }
         return sup;
     }
@@ -68,12 +68,12 @@ public class FreqT_common {
     public int rootSupport(Projected projected){
         int rootSup = 1;
         for(int i=0; i< projected.getProjectRootLocationSize()-1;++i) {
-            int[] location1 = projected.getProjectRootLocation(i);
-            int[] location2 = projected.getProjectRootLocation(i+1);
+            Location location1 = projected.getProjectRootLocation(i);
+            Location location2 = projected.getProjectRootLocation(i+1);
 
-            if( (Location.getLocationId(location1) == Location.getLocationId(location2) &&
-                    Location.getLocationPos(location1) != Location.getLocationPos(location2)) ||
-                    Location.getLocationId(location1) != Location.getLocationId(location2)
+            if( (location1.getLocationId() == location2.getLocationId() &&
+                    location1.getLocationPos() != location2.getLocationPos()) ||
+                    location1.getLocationId() != location2.getLocationId()
                     )
                 ++rootSup;
         }
@@ -110,8 +110,8 @@ public class FreqT_common {
             int depth = projected.getProjectedDepth();
             Map <String , Projected > candidate = new LinkedHashMap<>();
             for(int i = 0; i < projected.getProjectLocationSize(); ++i ){
-                int id  = Location.getLocationId(projected.getProjectLocation(i));
-                int pos = Location.getLocationPos(projected.getProjectLocation(i));
+                int id  = projected.getProjectLocation(i).getLocationId();
+                int pos = projected.getProjectLocation(i).getLocationPos();
                 String prefix = "";
                 for(int d = -1; d < depth && pos != -1; ++d) {
                     int start = (d == -1) ?

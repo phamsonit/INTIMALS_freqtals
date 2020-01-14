@@ -42,8 +42,8 @@ public class FreqT_Int_subtree extends FreqT_Int {
             int depth = projected.getProjectedDepth();
             Map <FTArray, Projected > candidate = new LinkedHashMap<>();
             for(int i = 0; i < projected.getProjectLocationSize(); ++i ){
-                int id  = Location.getLocationId(projected.getProjectLocation(i));
-                int pos = Location.getLocationPos(projected.getProjectLocation(i));
+                int id  = projected.getProjectLocation(i).getLocationId();
+                int pos = projected.getProjectLocation(i).getLocationPos();
 
                 //String prefix = "";
                 FTArray prefixInt = new FTArray();

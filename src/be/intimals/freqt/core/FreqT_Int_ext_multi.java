@@ -58,16 +58,16 @@ public class FreqT_Int_ext_multi extends FreqT_Int {
                 //keep root occurrences and right-most occurrences
                 for (int i = 0; i < projected.getProjectRootLocationSize(); ++i) {
                     rootOccurrences = rootOccurrences +
-                            Location.getLocationId(projected.getProjectRootLocation(i)) + ("-") +
-                            Location.getLocationPos(projected.getProjectRootLocation(i)) + ";";
+                            projected.getProjectRootLocation(i).getLocationId() + ("-") +
+                            projected.getProjectRootLocation(i).getLocationPos() + ";";
                     //Location.getLocationPos(projected.getProjectLocation(i)) + ";";
                 }
                 //keep right-most occurrences and right-most occurrences
                 String rightmostOccurrences="";
                 for (int i = 0; i < projected.getProjectLocationSize(); ++i) {
                     rightmostOccurrences = rightmostOccurrences +
-                            Location.getLocationId(projected.getProjectLocation(i)) + ("-") +
-                            Location.getLocationPos(projected.getProjectLocation(i)) + ";";
+                            projected.getProjectLocation(i).getLocationId() + ("-") +
+                            projected.getProjectLocation(i).getLocationPos() + ";";
                 }
                 rootOccurrences = rootOccurrences+"\t"+rightmostOccurrences;
                 //store the current pattern for the next round

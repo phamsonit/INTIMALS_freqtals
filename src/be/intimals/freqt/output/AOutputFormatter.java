@@ -74,25 +74,15 @@ public abstract class AOutputFormatter {
     public List<Integer> getSizeAllOccurrences(Projected projected){
         //print union of all occurrences
 //        List<Integer> tmp = new ArrayList<>(projected.getProjectLocation(0).getLocationList());
-        List<Integer> tmp = new ArrayList<>(Location.getLocationList(projected.getProjectLocation(0)));
+        List<Integer> tmp = new ArrayList<>(projected.getProjectLocation(0).getLocationList());
         for(int i=1; i<projected.getProjectLocationSize(); ++i) {
-            tmp = union(tmp, Location.getLocationList(projected.getProjectLocation(i)));
+            tmp = union(tmp, projected.getProjectLocation(i).getLocationList());
 //            tmp = union(tmp,projected.getProjectLocation(i).getLocationList());
         }
         Collections.sort(tmp);
         //////
 
         return tmp;
-
-    }
-
-    public void printAllOccurrence(Projected projected){
-        for(int i=0; i<projected.getProjectLocationSize(); ++i) {
-            System.out.println(Location.getLocationId(projected.getProjectLocation(i)));
-            System.out.println(Location.getLocationList(projected.getProjectLocation(i)));
-//            System.out.print(projected.getProjectLocation(i).getLocationId()+" ");
-//            System.out.println(projected.getProjectLocation(i).getLocationList());
-        }
 
     }
 

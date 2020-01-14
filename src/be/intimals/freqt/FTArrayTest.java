@@ -23,6 +23,16 @@ public class FTArrayTest {
     }
 
     @Test
+    public void testLast() {
+        FTArray arr = new FTArray();
+        arr.add(1);
+        arr.add(2);
+        arr.add(3);
+
+        assertEquals(3,arr.getLast());
+    }
+
+    @Test
     public void testConstructorWithArgument(){
         FTArray arr = new FTArray();
         arr.add(1);

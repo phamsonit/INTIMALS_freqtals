@@ -4,7 +4,7 @@ import java.util.Arrays;
 
 public class FTArray {
 
-    private static int chunkSize = 512;
+    private static int chunkSize = 5;
     protected int firstFree = 0;
 
     /*
@@ -51,6 +51,11 @@ public class FTArray {
         return intMemory[i];
     }
 
+    public int getLast() {
+        if (memory != null) return memory[firstFree-1];
+        return intMemory[firstFree-1];
+    }
+
      private void set(int index, int element){
         if ((memory != null) &&
             (element > Short.MAX_VALUE || element < Short.MIN_VALUE))
@@ -79,19 +84,22 @@ public class FTArray {
         this.set(firstFree,element);
     }
 
-    //this could be optimized with an array copy ?
     public void addAll(FTArray other){
         if(this.memory != null && other.memory != null){
-            for(int i = 0; i<other.firstFree; i++)
-                add(other.memory[i]);
+            int newff = firstFree + other.firstFree;
+            ensureSpaceShort(newff);
+            System.arraycopy(other.memory,0, memory, firstFree, other.firstFree);
+            firstFree = newff;
         } else {
             if (this.memory != null) migrateMemory();
             if (other.memory != null) {
                 for (int i = 0; i < other.firstFree; i++)
                     this.setIntMemory(firstFree, other.memory[i]);
             } else {
-                for (int i = 0; i < other.firstFree; i++)
-                    this.setIntMemory(firstFree, other.intMemory[i]);
+                int newff = firstFree + other.firstFree;
+                ensureSpaceInt(newff);
+                System.arraycopy(other.intMemory,0, intMemory, firstFree, other.firstFree);
+                firstFree = newff;
             }
         }
     }
@@ -105,8 +113,7 @@ public class FTArray {
         if(memory != null) {
             result.ensureSpaceShort(result.firstFree);
             System.arraycopy(memory, start, result.memory, 0, result.firstFree);
-        }
-        else{
+        } else {
             result.memory = null;
             result.intMemory = new int[chunkSize];
             result.ensureSpaceInt(result.firstFree);

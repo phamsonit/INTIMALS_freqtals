@@ -69,8 +69,8 @@ public class FreqT_Int {
             String rootOccurrences = "";
             for (int i = 0; i < projected.getProjectRootLocationSize(); ++i) {
                 rootOccurrences = rootOccurrences +
-                        Location.getLocationId(projected.getProjectRootLocation(i)) + ("-") +
-                        Location.getLocationPos(projected.getProjectRootLocation(i)) + ";";
+                        projected.getProjectRootLocation(i).getLocationId() + ("-") +
+                        projected.getProjectRootLocation(i).getLocationPos() + ";";
             }
             //check the current root occurrences
             boolean isAdded = true;
@@ -438,9 +438,9 @@ public class FreqT_Int {
         int old = 0xffffffff;
         int sup = 0;
         for(int i=0; i<projected.getProjectLocationSize(); ++i) {
-            if (Location.getLocationId(projected.getProjectLocation(i)) != old)
+            if (projected.getProjectLocation(i).getLocationId() != old)
                 ++sup;
-            old = Location.getLocationId(projected.getProjectLocation(i));
+            old = projected.getProjectLocation(i).getLocationId();
         }
         return sup;
     }
@@ -453,12 +453,12 @@ public class FreqT_Int {
     private int getRootSupport(Projected projected){
         int rootSup = 1;
         for(int i=0; i< projected.getProjectRootLocationSize()-1;++i) {
-            int[] location1 = projected.getProjectRootLocation(i);
-            int[] location2 = projected.getProjectRootLocation(i+1);
+            Location location1 = projected.getProjectRootLocation(i);
+            Location location2 = projected.getProjectRootLocation(i+1);
 
-            if( (Location.getLocationId(location1) == Location.getLocationId(location2) &&
-                    Location.getLocationPos(location1) != Location.getLocationPos(location2)) ||
-                    Location.getLocationId(location1) != Location.getLocationId(location2)
+            if( (location1.getLocationId() == location2.getLocationId() &&
+                    location1.getLocationPos() != location2.getLocationPos()) ||
+                    location1.getLocationId() != location2.getLocationId()
                     )
                 ++rootSup;
         }
@@ -677,12 +677,12 @@ public class FreqT_Int {
             // For each location, find all candidates
             int depth = projected.getProjectedDepth();
             for (int i = 0; i < projected.getProjectLocationSize(); ++i) {
-                int id = Location.getLocationId(projected.getProjectLocation(i));
-                int pos = Location.getLocationPos(projected.getProjectLocation(i));
+                int id = projected.getProjectLocation(i).getLocationId();
+                int pos = projected.getProjectLocation(i).getLocationPos();
                 //keep only the root id and rightmost locations
                 //List<Integer> occurrences = Location.getLocationList(projected.getProjectLocation(i)).subList(0,1);
                 //keep all locations of pattern
-                int[] occurrences = Location.getLocationArr(projected.getProjectLocation(i));
+                Location occurrences = projected.getProjectLocation(i);//.getLocationArr();
                 //keep lineNr to calculate distance of two nodes
                 //List<Integer> lines = projected.getProjectLineNr(i);
                 //String prefix = "";
@@ -704,13 +704,13 @@ public class FreqT_Int {
                         Projected value = candidates.get(itemInt);
                         if (value != null) {
                             value.addProjectLocation(id, l, occurrences);//keeping all locations
-                            int rootPos = Location.getRoot(projected.getProjectLocation(i));
+                            int rootPos = projected.getProjectLocation(i).getRoot();
                             value.setProjectRootLocation(id, rootPos);//keeping root locations
                         } else {
                             Projected tmp = new Projected();
                             tmp.setProjectedDepth(newDepth);
                             tmp.addProjectLocation(id, l, occurrences); //keeping all locations
-                            int rootPos = Location.getRoot(projected.getProjectLocation(i));
+                            int rootPos = projected.getProjectLocation(i).getRoot();
                             tmp.setProjectRootLocation(id, rootPos); //keeping root locations
                             candidates.put(itemInt, tmp);
                         }
@@ -1040,8 +1040,8 @@ public class FreqT_Int {
 
             int i=0;
             while(i < projected.getProjectLocationSize()){
-                int id = Location.getLocationId(projected.getProjectLocation(i));
-                int[] pos = Location.getLocationArr(projected.getProjectLocation(i));
+                int id = projected.getProjectLocation(i).getLocationId();
+                int[] pos = projected.getProjectLocation(i).getLocationArr();
                 //System.out.println(pos);
 
                 int firstPos=0;
@@ -1079,9 +1079,9 @@ public class FreqT_Int {
             int i=0;
             while(i < projected.getProjectLocationSize()) {
                 //get position of the current label
-                int id = Location.getLocationId(projected.getProjectLocation(i));
+                int id = projected.getProjectLocation(i).getLocationId();
                 //for each location check if it belongs to SectionStatementBlock or not
-                int currentPos = Location.getLocationPos(projected.getProjectLocation(i));
+                int currentPos = projected.getProjectLocation(i).getLocationPos();
                 //int searchPos = Location.getLocationPos(projected.getProjectLocation(i));;
                 //check if label of section is in black-section or not
                 while (currentPos != -1) {
