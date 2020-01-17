@@ -17,18 +17,6 @@ public class Location extends FTArray {
     public int getLocationPos() { return this.getLast(); }
     public int getRoot() { return this.get(0); }
 
-    public List<Integer> getLocationList(){
-        ArrayList<Integer> list = new ArrayList<Integer>(firstFree);
-        if(memory != null) {
-            for(int i=0; i<firstFree; i++)
-                list.add((int)memory[i]);
-        } else {
-            for(int i=0; i<firstFree; i++)
-                list.add(intMemory[i]);
-        }
-        return list;
-    }
-
     public Location(){
     }
 
@@ -36,17 +24,5 @@ public class Location extends FTArray {
         super(other);
         locationId = id;
         add(pos);
-    }
-
-    public int[] getLocationArr(){
-        if(memory != null ) {
-            int siz = size();
-            int[] result = new int[siz];
-            for (int i=0; i<siz; i++){
-                result[i] = memory[i];
-            }
-            return result;
-        }
-        return Arrays.copyOf(intMemory,size());
     }
 }

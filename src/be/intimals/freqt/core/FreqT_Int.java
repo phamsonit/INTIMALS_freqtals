@@ -1040,18 +1040,18 @@ public class FreqT_Int {
 
             int i=0;
             while(i < projected.getProjectLocationSize()){
-                int id = projected.getProjectLocation(i).getLocationId();
-                int[] pos = projected.getProjectLocation(i).getLocationArr();
+                Location pos = projected.getProjectLocation(i);
+                int id = pos.getLocationId();
                 //System.out.println(pos);
 
                 int firstPos=0;
-                for(int j=pos.length-2; j>0; --j){
-                    if(_transaction.get(id).get(pos[j]).getNode_label_int() == pat.get(childrenPos.get(childrenPos.size()-2))) {
-                        firstPos = pos[j];
+                for(int j=pos.size()-2; j>0; --j){
+                    if(_transaction.get(id).get(pos.get(j)).getNode_label_int() == pat.get(childrenPos.get(childrenPos.size()-2))) {
+                        firstPos = pos.get(j);
                         break;
                     }
                 }
-                int lastPos = pos[pos.length-1];
+                int lastPos = pos.getLast();
                 //System.out.println(firstPos+" "+lastPost);
                 if (_transaction.get(id).get(firstPos).getNodeSibling() != lastPos){
                     //remove paragraph location

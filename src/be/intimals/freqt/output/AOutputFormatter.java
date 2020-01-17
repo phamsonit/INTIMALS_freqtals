@@ -67,31 +67,12 @@ public abstract class AOutputFormatter {
     }
 
     /**
-     * calculate size of union all occurrences
-     * @param projected
-     * @return
-     */
-    public List<Integer> getSizeAllOccurrences(Projected projected){
-        //print union of all occurrences
-//        List<Integer> tmp = new ArrayList<>(projected.getProjectLocation(0).getLocationList());
-        List<Integer> tmp = new ArrayList<>(projected.getProjectLocation(0).getLocationList());
-        for(int i=1; i<projected.getProjectLocationSize(); ++i) {
-            tmp = union(tmp, projected.getProjectLocation(i).getLocationList());
-//            tmp = union(tmp,projected.getProjectLocation(i).getLocationList());
-        }
-        Collections.sort(tmp);
-        //////
-
-        return tmp;
-
-    }
-
-    /**
      * check a node having all children ?
      * @param pat
      * @param nodeName
      * @return
      */
+    /*
     private boolean checkMandatoryChild(ArrayList<String> pat, String nodeName){
 
         boolean result = false;
@@ -106,7 +87,7 @@ public abstract class AOutputFormatter {
                     result = false;
             }
         return result;
-    }
+    }*/
 
     //public abstract void report(Vector<String> pat, Projected projected);
     public abstract void printPattern(String pat);
