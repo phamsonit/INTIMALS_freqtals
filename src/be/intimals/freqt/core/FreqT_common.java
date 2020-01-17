@@ -1,6 +1,7 @@
 package be.intimals.freqt.core;
 
 import be.intimals.freqt.config.Config;
+import be.intimals.freqt.constraint.Constraint;
 import be.intimals.freqt.input.ReadFile;
 import be.intimals.freqt.output.AOutputFormatter;
 import be.intimals.freqt.output.XMLOutput;
@@ -44,42 +45,6 @@ public class FreqT_common {
     }
 
     /**
-     * calculate the support of a pattern = number of files
-     * @param projected
-     * @return
-     */
-    public int support(Projected projected){
-        //if(weighted) return projected.getProjectLocationSize();
-        int old = 0xffffffff;
-        int sup = 0;
-        for(int i=0; i<projected.getProjectLocationSize(); ++i) {
-            if (Location.getLocationId(projected.getProjectLocation(i)) != old)
-                ++sup;
-            old = Location.getLocationId(projected.getProjectLocation(i));
-        }
-        return sup;
-    }
-
-    /**
-     * calculate the root support of a pattern = number of root occurrences
-     * @param projected
-     * @return
-     */
-    public int rootSupport(Projected projected){
-        int rootSup = 1;
-        for(int i=0; i< projected.getProjectRootLocationSize()-1;++i) {
-            int[] location1 = projected.getProjectRootLocation(i);
-            int[] location2 = projected.getProjectRootLocation(i+1);
-
-            if( (Location.getLocationId(location1) == Location.getLocationId(location2) &&
-                    Location.getLocationPos(location1) != Location.getLocationPos(location2)) ||
-                    Location.getLocationId(location1) != Location.getLocationId(location2)
-                    )
-                ++rootSup;
-        }
-        return rootSup;
-    }
-    /**
      * prune candidates based on minimal support
      * @param candidates
      */
@@ -88,8 +53,8 @@ public class FreqT_common {
         Iterator < Map.Entry<String,Projected> > iter = candidates.entrySet().iterator();
         while (iter.hasNext()) {
             Map.Entry<String,Projected> entry = iter.next();
-            int sup = support(entry.getValue());
-            int wsup = rootSupport(entry.getValue());
+            int sup = Constraint.getSupport(entry.getValue());
+            int wsup = Constraint.getRootSupport(entry.getValue());
             if(sup < minSup){
                 iter.remove();
             }
@@ -229,18 +194,19 @@ public class FreqT_common {
                     //System.out.println(lineNr+"  "+lineNrs.elementAt(i));
                     //if(Integer.valueOf(lineNr) > lineNrs.elementAt(i)){ //using only for Cobol data
                     //find a list of locations then add it to freq1[node_label].locations
+
                     if (node_label != null) {
                         //System.out.println("Node "+ node_label+" "+lineNr);
                         //if node_label already exists
                         if (freq1.containsKey(node_label)) {
                             freq1.get(node_label).setProjectLocation(i, j);
                             //freq1.get(node_label).setProjectLineNr(Integer.valueOf(lineNr)); //add to keep the line number
-                            freq1.get(node_label).setProjectRootLocation(i, j);
+                            //freq1.get(node_label).setProjectRootLocation(i, j);
                         } else {
                             Projected projected = new Projected();
                             projected.setProjectLocation(i, j);
                             //projected.setProjectLineNr(Integer.valueOf(lineNr)); //add to keep the line number
-                            projected.setProjectRootLocation(i, j);
+                            //projected.setProjectRootLocation(i, j);
                             freq1.put(node_label, projected);
                         }
                     }

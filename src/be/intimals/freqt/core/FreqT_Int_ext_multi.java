@@ -1,6 +1,7 @@
 package be.intimals.freqt.core;
 
 import be.intimals.freqt.config.Config;
+import be.intimals.freqt.constraint.Constraint;
 import be.intimals.freqt.structure.*;
 import be.intimals.freqt.FTArray;
 
@@ -56,10 +57,10 @@ public class FreqT_Int_ext_multi extends FreqT_Int {
                 //keep the depth of projector
                 String rootOccurrences = String.valueOf(projected.getProjectedDepth())+"\t";
                 //keep root occurrences and right-most occurrences
-                for (int i = 0; i < projected.getProjectRootLocationSize(); ++i) {
+                for (int i = 0; i < projected.getProjectLocationSize(); ++i) {
                     rootOccurrences = rootOccurrences +
-                            Location.getLocationId(projected.getProjectRootLocation(i)) + ("-") +
-                            Location.getLocationPos(projected.getProjectRootLocation(i)) + ";";
+                            Location.getLocationId(projected.getProjectLocation(i)) + ("-") +
+                            Location.getRoot(projected.getProjectLocation(i)) + ";";
                     //Location.getLocationPos(projected.getProjectLocation(i)) + ";";
                 }
                 //keep right-most occurrences and right-most occurrences
@@ -79,10 +80,10 @@ public class FreqT_Int_ext_multi extends FreqT_Int {
             //find candidates
             Map<FTArray, Projected> candidates = generateCandidates(projected,transaction);
             //System.out.println("all candidates     " + candidates.keySet());
-            prune(candidates,config.getMinSupport());
+            Constraint.prune(candidates,config.getMinSupport());
             //System.out.println("after support pruning " + candidates.keySet());
             //pruning based on blacklist: for each candidate if it occurs in the blacklist --> remove
-            pruneBlackList(largestPattern,candidates,blackLabelsInt);
+            Constraint.pruneBlackList(largestPattern,candidates,blackLabelsInt);
             //System.out.println("after blacklist pruning " + candidates.keySet());
             //if there is no candidate then report pattern --> stop
             if( candidates.isEmpty() ){
@@ -112,7 +113,7 @@ public class FreqT_Int_ext_multi extends FreqT_Int {
                     addFP(largestPattern, entry.getValue(), MFP);
                 }else{
                     //constraint on obligatory children
-                    if(checkLeftObligatoryChild(largestPattern, entry.getKey(), grammarInt, blackLabelsInt)){
+                    if(Constraint.checkLeftObligatoryChild(largestPattern, entry.getKey(), grammarInt, blackLabelsInt)){
                         //System.out.println("missing obligatory child "+pattern);
                         //addFP(largestPattern, entry.getValue(), MFP);
                     }else{
@@ -154,7 +155,7 @@ public class FreqT_Int_ext_multi extends FreqT_Int {
                 for (int i = 0; i < temp.length; ++i) {
                     String[] pos = temp[i].split("-");
                     projected.setProjectLocation(Integer.valueOf(pos[0]), Integer.valueOf(pos[1]));
-                    projected.setProjectRootLocation(Integer.valueOf(pos[0]), Integer.valueOf(pos[1]));
+                    //projected.setProjectRootLocation(Integer.valueOf(pos[0]), Integer.valueOf(pos[1]));
                 }
             } else {
                 //from the second round, expanding from the patterns which interrupted in the previous round
@@ -166,7 +167,7 @@ public class FreqT_Int_ext_multi extends FreqT_Int {
                 String[] rootTemp = projectTemp[1].split(";");
                 for (int i = 0; i < rootTemp.length; ++i) {
                     String[] pos = rootTemp[i].split("-");
-                    projected.setProjectRootLocation(Integer.valueOf(pos[0]), Integer.valueOf(pos[1]));
+                    //projected.setProjectRootLocation(Integer.valueOf(pos[0]), Integer.valueOf(pos[1]));
                     ////location = (id,[root pos, rightmost pos])
                     //projected.setProjectLocation(Integer.valueOf(pos[0]), Integer.valueOf(pos[1]));
                     //projected.setProjectLocation(Integer.valueOf(pos[0]), Integer.valueOf(pos[2]));

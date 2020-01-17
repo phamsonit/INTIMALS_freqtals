@@ -1,6 +1,7 @@
 package be.intimals.freqt.core;
 
 import be.intimals.freqt.config.Config;
+import be.intimals.freqt.constraint.Constraint;
 import be.intimals.freqt.input.ReadFile_Int;
 import be.intimals.freqt.structure.*;
 import be.intimals.freqt.FTArray;
@@ -33,50 +34,15 @@ public class FreqT_Int_subtree extends FreqT_Int {
      * expand a subtree
      * @param projected
      */
-    private void project(Projected projected) {
+    private void expandPattern(Projected projected) {
         try{
             if(found) return;
 
             //System.out.println(maximalPattern);
             //find all candidates of the current subtree
-            int depth = projected.getProjectedDepth();
-            Map <FTArray, Projected > candidate = new LinkedHashMap<>();
-            for(int i = 0; i < projected.getProjectLocationSize(); ++i ){
-                int id  = Location.getLocationId(projected.getProjectLocation(i));
-                int pos = Location.getLocationPos(projected.getProjectLocation(i));
+            Map<FTArray, Projected> candidate = generateCandidates(projected);
 
-                //String prefix = "";
-                FTArray prefixInt = new FTArray();
-                for(int d = -1; d < depth && pos != -1; ++d) {
-                    int start = (d == -1) ?
-                            newTransaction.elementAt(id).elementAt(pos).getNodeChild() :
-                            newTransaction.elementAt(id).elementAt(pos).getNodeSibling();
-                    int newdepth = depth - d;
-                    for (int l = start; l != -1;
-                         l = newTransaction.elementAt(id).elementAt(l).getNodeSibling()) {
-                        //String item = prefix + uniChar + newTransaction.elementAt(id).elementAt(l).getNodeLabel();
-                        FTArray itemInt = new FTArray();
-                        itemInt.addAll(prefixInt);
-                        itemInt.add(newTransaction.elementAt(id).elementAt(l).getNode_label_int());
-                        Projected value = candidate.get(itemInt);
-                        if(value != null) {
-                            value.setProjectLocation(id,l); //store right most positions
-                        }
-                        else {
-                            Projected tmp = new Projected();
-                            tmp.setProjectedDepth(newdepth);
-                            tmp.setProjectLocation(id,l); //store right most positions
-                            candidate.put(itemInt, tmp);
-                        }
-                        //////////
-                    }
-                    if (d != -1) pos = newTransaction.elementAt(id).elementAt(pos).getNodeParent();
-                    //prefix += uniChar+")";
-                    prefixInt.add(-1);
-                }
-            }
-
-            prune(candidate,2);
+            Constraint.prune(candidate,2);
 
             if(candidate.isEmpty()){
                 //System.out.println("in find subtree "+maximalPattern+" - "+inputPattern);
@@ -95,12 +61,51 @@ public class FreqT_Int_subtree extends FreqT_Int {
                     Map.Entry<FTArray, Projected> entry = iter.next();
                     // add new candidate to current pattern
                     maximalPattern.addAll(entry.getKey());
-                    project(entry.getValue());
+                    expandPattern(entry.getValue());
                 }
             }
         }catch (Exception e){
             System.out.println("ERROR: post-processing expanding " + e);
         }
+    }
+
+    private Map<FTArray, Projected> generateCandidates(Projected projected) {
+        int depth = projected.getProjectedDepth();
+        Map <FTArray, Projected > candidate = new LinkedHashMap<>();
+        for(int i = 0; i < projected.getProjectLocationSize(); ++i ){
+            int id  = Location.getLocationId(projected.getProjectLocation(i));
+            int pos = Location.getLocationPos(projected.getProjectLocation(i));
+            //String prefix = "";
+            FTArray prefixInt = new FTArray();
+            for(int d = -1; d < depth && pos != -1; ++d) {
+                int start = (d == -1) ?
+                        newTransaction.elementAt(id).elementAt(pos).getNodeChild() :
+                        newTransaction.elementAt(id).elementAt(pos).getNodeSibling();
+                int newdepth = depth - d;
+                for (int l = start; l != -1;
+                     l = newTransaction.elementAt(id).elementAt(l).getNodeSibling()) {
+                    //String item = prefix + uniChar + newTransaction.elementAt(id).elementAt(l).getNodeLabel();
+                    FTArray itemInt = new FTArray();
+                    itemInt.addAll(prefixInt);
+                    itemInt.add(newTransaction.elementAt(id).elementAt(l).getNode_label_int());
+                    Projected value = candidate.get(itemInt);
+                    if(value != null) {
+                        value.setProjectLocation(id,l); //store right most positions
+                    }
+                    else {
+                        Projected tmp = new Projected();
+                        tmp.setProjectedDepth(newdepth);
+                        tmp.setProjectLocation(id,l); //store right most positions
+                        candidate.put(itemInt, tmp);
+                    }
+                    //////////
+                }
+                if (d != -1) pos = newTransaction.elementAt(id).elementAt(pos).getNodeParent();
+                //prefix += uniChar+")";
+                prefixInt.add(-1);
+            }
+        }
+        return candidate;
     }
 
     /**
@@ -131,12 +136,12 @@ public class FreqT_Int_subtree extends FreqT_Int {
                     int node_label = newTransaction.elementAt(i).elementAt(j).getNode_label_int();
                     if(node_label == rootLabel_int){
                         projected.setProjectLocation(i,j);
-                        projected.setProjectRootLocation(i,j);
+                        //projected.setProjectRootLocation(i,j);
                     }
                 }
             }
             //expand the pattern
-            project(projected);
+            expandPattern(projected);
         }
         catch (Exception e) {System.out.println("Error: check sub-trees");}
     }

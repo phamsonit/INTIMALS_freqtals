@@ -124,7 +124,7 @@ public class Pattern {
       * @param pat
      * @return
      */
-    //all leaf nodes of patterns are also the real leaf nodes in ASTs
+    //remove part of pattern missing leaf
     public static String getPatternString1(ArrayList<String> pat){
         String result="";
         //find the last leaf

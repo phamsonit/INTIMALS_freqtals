@@ -33,6 +33,10 @@ public class Location {
         return location[0];
     }
 
+    public static int getRoot(int[] location){
+        return location[1];
+    }
+
     public static int[] addLocationPos(int[] location, int a) {
         //should use Arrays.copy
         return appendArray(location, a);
@@ -52,9 +56,7 @@ public class Location {
         return Arrays.copyOfRange(location,1,location.length);
     }
 
-    public static int getRoot(int[] location){
-        return location[1];
-    }
+
 
     // Convert a List<Integer> to an int[]
     private static List<Integer> toArrayList(int[] arr) {

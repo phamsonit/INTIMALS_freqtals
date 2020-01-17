@@ -6,12 +6,21 @@ import java.util.*;
 
 public class Pattern_Int {
 
+    /**
+     * return true if candidate is a black label
+     * @param pat
+     * @param candidate
+     * @param ListLabels
+     * @param label
+     * @return
+     */
     public static boolean ChildrenLabelsContains(FTArray pat,
                                                  FTArray candidate,
                                                  Map<Integer,ArrayList<Integer>> ListLabels,
                                                  int label){
         if(pat.size()==1){
-            return ListLabels.get(pat.get(0)).contains(label);
+            return true;
+            //return ListLabels.get(pat.get(0)).contains(label);
         }else{
             FTArray patternTemp = new FTArray(pat);
             patternTemp.addAll(candidate);
@@ -28,7 +37,7 @@ public class Pattern_Int {
     }
 
 
-    //return pattern of string format
+    //convert pattern of Int into String
     public static ArrayList<String> getPatternStr(FTArray pat, Map<Integer,String> labelIndex){
         ArrayList<String> patStr = new ArrayList<>();
         for(int i=0; i<pat.size(); ++i){

@@ -42,6 +42,12 @@ public class Main {
         Main m = new Main();
 
         if (args.length==0) {
+
+            String[] argsss = {"conf/java/config.properties","5","combination"};
+            //String[] argsss = {"test/conf-artifical-data/abstract-data/config.properties","2","abstract-data"};
+            m.singleRun(argsss);
+            System.exit(-1);
+
             System.out.println("Single-run Freq-T usage:\n" +
                     "java -jar freqt_java.jar CONFIG_FILE [MIN_SUPPORT] [INPUT_FOLDER] (--memory [VALUE]) (--debug-file)\n" +
                     "\n" +
@@ -149,7 +155,7 @@ public class Main {
             System.out.println("Running forestmatcher ...");
             String command = "";
             if(memory != null)
-            	command = "java -jar -Xmx"+memory+"m"+ " forestmatcher.jar " +
+            	command = "java -jar " + memory + " forestmatcher.jar " +
                         inputPath + " " + outputPatterns +" " + outputMatches + " " + outputClusters;
             else
             	command = "java -jar forestmatcher.jar " +
@@ -203,8 +209,8 @@ public class Main {
                 }
                 proc.waitFor();
                 System.out.println("Cleaning up ...");
-                Files.deleteIfExists(Paths.get(outputPatternsTemp));
-                Files.deleteIfExists(Paths.get(outputCommonPatterns+".txt"));
+                //Files.deleteIfExists(Paths.get(outputPatternsTemp));
+                //Files.deleteIfExists(Paths.get(outputCommonPatterns+".txt"));
             }
 
             System.out.println("Finished ...");
