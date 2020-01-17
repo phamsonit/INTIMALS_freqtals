@@ -287,14 +287,12 @@ public class FreqT_Int {
             if (value != null) {
                 value.addProjectLocation(id, rightmostPos, initLocations);
                 //freq1.get(node_label).setProjectLineNr(Integer.valueOf(lineNr)); //add to keep the line number
-                //value.setProjectRootLocation(id, rootPos);
             } else {
                 //add new location
                 Projected projected = new Projected();
                 projected.setProjectedDepth(depth);
                 projected.addProjectLocation(id, rightmostPos, initLocations);
                 //projected.setProjectLineNr(Integer.valueOf(lineNr)); //add to keep the line number
-                //projected.setProjectRootLocation(id, rootPos);
                 freq1.put(newTree, projected);
             }
         }catch (Exception e){
@@ -834,7 +832,7 @@ public class FreqT_Int {
         }
     }
 
-    //print maximal patterns
+    //print maximal patterns stored in ArrayList
     public void printPatterns(ArrayList<FTArray> patterns, String outFile){
         try{
             //create output file to store patterns for mining common patterns
@@ -864,7 +862,7 @@ public class FreqT_Int {
         catch(Exception e){System.out.println("error print maximal patterns");}
     }
 
-    //print maximal patterns to XML file
+    //print maximal patterns stored in Map to XML file
     public void outputPatterns(Map<FTArray, String> maximalPatterns, String outFile){
         try{
             //create output file to store patterns for mining common patterns

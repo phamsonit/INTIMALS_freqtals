@@ -153,8 +153,8 @@ public class FreqT_Int_ext_serial extends FreqT_Int {
 
             //if there is no candidate then report pattern --> stop
             if( candidates.isEmpty() ){
-                //addPattern(largestPattern,projected,MFP);
-                addPattern(largestPattern, newMFP);
+                addPattern(largestPattern, projected, MFP);
+                //addPattern(largestPattern, newMFP);
                 return;
             }
 
@@ -174,7 +174,7 @@ public class FreqT_Int_ext_serial extends FreqT_Int {
                 }else{
                     if( Constraint.satisfyFullLeaf(largestPattern) ){
                         //store the pattern
-                        addPattern(largestPattern, newMFP);
+                        addPattern(largestPattern, entry.getValue(), MFP);
                     }else{
                         //continue expanding pattern
                         expandLargestPattern(largestPattern, entry.getValue());
@@ -192,14 +192,14 @@ public class FreqT_Int_ext_serial extends FreqT_Int {
         return (System.currentTimeMillis( ) - timeStartGroup) > timePerGroup;
     }
 
-    private void addPattern(FTArray _largestPattern, ArrayList<FTArray> _outputPatterns){
+    private void addPattern(FTArray _largestPattern, Projected projected, Map<FTArray,String> _outputPatterns){
         //remove the part of the pattern that misses leaf
         FTArray patTemp = Pattern_Int.getPatternString1(_largestPattern);
         //check output constraints and right mandatory children before storing pattern
         if(checkOutput(patTemp) && ! Constraint.checkRightObligatoryChild(patTemp, grammarInt, blackLabelsInt)){
             if(config.getFilter())
-                //addMFP(patTemp, projected, _outputPatterns);
-                addMFPTest(patTemp, _outputPatterns);
+                addMFP(patTemp, projected, _outputPatterns);
+                //addMFPTest(patTemp, _outputPatterns);
             else{
                 //addFP(patTemp, projected, _outputPatterns);
             }
@@ -255,10 +255,10 @@ public class FreqT_Int_ext_serial extends FreqT_Int {
         int nbMFP;
         String outFile = config.getOutputFile();
         if(config.getFilter()) {
-            //nbMFP = MFP.size();
-            //outputPatterns(MFP, outFile);
-            nbMFP = newMFP.size();
-            printPatterns(newMFP, outFile);
+            nbMFP = MFP.size();
+            outputPatterns(MFP, outFile);
+            //nbMFP = newMFP.size();
+            //printPatterns(newMFP, outFile);
 
         }else {
             System.out.println("filter FP: " + MFP.size());
