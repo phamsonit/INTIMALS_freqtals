@@ -54,7 +54,7 @@ public class FreqT_Int_ext_multi extends FreqT_Int {
             if( diff  > timePerGroup) {
                 //finished = false;
                 //keep the depth of projector
-                String rootOccurrences = String.valueOf(projected.getProjectedDepth())+"\t";
+                String rootOccurrences = projected.getProjectedDepth() +"\t";
                 //keep root occurrences and right-most occurrences
                 for (int i = 0; i < projected.getProjectRootLocationSize(); ++i) {
                     rootOccurrences = rootOccurrences + projected.getProjectRootLocation(i).getIdPos();
@@ -149,20 +149,20 @@ public class FreqT_Int_ext_multi extends FreqT_Int {
                 String[] temp = entry.getKey().split(";");
                 for (int i = 0; i < temp.length; ++i) {
                     String[] pos = temp[i].split("-");
-                    projected.setProjectLocation(Integer.valueOf(pos[0]), Integer.valueOf(pos[1]));
-                    projected.setProjectRootLocation(Integer.valueOf(pos[0]), Integer.valueOf(pos[1]));
+                    projected.setProjectLocation(Integer.parseInt(pos[0]), Integer.parseInt(pos[1]));
+                    projected.setProjectRootLocation(Integer.parseInt(pos[0]), Integer.parseInt(pos[1]));
                 }
             } else {
                 //from the second round, expanding from the patterns which interrupted in the previous round
                 largestPattern.addAll(entry.getValue());
 
                 String[] projectTemp = entry.getKey().split("\t");
-                projected.setProjectedDepth(Integer.valueOf(projectTemp[0]));
+                projected.setProjectedDepth(Integer.parseInt(projectTemp[0]));
                 //calculate root and right-most positions
                 String[] rootTemp = projectTemp[1].split(";");
                 for (int i = 0; i < rootTemp.length; ++i) {
                     String[] pos = rootTemp[i].split("-");
-                    projected.setProjectRootLocation(Integer.valueOf(pos[0]), Integer.valueOf(pos[1]));
+                    projected.setProjectRootLocation(Integer.parseInt(pos[0]), Integer.parseInt(pos[1]));
                     ////location = (id,[root pos, rightmost pos])
                     //projected.setProjectLocation(Integer.valueOf(pos[0]), Integer.valueOf(pos[1]));
                     //projected.setProjectLocation(Integer.valueOf(pos[0]), Integer.valueOf(pos[2]));
@@ -170,7 +170,7 @@ public class FreqT_Int_ext_multi extends FreqT_Int {
                 String[] rightmostTemp = projectTemp[2].split(";");
                 for (int i = 0; i < rightmostTemp.length; ++i) {
                     String[] pos = rightmostTemp[i].split("-");
-                    projected.setProjectLocation(Integer.valueOf(pos[0]), Integer.valueOf(pos[1]));
+                    projected.setProjectLocation(Integer.parseInt(pos[0]), Integer.parseInt(pos[1]));
                 }
             }
             //largestMinSup = projected.getProjectedSupport();
