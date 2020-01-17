@@ -30,8 +30,8 @@ public class FreqT_Int {
     protected Map<Integer, ArrayList<Integer> > blackLabelsInt = new LinkedHashMap<>();
     protected Map<Integer, ArrayList<Integer> > whiteLabelsInt = new LinkedHashMap<>();
 
-    ///////////testing
-    private ArrayList<FTArray> FP = new ArrayList();
+    ///////////testing new type of MFP
+    private ArrayList<FTArray> newMFP = new ArrayList<FTArray>();
 
     private Map<FTArray, String> MFP = new HashMap<>();
     //store root labels
@@ -57,7 +57,6 @@ public class FreqT_Int {
     public Map <String,String> getXmlCharacters(){return this.xmlCharacters;}
     public Map <String,ArrayList <String>> getGrammar(){return this.grammar;}
     public int getMFPSize(){return  MFP.size();}
-
 
     /**
      * run Freqt with file config.properties
@@ -222,7 +221,6 @@ public class FreqT_Int {
         }
     }
 
-
     /**
      * generate candidates for the pattern by using rightmost extension
      * @param projected
@@ -354,10 +352,10 @@ public class FreqT_Int {
         if(config.getFilter()) {
             nbMFP = MFP.size();
             outputPatterns(MFP, outFile);
-            //nbMFP = FP.size();
-            //printPatterns(FP, outFile);
+            //nbMFP = newMFP.size();
+            //printPatterns(newMFP, outFile);
         }else {//if don't filter maximal pattern in the mining process then filter them and print
-            System.out.println("number FP: "+MFP.size());
+            System.out.println("number FP: " + MFP.size());
             long startFilter = System.currentTimeMillis();
             Map<FTArray,String> mfpTemp = filterFP(MFP);
             log(report,"filtering time: "+(System.currentTimeMillis()-startFilter)/1000+"s");
@@ -427,8 +425,6 @@ public class FreqT_Int {
             return 0;
         }*/
     }
-
-
 
     // 0 = no subtree
     // 1 = pat1 is a subtree of pat2
@@ -598,23 +594,24 @@ public class FreqT_Int {
      * @param _MFP
      */
     public void addMFP(FTArray pat, Projected projected, Map<FTArray,String> _MFP){
-        boolean found = false;
+        //boolean found = false;
         //if pat is already existed in the MFP then return
         if(_MFP.containsKey(pat)) return;
-        //pair-wise compare the input pattern to every pattern in _MFP
+        //compare the input pattern to every pattern in _MFP
         Iterator < Map.Entry<FTArray,String> > p = _MFP.entrySet().iterator();
-        while(p.hasNext() && !found){
+        while(p.hasNext()){ // && !found){
             Map.Entry<FTArray, String> entry = p.next();
             switch (checkSubTree(pat,entry.getKey())){
                 case 1:
-                    found = true; //patTemp is a subtree of entry.getKey
-                    break;
+                    //found = true; //patTemp is a subtree of entry.getKey
+                    //break;
+                    return;
                 case 2:
                     p.remove(); //entry.getKey is a subtree of patTemp
                     break;
             }
         }
-        if(! found) {
+        //if(! found) {
             int support = projected.getProjectedSupport();
             int wsupport = projected.getProjectedRootSupport(); //=> root location
             int size = Pattern_Int.countNode(pat);
@@ -625,6 +622,52 @@ public class FreqT_Int {
                             String.valueOf(size);
 
             _MFP.put(pat, patternSupport);
+        //}
+    }
+
+    //compare with all the maximal pattern in the list
+    public void addMFPTest(FTArray pat, ArrayList<FTArray> _MFP){
+        if(_MFP.size() == 0) {
+            _MFP.add(pat);
+        }else{
+            ArrayList<FTArray> tmp = new ArrayList<>(_MFP);
+            for(FTArray lastPattern : tmp) {
+                if(! pat.equals(lastPattern)) {
+                    int checkMaximality = checkSubTree(pat, lastPattern);
+                    switch (checkMaximality) {
+                        case 1: //pat is a sub tree of the lastPattern then return
+                            return;
+                        case 2: //pat is super tree of the lastPattern in the list
+                            _MFP.remove(lastPattern);
+                            break;
+                    }
+                }else
+                    return;
+            }
+            //if the pattern is a new maximal pattern then store it
+            _MFP.add(pat);
+        }
+    }
+
+    //compare only with the last maximal pattern in the list
+    public void addMFPTest1(FTArray pat, ArrayList<FTArray> _MFP){
+        if(_MFP.size() == 0) {
+            _MFP.add(pat);
+        }else{
+            FTArray lastPattern = _MFP.get(_MFP.size()-1);
+            if(! pat.equals(lastPattern)) {
+                int checkMaximality = checkSubTree(pat, lastPattern);
+                switch (checkMaximality) {
+                    case 0: //not related
+                        _MFP.add(pat);
+                        break;
+                    case 1: //pat is a sub tree of the last pattern then don't add this pattern to the list
+                        break;
+                    case 2: //pat is super tree of the last pattern in the list
+                        _MFP.set(_MFP.size()-1, pat);
+                        break;
+                }
+            }
         }
     }
 
@@ -668,40 +711,23 @@ public class FreqT_Int {
         FTArray patTemp = Pattern_Int.getPatternString1(pat);
         //check minsize constraints and right mandatory children before adding pattern
         if(checkOutput(patTemp) && ! Constraint.checkRightObligatoryChild(patTemp, grammarInt, blackLabelsInt)){
-            //addMFPTest(pat, FP);
             if (config.getTwoStep()) { //store root occurrences for next step
                 addRootIDs(patTemp, projected);
             } else{ //check and store pattern to maximal pattern list
                 if(config.getFilter())
                     addMFP(patTemp, projected, MFP);
+                    //addMFPTest(patTemp, newMFP);
                 else
                     addFP(patTemp, projected, MFP);
             }
         }
     }
 
-    public void addMFPTest(FTArray pat, ArrayList<FTArray> _MFP){
-        //if the current pat already existed in the _MFP then return
-        if(_MFP.size() == 0) {
-            _MFP.add(pat);
-        }else{
-            FTArray lastPattern = _MFP.get(_MFP.size()-1);
-            if(pat != lastPattern) {
-                int checkMaximality = checkSubTree(pat, lastPattern);
-                switch (checkMaximality) {
-                    case 0: //pat and the last pattern in the list do not have maximal relationship
-                        _MFP.add(pat);
-                        break;
-                    case 2: //pat is super tree of the last pattern in the list
-                        _MFP.set(_MFP.size()-1,pat);
-                        break;
-                }
-            }
-        }
+    private void printFTArray(FTArray ft){
+        for(int i=0; i< ft.size(); ++i)
+            System.out.print(ft.get(i)+",");
+        System.out.println();
     }
-
-
-
 
     //group of procedures to set running time and print patterns
     private void setStartingTime() {
@@ -820,7 +846,7 @@ public class FreqT_Int {
                 //convert pattern from Integer into String
                 ArrayList <String> patternStr = Pattern_Int.getPatternStr(patterns.get(i),labelIndex);
                 //set the support = 1, wsupport=1 and size = size of pattern
-                String supports = "1,1,"+patterns.get(i).size();
+                String supports = "1,1,"+Pattern_Int.countNode(patterns.get(i));
                 //print the pattern to file
                 ((XMLOutput) outputMaximalPatterns).report_Int(patternStr,supports);
 

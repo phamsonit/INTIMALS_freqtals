@@ -18,6 +18,7 @@ import java.util.*;
 
 public class FreqT_Int_ext_serial extends FreqT_Int {
 
+    private ArrayList<FTArray> newMFP = new ArrayList<>();
     private Map<FTArray, String> MFP = new HashMap<>();
     private Map<String, FTArray> interruptedRootID = new HashMap<>();
 
@@ -135,11 +136,11 @@ public class FreqT_Int_ext_serial extends FreqT_Int {
 
     private void expandLargestPattern(FTArray largestPattern, Projected projected) {
         try{
-            //check running time
+            //check total running time
             if (isTimeout()) return;
 
             //check running for the current group
-            if( (System.currentTimeMillis( ) - timeStartGroup) > timePerGroup) {
+            if( isGroupTimeout() ) {
                 storeInterruptedRootID(largestPattern, projected);
                 return;
             }
@@ -152,7 +153,8 @@ public class FreqT_Int_ext_serial extends FreqT_Int {
 
             //if there is no candidate then report pattern --> stop
             if( candidates.isEmpty() ){
-                addPattern(largestPattern,projected,MFP);
+                //addPattern(largestPattern,projected,MFP);
+                addPattern(largestPattern, newMFP);
                 return;
             }
 
@@ -172,7 +174,7 @@ public class FreqT_Int_ext_serial extends FreqT_Int {
                 }else{
                     if( Constraint.satisfyFullLeaf(largestPattern) ){
                         //store the pattern
-                        addPattern(largestPattern,entry.getValue(),MFP);
+                        addPattern(largestPattern, newMFP);
                     }else{
                         //continue expanding pattern
                         expandLargestPattern(largestPattern, entry.getValue());
@@ -186,16 +188,21 @@ public class FreqT_Int_ext_serial extends FreqT_Int {
         }
     }
 
-    private void addPattern(FTArray _largestPattern, Projected projected, Map<FTArray,String> _outputPatterns){
+    private boolean isGroupTimeout() {
+        return (System.currentTimeMillis( ) - timeStartGroup) > timePerGroup;
+    }
+
+    private void addPattern(FTArray _largestPattern, ArrayList<FTArray> _outputPatterns){
         //remove the part of the pattern that misses leaf
         FTArray patTemp = Pattern_Int.getPatternString1(_largestPattern);
-
         //check output constraints and right mandatory children before storing pattern
         if(checkOutput(patTemp) && ! Constraint.checkRightObligatoryChild(patTemp, grammarInt, blackLabelsInt)){
             if(config.getFilter())
-                addMFP(patTemp, projected, _outputPatterns);
-            else
-                addFP(patTemp, projected, _outputPatterns);
+                //addMFP(patTemp, projected, _outputPatterns);
+                addMFPTest(patTemp, _outputPatterns);
+            else{
+                //addFP(patTemp, projected, _outputPatterns);
+            }
         }
     }
 
@@ -248,10 +255,13 @@ public class FreqT_Int_ext_serial extends FreqT_Int {
         int nbMFP;
         String outFile = config.getOutputFile();
         if(config.getFilter()) {
-            nbMFP = MFP.size();
-            outputPatterns(MFP, outFile);
+            //nbMFP = MFP.size();
+            //outputPatterns(MFP, outFile);
+            nbMFP = newMFP.size();
+            printPatterns(newMFP, outFile);
+
         }else {
-            System.out.println("filter FP: "+MFP.size());
+            System.out.println("filter FP: " + MFP.size());
             Map<FTArray,String> mfpTemp = filterFP(MFP);
             nbMFP = mfpTemp.size();
             outputPatterns(mfpTemp,outFile);

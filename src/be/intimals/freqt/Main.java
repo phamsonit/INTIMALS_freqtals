@@ -43,8 +43,7 @@ public class Main {
 
         if (args.length==0) {
 
-            String[] argsss = {"conf/java/config.properties","5","combination"};
-            //String[] argsss = {"test/conf-artifical-data/abstract-data/config.properties","2","abstract-data"};
+            String[] argsss = {"conf/java/config.properties","5","fold4"};
             m.singleRun(argsss);
             System.exit(-1);
 

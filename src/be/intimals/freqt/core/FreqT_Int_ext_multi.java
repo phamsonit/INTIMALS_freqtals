@@ -129,8 +129,6 @@ public class FreqT_Int_ext_multi extends FreqT_Int {
         }
     }
 
-
-    //parallel expand groups of root occurrences
     private void expandGroupParallel(Map <String, FTArray> _rootIDs) {
 
         _rootIDs.entrySet().parallelStream().forEach(entry -> {
