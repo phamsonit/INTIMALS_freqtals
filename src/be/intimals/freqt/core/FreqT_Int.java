@@ -68,9 +68,7 @@ public class FreqT_Int {
             //find root occurrences (id-pos) of pattern
             String rootOccurrences = "";
             for (int i = 0; i < projected.getProjectRootLocationSize(); ++i) {
-                rootOccurrences = rootOccurrences +
-                        projected.getProjectRootLocation(i).getLocationId() + ("-") +
-                        projected.getProjectRootLocation(i).getLocationPos() + ";";
+                rootOccurrences = rootOccurrences + projected.getProjectRootLocation(i).getIdPos();
             }
             //check the current root occurrences
             boolean isAdded = true;
@@ -789,7 +787,7 @@ public class FreqT_Int {
                     }
                 }
 
-                pattern = pattern.subList(0,oldSize);
+                pattern.shrink(oldSize);
             }
         }catch (Exception e){
             System.out.println("Error: Freqt_Int - projected " + e);

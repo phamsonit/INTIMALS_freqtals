@@ -78,16 +78,12 @@ public class FreqT_Int_ext_serial extends FreqT_Int {
                 String rootOccurrences = String.valueOf(projected.getProjectedDepth())+"\t";
                 //keep root occurrences and right-most occurrences
                 for (int i = 0; i < projected.getProjectRootLocationSize(); ++i) {
-                    rootOccurrences = rootOccurrences +
-                            projected.getProjectRootLocation(i).getLocationId() + ("-") +
-                            projected.getProjectRootLocation(i).getLocationPos() + ";";
+                    rootOccurrences = rootOccurrences + projected.getProjectRootLocation(i).getIdPos();
                     //Location.getLocationPos(projected.getProjectLocation(i)) + ";";
                 }
                 String rightmostOccurrences="";
                 for (int i = 0; i < projected.getProjectLocationSize(); ++i) {
-                    rightmostOccurrences = rightmostOccurrences +
-                            projected.getProjectLocation(i).getLocationId() + ("-") +
-                            projected.getProjectLocation(i).getLocationPos() + ";";
+                    rightmostOccurrences = rightmostOccurrences + projected.getProjectLocation(i).getIdPos();
                 }
                 rootOccurrences = rootOccurrences+"\t"+rightmostOccurrences;
                 //store the current pattern for the next round
@@ -135,7 +131,7 @@ public class FreqT_Int_ext_serial extends FreqT_Int {
                     }
                 }
 
-                largestPattern = largestPattern.subList(0,oldSize);
+                largestPattern.shrink(oldSize);
             }
         }catch (Exception e){
             System.out.println("Error: Freqt_ext projected " + e);
@@ -210,6 +206,9 @@ public class FreqT_Int_ext_serial extends FreqT_Int {
                 _rootIDs = interruptedRootID;
                 roundCount++;
             }
+
+            //System.exit(-42);
+
             //print maximal patterns
             int nbMFP;
             String outFile = config.getOutputFile();

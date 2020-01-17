@@ -17,6 +17,10 @@ public class Location extends FTArray {
     public int getLocationPos() { return this.getLast(); }
     public int getRoot() { return this.get(0); }
 
+    public String getIdPos(){
+        return locationId + "-" + this.getLast() +";";
+    }
+
     public Location(){
     }
 

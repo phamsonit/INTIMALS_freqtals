@@ -123,6 +123,10 @@ public class FTArray {
         return result;
     }
 
+    public void shrink(int newSize){
+        firstFree = newSize;
+    }
+
     public boolean equals(Object other){
         if(other.getClass() != this.getClass()) return false;
         FTArray otherArray = (FTArray)other;
