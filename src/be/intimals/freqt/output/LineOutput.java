@@ -1,17 +1,12 @@
 package be.intimals.freqt.output;
 
-import be.intimals.freqt.structure.*;
-import be.intimals.freqt.config.*;
+import be.intimals.freqt.config.Config;
+import be.intimals.freqt.structure.Pattern;
+import be.intimals.freqt.structure.Projected;
 
-
-import java.io.FileWriter;
 import java.io.IOException;
 import java.util.ArrayList;
-import java.util.List;
 import java.util.Map;
-import java.util.Vector;
-
-import be.intimals.freqt.config.*;
 
 public class LineOutput extends AOutputFormatter {
     private char uniChar;
@@ -54,7 +49,7 @@ public class LineOutput extends AOutputFormatter {
 
                 //List<Integer> allOccurrences = getSizeAllOccurrences(projected);
 
-                assert(size == Location.getLocationList(projected.getProjectLocation(0)).size());
+                assert(size == projected.getProjectLocation(0).size());
 //                assert(size == projected.getProjectLocation(0).getLocationList().size());
 
                 //System.out.println(FreqT.getPatternString(pat));

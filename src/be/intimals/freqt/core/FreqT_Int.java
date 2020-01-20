@@ -139,7 +139,7 @@ public class FreqT_Int {
                     if (node_label != null) {
                         //update the locations
                         FTArray prefix = new FTArray();
-                        int[] initLocation={};
+                        Location initLocation = new Location();
                         updateProjectedLocation(freq1, node_label_id, i, j, 0, prefix, initLocation);
                     }
                 }
@@ -236,12 +236,16 @@ public class FreqT_Int {
             int depth = projected.getProjectedDepth();
             //System.out.println("depth " + depth);
             for (int i = 0; i < projected.getProjectLocationSize(); ++i) {
-                int id = Location.getLocationId(projected.getProjectLocation(i));
-                int pos = Location.getLocationPos(projected.getProjectLocation(i));
+                //int id = Location.getLocationId(projected.getProjectLocation(i));
+                //int pos = Location.getLocationPos(projected.getProjectLocation(i));
+                int id = projected.getProjectLocation(i).getLocationId();
+                int root = projected.getProjectLocation(i).getRoot();
+                int pos = projected.getProjectLocation(i).getLocationPos();
                 //store all locations of the labels in the pattern: this uses more memory but need for checking continuous paragraphs
-                //int[] occurrences = Location.getLocationArr(projected.getProjectLocation(i));
-                //store only id and root and right most locations
-                int[] occurrences = {Location.getRoot(projected.getProjectLocation(i))};
+                //Location occurrences = projected.getProjectLocation(i);
+                //store only id and root
+                Location occurrences = new Location(id,root);
+
                 //keep lineNr to calculate distance of two nodes
                 //List<Integer> lines = projected.getProjectLineNr(i);
                 FTArray prefixInt = new FTArray();
@@ -278,7 +282,8 @@ public class FreqT_Int {
      * @param id
      * @param rightmostPos
      */
-    private void updateProjectedLocation(Map<FTArray, Projected> freq1, int candidate, int id, int rightmostPos, int depth, FTArray prefixInt, int[] initLocations) {
+    private void updateProjectedLocation(Map<FTArray, Projected> freq1, int candidate, int id, int rightmostPos,
+                                         int depth, FTArray prefixInt, Location initLocations) {
         try {
             FTArray newTree = new FTArray();
             newTree.addAll(prefixInt);
@@ -551,8 +556,10 @@ public class FreqT_Int {
             String rootOccurrences = "";
             for(int i = 0; i<projected.getProjectLocationSize(); ++i){
                 rootOccurrences = rootOccurrences +
-                        Location.getLocationId(projected.getProjectLocation(i)) + ("-") +
-                        Location.getRoot(projected.getProjectLocation(i)) + ";";
+                        //Location.getLocationId(projected.getProjectLocation(i)) + ("-") +
+                        //Location.getRoot(projected.getProjectLocation(i)) + ";";
+                        projected.getProjectLocation(i).getLocationId() + ("-") +
+                        projected.getProjectLocation(i).getRoot() + ";";
             }
 
             //check the current root occurrences
@@ -815,10 +822,15 @@ public class FreqT_Int {
                     System.out.print(label +" : ");
             }
 
-            System.out.print(" - locations[id,right]: ");
+            System.out.print(" - locations ");
             for(int i = 0 ; i<projected.getProjectLocationSize(); ++i){
-                for(int j=0; j<projected.getProjectLocation(i).length; ++j)
-                    System.out.print(projected.getProjectLocation(i)[j]+" ");
+                System.out.print(projected.getProjectLocation(i).getLocationId() +" ");
+                printFTArray(projected.getProjectLocation(i));
+
+//                for(int j=0; j<projected.getProjectLocation(i).size(); ++j)
+//                    System.out.print(projected.getProjectLocation(i).getLocationId()+" "+
+//                    projected.getProjectLocation(i).getLocationPos());
+
                 System.out.print("; ");
             }
 

@@ -1,7 +1,6 @@
 package be.intimals.freqt.output;
 
-import be.intimals.freqt.structure.*;
-import be.intimals.freqt.config.*;
+import be.intimals.freqt.config.Config;
 
 import java.io.FileWriter;
 import java.io.IOException;
@@ -64,58 +63,6 @@ public abstract class AOutputFormatter {
         set.addAll(list1);
         set.addAll(list2);
         return new ArrayList<T>(set);
-    }
-
-    /**
-     * calculate size of union all occurrences
-     * @param projected
-     * @return
-     */
-    public List<Integer> getSizeAllOccurrences(Projected projected){
-        //print union of all occurrences
-//        List<Integer> tmp = new ArrayList<>(projected.getProjectLocation(0).getLocationList());
-        List<Integer> tmp = new ArrayList<>(Location.getLocationList(projected.getProjectLocation(0)));
-        for(int i=1; i<projected.getProjectLocationSize(); ++i) {
-            tmp = union(tmp, Location.getLocationList(projected.getProjectLocation(i)));
-//            tmp = union(tmp,projected.getProjectLocation(i).getLocationList());
-        }
-        Collections.sort(tmp);
-        //////
-
-        return tmp;
-
-    }
-
-    public void printAllOccurrence(Projected projected){
-        for(int i=0; i<projected.getProjectLocationSize(); ++i) {
-            System.out.println(Location.getLocationId(projected.getProjectLocation(i)));
-            System.out.println(Location.getLocationList(projected.getProjectLocation(i)));
-//            System.out.print(projected.getProjectLocation(i).getLocationId()+" ");
-//            System.out.println(projected.getProjectLocation(i).getLocationList());
-        }
-
-    }
-
-    /**
-     * check a node having all children ?
-     * @param pat
-     * @param nodeName
-     * @return
-     */
-    private boolean checkMandatoryChild(ArrayList<String> pat, String nodeName){
-
-        boolean result = false;
-        for(int i=0; i<pat.size(); ++i)
-            if(pat.get(i).equals(nodeName))
-            {
-                ArrayList<String> listOfChild = Pattern.findChildrenLabels(pat,i);
-                String degree = grammar.get(nodeName).get(1);
-                if(!degree.equals(String.valueOf(listOfChild.size())))
-                    return true;//result = true;
-                else
-                    result = false;
-            }
-        return result;
     }
 
     //public abstract void report(Vector<String> pat, Projected projected);

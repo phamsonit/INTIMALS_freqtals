@@ -43,9 +43,9 @@ public class Main {
 
         if (args.length==0) {
 
-//            String[] argsss = {"conf/java/config.properties","5","combination"};
-//            m.singleRun(argsss);
-//            System.exit(-1);
+            String[] argsss = {"conf/java/config.properties","5","combination"};
+            m.singleRun(argsss);
+            System.exit(-1);
 
             System.out.println("Single-run Freq-T usage:\n" +
                     "java -jar freqt_java.jar CONFIG_FILE [MIN_SUPPORT] [INPUT_FOLDER] (--memory [VALUE]) (--debug-file)\n" +

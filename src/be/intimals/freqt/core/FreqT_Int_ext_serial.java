@@ -55,6 +55,7 @@ public class FreqT_Int_ext_serial extends FreqT_Int {
             //set the number of round
             int roundCount = 1;
             while(! _rootIDs.isEmpty() && finished){
+                System.out.println("Round: "+roundCount);
                 //to store pattern of the group which run over timePerGroup
                 interruptedRootID = new LinkedHashMap<>();
                 //calculate running time for each group in the current round
@@ -113,7 +114,7 @@ public class FreqT_Int_ext_serial extends FreqT_Int {
         String[] rightmostTemp = projectTemp[1].split(";");
         for(int i=0; i<rightmostTemp.length; ++i) {
             String[] pos = rightmostTemp[i].split("-");
-            int[]initLocation = {Integer.valueOf(pos[1])};
+            Location initLocation = new Location();// {Integer.valueOf(pos[1])};
             projected.addProjectLocation(Integer.parseInt(pos[0]), Integer.parseInt(pos[2]), initLocation);
         }
     }
@@ -211,9 +212,9 @@ public class FreqT_Int_ext_serial extends FreqT_Int {
         //keep root occurrences and right-most occurrences
         for (int i = 0; i < projected.getProjectLocationSize(); ++i) {
             rightmostOccurrences = rightmostOccurrences +
-                    Location.getLocationId(projected.getProjectLocation(i)) + ("-") +
-                    Location.getRoot(projected.getProjectLocation(i)) + ("-") +
-                    Location.getLocationPos(projected.getProjectLocation(i)) + ";";
+                    projected.getProjectLocation(i).getLocationId() + ("-") +
+                    projected.getProjectLocation(i).getRoot() + ("-") +
+                    projected.getProjectLocation(i).getLocationPos() + ";";
         }
         //store the pattern for the next round
         interruptedRootID.put(depth+"\t"+rightmostOccurrences, largestPattern);

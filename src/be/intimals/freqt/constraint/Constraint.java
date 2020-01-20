@@ -21,9 +21,9 @@ public class Constraint {
         int old = 0xffffffff;
         int sup = 0;
         for(int i=0; i<projected.getProjectLocationSize(); ++i) {
-            if (Location.getLocationId(projected.getProjectLocation(i)) != old)
+            if (projected.getProjectLocation(i).getLocationId() != old)
                 ++sup;
-            old = Location.getLocationId(projected.getProjectLocation(i));
+            old = projected.getProjectLocation(i).getLocationId();
         }
         return sup;
     }
@@ -36,12 +36,12 @@ public class Constraint {
     public static int getRootSupport(Projected projected){
         int rootSup = 1;
         for(int i=0; i< projected.getProjectLocationSize()-1;++i) {
-            int[] location1 = projected.getProjectLocation(i);
-            int[] location2 = projected.getProjectLocation(i+1);
+            Location location1 = projected.getProjectLocation(i);
+            Location location2 = projected.getProjectLocation(i+1);
 
-            if( (Location.getLocationId(location1) == Location.getLocationId(location2) &&
-                    Location.getRoot(location1) != Location.getRoot(location2)) ||
-                    Location.getLocationId(location1) != Location.getLocationId(location2)
+            if( (location1.getLocationId() == location2.getLocationId() &&
+                    location1.getRoot() != location2.getRoot()) ||
+                    location1.getLocationId() != location2.getLocationId()
                     )
                 ++rootSup;
         }
@@ -326,18 +326,18 @@ public class Constraint {
 
             int i=0;
             while(i < projected.getProjectLocationSize()){
-                int id = Location.getLocationId(projected.getProjectLocation(i));
-                int[] pos = Location.getLocationArr(projected.getProjectLocation(i));
+                Location pos = projected.getProjectLocation(i);
+                int id = pos.getLocationId();
                 //System.out.println(pos);
 
                 int firstPos=0;
-                for(int j=pos.length-2; j>0; --j){
-                    if(_transaction.get(id).get(pos[j]).getNode_label_int() == pat.get(childrenPos.get(childrenPos.size()-2))) {
-                        firstPos = pos[j];
+                for(int j=pos.size()-2; j>0; --j){
+                    if(_transaction.get(id).get(pos.get(j)).getNode_label_int() == pat.get(childrenPos.get(childrenPos.size()-2))) {
+                        firstPos = pos.get(j);
                         break;
                     }
                 }
-                int lastPos = pos[pos.length-1];
+                int lastPos = pos.get(pos.size()-1);
                 //System.out.println(firstPos+" "+lastPost);
                 if (_transaction.get(id).get(firstPos).getNodeSibling() != lastPos){
                     //remove paragraph location
@@ -365,9 +365,9 @@ public class Constraint {
             int i=0;
             while(i < projected.getProjectLocationSize()) {
                 //get position of the current label
-                int id = Location.getLocationId(projected.getProjectLocation(i));
+                int id = projected.getProjectLocation(i).getLocationId();
                 //for each location check if it belongs to SectionStatementBlock or not
-                int currentPos = Location.getLocationPos(projected.getProjectLocation(i));
+                int currentPos = projected.getProjectLocation(i).getLocationPos();
                 //int searchPos = Location.getLocationPos(projected.getProjectLocation(i));;
                 //check if label of section is in black-section or not
                 while (currentPos != -1) {

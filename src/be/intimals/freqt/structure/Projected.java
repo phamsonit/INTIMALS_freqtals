@@ -6,12 +6,9 @@ public class Projected {
     private int depth = -1;
     private int support = -1;
     private int rootSupport = -1;
-    private List<int[]> locations = new  ArrayList<>();
-    //private List<int[]> rootLocations = new ArrayList<>();
-    private List<List<Integer>> lineNr = new ArrayList<>();
+    private List<Location> locations = new  ArrayList<>();
 
     //////////////////////////////////////////////////////////
-    public void Projected(){}
 
     public void setProjectedDepth(int d)
     {
@@ -35,21 +32,14 @@ public class Projected {
         return this.rootSupport;
     }
 
-    //add right most position
     public void setProjectLocation(int i, int j) {
-        int[] l = Location.init();
-        Location.setLocationId(l, i);
-        l = Location.addLocationPos(l, j);
-        boolean dup = false;
-        for(int k=0; k<locations.size(); ++k)
-            if(Location.getLocationId(locations.get(k)) == i &&
-                    Location.getLocationPos(locations.get(k)) == j)
-                dup = true;
-
-        if(!dup) this.locations.add(l);
+        Location l = new Location();
+        l.setLocationId(i);
+        l.addLocationPos(j);
+        this.locations.add(l);
     }
 
-    public int[] getProjectLocation(int i){
+    public Location getProjectLocation(int i){
         return this.locations.get(i);
     }
 
@@ -61,41 +51,7 @@ public class Projected {
         return this.locations.size();
     }
 
-    //add positions of all occurrences
-    public void addProjectLocation(int i, int j, int[] occurrences) {
-        int[] l = Location.init(occurrences);
-        Location.setLocationId(l, i);
-        l = Location.addLocationPos(l, j);
-        this.locations.add(l);
+    public void addProjectLocation(int id, int pos, Location occurrences) {
+        this.locations.add(new Location(occurrences,id,pos));
     }
-
-    public void removeProjectLocation(int[] location){
-        this.locations.remove(location);
-    }
-
-    /*
-    //add root locations
-    public void setProjectRootLocation(int i, int j) {
-        int[] l = Location.init();
-        Location.setLocationId(l, i);
-        l = Location.addLocationPos(l, j);
-        //check if l exists in rootLocations ????
-        boolean dup=false;
-        for(int k=0; k<rootLocations.size(); ++k)
-            if(Location.getLocationId(rootLocations.get(k)) == i &&
-                    Location.getLocationPos(rootLocations.get(k)) == j)
-                dup=true;
-
-        if(!dup) this.rootLocations.add(l);
-    }
-
-    public int[] getProjectRootLocation(int i){
-        return this.rootLocations.get(i);
-    }
-
-    public int getProjectRootLocationSize(){
-        return this.rootLocations.size();
-    }
-    */
-
 }
