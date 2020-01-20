@@ -1,6 +1,5 @@
 package be.intimals.freqt;
 
-import be.intimals.freqt.FTArray;
 import org.junit.jupiter.api.Test;
 
 import static org.junit.jupiter.api.Assertions.*;
@@ -20,6 +19,16 @@ public class FTArrayTest {
         assertEquals(3,arr.get(2));
         assertEquals(3,arr.size());
         assertThrows(ArrayIndexOutOfBoundsException.class, () -> arr.get(3));
+    }
+
+    @Test
+    public void testLast() {
+        FTArray arr = new FTArray();
+        arr.add(1);
+        arr.add(2);
+        arr.add(3);
+
+        assertEquals(3,arr.getLast());
     }
 
     @Test

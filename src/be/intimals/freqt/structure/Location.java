@@ -56,8 +56,6 @@ public class Location {
         return Arrays.copyOfRange(location,1,location.length);
     }
 
-
-
     // Convert a List<Integer> to an int[]
     private static List<Integer> toArrayList(int[] arr) {
         List<Integer> converted = new ArrayList<>();

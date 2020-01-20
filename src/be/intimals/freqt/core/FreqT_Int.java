@@ -30,7 +30,7 @@ public class FreqT_Int {
     protected Map<Integer, ArrayList<Integer> > blackLabelsInt = new LinkedHashMap<>();
     protected Map<Integer, ArrayList<Integer> > whiteLabelsInt = new LinkedHashMap<>();
 
-    ///////////testing new type of MFP
+    //store only pattern, don't store support, rootSupport and size
     private ArrayList<FTArray> newMFP = new ArrayList<FTArray>();
 
     private Map<FTArray, String> MFP = new HashMap<>();
@@ -213,6 +213,7 @@ public class FreqT_Int {
                     }
                 }
                 pattern = pattern.subList(0, oldSize);
+                //pattern.shrink(oldSize);
             }
         }catch (Exception e){
             System.out.println("Error: expandPattern " + e);
@@ -592,7 +593,6 @@ public class FreqT_Int {
      * @param _MFP
      */
     public void addMFP(FTArray pat, Projected projected, Map<FTArray,String> _MFP){
-        //boolean found = false;
         //if pat is already existed in the MFP then return
         if(_MFP.containsKey(pat)) return;
         //compare the input pattern to every pattern in _MFP
@@ -601,73 +601,25 @@ public class FreqT_Int {
             Map.Entry<FTArray, String> entry = p.next();
             switch (checkSubTree(pat,entry.getKey())){
                 case 1:
-                    //found = true; //patTemp is a subtree of entry.getKey
+                    //found = true; //pat is a subtree of entry.getKey
                     //break;
                     return;
                 case 2:
-                    p.remove(); //entry.getKey is a subtree of patTemp
+                    p.remove(); //entry.getKey is a subtree of pat
                     break;
             }
         }
-        //if(! found) {
-            int support = projected.getProjectedSupport();
-            int wsupport = projected.getProjectedRootSupport(); //=> root location
-            int size = Pattern_Int.countNode(pat);
 
-            String patternSupport =
-                    String.valueOf(support) + "," +
-                            String.valueOf(wsupport) + "," +
-                            String.valueOf(size);
+        //store other information of the pattern
+        int support = projected.getProjectedSupport();
+        int wsupport = projected.getProjectedRootSupport(); //=> root location
+        int size = Pattern_Int.countNode(pat);
+        String patternSupport = String.valueOf(support) + "," + String.valueOf(wsupport) + "," + String.valueOf(size);
+        //add new pattern to the list
+        _MFP.put(pat, patternSupport);
 
-            _MFP.put(pat, patternSupport);
-        //}
     }
 
-    //compare with all the maximal pattern in the list
-    public void addMFPTest(FTArray pat, ArrayList<FTArray> _MFP){
-        if(_MFP.size() == 0) {
-            _MFP.add(pat);
-        }else{
-            ArrayList<FTArray> tmp = new ArrayList<>(_MFP);
-            for(FTArray lastPattern : tmp) {
-                if(! pat.equals(lastPattern)) {
-                    int checkMaximality = checkSubTree(pat, lastPattern);
-                    switch (checkMaximality) {
-                        case 1: //pat is a sub tree of the lastPattern then return
-                            return;
-                        case 2: //pat is super tree of the lastPattern in the list
-                            _MFP.remove(lastPattern);
-                            break;
-                    }
-                }else
-                    return;
-            }
-            //if the pattern is a new maximal pattern then store it
-            _MFP.add(pat);
-        }
-    }
-
-    //compare only with the last maximal pattern in the list
-    public void addMFPTest1(FTArray pat, ArrayList<FTArray> _MFP){
-        if(_MFP.size() == 0) {
-            _MFP.add(pat);
-        }else{
-            FTArray lastPattern = _MFP.get(_MFP.size()-1);
-            if(! pat.equals(lastPattern)) {
-                int checkMaximality = checkSubTree(pat, lastPattern);
-                switch (checkMaximality) {
-                    case 0: //not related
-                        _MFP.add(pat);
-                        break;
-                    case 1: //pat is a sub tree of the last pattern then don't add this pattern to the list
-                        break;
-                    case 2: //pat is super tree of the last pattern in the list
-                        _MFP.set(_MFP.size()-1, pat);
-                        break;
-                }
-            }
-        }
-    }
 
     /**
      * add frequent pattern to FP
@@ -719,12 +671,6 @@ public class FreqT_Int {
                     addFP(patTemp, projected, MFP);
             }
         }
-    }
-
-    private void printFTArray(FTArray ft){
-        for(int i=0; i< ft.size(); ++i)
-            System.out.print(ft.get(i)+",");
-        System.out.println();
     }
 
     //group of procedures to set running time and print patterns
@@ -805,63 +751,6 @@ public class FreqT_Int {
         return MFP;
     }
 
-    private void printCandidates(Map<FTArray, Projected> fp){
-
-        for(Map.Entry<FTArray, Projected> entry : fp.entrySet()){
-
-            FTArray pat = entry.getKey();
-            Projected projected = entry.getValue();
-
-            System.out.print("\ndepth:" + projected.getProjectedDepth()+", ");
-
-            for(int i=0; i<pat.size(); ++i){
-                String label = labelIndex.get(pat.get(i));
-                if(label == null){
-                    System.out.print(pat.get(i)+" ");
-                }else
-                    System.out.print(label +" : ");
-            }
-
-            System.out.print(" - locations[id,right]: ");
-            for(int i = 0 ; i<projected.getProjectLocationSize(); ++i){
-                for(int j=0; j<projected.getProjectLocation(i).length; ++j)
-                    System.out.print(projected.getProjectLocation(i)[j]+" ");
-                System.out.print("; ");
-            }
-
-        }
-    }
-
-    //print maximal patterns stored in ArrayList
-    public void printPatterns(ArrayList<FTArray> patterns, String outFile){
-        try{
-            //create output file to store patterns for mining common patterns
-            FileWriter outputCommonPatterns = new FileWriter(outFile+".txt");
-
-            //output maximal patterns
-            AOutputFormatter outputMaximalPatterns =  new XMLOutput(outFile, config, grammar, xmlCharacters);
-            for(int i=0; i<patterns.size(); ++i){
-                //convert pattern from Integer into String
-                ArrayList <String> patternStr = Pattern_Int.getPatternStr(patterns.get(i),labelIndex);
-                //set the support = 1, wsupport=1 and size = size of pattern
-                String supports = "1,1,"+Pattern_Int.countNode(patterns.get(i));
-                //print the pattern to file
-                ((XMLOutput) outputMaximalPatterns).report_Int(patternStr,supports);
-
-                //convert patternStr into input format of original FREQT and write it to file
-                outputCommonPatterns.write(Pattern.getPatternString1(patternStr)+"\n");
-            }
-            //close output file
-            outputMaximalPatterns.close();
-
-            //close common file
-            outputCommonPatterns.flush();
-            outputCommonPatterns.close();
-
-        }
-        catch(Exception e){System.out.println("error print maximal patterns");}
-    }
-
     //print maximal patterns stored in Map to XML file
     public void outputPatterns(Map<FTArray, String> maximalPatterns, String outFile){
         try{
@@ -907,4 +796,94 @@ public class FreqT_Int {
         report.write(msg + "\n");
         report.flush();
     }
+
+    //print list of candidates: need for debugging
+    private void printCandidates(Map<FTArray, Projected> fp){
+
+        for(Map.Entry<FTArray, Projected> entry : fp.entrySet()){
+
+            FTArray pat = entry.getKey();
+            Projected projected = entry.getValue();
+
+            System.out.print("\ndepth:" + projected.getProjectedDepth()+", ");
+
+            for(int i=0; i<pat.size(); ++i){
+                String label = labelIndex.get(pat.get(i));
+                if(label == null){
+                    System.out.print(pat.get(i)+" ");
+                }else
+                    System.out.print(label +" : ");
+            }
+
+            System.out.print(" - locations[id,right]: ");
+            for(int i = 0 ; i<projected.getProjectLocationSize(); ++i){
+                for(int j=0; j<projected.getProjectLocation(i).length; ++j)
+                    System.out.print(projected.getProjectLocation(i)[j]+" ");
+                System.out.print("; ");
+            }
+
+        }
+    }
+
+    //print a pattern
+    private void printFTArray(FTArray ft){
+        for(int i=0; i< ft.size(); ++i)
+            System.out.print(ft.get(i)+",");
+        System.out.println();
+    }
+
+    //testing: store only maximal pattern in the list
+    public void addMFPTest(FTArray pat, ArrayList<FTArray> _MFP){
+        if(_MFP.size() == 0) {
+            _MFP.add(pat);
+        }else{
+            ArrayList<FTArray> tmp = new ArrayList<>(_MFP);
+            for(FTArray lastPattern : tmp) {
+                if(! pat.equals(lastPattern)) {
+                    int checkMaximality = checkSubTree(pat, lastPattern);
+                    switch (checkMaximality) {
+                        case 1: //pat is a sub tree of the lastPattern then return
+                            return;
+                        case 2: //pat is super tree of the lastPattern in the list
+                            _MFP.remove(lastPattern);
+                            break;
+                    }
+                }else
+                    return;
+            }
+            //if the pattern is a new maximal pattern then store it
+            _MFP.add(pat);
+        }
+    }
+
+    //print maximal patterns stored in ArrayList
+    public void printPatterns(ArrayList<FTArray> patterns, String outFile){
+        try{
+            //create output file to store patterns for mining common patterns
+            FileWriter outputCommonPatterns = new FileWriter(outFile+".txt");
+
+            //output maximal patterns
+            AOutputFormatter outputMaximalPatterns =  new XMLOutput(outFile, config, grammar, xmlCharacters);
+            for(int i=0; i<patterns.size(); ++i){
+                //convert pattern from Integer into String
+                ArrayList <String> patternStr = Pattern_Int.getPatternStr(patterns.get(i),labelIndex);
+                //set the support = 1, wsupport=1 and size = size of pattern
+                String supports = "1,1,"+Pattern_Int.countNode(patterns.get(i));
+                //print the pattern to file
+                ((XMLOutput) outputMaximalPatterns).report_Int(patternStr,supports);
+
+                //convert patternStr into input format of original FREQT and write it to file
+                outputCommonPatterns.write(Pattern.getPatternString1(patternStr)+"\n");
+            }
+            //close output file
+            outputMaximalPatterns.close();
+
+            //close common file
+            outputCommonPatterns.flush();
+            outputCommonPatterns.close();
+
+        }
+        catch(Exception e){System.out.println("error print maximal patterns");}
+    }
+
 }

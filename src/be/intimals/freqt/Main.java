@@ -43,7 +43,7 @@ public class Main {
 
         if (args.length==0) {
 
-//            String[] argsss = {"conf/java/config.properties","5","fold4"};
+//            String[] argsss = {"conf/java/config.properties","5","combination"};
 //            m.singleRun(argsss);
 //            System.exit(-1);
 
@@ -78,7 +78,7 @@ public class Main {
                     System.setOut(o);
                     System.setErr(o);
             	}else //memory value
-            		memory = args[3];
+            		memory = "-Xmx" + args[3];
             if(args.length == 5) { //memory and debug file
             	memory = args[3];
             	PrintStream o = new PrintStream(new File(inputFold+"-debug-log.txt")); 
@@ -208,8 +208,8 @@ public class Main {
                 }
                 proc.waitFor();
                 System.out.println("Cleaning up ...");
-                //Files.deleteIfExists(Paths.get(outputPatternsTemp));
-                //Files.deleteIfExists(Paths.get(outputCommonPatterns+".txt"));
+                Files.deleteIfExists(Paths.get(outputPatternsTemp));
+                Files.deleteIfExists(Paths.get(outputCommonPatterns+".txt"));
             }
 
             System.out.println("Finished ...");

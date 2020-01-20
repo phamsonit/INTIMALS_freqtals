@@ -18,7 +18,6 @@ import java.util.*;
 
 public class FreqT_Int_ext_serial extends FreqT_Int {
 
-    private ArrayList<FTArray> newMFP = new ArrayList<>();
     private Map<FTArray, String> MFP = new HashMap<>();
     private Map<String, FTArray> interruptedRootID = new HashMap<>();
 
@@ -28,8 +27,6 @@ public class FreqT_Int_ext_serial extends FreqT_Int {
     private long timePerGroup;
     private long timeStartGroup;
     private boolean finished;
-
-    //store root occurrences for the second round
 
     ////////////////////////////////////////////////////////////////////////////////
 
@@ -67,7 +64,6 @@ public class FreqT_Int_ext_serial extends FreqT_Int {
                 //patterns are not explored will be stored in the "interruptedRootID"
                 //after pass over all rootIDs, if still having time budget the algorithm will
                 //recalculate the running time and explore patterns stored in interruptedRootID
-                System.out.println("round :"+roundCount);
                 Iterator < Map.Entry<String, FTArray> > rootId = _rootIDs.entrySet().iterator();
                 while(rootId.hasNext()){
                     //start to expand a group of rootID
@@ -112,13 +108,13 @@ public class FreqT_Int_ext_serial extends FreqT_Int {
         largestPattern.addAll(entry.getValue());
         //set depth, root and right most locations for the pattern
         String[] projectTemp = entry.getKey().split("\t");
-        projected.setProjectedDepth(Integer.valueOf(projectTemp[0]));
+        projected.setProjectedDepth(Integer.parseInt(projectTemp[0]));
         //extract right most locations
         String[] rightmostTemp = projectTemp[1].split(";");
         for(int i=0; i<rightmostTemp.length; ++i) {
             String[] pos = rightmostTemp[i].split("-");
             int[]initLocation = {Integer.valueOf(pos[1])};
-            projected.addProjectLocation(Integer.valueOf(pos[0]), Integer.valueOf(pos[2]), initLocation);
+            projected.addProjectLocation(Integer.parseInt(pos[0]), Integer.parseInt(pos[2]), initLocation);
         }
     }
 
@@ -129,8 +125,7 @@ public class FreqT_Int_ext_serial extends FreqT_Int {
         String[] temp = entry.getKey().split(";");
         for(int i=0; i<temp.length; ++i){
             String[] pos = temp[i].split("-");
-            projected.setProjectLocation(Integer.valueOf(pos[0]),Integer.valueOf(pos[1]));
-            //projected.setProjectRootLocation(Integer.valueOf(pos[0]),Integer.valueOf(pos[1]));
+            projected.setProjectLocation(Integer.parseInt(pos[0]),Integer.parseInt(pos[1]));
         }
     }
 
@@ -154,7 +149,6 @@ public class FreqT_Int_ext_serial extends FreqT_Int {
             //if there is no candidate then report pattern --> stop
             if( candidates.isEmpty() ){
                 addPattern(largestPattern, projected, MFP);
-                //addPattern(largestPattern, newMFP);
                 return;
             }
 
@@ -180,7 +174,8 @@ public class FreqT_Int_ext_serial extends FreqT_Int {
                         expandLargestPattern(largestPattern, entry.getValue());
                     }
                 }
-                largestPattern = largestPattern.subList(0,oldSize);
+                largestPattern = largestPattern.subList(0, oldSize); //keep elements 0 to oldSize
+                //largestPattern.shrink(oldSize);
             }
         }catch (Exception e){
             System.out.println("Error: Freqt_ext projected " + e);
@@ -199,9 +194,8 @@ public class FreqT_Int_ext_serial extends FreqT_Int {
         if(checkOutput(patTemp) && ! Constraint.checkRightObligatoryChild(patTemp, grammarInt, blackLabelsInt)){
             if(config.getFilter())
                 addMFP(patTemp, projected, _outputPatterns);
-                //addMFPTest(patTemp, _outputPatterns);
             else{
-                //addFP(patTemp, projected, _outputPatterns);
+                addFP(patTemp, projected, _outputPatterns);
             }
         }
     }
@@ -216,10 +210,6 @@ public class FreqT_Int_ext_serial extends FreqT_Int {
         String rightmostOccurrences="";
         //keep root occurrences and right-most occurrences
         for (int i = 0; i < projected.getProjectLocationSize(); ++i) {
-            //rootOccurrences = rootOccurrences +
-            //Location.getLocationId(projected.getProjectLocation(i)) + ("-") +
-            //Location.getRoot(projected.getProjectLocation(i)) + ";";
-
             rightmostOccurrences = rightmostOccurrences +
                     Location.getLocationId(projected.getProjectLocation(i)) + ("-") +
                     Location.getRoot(projected.getProjectLocation(i)) + ("-") +
@@ -257,14 +247,11 @@ public class FreqT_Int_ext_serial extends FreqT_Int {
         if(config.getFilter()) {
             nbMFP = MFP.size();
             outputPatterns(MFP, outFile);
-            //nbMFP = newMFP.size();
-            //printPatterns(newMFP, outFile);
-
         }else {
             System.out.println("filter FP: " + MFP.size());
             Map<FTArray,String> mfpTemp = filterFP(MFP);
             nbMFP = mfpTemp.size();
-            outputPatterns(mfpTemp,outFile);
+            outputPatterns(mfpTemp, outFile);
         }
         return nbMFP;
     }
