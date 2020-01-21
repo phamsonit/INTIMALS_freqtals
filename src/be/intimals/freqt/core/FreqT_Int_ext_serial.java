@@ -98,25 +98,6 @@ public class FreqT_Int_ext_serial extends FreqT_Int {
         }catch (Exception e){}
     }
 
-    private void setRunningTime() {
-        finished = true;
-        timeStart2nd = System.currentTimeMillis();
-        timeout = (config.getTimeout())*(60*1000);
-        timeSpent = 0;
-    }
-
-    private boolean is2ndStepTimeout() {
-        if(System.currentTimeMillis() - timeStart2nd > timeout){ //long timeRemaining = timeFor2nd - timeSpent;
-            finished = false;
-            return true;
-        }
-        return false;
-    }
-
-    private boolean isGroupTimeout() {
-        return (System.currentTimeMillis( ) - timeStartGroup) > timePerGroup;
-    }
-
     private void buildPatternForRoundN(Map.Entry<String, FTArray> entry, FTArray largestPattern, Projected projected) {
         //add the pattern
         largestPattern.addAll(entry.getValue());
@@ -199,7 +180,7 @@ public class FreqT_Int_ext_serial extends FreqT_Int {
 
     private void addPattern(FTArray largestPattern, Projected projected, Map<FTArray,String> _outputPatterns){
         //remove the part of the pattern that misses leaf
-        FTArray patTemp = Pattern_Int.getPatternString1(largestPattern);
+        FTArray patTemp = Pattern_Int.removeMissingLeaf(largestPattern);
         //check output constraints and right mandatory children before storing pattern
         if(checkOutput(patTemp) && ! Constraint.checkRightObligatoryChild(patTemp, grammarInt, blackLabelsInt)){
             if(config.getFilter())
@@ -211,22 +192,19 @@ public class FreqT_Int_ext_serial extends FreqT_Int {
     }
 
     private void storeInterruptedRootID(FTArray largestPattern, Projected projected) {
-
         //store depth and root locations
         String depth = String.valueOf(projected.getProjectedDepth());
-        //store root locations
-        //String rootOccurrences = "";
-        //store right most location
-        String rightmostOccurrences="";
+        //store locations
+        String locations="";
         //keep root occurrences and right-most occurrences
         for (int i = 0; i < projected.getProjectLocationSize(); ++i) {
-            rightmostOccurrences = rightmostOccurrences +
+            locations = locations +
                     projected.getProjectLocation(i).getLocationId() + ("-") +
                     projected.getProjectLocation(i).getRoot() + ("-") +
                     projected.getProjectLocation(i).getLocationPos() + ";";
         }
         //store the pattern for the next round
-        interruptedRootID.put(depth+"\t"+rightmostOccurrences, largestPattern);
+        interruptedRootID.put(depth+"\t"+locations, largestPattern);
     }
 
     private void reportResult(FileWriter _report, int nbMFP) throws IOException {
@@ -256,6 +234,25 @@ public class FreqT_Int_ext_serial extends FreqT_Int {
             outputPatterns(mfpTemp, outFile);
         }
         return nbMFP;
+    }
+
+    private void setRunningTime() {
+        finished = true;
+        timeStart2nd = System.currentTimeMillis();
+        timeout = (config.getTimeout())*(60*1000);
+        timeSpent = 0;
+    }
+
+    private boolean is2ndStepTimeout() {
+        if(System.currentTimeMillis() - timeStart2nd > timeout){ //long timeRemaining = timeFor2nd - timeSpent;
+            finished = false;
+            return true;
+        }
+        return false;
+    }
+
+    private boolean isGroupTimeout() {
+        return (System.currentTimeMillis( ) - timeStartGroup) > timePerGroup;
     }
 
 }

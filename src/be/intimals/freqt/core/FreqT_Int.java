@@ -205,7 +205,7 @@ public class FreqT_Int {
                 pattern.addAll(key);
 
                 //check section and paragraphs in COBOL
-                //Constraint.checkCobolConstraints(pattern, entry, key, labelIndex, transaction);
+                Constraint.checkCobolConstraints(pattern, entry, key, labelIndex, transaction);
 
                 //check obligatory children constraint
                 if(Constraint.checkLeftObligatoryChild(pattern, entry.getKey(), grammarInt, blackLabelsInt)){
@@ -250,10 +250,9 @@ public class FreqT_Int {
                 int root = projected.getProjectLocation(i).getRoot();
                 int pos = projected.getProjectLocation(i).getLocationPos();
                 //store all locations of the labels in the pattern: this uses more memory but need for checking continuous paragraphs
-                //Location occurrences = projected.getProjectLocation(i);
+                Location occurrences = projected.getProjectLocation(i);
                 //store only id and root
-                Location occurrences = new Location(id,root);
-
+                //Location occurrences = new Location(id,root);
                 //keep lineNr to calculate distance of two nodes
                 //List<Integer> lines = projected.getProjectLineNr(i);
                 FTArray prefixInt = new FTArray();
@@ -561,8 +560,6 @@ public class FreqT_Int {
             String rootOccurrences = "";
             for(int i = 0; i<projected.getProjectLocationSize(); ++i){
                 rootOccurrences = rootOccurrences +
-                        //Location.getLocationId(projected.getProjectLocation(i)) + ("-") +
-                        //Location.getRoot(projected.getProjectLocation(i)) + ";";
                         projected.getProjectLocation(i).getLocationId() + ("-") +
                         projected.getProjectLocation(i).getRoot() + ";";
             }
@@ -609,15 +606,13 @@ public class FreqT_Int {
         if(_MFP.containsKey(pat)) return;
         //compare the input pattern to every pattern in _MFP
         Iterator < Map.Entry<FTArray,String> > p = _MFP.entrySet().iterator();
-        while(p.hasNext()){ // && !found){
+        while(p.hasNext()){
             Map.Entry<FTArray, String> entry = p.next();
             switch (checkSubTree(pat,entry.getKey())){
-                case 1:
-                    //found = true; //pat is a subtree of entry.getKey
-                    //break;
+                case 1: //pat is a subtree of entry.getKey
                     return;
-                case 2:
-                    p.remove(); //entry.getKey is a subtree of pat
+                case 2: //entry.getKey is a subtree of pat
+                    p.remove();
                     break;
             }
         }
@@ -628,7 +623,6 @@ public class FreqT_Int {
         String patternSupport = String.valueOf(support) + "," + String.valueOf(wsupport) + "," + String.valueOf(size);
         //add new pattern to the list
         _MFP.put(pat, patternSupport);
-
     }
 
 
@@ -669,7 +663,7 @@ public class FreqT_Int {
      */
     private void addTree(FTArray pat, Projected projected){
         //remove the right part of the pattern that misses leafs
-        FTArray patTemp = Pattern_Int.getPatternString1(pat);
+        FTArray patTemp = Pattern_Int.removeMissingLeaf(pat);
         //check minsize constraints and right mandatory children before adding pattern
         if(checkOutput(patTemp) && ! Constraint.checkRightObligatoryChild(patTemp, grammarInt, blackLabelsInt)){
             if (config.getTwoStep()) { //store root occurrences for next step

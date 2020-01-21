@@ -125,7 +125,7 @@ public class Constraint {
     private static boolean isBlacklisted(FTArray pat, FTArray key, Map <Integer,ArrayList<Integer>> _blackLabels){
         int candidateLabel_int = key.get(key.size()-1);
         return (checkBlackListLabel(candidateLabel_int,_blackLabels.values())) &&
-                (Pattern_Int.ChildrenLabelsContains(pat,key,_blackLabels,candidateLabel_int));
+                (Pattern_Int.checkBlackLabels(pat,key,_blackLabels,candidateLabel_int));
     }
 
     /**
@@ -165,7 +165,7 @@ public class Constraint {
     }
 
 
-    //return true if pattern misses obligatory child
+    //return true if pattern misses obligatory child at the left side of the current node
     public static boolean checkLeftObligatoryChild(FTArray pat,
                                             FTArray candidate,
                                             Map <Integer,ArrayList <String> > _grammarInt,
@@ -224,7 +224,7 @@ public class Constraint {
         return missMandatoryChild;
     }
 
-    // return true if the pattern misses the obligatory child at left side
+    // return true if the pattern misses the obligatory child at right side of the current node
     // for each node in the pattern do
     //1. find children of the current node in the pattern
     //2. find children of the current node in the grammar

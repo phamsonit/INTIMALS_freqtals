@@ -5,6 +5,7 @@ import be.intimals.freqt.FTArray;
 
 /**
  * A location is an FTArray plus an identifier of this location
+ * first element of FTArray is root location
  */
 public class Location extends FTArray {
     int locationId = 0;
@@ -24,11 +25,6 @@ public class Location extends FTArray {
 
     public Location(Location other, int id, int pos){
         super(other);
-        locationId = id;
-        add(pos);
-    }
-
-    public Location(int id, int pos){
         locationId = id;
         add(pos);
     }

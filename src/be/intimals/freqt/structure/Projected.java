@@ -53,9 +53,9 @@ public class Projected {
 
     public void addProjectLocation(int id, int pos, Location occurrences) {
         try {
+            //check if this location doesn't exist in the locations
             Location l = new Location(occurrences,id,pos);
             boolean found = false;
-
             for(Location location: this.locations){
                 if(l.getLocationId() == location.getLocationId()
                         && l.getRoot() == location.getRoot()
