@@ -78,9 +78,9 @@ public class FreqT_Int {
             //System.out.println("all candidates after pruning " + FP1.keySet());
             //expand FP1 to find maximal patterns
             expandFP1(FP1);
-            //...
+            //run the second step if getTwoStep = true
             if(config.getTwoStep()){
-                expandPatternFromRootIDs(report, timeStart);
+                expandPatternFromRootIDs(report);
             }else{//output maximal patterns in the first step
                 printPatternInTheFirstStep(report, timeStart);
             }
@@ -97,7 +97,7 @@ public class FreqT_Int {
         //create grammar (labels are strings) which is used to print patterns
         Initial_Int.initGrammar(config.getInputFiles(),grammar, config.buildGrammar());
         //create grammar (labels are integers) which is used in the mining process
-        Initial_Int.initGrammar_Int(config.getInputFiles(),grammarInt,labelIndex);
+        Initial_Int.initGrammar_Int(config.getInputFiles(), grammarInt, labelIndex);
         //read white labels and create black labels
         Initial_Int.readWhiteLabel(config.getWhiteLabelFile(), grammarInt, whiteLabelsInt, blackLabelsInt, labelIndex);
         //read root labels (AST Nodes)
@@ -126,24 +126,28 @@ public class FreqT_Int {
      */
     private Map<FTArray, Projected> buildFP1(ArrayList  < ArrayList <NodeFreqT> > trans) {
         Map<FTArray, Projected> freq1 = new LinkedHashMap<>();
-        for(int i = 0; i < trans.size(); ++i) {
-            for (int j = 0; j < trans.get(i).size(); ++j) {
-                //String node_label = trans.elementAt(i).elementAt(j).getNodeLabel();
-                String node_label = trans.get(i).get(j).getNodeLabel();
-                int node_label_id = trans.get(i).get(j).getNode_label_int();
-                //String lineNr = trans.elementAt(i).elementAt(j).getLineNr();
-                //if node_label in rootLabels and lineNr > lineNr threshold
-                if(rootLabels.contains(node_label) || rootLabels.isEmpty()){
-                    //System.out.println(lineNr+"  "+lineNrs.elementAt(i));
-                    //if(Integer.valueOf(lineNr) > lineNrs.elementAt(i)){ //using only for Cobol data
-                    if (node_label != null) {
-                        //update the locations
-                        FTArray prefix = new FTArray();
-                        Location initLocation = new Location();
-                        updateProjectedLocation(freq1, node_label_id, i, j, 0, prefix, initLocation);
+        try {
+            for (int i = 0; i < trans.size(); ++i) {
+                for (int j = 0; j < trans.get(i).size(); ++j) {
+                    //String node_label = trans.elementAt(i).elementAt(j).getNodeLabel();
+                    String node_label = trans.get(i).get(j).getNodeLabel();
+                    int node_label_id = trans.get(i).get(j).getNode_label_int();
+                    //String lineNr = trans.elementAt(i).elementAt(j).getLineNr();
+                    //if node_label in rootLabels and lineNr > lineNr threshold
+                    if (rootLabels.contains(node_label) || rootLabels.isEmpty()) {
+                        //System.out.println(lineNr+"  "+lineNrs.elementAt(i));
+                        //if(Integer.valueOf(lineNr) > lineNrs.elementAt(i)){ //using only for Cobol data
+                        if (node_label != null) {
+                            //update the locations
+                            FTArray prefix = new FTArray();
+                            Location initLocation = new Location();
+                            updateCandidates(freq1, node_label_id, i, j, 0, prefix, initLocation);
+                        }
                     }
                 }
             }
+        }catch (Exception e){
+            System.out.println("build FP1 error "+e);
         }
         return freq1;
     }
@@ -176,8 +180,12 @@ public class FreqT_Int {
             //if it is timeout then stop expand the pattern;
             if (isTimeout()) return;
 
+            //System.out.print("pattern: ");printFTArray(pattern);System.out.println("Candidates:");
+
             //find candidates of the current pattern
             Map<FTArray, Projected> candidates = generateCandidates(projected, transaction);
+
+            //printCandidates(candidates);
 
             //prune the candidates on minimum support and list of black labels
             Constraint.pruneSupportAndBlacklist(candidates, config.getMinSupport(), pattern, blackLabelsInt);
@@ -197,7 +205,7 @@ public class FreqT_Int {
                 pattern.addAll(key);
 
                 //check section and paragraphs in COBOL
-                Constraint.checkCobolConstraints(pattern, entry, key, labelIndex, transaction);
+                //Constraint.checkCobolConstraints(pattern, entry, key, labelIndex, transaction);
 
                 //check obligatory children constraint
                 if(Constraint.checkLeftObligatoryChild(pattern, entry.getKey(), grammarInt, blackLabelsInt)){
@@ -212,8 +220,8 @@ public class FreqT_Int {
                         expandPattern(pattern, entry.getValue());
                     }
                 }
-                pattern = pattern.subList(0, oldSize);
-                //pattern.shrink(oldSize);
+                //pattern = pattern.subList(0, oldSize);
+                pattern.shrink(oldSize);
             }
         }catch (Exception e){
             System.out.println("Error: expandPattern " + e);
@@ -255,9 +263,7 @@ public class FreqT_Int {
                     int newDepth = depth - d;
                     for (int l = start; l != -1; l = _transaction.get(id).get(l).getNodeSibling()) {
                         int node_label_int = _transaction.get(id).get(l).getNode_label_int();
-                        //int rootPos = occurrences[0];
-                        //System.out.println("candidate "+node_label_int+" "+id+" "+l);
-                        updateProjectedLocation(candidates, node_label_int, id, l, newDepth, prefixInt, occurrences);
+                        updateCandidates(candidates, node_label_int, id, l, newDepth, prefixInt, occurrences);
                     }
                     if (d != -1) {
                         pos = _transaction.get(id).get(pos).getNodeParent();
@@ -276,13 +282,13 @@ public class FreqT_Int {
 
 
     /**
-     * update locations of the projected
+     * update locations of the candidate in the list
      * @param freq1
      * @param candidate
      * @param id
      * @param rightmostPos
      */
-    private void updateProjectedLocation(Map<FTArray, Projected> freq1, int candidate, int id, int rightmostPos,
+    private void updateCandidates(Map<FTArray, Projected> freq1, int candidate, int id, int rightmostPos,
                                          int depth, FTArray prefixInt, Location initLocations) {
         try {
             FTArray newTree = new FTArray();
@@ -309,16 +315,15 @@ public class FreqT_Int {
     /**
      * discover maximal patterns from RootIDs
      * @param report
-     * @param start
      * @throws IOException
      */
-    private void expandPatternFromRootIDs(FileWriter report, long start) throws IOException {
+    private void expandPatternFromRootIDs(FileWriter report) throws IOException {
         System.out.println("Mining maximal frequent subtrees ...");
         log(report,"");
         log(report,"OUTPUT");
         log(report,"===================");
-        long end1 = System.currentTimeMillis( );
-        long diff1 = end1 - start;
+
+        long diff1 = System.currentTimeMillis( ) - timeStart;
         //report the phase 1
         log(report,"- Step 1: Mining frequent patterns with max size constraints");
         //log(report,"\t + Frequent patterns = "+ nbFP);
@@ -328,10 +333,10 @@ public class FreqT_Int {
         //phase 2: find maximal patterns from rootIDs
         log(report,"- Step 2: Mining maximal patterns WITHOUT max size constraint:");
 
-        FreqT_Int_ext_serial freqT_ext = new FreqT_Int_ext_serial(config, this.grammar, this.grammarInt, this.blackLabelsInt, this.whiteLabelsInt,this.xmlCharacters,this.labelIndex,this.transaction);
-        //parallel running
-        //FreqT_Int_ext_multi freqT_ext = new FreqT_Int_ext_multi(config, this.grammar, this.grammarInt, this.blackLabelsInt, this.whiteLabelsInt,this.xmlCharacters,this.labelIndex,this.transaction);
-        freqT_ext.run(rootIDs, start, report);
+        FreqT_Int_ext_serial freqT_ext = new FreqT_Int_ext_serial(config, this.grammar, this.grammarInt,
+                                                                   this.blackLabelsInt, this.whiteLabelsInt,
+                                                                   this.xmlCharacters,this.labelIndex,this.transaction);
+        freqT_ext.run(rootIDs, report);
         //for FastTreeCheck
         System.out.println("fastCheckSubTree Hits: "+ freqT_ext.hitCount+" Misses: "+ freqT_ext.missCount);
     }
@@ -616,7 +621,6 @@ public class FreqT_Int {
                     break;
             }
         }
-
         //store other information of the pattern
         int support = projected.getProjectedSupport();
         int wsupport = projected.getProjectedRootSupport(); //=> root location
@@ -685,6 +689,27 @@ public class FreqT_Int {
         timeStart = System.currentTimeMillis();
         timeout = config.getTimeout()*(60*1000);
         finished = true;
+    }
+
+    /**
+     * check running time of the algorithm
+     * return true if the running time is larger than timeout
+     * @return
+     */
+    private boolean isTimeout() {
+        long currentTime = System.currentTimeMillis();
+        if(!config.getTwoStep())
+            if((currentTime-timeStart) > timeout) {
+                finished = false;
+                return true;
+            }
+        return false;
+    }
+
+    public void log(FileWriter report, String msg) throws IOException {
+        //System.out.println(msg);
+        report.write(msg + "\n");
+        report.flush();
     }
 
     //filter maximal patterns from FP
@@ -783,27 +808,6 @@ public class FreqT_Int {
         catch(Exception e){System.out.println("error print maximal patterns");}
     }
 
-    /**
-     * check running time of the algorithm
-     * return true if the running time is larger than timeout
-     * @return
-     */
-    private boolean isTimeout() {
-        long currentTime = System.currentTimeMillis();
-        if(!config.getTwoStep())
-            if((currentTime-timeStart) > timeout) {
-                finished = false;
-                return true;
-            }
-        return false;
-    }
-
-    public void log(FileWriter report, String msg) throws IOException {
-        //System.out.println(msg);
-        report.write(msg + "\n");
-        report.flush();
-    }
-
     //print list of candidates: need for debugging
     private void printCandidates(Map<FTArray, Projected> fp){
 
@@ -822,16 +826,10 @@ public class FreqT_Int {
                     System.out.print(label +" : ");
             }
 
-            System.out.print(" - locations ");
+            System.out.println();
             for(int i = 0 ; i<projected.getProjectLocationSize(); ++i){
                 System.out.print(projected.getProjectLocation(i).getLocationId() +" ");
                 printFTArray(projected.getProjectLocation(i));
-
-//                for(int j=0; j<projected.getProjectLocation(i).size(); ++j)
-//                    System.out.print(projected.getProjectLocation(i).getLocationId()+" "+
-//                    projected.getProjectLocation(i).getLocationPos());
-
-                System.out.print("; ");
             }
 
         }

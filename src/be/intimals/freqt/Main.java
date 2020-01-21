@@ -43,9 +43,10 @@ public class Main {
 
         if (args.length==0) {
 
-            String[] argsss = {"conf/java/config.properties","5","combination"};
-            m.singleRun(argsss);
-            System.exit(-1);
+//            String[] argsss = {"conf/java/config.properties","5","combination"};
+//            //String[] argsss = {"test/conf-artifical-data/abstract-data/config.properties","2","abstract-data"};
+//            m.singleRun(argsss);
+//            System.exit(-1);
 
             System.out.println("Single-run Freq-T usage:\n" +
                     "java -jar freqt_java.jar CONFIG_FILE [MIN_SUPPORT] [INPUT_FOLDER] (--memory [VALUE]) (--debug-file)\n" +
@@ -222,14 +223,6 @@ public class Main {
             e.printStackTrace();
         }
     }
-
-    //memory consumption test
-    private static final long MEGABYTE = 1024L * 1024L;
-
-    private static long bytesToMegabytes(long bytes) {
-        return bytes / MEGABYTE;
-    }
-
 
     //
     private class MultiRunConfig{

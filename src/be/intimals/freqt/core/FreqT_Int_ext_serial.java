@@ -48,14 +48,14 @@ public class FreqT_Int_ext_serial extends FreqT_Int {
         this.transaction = _transaction;
     }
 
-    public void run(Map <String, FTArray> _rootIDs, long start1st, FileWriter _report){
+    public void run(Map <String, FTArray> _rootIDs, FileWriter _report){
         try{
             //set running time for the second steps
             setRunningTime();
             //set the number of round
             int roundCount = 1;
             while(! _rootIDs.isEmpty() && finished){
-                System.out.println("Round: "+roundCount);
+                //System.out.println("Round: "+roundCount);
                 //to store pattern of the group which run over timePerGroup
                 interruptedRootID = new LinkedHashMap<>();
                 //calculate running time for each group in the current round
@@ -74,6 +74,7 @@ public class FreqT_Int_ext_serial extends FreqT_Int {
                     //Vector<String> largestPattern = new Vector<>();
                     FTArray largestPattern = new FTArray();
                     Projected projected = new Projected();
+
                     if(roundCount == 1) {
                         //build the largestPattern from the rootID found in the first step
                         buildPatternForFirstRound(entry, largestPattern, projected);
@@ -92,7 +93,7 @@ public class FreqT_Int_ext_serial extends FreqT_Int {
             //print the largest patterns
             int nbMFP = printLargestPattern();
             //report result
-            reportResult(start1st, _report, nbMFP);
+            reportResult(_report, nbMFP);
 
         }catch (Exception e){}
     }
@@ -102,6 +103,18 @@ public class FreqT_Int_ext_serial extends FreqT_Int {
         timeStart2nd = System.currentTimeMillis();
         timeout = (config.getTimeout())*(60*1000);
         timeSpent = 0;
+    }
+
+    private boolean is2ndStepTimeout() {
+        if(System.currentTimeMillis() - timeStart2nd > timeout){ //long timeRemaining = timeFor2nd - timeSpent;
+            finished = false;
+            return true;
+        }
+        return false;
+    }
+
+    private boolean isGroupTimeout() {
+        return (System.currentTimeMillis( ) - timeStartGroup) > timePerGroup;
     }
 
     private void buildPatternForRoundN(Map.Entry<String, FTArray> entry, FTArray largestPattern, Projected projected) {
@@ -133,7 +146,7 @@ public class FreqT_Int_ext_serial extends FreqT_Int {
     private void expandLargestPattern(FTArray largestPattern, Projected projected) {
         try{
             //check total running time
-            if (isTimeout()) return;
+            if (is2ndStepTimeout()) return;
 
             //check running for the current group
             if( isGroupTimeout() ) {
@@ -184,13 +197,9 @@ public class FreqT_Int_ext_serial extends FreqT_Int {
         }
     }
 
-    private boolean isGroupTimeout() {
-        return (System.currentTimeMillis( ) - timeStartGroup) > timePerGroup;
-    }
-
-    private void addPattern(FTArray _largestPattern, Projected projected, Map<FTArray,String> _outputPatterns){
+    private void addPattern(FTArray largestPattern, Projected projected, Map<FTArray,String> _outputPatterns){
         //remove the part of the pattern that misses leaf
-        FTArray patTemp = Pattern_Int.getPatternString1(_largestPattern);
+        FTArray patTemp = Pattern_Int.getPatternString1(largestPattern);
         //check output constraints and right mandatory children before storing pattern
         if(checkOutput(patTemp) && ! Constraint.checkRightObligatoryChild(patTemp, grammarInt, blackLabelsInt)){
             if(config.getFilter())
@@ -220,15 +229,7 @@ public class FreqT_Int_ext_serial extends FreqT_Int {
         interruptedRootID.put(depth+"\t"+rightmostOccurrences, largestPattern);
     }
 
-    private boolean isTimeout() {
-        if(System.currentTimeMillis() - timeStart2nd > timeout){ //long timeRemaining = timeFor2nd - timeSpent;
-            finished = false;
-            return true;
-        }
-        return false;
-    }
-
-    private void reportResult(long start1st, FileWriter _report, int nbMFP) throws IOException {
+    private void reportResult(FileWriter _report, int nbMFP) throws IOException {
         if(finished)
             log(_report,"\t + search finished");
         else
@@ -236,7 +237,7 @@ public class FreqT_Int_ext_serial extends FreqT_Int {
         log(_report,"\t + maximal patterns: "+ nbMFP);
         long currentTimeSpent = (System.currentTimeMillis( ) - timeStart2nd);
         log(_report, "\t + running time: ..."+currentTimeSpent/1000+"s");
-        log(_report,"- total running time "+(System.currentTimeMillis( )-start1st)/1000+"s");
+        //log(_report,"- total running time "+(System.currentTimeMillis( )-start1st)/1000+"s");
         _report.flush();
         _report.close();
     }

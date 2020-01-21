@@ -52,6 +52,23 @@ public class Projected {
     }
 
     public void addProjectLocation(int id, int pos, Location occurrences) {
-        this.locations.add(new Location(occurrences,id,pos));
+        try {
+            Location l = new Location(occurrences,id,pos);
+            boolean found = false;
+
+            for(Location location: this.locations){
+                if(l.getLocationId() == location.getLocationId()
+                        && l.getRoot() == location.getRoot()
+                        && l.getLocationPos() == location.getLocationPos()  )
+                    found = true;
+            }
+            if(!found)
+                this.locations.add(l);
+
+        }catch (Exception e){
+            System.out.println("add location error");
+        }
+
+        //this.locations.add(new Location(occurrences,id,pos));
     }
 }

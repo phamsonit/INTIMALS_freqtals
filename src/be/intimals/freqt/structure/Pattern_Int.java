@@ -19,8 +19,8 @@ public class Pattern_Int {
                                                  Map<Integer,ArrayList<Integer>> ListLabels,
                                                  int label){
         if(pat.size()==1){
-            return true;
-            //return ListLabels.get(pat.get(0)).contains(label);
+            //return true;
+            return ListLabels.get(pat.get(0)).contains(label);
         }else{
             FTArray patternTemp = new FTArray(pat);
             patternTemp.addAll(candidate);
