@@ -4,7 +4,7 @@ import java.util.Arrays;
 
 public class FTArray {
 
-    private static int chunkSize = 5;
+    private static int chunkSize = 512;
     protected int firstFree = 0;
 
     /*
@@ -56,9 +56,9 @@ public class FTArray {
         return intMemory[firstFree-1];
     }
 
-     private void set(int index, int element){
+    private void set(int index, int element){
         if ((memory != null) &&
-            (element > Short.MAX_VALUE || element < Short.MIN_VALUE))
+                (element > Short.MAX_VALUE || element < Short.MIN_VALUE))
             migrateMemory();
 
         if(memory != null){

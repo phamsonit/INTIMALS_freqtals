@@ -1,7 +1,6 @@
 package be.intimals.freqt.output;
 
-import be.intimals.freqt.structure.*;
-import be.intimals.freqt.config.*;
+import be.intimals.freqt.config.Config;
 
 import java.io.FileWriter;
 import java.io.IOException;
@@ -65,29 +64,6 @@ public abstract class AOutputFormatter {
         set.addAll(list2);
         return new ArrayList<T>(set);
     }
-
-    /**
-     * check a node having all children ?
-     * @param pat
-     * @param nodeName
-     * @return
-     */
-    /*
-    private boolean checkMandatoryChild(ArrayList<String> pat, String nodeName){
-
-        boolean result = false;
-        for(int i=0; i<pat.size(); ++i)
-            if(pat.get(i).equals(nodeName))
-            {
-                ArrayList<String> listOfChild = Pattern.findChildrenLabels(pat,i);
-                String degree = grammar.get(nodeName).get(1);
-                if(!degree.equals(String.valueOf(listOfChild.size())))
-                    return true;//result = true;
-                else
-                    result = false;
-            }
-        return result;
-    }*/
 
     //public abstract void report(Vector<String> pat, Projected projected);
     public abstract void printPattern(String pat);

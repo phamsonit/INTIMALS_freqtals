@@ -73,7 +73,7 @@ public class Main {
                     System.setOut(o);
                     System.setErr(o);
             	}else //memory value
-            		memory = args[3];
+            		memory = "-Xmx" + args[3];
             if(args.length == 5) { //memory and debug file
             	memory = args[3];
             	PrintStream o = new PrintStream(new File(inputFold+"-debug-log.txt")); 
@@ -149,7 +149,7 @@ public class Main {
             System.out.println("Running forestmatcher ...");
             String command = "";
             if(memory != null)
-            	command = "java -jar -Xmx"+memory+"m"+ " forestmatcher.jar " +
+            	command = "java -jar " + memory + " forestmatcher.jar " +
                         inputPath + " " + outputPatterns +" " + outputMatches + " " + outputClusters;
             else
             	command = "java -jar forestmatcher.jar " +
@@ -217,14 +217,6 @@ public class Main {
             e.printStackTrace();
         }
     }
-
-    //memory consumption test
-    private static final long MEGABYTE = 1024L * 1024L;
-
-    private static long bytesToMegabytes(long bytes) {
-        return bytes / MEGABYTE;
-    }
-
 
     //
     private class MultiRunConfig{

@@ -1,6 +1,7 @@
 package be.intimals.freqt.core;
 
 import be.intimals.freqt.config.Config;
+import be.intimals.freqt.constraint.Constraint;
 import be.intimals.freqt.input.ReadFile;
 import be.intimals.freqt.output.AOutputFormatter;
 import be.intimals.freqt.output.XMLOutput;
@@ -44,42 +45,6 @@ public class FreqT_common {
     }
 
     /**
-     * calculate the support of a pattern = number of files
-     * @param projected
-     * @return
-     */
-    public int support(Projected projected){
-        //if(weighted) return projected.getProjectLocationSize();
-        int old = 0xffffffff;
-        int sup = 0;
-        for(int i=0; i<projected.getProjectLocationSize(); ++i) {
-            if (projected.getProjectLocation(i).getLocationId() != old)
-                ++sup;
-            old = projected.getProjectLocation(i).getLocationId();
-        }
-        return sup;
-    }
-
-    /**
-     * calculate the root support of a pattern = number of root occurrences
-     * @param projected
-     * @return
-     */
-    public int rootSupport(Projected projected){
-        int rootSup = 1;
-        for(int i=0; i< projected.getProjectRootLocationSize()-1;++i) {
-            Location location1 = projected.getProjectRootLocation(i);
-            Location location2 = projected.getProjectRootLocation(i+1);
-
-            if( (location1.getLocationId() == location2.getLocationId() &&
-                    location1.getLocationPos() != location2.getLocationPos()) ||
-                    location1.getLocationId() != location2.getLocationId()
-                    )
-                ++rootSup;
-        }
-        return rootSup;
-    }
-    /**
      * prune candidates based on minimal support
      * @param candidates
      */
@@ -88,8 +53,8 @@ public class FreqT_common {
         Iterator < Map.Entry<String,Projected> > iter = candidates.entrySet().iterator();
         while (iter.hasNext()) {
             Map.Entry<String,Projected> entry = iter.next();
-            int sup = support(entry.getValue());
-            int wsup = rootSupport(entry.getValue());
+            int sup = Constraint.getSupport(entry.getValue());
+            int wsup = Constraint.getRootSupport(entry.getValue());
             if(sup < minSup){
                 iter.remove();
             }
@@ -105,62 +70,62 @@ public class FreqT_common {
      * @param projected
      */
     private void project(Projected projected) {
-            if(found) return;
-            //find all candidates of the current subtree
-            int depth = projected.getProjectedDepth();
-            Map <String , Projected > candidate = new LinkedHashMap<>();
-            for(int i = 0; i < projected.getProjectLocationSize(); ++i ){
-                int id  = projected.getProjectLocation(i).getLocationId();
-                int pos = projected.getProjectLocation(i).getLocationPos();
-                String prefix = "";
-                for(int d = -1; d < depth && pos != -1; ++d) {
-                    int start = (d == -1) ?
-                            newTransaction.get(id).get(pos).getNodeChild() :
-                            newTransaction.get(id).get(pos).getNodeSibling();
-                    int newdepth = depth - d;
-                    for (int l = start; l != -1;
-                         l = newTransaction.get(id).get(l).getNodeSibling()) {
-                        String item = prefix + Variables.uniChar + newTransaction.get(id).get(l).getNodeLabel();
+        if(found) return;
+        //find all candidates of the current subtree
+        int depth = projected.getProjectedDepth();
+        Map <String , Projected > candidate = new LinkedHashMap<>();
+        for(int i = 0; i < projected.getProjectLocationSize(); ++i ){
+            int id  = projected.getProjectLocation(i).getLocationId();
+            int pos = projected.getProjectLocation(i).getLocationPos();
+            String prefix = "";
+            for(int d = -1; d < depth && pos != -1; ++d) {
+                int start = (d == -1) ?
+                        newTransaction.get(id).get(pos).getNodeChild() :
+                        newTransaction.get(id).get(pos).getNodeSibling();
+                int newdepth = depth - d;
+                for (int l = start; l != -1;
+                     l = newTransaction.get(id).get(l).getNodeSibling()) {
+                    String item = prefix + Variables.uniChar + newTransaction.get(id).get(l).getNodeLabel();
 
-                        Projected tmp;// = new Projected();
-                        if(candidate.containsKey(item)) {
-                            candidate.get(item).setProjectLocation(id,l); //store right most positions
-                        }
-                        else {
-                            tmp = new Projected();
-                            tmp.setProjectedDepth(newdepth);
-                            tmp.setProjectLocation(id,l); //store right most positions
-                            candidate.put(item, tmp);
-                        }
+                    Projected tmp;// = new Projected();
+                    if(candidate.containsKey(item)) {
+                        candidate.get(item).setProjectLocation(id,l); //store right most positions
                     }
-                    if (d != -1) pos = newTransaction.get(id).get(pos).getNodeParent();
-                    prefix += Variables.uniChar+")";
-                }
-            }
-
-            prune(candidate,minsup);
-
-            if(candidate.isEmpty()){
-                addCommonPattern(maximalPattern,projected);
-                //System.out.println("common pattern "+maximalPattern);
-                found = true;
-                //return;
-            }else {
-                //expand the current pattern with each candidate
-                Iterator<Map.Entry<String, Projected>> iter = candidate.entrySet().iterator();
-                while (iter.hasNext()) {
-                    int oldSize = maximalPattern.size();
-                    Map.Entry<String, Projected> entry = iter.next();
-                    // add new candidate to current pattern
-                    String[] p = entry.getKey().split(Variables.uniChar);
-                    for (int i = 0; i < p.length; ++i) {
-                        if (!p[i].isEmpty())
-                            maximalPattern.add(p[i]);
+                    else {
+                        tmp = new Projected();
+                        tmp.setProjectedDepth(newdepth);
+                        tmp.setProjectLocation(id,l); //store right most positions
+                        candidate.put(item, tmp);
                     }
-                    project(entry.getValue());
-                    maximalPattern.setSize(oldSize);
                 }
+                if (d != -1) pos = newTransaction.get(id).get(pos).getNodeParent();
+                prefix += Variables.uniChar+")";
             }
+        }
+
+        prune(candidate,minsup);
+
+        if(candidate.isEmpty()){
+            addCommonPattern(maximalPattern,projected);
+            //System.out.println("common pattern "+maximalPattern);
+            found = true;
+            //return;
+        }else {
+            //expand the current pattern with each candidate
+            Iterator<Map.Entry<String, Projected>> iter = candidate.entrySet().iterator();
+            while (iter.hasNext()) {
+                int oldSize = maximalPattern.size();
+                Map.Entry<String, Projected> entry = iter.next();
+                // add new candidate to current pattern
+                String[] p = entry.getKey().split(Variables.uniChar);
+                for (int i = 0; i < p.length; ++i) {
+                    if (!p[i].isEmpty())
+                        maximalPattern.add(p[i]);
+                }
+                project(entry.getValue());
+                maximalPattern.setSize(oldSize);
+            }
+        }
     }
 
 
@@ -169,48 +134,48 @@ public class FreqT_common {
     //3. find the common pattern
     //4. write cluster-common pattern to file
     public void run(String inPatterns, String inClusters, String outCommonFile){
-            commonOutputPatterns = new LinkedHashMap<>();
-            List<List<Integer>> clusters = readClusters(inClusters);
-            List<String> patterns = readPatterns(inPatterns);
-            //System.out.println("nb clusters "+clusters.size());
-            //System.out.println("nb patterns "+patterns.size());
+        commonOutputPatterns = new LinkedHashMap<>();
+        List<List<Integer>> clusters = readClusters(inClusters);
+        List<String> patterns = readPatterns(inPatterns);
+        //System.out.println("nb clusters "+clusters.size());
+        //System.out.println("nb patterns "+patterns.size());
 
-            for(int i=0; i< clusters.size(); ++i){
-                //System.out.println("cluster: "+ i + " #patterns: "+ clusters.get(i).size());
-                if(clusters.get(i).size() < 2){
-                    String ttt = "1,1,1,1\t"+Pattern.covert(patterns.get(clusters.get(i).get(0)-1));
-                    commonOutputPatterns.put(patterns.get(clusters.get(i).get(0)-1),ttt);
-                    //System.out.println(ttt);
-                    //System.out.println("common pattern "+ patterns.get(clusters.get(i).get(0)-1));
-                    //System.out.println("pattern ID "+clusters.get(i).get(0));
+        for(int i=0; i< clusters.size(); ++i){
+            //System.out.println("cluster: "+ i + " #patterns: "+ clusters.get(i).size());
+            if(clusters.get(i).size() < 2){
+                String ttt = "1,1,1,1\t"+Pattern.covert(patterns.get(clusters.get(i).get(0)-1));
+                commonOutputPatterns.put(patterns.get(clusters.get(i).get(0)-1),ttt);
+                //System.out.println(ttt);
+                //System.out.println("common pattern "+ patterns.get(clusters.get(i).get(0)-1));
+                //System.out.println("pattern ID "+clusters.get(i).get(0));
 
-                }else{
-                    Map<String,String> tempDatabase = new HashMap<>();
-                    for(int j=0; j<clusters.get(i).size(); ++j){
-                        //System.out.println(patterns.get(clusters.get(i).get(j)-1));
-                        tempDatabase.put(patterns.get(clusters.get(i).get(j)-1),"nothing");
-                    }
-                    found = false;
-                    newTransaction = new ArrayList<>();
-                    initDatabase(tempDatabase);
-                    minsup = tempDatabase.size();
-                    Map<String,Projected > FP1 = buildFP1Set(newTransaction);
-                    prune(FP1, minsup);
-                    maximalPattern = new Vector<>();
-                    Iterator < Map.Entry<String,Projected> > iter = FP1.entrySet().iterator();
-                    while (iter.hasNext()) {
-                        Map.Entry<String,Projected> entry = iter.next();
-                        if(entry.getKey() != null && entry.getKey().charAt(0) != '*'){
-                            entry.getValue().setProjectedDepth(0);
-                            maximalPattern.add(entry.getKey());
-                            project(entry.getValue());
-                            maximalPattern.remove(maximalPattern.size() - 1);
-                        }
+            }else{
+                Map<String,String> tempDatabase = new HashMap<>();
+                for(int j=0; j<clusters.get(i).size(); ++j){
+                    //System.out.println(patterns.get(clusters.get(i).get(j)-1));
+                    tempDatabase.put(patterns.get(clusters.get(i).get(j)-1),"nothing");
+                }
+                found = false;
+                newTransaction = new ArrayList<>();
+                initDatabase(tempDatabase);
+                minsup = tempDatabase.size();
+                Map<String,Projected > FP1 = buildFP1Set(newTransaction);
+                prune(FP1, minsup);
+                maximalPattern = new Vector<>();
+                Iterator < Map.Entry<String,Projected> > iter = FP1.entrySet().iterator();
+                while (iter.hasNext()) {
+                    Map.Entry<String,Projected> entry = iter.next();
+                    if(entry.getKey() != null && entry.getKey().charAt(0) != '*'){
+                        entry.getValue().setProjectedDepth(0);
+                        maximalPattern.add(entry.getKey());
+                        project(entry.getValue());
+                        maximalPattern.remove(maximalPattern.size() - 1);
                     }
                 }
             }
-            //output common pattern in each cluster
-            outputMFP(commonOutputPatterns,outCommonFile);
+        }
+        //output common pattern in each cluster
+        outputMFP(commonOutputPatterns,outCommonFile);
     }
 
 
@@ -226,25 +191,26 @@ public class FreqT_common {
                 String lineNr = trans.get(i).get(j).getLineNr();
                 //if node_label in rootLabels and lineNr > lineNr threshold
                 //if(rootLabels.contains(node_label) || rootLabels.isEmpty()){
-                    //System.out.println(lineNr+"  "+lineNrs.elementAt(i));
-                    //if(Integer.valueOf(lineNr) > lineNrs.elementAt(i)){ //using only for Cobol data
-                    //find a list of locations then add it to freq1[node_label].locations
-                    if (node_label != null) {
-                        //System.out.println("Node "+ node_label+" "+lineNr);
-                        //if node_label already exists
-                        if (freq1.containsKey(node_label)) {
-                            freq1.get(node_label).setProjectLocation(i, j);
-                            //freq1.get(node_label).setProjectLineNr(Integer.valueOf(lineNr)); //add to keep the line number
-                            freq1.get(node_label).setProjectRootLocation(i, j);
-                        } else {
-                            Projected projected = new Projected();
-                            projected.setProjectLocation(i, j);
-                            //projected.setProjectLineNr(Integer.valueOf(lineNr)); //add to keep the line number
-                            projected.setProjectRootLocation(i, j);
-                            freq1.put(node_label, projected);
-                        }
+                //System.out.println(lineNr+"  "+lineNrs.elementAt(i));
+                //if(Integer.valueOf(lineNr) > lineNrs.elementAt(i)){ //using only for Cobol data
+                //find a list of locations then add it to freq1[node_label].locations
+
+                if (node_label != null) {
+                    //System.out.println("Node "+ node_label+" "+lineNr);
+                    //if node_label already exists
+                    if (freq1.containsKey(node_label)) {
+                        freq1.get(node_label).setProjectLocation(i, j);
+                        //freq1.get(node_label).setProjectLineNr(Integer.valueOf(lineNr)); //add to keep the line number
+                        //freq1.get(node_label).setProjectRootLocation(i, j);
+                    } else {
+                        Projected projected = new Projected();
+                        projected.setProjectLocation(i, j);
+                        //projected.setProjectLineNr(Integer.valueOf(lineNr)); //add to keep the line number
+                        //projected.setProjectRootLocation(i, j);
+                        freq1.put(node_label, projected);
                     }
-                    //}
+                }
+                //}
                 //}
             }
         }
@@ -329,7 +295,7 @@ public class FreqT_common {
     private List<List<Integer>> readClusters(String inClusters){
         List<List<Integer> > temp = new LinkedList<>();
 
-       try{
+        try{
             File fXmlFile = new File(inClusters);
             DocumentBuilderFactory dbFactory = DocumentBuilderFactory.newInstance();
             DocumentBuilder dBuilder = dbFactory.newDocumentBuilder();

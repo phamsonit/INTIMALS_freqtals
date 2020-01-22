@@ -1,11 +1,13 @@
 package be.intimals.freqt.output;
 
-import be.intimals.freqt.structure.*;
-import be.intimals.freqt.config.*;
+import be.intimals.freqt.config.Config;
+import be.intimals.freqt.structure.Pattern;
+import be.intimals.freqt.structure.Projected;
 
-import java.io.FileWriter;
 import java.io.IOException;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.Map;
 
 public class XMLOutput extends AOutputFormatter {
     private char uniChar = '\u00a5';
@@ -54,7 +56,7 @@ public class XMLOutput extends AOutputFormatter {
                 pat.add(pattern[i].trim());//replaceAll(String.valueOf(uniChar),","));
 
             //remove right-path missed real leafs
-            pat = Pattern.filter(pat);
+            pat = Pattern.removeMissingLeaf(pat);
 
             Projected projected = new Projected();
             projected.setProjectedSupport(Integer.valueOf(supports[1]));

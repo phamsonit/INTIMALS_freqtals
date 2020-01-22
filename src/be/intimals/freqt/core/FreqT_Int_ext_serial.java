@@ -1,12 +1,16 @@
 package be.intimals.freqt.core;
 
-import be.intimals.freqt.config.Config;
-import be.intimals.freqt.structure.*;
 import be.intimals.freqt.FTArray;
+import be.intimals.freqt.config.Config;
+import be.intimals.freqt.constraint.Constraint;
+import be.intimals.freqt.structure.Location;
+import be.intimals.freqt.structure.NodeFreqT;
+import be.intimals.freqt.structure.Pattern_Int;
+import be.intimals.freqt.structure.Projected;
 
 import java.io.FileWriter;
+import java.io.IOException;
 import java.util.*;
-import java.util.concurrent.ConcurrentHashMap;
 
 /*
     extended FREQT + without using max size constraints
@@ -14,11 +18,8 @@ import java.util.concurrent.ConcurrentHashMap;
 
 public class FreqT_Int_ext_serial extends FreqT_Int {
 
-    //private Map<FreqTMemory,String> MFP = new HashMap<>();
-    //private Map<String,FreqTMemory> interruptedRootID = new LinkedHashMap<>();
-
-    private Map<FTArray,String> MFP = new ConcurrentHashMap<>();
-    private Map<String, FTArray> interruptedRootID = new ConcurrentHashMap<>();
+    private Map<FTArray, String> MFP = new HashMap<>();
+    private Map<String, FTArray> interruptedRootID = new HashMap<>();
 
     private long timeout;
     private long timeStart2nd;
@@ -26,8 +27,6 @@ public class FreqT_Int_ext_serial extends FreqT_Int {
     private long timePerGroup;
     private long timeStartGroup;
     private boolean finished;
-
-    //store root occurrences for the second round
 
     ////////////////////////////////////////////////////////////////////////////////
 
@@ -49,57 +48,105 @@ public class FreqT_Int_ext_serial extends FreqT_Int {
         this.transaction = _transaction;
     }
 
-    private void addPattern(FTArray _largestPattern, Projected projected, Map<FTArray,String> _outputPatterns){
+    public void run(Map <String, FTArray> _rootIDs, FileWriter _report){
+        try{
+            //set running time for the second steps
+            setRunningTime();
+            //set the number of round
+            int roundCount = 1;
+            while(! _rootIDs.isEmpty() && finished){
+                //System.out.println("Round: "+roundCount);
+                //to store pattern of the group which run over timePerGroup
+                interruptedRootID = new LinkedHashMap<>();
+                //calculate running time for each group in the current round
+                timePerGroup = (timeout - timeSpent) / _rootIDs.size() ;
+                //short explanation: each group of rootID has a running time budget "timePerGroup"
+                //if a group of rootID cannot finish in the given time
+                //patterns are not explored will be stored in the "interruptedRootID"
+                //after pass over all rootIDs, if still having time budget the algorithm will
+                //recalculate the running time and explore patterns stored in interruptedRootID
+                Iterator < Map.Entry<String, FTArray> > rootId = _rootIDs.entrySet().iterator();
+                while(rootId.hasNext()){
+                    //start to expand a group of rootID
+                    timeStartGroup = System.currentTimeMillis( );
+                    //log(_report,"- Group: "+groupCount);
+                    Map.Entry<String, FTArray> entry = rootId.next();
+                    //Vector<String> largestPattern = new Vector<>();
+                    FTArray largestPattern = new FTArray();
+                    Projected projected = new Projected();
 
-        //remove the part of the pattern missing leaf
-        FTArray patTemp = Pattern_Int.getPatternString1(_largestPattern);
+                    if(roundCount == 1) {
+                        //build the largestPattern from the rootID found in the first step
+                        buildPatternForFirstRound(entry, largestPattern, projected);
+                    }else{
+                        //build largestPattern from interruptedRootID found in the previous step
+                        buildPatternForRoundN(entry, largestPattern, projected);
+                    }
+                    //expand largest pattern
+                    expandLargestPattern(largestPattern, projected);
+                }
+                //update running time
+                timeSpent = (System.currentTimeMillis() - timeStart2nd);
+                //update lists of root occurrences for next round
+                _rootIDs = interruptedRootID;
+                roundCount++;
+            }
+            //print the largest patterns
+            int nbMFP = printLargestPattern();
+            //report result
+            reportResult(_report, nbMFP);
 
-        //check minsize constraints and right mandatory children before adding pattern
-        if(checkOutput(patTemp) && ! checkRightObligatoryChild(patTemp, grammarInt, blackLabelsInt)){
-            if(config.getFilter())
-                addMFP(patTemp, projected, _outputPatterns);
-            else
-                addFP(patTemp, projected, _outputPatterns);
+        }catch (Exception e){}
+    }
+
+    private void buildPatternForRoundN(Map.Entry<String, FTArray> entry, FTArray largestPattern, Projected projected) {
+        //add the pattern
+        largestPattern.addAll(entry.getValue());
+        //set depth, root and right most locations for the pattern
+        String[] projectTemp = entry.getKey().split("\t");
+        projected.setProjectedDepth(Integer.parseInt(projectTemp[0]));
+        //extract right most locations
+        String[] rightmostTemp = projectTemp[1].split(";");
+        for(int i=0; i<rightmostTemp.length; ++i) {
+            String[] pos = rightmostTemp[i].split("-");
+            Location initLocation = new Location();// {Integer.valueOf(pos[1])};
+            projected.addProjectLocation(Integer.parseInt(pos[0]), Integer.parseInt(pos[2]), initLocation);
         }
     }
 
-    private void project(FTArray largestPattern, Projected projected) {
-        try{
+    private void buildPatternForFirstRound(Map.Entry<String, FTArray> entry, FTArray largestPattern, Projected projected) {
+        //add label to the largestPattern
+        largestPattern.addAll(entry.getValue());
+        //set depth of the largestPattern
+        projected.setProjectedDepth(0);
+        //extract the positions for the largestPattern
+        String[] temp = entry.getKey().split(";");
+        for(int i=0; i<temp.length; ++i){
+            String[] pos = temp[i].split("-");
+            projected.setProjectLocation(Integer.parseInt(pos[0]),Integer.parseInt(pos[1]));
+        }
+    }
 
-            timeSpent = System.currentTimeMillis() - timeStart2nd;
-            if(timeSpent > timeout){ //long timeRemaining = timeFor2nd - timeSpent;
-                finished = false;
+    private void expandLargestPattern(FTArray largestPattern, Projected projected) {
+        try{
+            //check total running time
+            if (is2ndStepTimeout()) return;
+
+            //check running for the current group
+            if( isGroupTimeout() ) {
+                storeInterruptedRootID(largestPattern, projected);
                 return;
             }
-            //check timeout for the current group
-            long timeGroupSpent = System.currentTimeMillis( ) - timeStartGroup;
-            if( timeGroupSpent  > timePerGroup) {
-                //keep the depth of projector
-                String rootOccurrences = projected.getProjectedDepth() +"\t";
-                //keep root occurrences and right-most occurrences
-                for (int i = 0; i < projected.getProjectRootLocationSize(); ++i) {
-                    rootOccurrences = rootOccurrences + projected.getProjectRootLocation(i).getIdPos();
-                    //Location.getLocationPos(projected.getProjectLocation(i)) + ";";
-                }
-                String rightmostOccurrences="";
-                for (int i = 0; i < projected.getProjectLocationSize(); ++i) {
-                    rightmostOccurrences = rightmostOccurrences + projected.getProjectLocation(i).getIdPos();
-                }
-                rootOccurrences = rootOccurrences+"\t"+rightmostOccurrences;
-                //store the current pattern for the next round
-                //System.out.println((rootOccurrences+"--"+largestPattern.toString()));
-                interruptedRootID.put(rootOccurrences,largestPattern);
-                return;
-            }
-            //System.out.println(largestPattern);
-            //find candidates
-            Map<FTArray, Projected> candidates = generateCandidates(projected,transaction);
+
+            //find candidates for the current pattern
+            Map<FTArray, Projected> candidates = generateCandidates(projected, transaction);
 
             //prune on minimum support and list of black labels
-            pruneSupportAndBlacklist(candidates,config.getMinSupport(),largestPattern,blackLabelsInt);
+            Constraint.pruneSupportAndBlacklist(candidates, config.getMinSupport(), largestPattern, blackLabelsInt);
+
             //if there is no candidate then report pattern --> stop
             if( candidates.isEmpty() ){
-                addPattern(largestPattern,projected,MFP);
+                addPattern(largestPattern, projected, MFP);
                 return;
             }
 
@@ -109,29 +156,24 @@ public class FreqT_Int_ext_serial extends FreqT_Int {
                 int oldSize = largestPattern.size();
                 Map.Entry<FTArray, Projected> entry = iter.next();
                 largestPattern.addAll(entry.getKey());
-                //check continuous paragraphs
-                //if potential candidate = SectionStatementBlock then check if candidate belongs to black-section or not
-                String candidateLabel = labelIndex.get(entry.getKey().get(entry.getKey().size()-1));
-                if(candidateLabel.equals("SectionStatementBlock"))
-                    checkBlackSection(entry,transaction);
-                //expand the pattern if all paragraphs are continuous
-                if(candidateLabel.equals("ParagraphStatementBlock")) {
-                    checkContinuousParagraph(largestPattern, entry, transaction);
-                }
-                //don't check maximal size constraint ....
-                //constraint on real leaf node
-                //constraint on obligatory children
-                if(checkLeftObligatoryChild(largestPattern, entry.getKey(), grammarInt, blackLabelsInt)){
-                    //do nothing = don't add pattern to MFP
+
+                //check section and paragraphs in COBOL
+                Constraint.checkCobolConstraints(largestPattern, entry, entry.getKey(), labelIndex, transaction);
+
+                //check constraints
+                if(Constraint.checkLeftObligatoryChild(largestPattern, entry.getKey(), grammarInt, blackLabelsInt)){
+                    //do nothing = don't store pattern to MFP
                 }else{
-                    if( Pattern_Int.checkMissingLeaf(largestPattern) ){
-                        addPattern(largestPattern,entry.getValue(),MFP);
+                    if( Constraint.satisfyFullLeaf(largestPattern) ){
+                        //store the pattern
+                        addPattern(largestPattern, entry.getValue(), MFP);
                     }else{
-                        project(largestPattern, entry.getValue());
+                        //continue expanding pattern
+                        expandLargestPattern(largestPattern, entry.getValue());
                     }
                 }
-
-                largestPattern.shrink(oldSize);
+                largestPattern = largestPattern.subList(0, oldSize); //keep elements 0 to oldSize
+                //largestPattern.shrink(oldSize);
             }
         }catch (Exception e){
             System.out.println("Error: Freqt_ext projected " + e);
@@ -139,102 +181,81 @@ public class FreqT_Int_ext_serial extends FreqT_Int {
         }
     }
 
-    public void run(Map <String, FTArray> _rootIDs, long start1st, FileWriter _report){
-        try{
-            //calculate times for incremental maximal pattern mining
-            int roundCount = 1;
-            finished = true;
-            timeStart2nd = System.currentTimeMillis();
-            timeout = (config.getTimeout())*(60*1000);
-            timeSpent = 0;
-
-            //System.out.println("number of root occurrences "+_rootIDs.size());
-            //incremental mining
-            while(! _rootIDs.isEmpty() && finished){
-                //store interrupted groups which run over timePerTask
-                interruptedRootID = new LinkedHashMap<>();
-                //calculate time for each group in the current round
-                timePerGroup = (timeout - timeSpent) / _rootIDs.size() ;
-
-                //for each group of root occurrences find patterns without max size constraints
-                Iterator < Map.Entry<String, FTArray> > rootId = _rootIDs.entrySet().iterator();
-                while(rootId.hasNext()){
-                    //start expanding a group
-                    timeStartGroup = System.currentTimeMillis( );
-                    //log(_report,"- Group: "+groupCount);
-                    Map.Entry<String, FTArray> entry = rootId.next();
-                    //Vector<String> largestPattern = new Vector<>();
-                    FTArray largestPattern = new FTArray();
-                    Projected projected = new Projected();
-
-                    if(roundCount == 1) {
-                        //String[]tmp = entry.getValue().substring(1,entry.getValue().length()-1).split(String.valueOf(","));
-                        //String rootLabel = tmp[0];
-                        largestPattern.addAll(entry.getValue());
-                        projected.setProjectedDepth(0);
-                        //find the root positions
-                        String[] temp = entry.getKey().split(";");
-                        for(int i=0; i<temp.length; ++i){
-                            String[] pos = temp[i].split("-");
-                            projected.setProjectLocation(Integer.parseInt(pos[0]),Integer.parseInt(pos[1]));
-                            projected.setProjectRootLocation(Integer.parseInt(pos[0]),Integer.parseInt(pos[1]));
-                        }
-                    }else{
-                        //from the second round, expanding from the patterns which interrupted in the previous round
-                        largestPattern.addAll(entry.getValue());
-                        //print to test locations of interrupted pattern
-                        //System.out.println(entry.getKey());
-                        String[] projectTemp = entry.getKey().split("\t");
-                        projected.setProjectedDepth(Integer.parseInt(projectTemp[0]));
-                        //calculate root and right-most positions
-                        String[] rootTemp = projectTemp[1].split(";");
-                        for(int i=0; i<rootTemp.length; ++i) {
-                            String[] pos = rootTemp[i].split("-");
-                            projected.setProjectRootLocation(Integer.parseInt(pos[0]), Integer.parseInt(pos[1]));
-                        }
-                        String[] rightmostTemp = projectTemp[2].split(";");
-                        for(int i=0; i<rightmostTemp.length; ++i) {
-                            String[] pos = rightmostTemp[i].split("-");
-                            projected.setProjectLocation(Integer.parseInt(pos[0]), Integer.parseInt(pos[1]));
-                        }
-                    }
-                    project(largestPattern, projected);
-                }
-                //update running time
-                timeSpent = (System.currentTimeMillis() - timeStart2nd);
-                //update lists of root occurrences for next round
-                _rootIDs = interruptedRootID;
-                roundCount++;
+    private void addPattern(FTArray largestPattern, Projected projected, Map<FTArray,String> _outputPatterns){
+        //remove the part of the pattern that misses leaf
+        FTArray patTemp = Pattern_Int.removeMissingLeaf(largestPattern);
+        //check output constraints and right mandatory children before storing pattern
+        if(checkOutput(patTemp) && ! Constraint.checkRightObligatoryChild(patTemp, grammarInt, blackLabelsInt)){
+            if(config.getFilter())
+                addMFP(patTemp, projected, _outputPatterns);
+            else{
+                addFP(patTemp, projected, _outputPatterns);
             }
-
-            //System.exit(-42);
-
-            //print maximal patterns
-            int nbMFP;
-            String outFile = config.getOutputFile();
-            if(config.getFilter()) {
-                nbMFP = MFP.size();
-                outputPatterns(MFP, outFile);
-            }else {
-                System.out.println("filter FP: "+MFP.size());
-                Map<FTArray,String> mfpTemp = filterFP_multi(MFP);
-                nbMFP = mfpTemp.size();
-                outputPatterns(mfpTemp,outFile);
-            }
-
-            if(finished)
-                log(_report,"\t + search finished");
-            else
-                log(_report,"\t + timeout in the second step");
-
-            //report result
-            log(_report,"\t + maximal patterns: "+ nbMFP);
-            long currentTimeSpent = (System.currentTimeMillis( ) - timeStart2nd);
-            log(_report, "\t + running time: ..."+currentTimeSpent/1000+"s");
-            log(_report,"- total running time "+(System.currentTimeMillis( )-start1st)/1000+"s");
-            _report.flush();
-            _report.close();
-
-        }catch (Exception e){}
+        }
     }
+
+    private void storeInterruptedRootID(FTArray largestPattern, Projected projected) {
+        //store depth and root locations
+        String depth = String.valueOf(projected.getProjectedDepth());
+        //store locations
+        String locations="";
+        //keep root occurrences and right-most occurrences
+        for (int i = 0; i < projected.getProjectLocationSize(); ++i) {
+            locations = locations +
+                    projected.getProjectLocation(i).getLocationId() + ("-") +
+                    projected.getProjectLocation(i).getRoot() + ("-") +
+                    projected.getProjectLocation(i).getLocationPos() + ";";
+        }
+        //store the pattern for the next round
+        interruptedRootID.put(depth+"\t"+locations, largestPattern);
+    }
+
+    private void reportResult(FileWriter _report, int nbMFP) throws IOException {
+        if(finished)
+            log(_report,"\t + search finished");
+        else
+            log(_report,"\t + timeout in the second step");
+        log(_report,"\t + maximal patterns: "+ nbMFP);
+        long currentTimeSpent = (System.currentTimeMillis( ) - timeStart2nd);
+        log(_report, "\t + running time: ..."+currentTimeSpent/1000+"s");
+        //log(_report,"- total running time "+(System.currentTimeMillis( )-start1st)/1000+"s");
+        _report.flush();
+        _report.close();
+    }
+
+    private int printLargestPattern() {
+        //print maximal patterns
+        int nbMFP;
+        String outFile = config.getOutputFile();
+        if(config.getFilter()) {
+            nbMFP = MFP.size();
+            outputPatterns(MFP, outFile);
+        }else {
+            System.out.println("filter FP: " + MFP.size());
+            Map<FTArray,String> mfpTemp = filterFP(MFP);
+            nbMFP = mfpTemp.size();
+            outputPatterns(mfpTemp, outFile);
+        }
+        return nbMFP;
+    }
+
+    private void setRunningTime() {
+        finished = true;
+        timeStart2nd = System.currentTimeMillis();
+        timeout = (config.getTimeout())*(60*1000);
+        timeSpent = 0;
+    }
+
+    private boolean is2ndStepTimeout() {
+        if(System.currentTimeMillis() - timeStart2nd > timeout){ //long timeRemaining = timeFor2nd - timeSpent;
+            finished = false;
+            return true;
+        }
+        return false;
+    }
+
+    private boolean isGroupTimeout() {
+        return (System.currentTimeMillis( ) - timeStartGroup) > timePerGroup;
+    }
+
 }

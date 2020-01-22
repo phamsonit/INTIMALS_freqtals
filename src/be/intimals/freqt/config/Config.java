@@ -21,22 +21,11 @@ public class Config {
     }
 
 
-    public int getIterations(){
-        return Integer.valueOf(prop.getProperty("iterations"));
-    }
-    public int getBeamSize(){
-        return Integer.valueOf(prop.getProperty("beamSize"));
-    }
     public boolean getTwoStep(){return Boolean.valueOf(prop.getProperty("twoStep"));}
+
     public boolean getFilter(){return Boolean.valueOf(prop.getProperty("filter"));}
+
     public boolean getAbstractLeafs(){return Boolean.valueOf(prop.getProperty("abstractLeafs"));}
-
-
-    public int getNbCores(){
-        return Integer.valueOf(prop.getProperty("nbCores"));
-    }
-
-    public int getNbIdentifiers(){return Integer.valueOf(prop.getProperty("nbIdentifiers"));}
 
     public int getTimeout(){return Integer.valueOf(prop.getProperty("timeout"));}
 
@@ -92,34 +81,7 @@ public class Config {
         return Integer.valueOf(prop.getProperty("maxLeaf"));
     }
 
-
-
-    public boolean addLocations() {
-        return Boolean.valueOf(prop.getProperty("where"));
-    }
-
-    public boolean outputAsXML() {
-        return Boolean.valueOf(prop.getProperty("xml"));
-    }
-
-    public boolean outputAsENC() {
-        return Boolean.valueOf(prop.getProperty("enc"));
-    }
-
     public boolean postProcess(){return Boolean.valueOf(prop.getProperty("pos"));}
-
-    public  int getMaxRepeatLabel(){
-        return Integer.valueOf(prop.getProperty("maxRepeatLabel"));
-    }
-
-    public  int getMinLineDistance(){
-        return Integer.valueOf(prop.getProperty("minLineDistance"));
-    }
-
-    public  int getMaxLineDistance(){
-        return Integer.valueOf(prop.getProperty("maxLineDistance"));
-    }
-
 
     /**
      * Returns a list of minimum-support values (only used when executing multiple Freq-T runs in parallel)

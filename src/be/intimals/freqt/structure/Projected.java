@@ -6,18 +6,14 @@ public class Projected {
     private int depth = -1;
     private int support = -1;
     private int rootSupport = -1;
-
     private List<Location> locations = new  ArrayList<>();
-    private List<Location> rootLocations = new ArrayList<>();
-    //private Set<Location> rootLocations = new LinkedHashSet<>();
-    private List<List<Integer>> lineNr = new ArrayList<>();
 
     //////////////////////////////////////////////////////////
 
-    public void setProjectedDepth(int d)
-    {
+    public void setProjectedDepth(int d){
         this.depth = d;
     }
+
     public int getProjectedDepth() {
         return this.depth;
     }
@@ -25,6 +21,7 @@ public class Projected {
     public void setProjectedSupport(int s) {
         this.support = s;
     }
+
     public int getProjectedSupport(){
         return this.support;
     }
@@ -32,12 +29,11 @@ public class Projected {
     public void setProjectedRootSupport(int s) {
         this.rootSupport = s;
     }
+
     public int getProjectedRootSupport(){
         return this.rootSupport;
     }
 
-    //////////////locations////////////////////
-    //keep right most position
     public void setProjectLocation(int i, int j) {
         Location l = new Location();
         l.setLocationId(i);
@@ -58,32 +54,16 @@ public class Projected {
     }
 
     public void addProjectLocation(int id, int pos, Location occurrences) {
-        this.locations.add(new Location(occurrences,id,pos));
-    }
-
-    /////////////root locations ///////////////
-    //add a position to root locations
-    public void setProjectRootLocation(int i, int j) {
-        Location l = new Location();
-        l.setLocationId(i);
-        l.addLocationPos(j);
-
-        //check if l exists in rootLocations
-        for(int k=0; k<rootLocations.size(); ++k) {
-            if (rootLocations.get(k).getLocationId() == i &&
-                    rootLocations.get(k).getLocationPos() == j)
-                return;
+        //check if this location doesn't exist in the locations
+        Location l = new Location(occurrences,id,pos);
+        boolean found = false;
+        for(Location location: this.locations){
+            if(l.getLocationId() == location.getLocationId()
+                    && l.getRoot() == location.getRoot()
+                    && l.getLocationPos() == location.getLocationPos()  )
+                found = true;
         }
-
-        this.rootLocations.add(l);
+        if(!found)
+            this.locations.add(l);
     }
-
-    public Location getProjectRootLocation(int i){
-        return this.rootLocations.get(i);
-    }
-
-    public int getProjectRootLocationSize(){
-        return this.rootLocations.size();
-    }
-
 }

@@ -20,7 +20,7 @@ public class Pattern {
     //format 1 = a,b,*1,),),c,*2
     //format 2 = (a(b(*1))(c(*2)))
 
-    //TODO: convert format 2 to format 1
+
   public static String covert(String str){
       ArrayList<String> tmp = new ArrayList<>(); //a list of node labels
       try {
@@ -92,7 +92,7 @@ public class Pattern {
      * @param pat
      * @return
      */
-    public static ArrayList<String> filter(ArrayList<String> pat){
+    public static ArrayList<String> removeMissingLeaf(ArrayList<String> pat){
         ArrayList<String> result = new ArrayList<>();
         //find the last leaf
         //System.out.println(pat);
@@ -101,7 +101,6 @@ public class Pattern {
             if(pat.get(i).charAt(0)=='*')
                 pos = i;
         }
-        //System.out.println("post leaf "+pos);
         //output patterns
         int n = 0;
         for(int i = 0; i <= pos; ++i){
@@ -124,7 +123,7 @@ public class Pattern {
       * @param pat
      * @return
      */
-    //all leaf nodes of patterns are also the real leaf nodes in ASTs
+    //remove part of pattern missing leaf
     public static String getPatternString1(ArrayList<String> pat){
         String result="";
         //find the last leaf
@@ -486,24 +485,6 @@ public class Pattern {
             childrenTemp.addAll(ListNode.get(parentLabel));
         }
         return childrenTemp;
-    }
-
-
-    /**
-     * check combination of constraints
-     * @param pat
-     * @param maxLeaf
-     * @return
-     */
-    public  boolean checkConstraints(ArrayList<String> pat, int maxLeaf) {
-
-        if(isMissedLeafNode(pat) ||
-                (countLeafNode(pat)  >  maxLeaf) )
-            return true;
-        else
-            return false;
-
-
     }
 
 
