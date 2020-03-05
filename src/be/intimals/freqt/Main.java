@@ -43,15 +43,15 @@ public class Main {
     static public void main(String[] args) throws IOException {
         Main m = new Main();
 
-        String[] agg = {"conf/java/config.properties", "3", "sample_data", "class"};
-        args = agg;
+        //String[] agg = {"-multi", "conf/java/config.properties", "--class"};
+        //args = agg;
 
         if (args.length==0) {
             System.out.println("Single-run Freq-T usage:\n" +
-                    "java -jar freqt_java.jar CONFIG_FILE [MIN_SUPPORT] [INPUT_FOLDER] (--memory [VALUE]) (--debug-file)\n" +
+                    "java -jar freqt_java.jar CONFIG_FILE [MIN_SUPPORT] [INPUT_FOLDER] (--class) (--memory [VALUE]) (--debug-file)\n" +
                     "\n" +
                     "Multi-run Freq-T usage:\n" +
-                    "java -jar freqt_java.jar -multi CONFIG_FILE (--memory [VALUE]) (--debug-file)");
+                    "java -jar freqt_java.jar -multi CONFIG_FILE (--class) (--memory [VALUE]) (--debug-file)");
         } else {
             if (args[0].equals("-multi")) {
                 m.multiRun(args);
@@ -64,33 +64,40 @@ public class Main {
 
     private void singleRun(String[] args) {
         try{
-
             String memory = null; //args[4]
-            String classData = args[3];
-            String finalConfig = parseArgs(args);
+            String debugFile = null; //args[5]
+            String classData = null;
+            String finalConfig = null;
+
+            finalConfig = parseConfig(args);
+            if(args.length > 3){
+                finalConfig = parseConfig(args);
+                for(int i=3; i<args.length; ++i) {
+                    if (args[i].equals("--class"))
+                        classData = "--class";
+                    if (args[i].equals("--memory")) {
+                        memory = "-Xmx" + args[i + 1];
+                        i++;
+                    }
+                    if (args[i].equals("--debug-file"))
+                        debugFile = args[i];
+                }
+            }
 
             //load final configuration as new configuration;
             Config config = new Config(finalConfig);
-
-            if(classData.equals("class")){
+            if(classData != null && classData.equals("--class")){
                 Freqt_Int_2class freqt_int_2class = new Freqt_Int_2class(config);
                 freqt_int_2class.run();
-                //System.exit(2);
-                runForestMatcher(memory, config);
-
+                runForestMatcher(config, memory);
                 findCommonPattern(config, freqt_int_2class.getGrammar(), freqt_int_2class.getXmlCharacters());
-
                 cleanUp(config);
-
             }else{
                 //run Freqt to find maximal patterns
                 FreqT_Int freqt = new FreqT_Int(config);
                 freqt.run();
-
-                runForestMatcher(memory, config);
-
+                runForestMatcher(config, memory);
                 findCommonPattern(config, freqt.getGrammar(), freqt.getXmlCharacters());
-
                 cleanUp(config);
             }
 
@@ -103,7 +110,7 @@ public class Main {
         }
     }
 
-    private String parseArgs(String[] args){
+    private String parseConfig(String[] args){
         String finalConfig = "";
         try{
 
@@ -111,7 +118,6 @@ public class Main {
             Config configBasic = new Config(configPathBasic);
             String inputMinSup = args[1];
             String inputFold = args[2];
-            String classData = args[3];
 
             String sep = "/";
             //create final configuration as used by FreqT
@@ -191,7 +197,7 @@ public class Main {
         return finalConfig;
     }
 
-    private void runForestMatcher(String memory, Config config)
+    private void runForestMatcher(Config config, String memory )
             throws IOException, InterruptedException {
         //run forestmatcher to create matches.xml and clusters.xml
         System.out.println("Running forestmatcher ...");
@@ -240,21 +246,27 @@ public class Main {
     private class MultiRunConfig{
         public Integer minSupport;
         public String inFolder;
+        public String classData = null;
         public String memory = null;
         public String debugFile = null;
     }
 
     private void multiRun(String[] args) throws IOException {
         String configPathBasic = args[1];
-        //String timeOut = args[2];
+        String classData = null;
         String memory = null;
-        if(args.length > 2 && args[2].contentEquals("--memory"))//Try and set memory arg
-        	memory = "-Xmx"+args[3];
         String debug = null;
-        if(args.length > 2 && args[2].contentEquals("--debug-file")) {//Try and set debug arg
-        	debug = args[2];
-        }else if(args.length > 4 && args[4].contentEquals("--debug-file"))//Try and set memory and debug arg
-        	debug = args[4];
+
+        if(args.length>2)
+            for(int i=2; i<args.length; ++i) {
+                if (args[i].equals("--class"))
+                    classData = "--class";
+                if (args[i].equals("--memory"))
+                    memory = "-Xmx"+args[i+1];
+                if (args[i].equals("--debug-file"))
+                    debug = args[i];
+            }
+
         Config conf = new Config(configPathBasic);
         List<Integer> minSupports = conf.getMinSupportList();
         List<String> folders = conf.getInputFilesList();
@@ -266,6 +278,8 @@ public class Main {
                 MultiRunConfig run = new MultiRunConfig();
                 run.minSupport = minSupport;
                 run.inFolder = folder;
+                if(classData != null)
+                    run.classData = classData;
                 if(memory != null)
                 	run.memory = memory;
                 if(debug != null)
@@ -281,6 +295,8 @@ public class Main {
             runArgs.add(args[1]);
             runArgs.add(run.minSupport.toString());
             runArgs.add(run.inFolder);
+            if(run.classData != null)
+                runArgs.add(run.classData);
             if(run.memory != null)
             	runArgs.add(run.memory);
             if(run.debugFile != null)

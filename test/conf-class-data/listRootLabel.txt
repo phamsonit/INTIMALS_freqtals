@@ -1,0 +1,22 @@
+#list of root labels (AST Nodes) which should be the root labels of subtrees
+#Each line corresponds to a AST node. Lines begin with # are comments.
+
+A
+#ImportDeclaration
+TypeDeclaration
+#ClassInstanceCreation
+#FieldDeclaration
+#VariableDeclarationFragment
+#SingleVariableDeclaration
+#AnonymousClassDeclaration
+#MethodDeclaration
+#bodyDeclarations
+Block
+#ExpressionStatement
+#InfixExpression
+#IfStatement
+#TryStatement
+#WhileStatement
+#EnhancedForStatement
+#ExpressionStatement
+#InfixExpression

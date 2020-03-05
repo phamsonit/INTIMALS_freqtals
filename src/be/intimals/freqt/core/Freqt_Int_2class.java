@@ -364,9 +364,9 @@ public class Freqt_Int_2class{
 
         double score = Constraint.chiSquare(projected, sizeClass1, sizeClass2);
         //double score = Constraint.oddSup(projected, sizeClass1, sizeClass2);
-        int[]ac = Constraint.get2ClassSupport(projected);
-        Util.printFTArray(pattern);
-        System.out.println(Constraint.getSupport(projected)+" [ "+ac[0]+", "+ac[1]+", DSScore : " + score +" ]");
+        //int[]ac = Constraint.get2ClassSupport(projected);
+        //Util.printFTArray(pattern);
+        //System.out.println(Constraint.getSupport(projected)+" [ "+ac[0]+", "+ac[1]+", DSScore : " + score +" ]");
         if(score >= config.getDSScore() ) {
             if(_MFP.size() >= config.getNumPatterns()) {
                 double minScore = getMinScore(_MFP);
