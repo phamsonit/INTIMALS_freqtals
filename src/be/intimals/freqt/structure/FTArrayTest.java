@@ -1,5 +1,6 @@
-package be.intimals.freqt;
+package be.intimals.freqt.structure;
 
+import be.intimals.freqt.structure.FTArray;
 import org.junit.jupiter.api.Test;
 
 import static org.junit.jupiter.api.Assertions.*;

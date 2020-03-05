@@ -1,6 +1,6 @@
 package be.intimals.freqt.core;
 
-import be.intimals.freqt.FTArray;
+import be.intimals.freqt.structure.FTArray;
 import org.junit.jupiter.api.Test;
 
 
@@ -13,7 +13,7 @@ class HasSubtreeTest {
         int[] big =   {51, 52, 64, 54, 65, 4, 7, 8, -96, -1, -1, -1, -1, 67, 55, 56, 65, 54, 65, 4, 7, 8, -93, -1, -1, -1, -1, -1, -1, 4, 7, 8, -152};
         int[] small = {51, 52, 64, 54, 65, 4, 7, 8, -96, -1, -1, -1, -1, 67, 55, 56, 65, 54, 65, 4, 7, 8, -93};
 
-        FreqT_Int fti = new FreqT_Int(null);
+        CheckSubtree fti = new CheckSubtree();
 
         assertTrue(fti.hasSubtree(new FTArray(big),new FTArray(small)));
     }
@@ -23,7 +23,7 @@ class HasSubtreeTest {
         int[] big = {51, 52, 64, 54, 65, 4, 7, 8, -96, -1, -1, -1, -1, 67, 55, 56, 65, 54, 65, 4, 7, 8, -93, -1, -1, -1, -1, -1, -1, 4, 7, 8, -152};
         int[] small = {51, 52, 201, 69, 39, 4, 7, 8, -26, -1, -1, -1, -1, -1, -1, 101, 102, 4, 7, 8, -132, -1, -1, -1, -1, 103, 65, 4, 7, 8, -93};
 
-        FreqT_Int fti = new FreqT_Int(null);
+        CheckSubtree fti = new CheckSubtree();
 
         assertFalse(fti.hasSubtree(new FTArray(big),new FTArray(small)));
     }
@@ -33,7 +33,7 @@ class HasSubtreeTest {
         int[] big = {51, 52, 201, 69, 39, 4, 7, 8, -26, -1, -1, -1, -1, -1, -1, 101, 102, 4, 7, 8, -132, -1, -1, -1, -1, 103, 65, 4, 7, 8, -93};
         int[] small = {51, 52, 64, 54, 65, 4, 7, 8, -96, -1, -1, -1, -1, 67, 55, 56, 65, 54, 65, 4, 7, 8, -93, -1, -1, -1, -1, -1, -1, 4, 7, 8, -152};
 
-        FreqT_Int fti = new FreqT_Int(null);
+        CheckSubtree fti = new CheckSubtree();
 
         assertFalse(fti.hasSubtree(new FTArray(big),new FTArray(small)));
     }
@@ -43,7 +43,7 @@ class HasSubtreeTest {
         int[] big = {51, 52, 64, 54, 65, 4, 7, 8, -89, -1, -1, -1, -1, 67, 7, 8, -91, -1, -1, -1, -1, -1, -1, -1, 201, 69, 39, 4, 7, 8, -90, -1, -1, -1, -1, -1, -1, 101, 102, 4, 7, 8, -91, -1, -1, -1, -1, 103, 68, 69, 39, 4, 7, 8, -278, -1, -1, -1, -1, -1, -1, 279, 280, 41, 42, 4, 7, 8, -281, -1, -1, -1, -1, 50, 51, 52, 64, 54, 282, 4, 7, 8, -281};
         int[] small = {51, 52, 238, 239, 78, 69, 39, 4, 7, 8, -171, -1, -1, -1, -1, -1, -1, 79, -11, -1, -1, 4, 7, 8, -240};
 
-        FreqT_Int fti = new FreqT_Int(null);
+        CheckSubtree fti = new CheckSubtree();
 
         assertFalse(fti.hasSubtree(new FTArray(big),new FTArray(small)));
     }
@@ -53,7 +53,7 @@ class HasSubtreeTest {
         int[] big = {51, 52, 64, 54, 65, 4, 7, 8, -89, -1, -1, -1, -1, -1, -1, -1, 238, 239, 78, 69, 39, 4, 7, 8, -171, -1, -1, -1, -1, -1, -1, 79, -11};
         int[] small = {51, 52, 238, 239, 78, 69, 39, 4, 7, 8, -171, -1, -1, -1, -1, -1, -1, 79, -11, -1, -1, 4, 7, 8, -240};
 
-        FreqT_Int fti = new FreqT_Int(null);
+        CheckSubtree fti = new CheckSubtree();
 
         assertFalse(fti.hasSubtree(new FTArray(big),new FTArray(small)));
     }
@@ -63,7 +63,7 @@ class HasSubtreeTest {
         int[] big = {51, 52, 64, 54, 65, 4, 7, 8, -96, -1, -1, -1, -1, 67, 55, 56, 65, 54, 65, 4, 7, 8, -93, -1, -1, -1, -1, -1, -1, 4, 7, 8, -152};
         int[] small = {51, 52, 201, 69, 39, 4, 7, 8, -26, -1, -1, -1, -1, -1, -1, 101, 102, 4, 7, 8, -132, -1, -1, -1, -1, 103, 65, 4, 7, 8, -93};
 
-        FreqT_Int fti = new FreqT_Int(null);
+        CheckSubtree fti = new CheckSubtree();
 
         assertFalse(fti.hasSubtree(new FTArray(big),new FTArray(small)));
     }
@@ -73,7 +73,7 @@ class HasSubtreeTest {
         int[] big =   {51, 52, 64, 54, 65, 4, 7, 8, -192, -1, -1, -1, -1, -1, -1, -1, 64, 54, 65, 4, 7, 8, -283, -1, -1, -1, -1, 67, 65, 54, 7, 8, -284, -1, -1, -1, -1, 4, 7, 8, -205};
         int[] small = {51, 52, 201, 69, 39, 4, 7, 8, -26, -1, -1, -1, -1, -1, -1, 101, 102, 4, 7, 8, -132, -1, -1, -1, -1, 103, 65, 4, 7, 8, -93};
 
-        FreqT_Int fti = new FreqT_Int(null);
+        CheckSubtree fti = new CheckSubtree();
 
         assertFalse(fti.hasSubtree(new FTArray(big),new FTArray(small)));
     }
@@ -82,7 +82,8 @@ class HasSubtreeTest {
     public void testSkip2Subtrees(){
         int[] big =   { 51, 52, 53, 54, 55, 56, 65, 4, 7, 8, -93, -1, -1, -1, -1, -1, -1, 58, -59, -1, -1, 60, 61, -62, -1, -1, -1, -1, -1, 63, 51, 52, 64, 54, 65, 4, 7, 8, -96, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, 87, 51, 52, 64, 54, 65, 4, 7, 8, -96, -1, -1, -1, -1, 67, 124, 125, -11 };
         int[] small = { 51, 52, 53, 54, 55, 56, 65, 4, 7, 8, -93, -1, -1, -1, -1, -1, -1,                                           -1, -1, 63, 51, 52, 64, 54, 65, 4, 7, 8, -96, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, 87, 51, 52, 64, 54, 65, 4, 7, 8, -96, -1, -1, -1, -1, 67, 124, 125, -11 };
-        FreqT_Int fti = new FreqT_Int(null);
+
+        CheckSubtree fti = new CheckSubtree();
 
         assertTrue(fti.hasSubtree(new FTArray(big),new FTArray(small)));
     }

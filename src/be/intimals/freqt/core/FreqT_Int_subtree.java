@@ -4,7 +4,7 @@ import be.intimals.freqt.config.Config;
 import be.intimals.freqt.constraint.Constraint;
 import be.intimals.freqt.input.ReadFile_Int;
 import be.intimals.freqt.structure.*;
-import be.intimals.freqt.FTArray;
+import be.intimals.freqt.structure.FTArray;
 
 import java.util.*;
 

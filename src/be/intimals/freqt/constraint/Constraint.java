@@ -1,6 +1,6 @@
 package be.intimals.freqt.constraint;
 
-import be.intimals.freqt.FTArray;
+import be.intimals.freqt.structure.FTArray;
 import be.intimals.freqt.structure.Location;
 import be.intimals.freqt.structure.NodeFreqT;
 import be.intimals.freqt.structure.Pattern_Int;

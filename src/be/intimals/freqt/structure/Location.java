@@ -1,8 +1,6 @@
 package be.intimals.freqt.structure;
 
 
-import be.intimals.freqt.FTArray;
-
 /**
  * A location is an FTArray plus an identifier of this location
  * first element of FTArray is root location

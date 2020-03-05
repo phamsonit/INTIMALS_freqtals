@@ -1,7 +1,5 @@
 package be.intimals.freqt.structure;
 
-import be.intimals.freqt.FTArray;
-
 import java.util.*;
 
 public class Pattern_Int {

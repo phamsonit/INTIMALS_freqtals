@@ -1,4 +1,4 @@
-package be.intimals.freqt;
+package be.intimals.freqt.structure;
 
 import java.util.Arrays;
 
