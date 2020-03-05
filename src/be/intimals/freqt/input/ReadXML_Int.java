@@ -11,7 +11,6 @@ import org.w3c.dom.NodeList;
 import javax.xml.parsers.DocumentBuilder;
 import javax.xml.parsers.DocumentBuilderFactory;
 import java.io.File;
-import java.io.FileReader;
 import java.nio.file.Files;
 import java.nio.file.Paths;
 import java.util.*;
@@ -222,6 +221,69 @@ public class ReadXML_Int {
                 sr.remove(top);
             }
         }catch (Exception e){
+            e.printStackTrace();
+            System.exit(-1);
+        }
+    }
+
+    //read tree from 2-class dataset
+    public void readDatabase(ArrayList <ArrayList<NodeFreqT>> database, int classID, boolean _abstractLeafs,
+                             File rootDirectory, Map <Integer, String> labelIndex,
+                             ArrayList<Integer> classIndex) {
+        //ArrayList < ArrayList<NodeFreqT> > database = new ArrayList < ArrayList<NodeFreqT> >();
+        abstractLeafs = _abstractLeafs;
+
+        ArrayList<String> files = new ArrayList<>();
+        populateFileListNew(rootDirectory,files);
+        Collections.sort(files);
+        //ArrayList<File> files = new ArrayList<File>();
+        //populateFileList(rootDirectory,files);
+        System.out.print("Reading " + files.size() +" files ");
+        XmlFormatter formatter = new XmlFormatter();
+        DocumentBuilderFactory dbFactory = DocumentBuilderFactory.newInstance();
+        try {
+            //for (File fi : files) {
+            for (String fi : files) {
+                countSection=0;
+                //store class label of transaction id
+                classIndex.add(classID);
+
+                //format XML file before create tree
+                // String inFileTemp = rootDirectory+sep+"temp.xml";
+                // Files.deleteIfExists(Paths.get(inFileTemp));
+                // formatter.format(fi,inFileTemp);
+
+                //create tree
+                File fXmlFile = new File(fi);
+                DocumentBuilder dBuilder = dbFactory.newDocumentBuilder();
+                Document doc = dBuilder.parse(fXmlFile);
+                doc.getDocumentElement().normalize();
+
+                //get total number of nodes
+                int size = countNBNodes(doc.getDocumentElement())+1;
+
+                id = 0;
+                top = 0;
+                sr = new ArrayList<>();
+                sibling = new ArrayList<>(size);
+                ArrayList<NodeFreqT> trans = new ArrayList<NodeFreqT>(size);
+
+                for (int i = 0; i < size; ++i) {
+                    NodeFreqT nodeTemp = new NodeFreqT(-1,-1,-1,"0",true);
+                    trans.add(nodeTemp);
+                    sibling.add(-1);
+                }
+                //create tree
+                readTreeDepthFirst(doc.getDocumentElement(), trans, labelIndex);
+                //add tree to database
+                database.add(trans);
+                //delete temporary input file
+                //Files.deleteIfExists(Paths.get(inFileTemp));
+                System.out.print(".");
+            }
+            System.out.println(" reading ended.");
+        } catch (Exception e) {
+            System.out.println(" read error.");
             e.printStackTrace();
             System.exit(-1);
         }

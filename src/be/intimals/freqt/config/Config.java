@@ -20,6 +20,32 @@ public class Config {
         input.close();
     }
 
+    public double getDSScore(){return Double.valueOf(prop.getProperty("minDSScore"));}
+
+    public int getNumPatterns(){return Integer.valueOf(prop.getProperty("numPatterns"));}
+
+    public String getInputFiles1() {return prop.getProperty("inputPath1"); }
+
+    public String getInputFiles2() {
+        return prop.getProperty("inputPath2");
+    }
+
+    public String getOutputMatches() {return prop.getProperty("outputMatches");}
+
+    public String getOutputClusters() {return prop.getProperty("outputClusters");}
+
+    public String getOutputClustersTemp() {return prop.getProperty("outputClustersTemp");}
+
+    public String getOutputCommonPatterns() {return prop.getProperty("outputCommonPatterns");}
+
+    public String getOutputCommonMatches() {return prop.getProperty("outputCommonMatches");}
+
+    public String getOutputCommonClusters() {return prop.getProperty("outputCommonClusters");}
+
+
+
+    ///////////////
+
 
     public boolean getTwoStep(){return Boolean.valueOf(prop.getProperty("twoStep"));}
 

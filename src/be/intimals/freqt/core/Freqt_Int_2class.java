@@ -14,10 +14,9 @@ import java.io.FileWriter;
 import java.io.IOException;
 import java.util.*;
 
-/*
-    extended FREQT: replace string labels by int labels
- */
-public class FreqT_Int {
+//TODO: create abstract class for Freqt_Int and Freqt_Int_2_class
+public class Freqt_Int_2class{
+
     protected Config config;
     protected ArrayList <ArrayList <NodeFreqT> > transaction = new ArrayList <>();
     protected Map<String, ArrayList <String> > grammar    = new LinkedHashMap<>();
@@ -31,30 +30,26 @@ public class FreqT_Int {
     //store only pattern, don't store support, rootSupport and size
     private Map<FTArray, String> MFP = new HashMap<>();
     //store root labels
-    private Set<String>    rootLabels  = new HashSet<>();
-    //store root occurrences of patterns
-    private Map<String, FTArray>  rootIDs = new HashMap<>();
-    //store file ids of patterns
-    private Map<String, String>  fileIDs = new HashMap<>();
-    //int nbInputFiles;
-    ArrayList <Integer> lineNrs = new ArrayList <>();
+    private Set<String> rootLabels  = new HashSet<>();
 
     private long timeStart;
     private long timeout;
     private boolean finished;
 
-    public int hitCount, missCount;
+    private ArrayList<Integer> transactionClassID = new ArrayList<>();
+    private int sizeClass1;
+    private int sizeClass2;
 
-    ////////////////////////////////////////////////////////////////////////////////
-    public FreqT_Int(Config config) {
-        this.config = config;
+    ///////////////////////////////
+    public Freqt_Int_2class(Config _config){
+        config = _config;
     }
+
     public Map <String,String> getXmlCharacters(){return this.xmlCharacters;}
     public Map <String,ArrayList <String>> getGrammar(){return this.grammar;}
-    public int getMFPSize(){return  MFP.size();}
 
     /**
-     * run Freqt with file config.properties
+     * run Freqt with file config.properties on 2-class dataset
      */
     public void run() {
         try{
@@ -66,19 +61,16 @@ public class FreqT_Int {
             FileWriter report = initReport();
             System.out.println("Mining frequent subtrees ...");
             //build FP1: all labels are frequent
-            Map <FTArray, Projected > FP1 = buildFP1(transaction);
-            //System.out.println("all candidates " + freq1.keySet());
+            Map <FTArray, Projected> FP1 = buildFP1(transaction);
             //prune FP1 on minimum support
-            Constraint.prune(FP1, config.getMinSupport() );
+            // Constraint.prune(FP1, config.getMinSupport() );
             //System.out.println("all candidates after pruning " + FP1.keySet());
             //expand FP1 to find maximal patterns
             expandFP1(FP1);
+
             //run the second step if getTwoStep = true
-            if(config.getTwoStep()){
-                expandPatternFromRootIDs(report);
-            }else{//output maximal patterns in the first step
-                printPatternInTheFirstStep(report, timeStart);
-            }
+            printPatternInTheFirstStep(report, timeStart);
+
         }
         catch (Exception e) {
             System.out.println("Error: running Freqt_Int");
@@ -86,16 +78,55 @@ public class FreqT_Int {
         }
     }
 
+    //group of procedures to set running time and print patterns
+    private void setStartingTime() {
+        timeStart = System.currentTimeMillis();
+        timeout = config.getTimeout()*(60*1000);
+        finished = true;
+    }
+
+    /**
+     * check running time of the algorithm
+     * return true if the running time is larger than timeout
+     * @return
+     */
+    private boolean isTimeout() {
+        long currentTime = System.currentTimeMillis();
+        if(!config.getTwoStep())
+            if((currentTime-timeStart) > timeout) {
+                finished = false;
+                return true;
+            }
+        return false;
+    }
+
+    private FileWriter initReport() throws IOException {
+        String reportFile = config.getOutputFile().replaceAll("\"","") +"-report.txt";
+        FileWriter report = new FileWriter(reportFile);
+        FreqT_Int.log(report,"INPUT");
+        FreqT_Int.log(report,"===================");
+        FreqT_Int.log(report,"- data sources : " + config.getInputFiles());
+        FreqT_Int.log(report,"- input files : " +  transaction.size());
+        FreqT_Int.log(report,"- minSupport : " + config.getMinSupport());
+        report.flush();
+        return report;
+    }
+
     //read database and additional information
     private void initData() throws Exception {
-        transaction = new ReadXML_Int().readDatabase(config.getAbstractLeafs(), new File(config.getInputFiles()), labelIndex);
+        //transaction = new ReadXML_Int().readDatabase(1, config.getAbstractLeafs(), new File(config.getInputFiles()), labelIndex);
+
+        ReadXML_Int readXML_int = new ReadXML_Int();
+        readXML_int.readDatabase(transaction,1, config.getAbstractLeafs(),
+                new File(config.getInputFiles1()), labelIndex, transactionClassID);
+        readXML_int.readDatabase(transaction,0, config.getAbstractLeafs(),
+                new File(config.getInputFiles2()), labelIndex, transactionClassID);
+
+        sizeClass1 = transactionClassID.stream().mapToInt(Integer::intValue).sum();
+        sizeClass2 = transactionClassID.size() - sizeClass1;
+
         //create grammar (labels are strings) which is used to print patterns
         Initial_Int.initGrammar(config.getInputFiles(),grammar, config.buildGrammar());
-
-        for(Map.Entry<String, ArrayList <String>> g : grammar.entrySet()){
-            System.out.println(g.getKey()+" "+g.getValue());
-        }
-
         //create grammar (labels are integers) which is used in the mining process
         Initial_Int.initGrammar_Int(config.getInputFiles(), grammarInt, labelIndex);
         //read white labels and create black labels
@@ -106,19 +137,6 @@ public class FreqT_Int {
         Initial_Int.readXMLCharacter(config.getXmlCharacterFile(), xmlCharacters);
     }
 
-    public FileWriter initReport() throws IOException {
-        String reportFile = config.getOutputFile().replaceAll("\"","") +"-report.txt";
-        FileWriter report = new FileWriter(reportFile);
-        log(report,"INPUT");
-        log(report,"===================");
-        log(report,"- data sources : " + config.getInputFiles());
-        log(report,"- input files : " +  transaction.size());
-        log(report,"- minSupport : " + config.getMinSupport());
-        report.flush();
-        return report;
-    }
-
-    //group of procedures to expand pattern
     /**
      * Return all frequent subtrees of size 1
      * @param trans
@@ -128,6 +146,9 @@ public class FreqT_Int {
         Map<FTArray, Projected> freq1 = new LinkedHashMap<>();
         try {
             for (int i = 0; i < trans.size(); ++i) {
+                //get transaction label
+                int classID = transactionClassID.get(i);
+
                 for (int j = 0; j < trans.get(i).size(); ++j) {
                     //String node_label = trans.elementAt(i).elementAt(j).getNodeLabel();
                     String node_label = trans.get(i).get(j).getNodeLabel();
@@ -141,7 +162,7 @@ public class FreqT_Int {
                             //update the locations
                             FTArray prefix = new FTArray();
                             Location initLocation = new Location();
-                            updateCandidates(freq1, node_label_id, i, j, 0, prefix, initLocation);
+                            updateCandidates(freq1, node_label_id, classID, i, j, 0, prefix, initLocation);
                         }
                     }
                 }
@@ -164,38 +185,29 @@ public class FreqT_Int {
             //entry.getValue().setProjectedDepth(0);
             pattern.addAll(entry.getKey());
             //recursively expand pattern
-            expandPattern(pattern, entry.getValue());
+            expand2ClassPattern(pattern, entry.getValue());
             //reset pattern
             pattern = new FTArray();
         }
     }
 
-    /**
-     * expand the pattern to to find maximal pattern
-     * @param pattern
-     * @param projected
-     */
-    private void expandPattern(FTArray pattern, Projected projected) {
+    //expand pattern in 2-class data
+    private void expand2ClassPattern(FTArray pattern, Projected projected) {
         try{
             //if it is timeout then stop expand the pattern;
             if (isTimeout()) return;
-
             //System.out.print("pattern: ");printFTArray(pattern);System.out.println("Candidates:");
-
             //find candidates of the current pattern
             Map<FTArray, Projected> candidates = generateCandidates(projected, transaction);
-
-            //printCandidates(candidates);
-
-            //prune the candidates on minimum support and list of black labels
+            //printCandidates(candidates, labelIndex);
+            //prune the candidates on minimum support (total support of the pattern in two classes) and list of black labels
             Constraint.pruneSupportAndBlacklist(candidates, config.getMinSupport(), pattern, blackLabelsInt);
-
             //if there is no candidate then report the pattern and then stop
             if( candidates.isEmpty()){
-                addTree(pattern, projected);
+                //addTree(pattern, projected);
+                add2ClassPattern(pattern, projected);
                 return;
             }
-
             //expand each candidate to the current pattern
             for(Map.Entry<FTArray, Projected> entry : candidates.entrySet()){
                 int oldSize = pattern.size();
@@ -203,9 +215,8 @@ public class FreqT_Int {
                 FTArray key = entry.getKey() ;
                 //add candidate into pattern
                 pattern.addAll(key);
-
                 //check section and paragraphs in COBOL
-                Constraint.checkCobolConstraints(pattern, entry, key, labelIndex, transaction);
+                //Constraint.checkCobolConstraints(pattern, entry, key, labelIndex, transaction);
 
                 //check obligatory children constraint
                 if(Constraint.checkLeftObligatoryChild(pattern, entry.getKey(), grammarInt, blackLabelsInt)){
@@ -214,10 +225,11 @@ public class FreqT_Int {
                     //check constraints on maximal number of leafs and real leaf
                     if( Constraint.satisfyMaxLeaf(pattern, config.getMaxLeaf()) || Constraint.satisfyFullLeaf(pattern)){
                         //store the pattern
-                        addTree(pattern,entry.getValue());
+                        //addTree(pattern,entry.getValue());
+                        add2ClassPattern(pattern, entry.getValue());
                     }else{
                         //continue expanding pattern
-                        expandPattern(pattern, entry.getValue());
+                        expand2ClassPattern(pattern, entry.getValue());
                     }
                 }
                 //pattern = pattern.subList(0, oldSize);
@@ -226,7 +238,7 @@ public class FreqT_Int {
         }catch (Exception e){
             System.out.println("Error: expandPattern " + e);
             e.printStackTrace();
-            System.exit(-1);
+            System.exit(1);
         }
     }
 
@@ -246,6 +258,7 @@ public class FreqT_Int {
             for (int i = 0; i < projected.getProjectLocationSize(); ++i) {
                 //int id = Location.getLocationId(projected.getProjectLocation(i));
                 //int pos = Location.getLocationPos(projected.getProjectLocation(i));
+                int classID = projected.getProjectLocation(i).getClassID();
                 int id = projected.getProjectLocation(i).getLocationId();
                 int root = projected.getProjectLocation(i).getRoot();
                 int pos = projected.getProjectLocation(i).getLocationPos();
@@ -262,7 +275,7 @@ public class FreqT_Int {
                     int newDepth = depth - d;
                     for (int l = start; l != -1; l = _transaction.get(id).get(l).getNodeSibling()) {
                         int node_label_int = _transaction.get(id).get(l).getNode_label_int();
-                        updateCandidates(candidates, node_label_int, id, l, newDepth, prefixInt, occurrences);
+                        updateCandidates(candidates, node_label_int, classID, id, l, newDepth, prefixInt, occurrences);
                     }
                     if (d != -1) {
                         pos = _transaction.get(id).get(pos).getNodeParent();
@@ -279,15 +292,8 @@ public class FreqT_Int {
         return candidates;
     }
 
-
-    /**
-     * update locations of the candidate in the list
-     * @param freq1
-     * @param candidate
-     * @param id
-     * @param rightmostPos
-     */
-    private void updateCandidates(Map<FTArray, Projected> freq1, int candidate, int id, int rightmostPos,
+    //update candidate locations for two-class data
+    private void updateCandidates(Map<FTArray, Projected> freq1, int candidate, int classID, int id, int rightmostPos,
                                   int depth, FTArray prefixInt, Location initLocations) {
         try {
             FTArray newTree = new FTArray();
@@ -296,13 +302,13 @@ public class FreqT_Int {
             Projected value = freq1.get(newTree);
             //if candidate existed in the freq1 then add its location to projected
             if (value != null) {
-                value.addProjectLocation(id, rightmostPos, initLocations);
+                value.addProjectLocation(classID, id, rightmostPos, initLocations);
                 //freq1.get(node_label).setProjectLineNr(Integer.valueOf(lineNr)); //add to keep the line number
             } else {
                 //add new location
                 Projected projected = new Projected();
                 projected.setProjectedDepth(depth);
-                projected.addProjectLocation(id, rightmostPos, initLocations);
+                projected.addProjectLocation(classID, id, rightmostPos, initLocations);
                 //projected.setProjectLineNr(Integer.valueOf(lineNr)); //add to keep the line number
                 freq1.put(newTree, projected);
             }
@@ -312,83 +318,137 @@ public class FreqT_Int {
     }
 
     /**
-     * discover maximal patterns from RootIDs
-     * @param report
-     * @throws IOException
-     */
-    private void expandPatternFromRootIDs(FileWriter report) throws IOException {
-        System.out.println("Mining maximal frequent subtrees ...");
-        log(report,"");
-        log(report,"OUTPUT");
-        log(report,"===================");
-
-        long diff1 = System.currentTimeMillis( ) - timeStart;
-        //report the phase 1
-        log(report,"- Step 1: Mining frequent patterns with max size constraints");
-        //log(report,"\t + Frequent patterns = "+ nbFP);
-        log(report, "\t + running time = "+ diff1/1000 +"s");
-        log(report,"\t + root occurrences groups = "+ rootIDs.size());
-        //log(report,"#filtered root occurrences groups = "+ rootIDs.size());
-        //phase 2: find maximal patterns from rootIDs
-        log(report,"- Step 2: Mining maximal patterns WITHOUT max size constraint:");
-
-        FreqT_Int_ext_serial freqT_ext = new FreqT_Int_ext_serial(config, this.grammar, this.grammarInt,
-                this.blackLabelsInt, this.whiteLabelsInt,
-                this.xmlCharacters,this.labelIndex,this.transaction);
-        freqT_ext.run(rootIDs, report);
-        //for FastTreeCheck
-        System.out.println("fastCheckSubTree Hits: "+ freqT_ext.hitCount+" Misses: "+ freqT_ext.missCount);
-    }
-
-    /**
-     * print maximal pattern found in the first step
+     * print patterns found in the first step
      * @param report
      * @param start
      * @throws IOException
      */
     private void printPatternInTheFirstStep(FileWriter report, long start) throws IOException {
-        log(report,"OUTPUT");
-        log(report,"===================");
+        FreqT_Int.log(report,"OUTPUT");
+        FreqT_Int.log(report,"===================");
         if(finished)
-            log(report,"finished search");
+            FreqT_Int.log(report,"finished search");
         else
-            log(report,"timeout");
+            FreqT_Int.log(report,"timeout");
 
         String outFile = config.getOutputFile();
         int nbMFP;
         //if filtering maximal pattern in the mining process then print patterns
-        if(config.getFilter()) {
-            nbMFP = MFP.size();
-            outputPatterns(MFP, outFile);
-            //nbMFP = newMFP.size();
-            //printPatterns(newMFP, outFile);
-        }else {//if don't filter maximal pattern in the mining process then filter them and print
-            System.out.println("number FP: " + MFP.size());
-            long startFilter = System.currentTimeMillis();
-            Map<FTArray,String> mfpTemp = filterFP(MFP);
-            log(report,"filtering time: "+(System.currentTimeMillis()-startFilter)/1000+"s");
-            nbMFP = mfpTemp.size();
-            outputPatterns(mfpTemp,outFile);
-        }
+        nbMFP = MFP.size();
+        outputPatterns(MFP, outFile);
+
         long end1 = System.currentTimeMillis( );
         long diff1 = end1 - start;
-        log(report,"+ Maximal patterns = "+ nbMFP);
-        log(report,"+ Running times = "+ diff1/1000 +" s");
+        FreqT_Int.log(report,"+ Maximal patterns = "+ nbMFP);
+        FreqT_Int.log(report,"+ Running times = "+ diff1/1000 +" s");
         report.close();
     }
 
-    //group of procedures to check maximal subtree
-    /*
-    //return true if either labels of pat1 contain labels of pat2 or labels of pat2 contain labels of pat1
-    private boolean checkSubsetLabel(FTArray pat1, FTArray pat2){
+    //add 2-class pattern into MFP
+    private void add2ClassPattern(FTArray pattern, Projected projected){
+        FTArray patTemp = Pattern_Int.removeMissingLeaf(pattern);
+        //check minsize constraints and right mandatory children before adding pattern
+        if(Constraint.checkOutput(patTemp, config.getMinLeaf(), config.getMinNode())
+                && ! Constraint.checkRightObligatoryChild(patTemp, grammarInt, blackLabelsInt)){
+            //keep patterns having highest score
+            addHighScorePattern(patTemp, projected, MFP);
+            //keep maximal patterns
+            //addMFP(patTemp, projected, MFP);
+        }
+    }
 
-        if( Pattern_Int.countNode(pat1) >= Pattern_Int.countNode(pat2) ){
-            return  pat1.containsAll(pat2);
+    //return minimum score in the list of patterns
+    private double getMinScore(Map<FTArray,String> _MFP){
+        double score = 1000.0;
+        for(Map.Entry<FTArray, String> entry : _MFP.entrySet()){
+            String[] tmp = entry.getValue().split(",");
+            double scoreTmp = Double.valueOf(tmp[1]);
+            if(score > scoreTmp)
+                score = scoreTmp;
         }
-        else {
-            return pat2.containsAll(pat1);
+        return score;
+    }
+
+    // return a pattern which has minimum score in the list of patterns
+    private FTArray getMinScorePattern(Map<FTArray,String> _MFP){
+        double score = 1000.0;
+        FTArray smallestPattern = new FTArray();
+
+        for(Map.Entry<FTArray, String> entry : _MFP.entrySet()){
+            String[] tmp = entry.getValue().split(",");
+            double scoreTmp = Double.valueOf(tmp[1]);
+            if(score > scoreTmp) {
+                score = scoreTmp;
+                smallestPattern = new FTArray(entry.getKey());
+            }
         }
-    }*/
+        return smallestPattern;
+    }
+
+    //make a string of support, score, size for a pattern
+    private String getPatternSupportString(FTArray pattern, Projected projected, double score){
+        String patternSupport = "";
+        int[] ac = Constraint.get2ClassSupport(projected);
+        String support = String.valueOf(ac[0]) +"-"+String.valueOf(ac[1]);
+        int size = Pattern_Int.countNode(pattern);
+        patternSupport = support + "," + score + "," + String.valueOf(size);
+
+        return patternSupport;
+    }
+
+    //keep only numPattern (for example 100) patterns which have highest score
+    private void addHighScorePattern(FTArray pattern, Projected projected, Map<FTArray,String> _MFP){
+        if(_MFP.containsKey(pattern)) return;
+
+        double score = Constraint.chiSquare(projected, sizeClass1, sizeClass2);
+        //double score = Constraint.oddSup(projected, sizeClass1, sizeClass2);
+        int[]ac = Constraint.get2ClassSupport(projected);
+        printFTArray(pattern);
+        System.out.println(Constraint.getSupport(projected)+" [ "+ac[0]+", "+ac[1]+", DSScore : " + score +" ]");
+        if(score >= config.getDSScore() ) {
+            if(_MFP.size() >= config.getNumPatterns()) {
+                double minScore = getMinScore(_MFP);
+                if (score > minScore) {
+                    //System.out.println("replace pattern");
+                    FTArray minPattern = getMinScorePattern(_MFP);
+                    String patternSupport = getPatternSupportString(pattern, projected, score);
+                    //remove smallest score pattern
+                    _MFP.remove(minPattern);
+                    //add new pattern
+                    _MFP.put(pattern, patternSupport);
+                }
+            }else{
+                //add new pattern
+                String patternSupport = getPatternSupportString(pattern, projected, score);
+                _MFP.put(pattern, patternSupport);
+            }
+        }
+    }
+
+
+    //check and add pattern to maximal pattern list
+    private void addMFP(FTArray pattern, Projected projected, Map<FTArray,String> _MFP){
+        if(_MFP.containsKey(pattern)) return;
+
+        double score = Constraint.chiSquare(projected, sizeClass1, sizeClass2);
+        if(score >= config.getDSScore()){
+            Iterator < Map.Entry<FTArray,String> > p = _MFP.entrySet().iterator();
+            while(p.hasNext()){
+                Map.Entry<FTArray, String> entry = p.next();
+                switch (checkSubTree(pattern,entry.getKey())){
+                    case 1: //pat is a subtree of entry.getKey
+                        return;
+                    case 2: //entry.getKey is a subtree of pat
+                        p.remove();
+                        break;
+                }
+            }
+
+            String patternSupport = getPatternSupportString(pattern, projected, score);
+            //add new pattern to the list
+            _MFP.put(pattern, patternSupport);
+        }
+    }
 
     /**
      * check if pat1 is a subtree of pat2 ?
@@ -438,7 +498,7 @@ public class FreqT_Int {
     // 1 = pat1 is a subtree of pat2
     // 2 = pat2 is a subtree of pat1
     private int fastCheckSubTree(FTArray pat1, FTArray pat2){
-        hitCount++;
+        //hitCount++;
         if(pat1.size() == pat2.size())
         {
             if (pat1.equals(pat2)) return 1; else return 0;
@@ -458,8 +518,8 @@ public class FreqT_Int {
                 return 0;
         }
         catch (IndexOutOfBoundsException ex){
-            hitCount--;
-            missCount++;
+            //hitCount--;
+            //missCount++;
             return -1;
         }
     }
@@ -548,195 +608,9 @@ public class FreqT_Int {
         return offset;
     }
 
-    //group of procedures to check output patterns
-    /**
-     * store root occurrences of pattern for the second step
-     * @param pat
-     * @param projected
-     */
-    private void addRootIDs(FTArray pat, Projected projected){
-        try {
-            //find root occurrences (id-pos) of pattern
-            String rootOccurrences = "";
-            for(int i = 0; i<projected.getProjectLocationSize(); ++i){
-                rootOccurrences = rootOccurrences +
-                        projected.getProjectLocation(i).getLocationId() + ("-") +
-                        projected.getProjectLocation(i).getRoot() + ";";
-            }
-
-            //check the current root occurrences
-            boolean isAdded = true;
-            Collection<String> l1 = Arrays.asList(rootOccurrences.split(";"));
-
-            Iterator<Map.Entry<String, FTArray>> iter = rootIDs.entrySet().iterator();
-            while (iter.hasNext()){
-                Map.Entry<String, FTArray> entry = iter.next();
-                Collection<String> l2 = Arrays.asList(entry.getKey().split(";"));
-                //if l1 is super set of l2 then we don't need to add l1 to rootIDs
-                if(l1.containsAll(l2)){
-                    isAdded = false;
-                    break;
-                }else {
-                    //if l2 is a super set of l1 then remove l2 from rootIDs
-                    if (l2.containsAll(l1)) {
-                        iter.remove();
-                    }
-                }
-            }
-
-            if(isAdded){
-                //keep only the root occurrences and root label
-                FTArray rootLabel_int = pat.subList(0,1);
-                rootIDs.put(rootOccurrences, rootLabel_int);
-            }
-        }catch (Exception e){System.out.println("Error: adding rootIDs "+e);}
-    }
-
-    /**
-     * check and add maximal pattern to MFP
-     * if pat is a subtree of another pattern in MFP then ignore this pattern
-     * else if pat is a super-set of another pattern in the MFP then replace this pattern by pat
-     *      else add pat to MFP
-     * @param pat
-     * @param projected
-     * @param _MFP
-     */
-    public void addMFP(FTArray pat, Projected projected, Map<FTArray,String> _MFP){
-        //if pat is already existed in the MFP then return
-        if(_MFP.containsKey(pat)) return;
-        //compare the input pattern to every pattern in _MFP
-        Iterator < Map.Entry<FTArray,String> > p = _MFP.entrySet().iterator();
-        while(p.hasNext()){
-            Map.Entry<FTArray, String> entry = p.next();
-            switch (checkSubTree(pat,entry.getKey())){
-                case 1: //pat is a subtree of entry.getKey
-                    return;
-                case 2: //entry.getKey is a subtree of pat
-                    p.remove();
-                    break;
-            }
-        }
-        //store other information of the pattern
-        int support = projected.getProjectedSupport();
-        int wsupport = projected.getProjectedRootSupport(); //=> root location
-        int size = Pattern_Int.countNode(pat);
-        String patternSupport = String.valueOf(support) + "," + String.valueOf(wsupport) + "," + String.valueOf(size);
-        //add new pattern to the list
-        _MFP.put(pat, patternSupport);
-    }
-
-
-    /**
-     * add frequent pattern to FP
-     * @param pat
-     * @param projected
-     * @param _FP
-     */
-    public void addFP(FTArray pat, Projected projected, Map<FTArray,String> _FP){
-
-        int support = projected.getProjectedSupport();
-        int wsupport = projected.getProjectedRootSupport(); //=> root location
-        int size = Pattern_Int.countNode(pat);
-
-        String patternSupport =
-                String.valueOf(support) + "," +
-                        String.valueOf(wsupport) + "," +
-                        String.valueOf(size);
-        _FP.put(pat, patternSupport);
-    }
-
-
-    /**
-     * Add the tree to the root IDs or the MFP
-     * @param pat
-     * @param projected
-     */
-    private void addTree(FTArray pat, Projected projected){
-        //remove the right part of the pattern that misses leafs
-        FTArray patTemp = Pattern_Int.removeMissingLeaf(pat);
-        //check minsize constraints and right mandatory children before adding pattern
-        if(Constraint.checkOutput(patTemp,config.getMinLeaf(),config.getMinNode())
-                && ! Constraint.checkRightObligatoryChild(patTemp, grammarInt, blackLabelsInt)){
-            if (config.getTwoStep()) { //store root occurrences for next step
-                addRootIDs(patTemp, projected);
-            } else{ //check and store pattern to maximal pattern list
-                if(config.getFilter())
-                    addMFP(patTemp, projected, MFP);
-                else
-                    addFP(patTemp, projected, MFP);
-            }
-        }
-    }
-
-    //group of procedures to set running time and print patterns
-    public void setStartingTime() {
-        timeStart = System.currentTimeMillis();
-        timeout = config.getTimeout()*(60*1000);
-        finished = true;
-    }
-
-    /**
-     * check running time of the algorithm
-     * return true if the running time is larger than timeout
-     * @return
-     */
-    private boolean isTimeout() {
-        long currentTime = System.currentTimeMillis();
-        if(!config.getTwoStep())
-            if((currentTime-timeStart) > timeout) {
-                finished = false;
-                return true;
-            }
-        return false;
-    }
-
-    public static void log(FileWriter report, String msg) throws IOException {
-        //System.out.println(msg);
-        report.write(msg + "\n");
-        report.flush();
-    }
-
-    //filter maximal patterns from FP
-    public Map<FTArray,String> filterFP(Map<FTArray,String> _FP){
-        Map<FTArray,String> _MFP = new HashMap<>();
-        try{
-            Iterator < Map.Entry<FTArray,String> > fp = _FP.entrySet().iterator();
-            //for each pattern
-            while(fp.hasNext()){
-                boolean found = false;
-                Map.Entry<FTArray, String> fpEntry = fp.next();
-
-                if(_MFP.isEmpty()){
-                    _MFP.put(fpEntry.getKey(), fpEntry.getValue());
-                }
-                else {
-                    //check the pattern existing in MFP list ?
-                    Iterator<Map.Entry<FTArray, String>> mfp = _MFP.entrySet().iterator();
-                    while (mfp.hasNext()) {
-                        Map.Entry<FTArray, String> mfpEntry = mfp.next();
-                        //check the labels of two subtrees before check maximal subtree
-//                        if(checkSubsetLabel(fpEntry.getKey(), mfpEntry.getKey())) {
-                        switch (checkSubTree(fpEntry.getKey(), mfpEntry.getKey())) {
-                            case 1:
-                                found = true;
-                                break;
-                            case 2:
-                                mfp.remove();
-                                break;
-                        }
-//                        }
-                    }
-                    if (!found) {
-                        _MFP.put(fpEntry.getKey(), fpEntry.getValue());
-                    }
-                }
-            }
-        }catch (Exception e){System.out.println("Error: Filter maximal pattern");}
-        return _MFP;
-    }
 
     //print maximal patterns stored in Map to XML file
-    public void outputPatterns(Map<FTArray, String> maximalPatterns, String outFile){
+    private void outputPatterns(Map<FTArray, String> maximalPatterns, String outFile){
         try{
             //create output file to store patterns for mining common patterns
             FileWriter outputCommonPatterns = new FileWriter(outFile+".txt");
@@ -760,30 +634,25 @@ public class FreqT_Int {
         catch(Exception e){System.out.println("error print maximal patterns");}
     }
 
-    //print list of candidates: need for debugging
-    private void printCandidates(Map<FTArray, Projected> fp){
-
+    //print list of candidates: for debugging
+    private void printCandidates(Map<FTArray, Projected> fp, Map<Integer, String> _labelIndex){
         for(Map.Entry<FTArray, Projected> entry : fp.entrySet()){
-
             FTArray pat = entry.getKey();
             Projected projected = entry.getValue();
-
             System.out.print("\ndepth:" + projected.getProjectedDepth()+", ");
-
             for(int i=0; i<pat.size(); ++i){
-                String label = labelIndex.get(pat.get(i));
+                String label = _labelIndex.get(pat.get(i));
                 if(label == null){
                     System.out.print(pat.get(i)+" ");
                 }else
                     System.out.print(label +" : ");
             }
-
             System.out.println();
             for(int i = 0 ; i<projected.getProjectLocationSize(); ++i){
+                System.out.print(projected.getProjectLocation(i).getClassID() +" ");
                 System.out.print(projected.getProjectLocation(i).getLocationId() +" ");
                 printFTArray(projected.getProjectLocation(i));
             }
-
         }
     }
 
@@ -793,4 +662,5 @@ public class FreqT_Int {
             System.out.print(ft.get(i)+",");
         System.out.println();
     }
+
 }

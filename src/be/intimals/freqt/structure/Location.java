@@ -8,6 +8,8 @@ import be.intimals.freqt.FTArray;
  * first element of FTArray is root location
  */
 public class Location extends FTArray {
+    //new variable for 2-class data
+    int classID = -1;
     int locationId = 0;
 
     public int getLocationId() { return locationId; }
@@ -31,4 +33,15 @@ public class Location extends FTArray {
         locationId = id;
         add(pos);
     }
+
+    //new procedure for 2-class data
+    public Location(Location other, int classId, int id, int pos){
+        super(other);
+        classID = classId;
+        locationId = id;
+        add(pos);
+    }
+
+    public int getClassID() {return  classID; }
+    public void setClassID(int a) {classID = a;}
 }

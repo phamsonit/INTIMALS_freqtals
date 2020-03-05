@@ -185,7 +185,8 @@ public class FreqT_Int_ext_serial extends FreqT_Int {
         //remove the part of the pattern that misses leaf
         FTArray patTemp = Pattern_Int.removeMissingLeaf(largestPattern);
         //check output constraints and right mandatory children before storing pattern
-        if(checkOutput(patTemp) && ! Constraint.checkRightObligatoryChild(patTemp, grammarInt, blackLabelsInt)){
+        if(Constraint.checkOutput(patTemp, config.getMinLeaf(), config.getMinNode())
+                && ! Constraint.checkRightObligatoryChild(patTemp, grammarInt, blackLabelsInt)){
             if(config.getFilter())
                 addMFP(patTemp, projected, _outputPatterns);
             else{

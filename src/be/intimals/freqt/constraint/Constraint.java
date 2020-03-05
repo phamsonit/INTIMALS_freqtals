@@ -11,6 +11,95 @@ import java.util.*;
 
 public class Constraint {
 
+    //return number of occurrences of a pattern in two classes
+    public static int[] get2ClassSupport(Projected projected){
+        int a = 0; //# occurrences in class 1
+        int c = 0; //# occurrences in class 2
+        int old = 0xffffffff;
+        for(int i=0; i<projected.getProjectLocationSize(); ++i){
+            //System.out.println(projected.getProjectLocation(i).getClassID());
+            //System.out.println(projected.getProjectLocation(i).getLocationId());
+            if( (projected.getProjectLocation(i).getClassID() == 1) &&
+                    projected.getProjectLocation(i).getLocationId() != old) {
+                ++a;
+                old = projected.getProjectLocation(i).getLocationId();
+            }
+        }
+        c = getSupport(projected) - a;
+
+        int[] result = {a,c};
+        return  result;
+    }
+
+    public static double f1(Projected projected, int sizeClass1, int sizeClass2){
+        int[] ac = get2ClassSupport(projected);
+        int tp = ac[0];
+        int tn = ac[1];
+        int fn = sizeClass1 - tp;
+        int fp = sizeClass2 - tn;
+
+        double pre = (double)tp/(tp+fp);
+        double rec = (double)tp/(tp+fn);
+
+        return 2*(pre*rec)/(pre+rec);
+    }
+
+    // return chiSquare value of a pattern in two classes
+    public static double chiSquare(Projected projected, int sizeClass1, int sizeClass2){
+        int[]ac = get2ClassSupport(projected);
+
+        int a = ac[0]; //occurrences1
+        int c = ac[1]; //occurrences2
+        int b = sizeClass1 - a; //absence1
+        int d = sizeClass2 - c; //absence2
+
+        int X = a+b;
+        int Y = c+d;
+
+        double yaminxb = Y*a - X*c;
+        double one = yaminxb / ((a+c)*(X+Y-a-c));
+        //if (isnan(one)) return 0; // possible division by 0, return 0
+        double two = yaminxb / (X*Y);
+
+        return one*two*(X+Y);
+    }
+
+
+    // return ratio of supports of the pattern in two classes
+    public static double oddSup(Projected projected, int sizeClass1, int sizeClass2){
+
+        int[]ac = get2ClassSupport(projected);
+
+        int occurrences1 = ac[0];
+        int occurrences2 = ac[1];
+
+        if(occurrences2 > 0){
+            double supportInClass1 = (double)occurrences1/sizeClass1;
+            double supportInClass2 = (double)occurrences2/sizeClass2;
+
+            //return Math.log(supportInClass1/supportInClass2);
+            return supportInClass1/supportInClass2;
+        }
+        else
+            return (double)occurrences1;
+    }
+
+    ////////////////////////////////////////
+
+    /**
+     * check output constraints: minLeaf and minNode
+     * @param pat
+     * @return
+     */
+    public static boolean checkOutput(FTArray pat, int minLeaf, int minNode){
+        if(    Constraint.satisfyMinLeaf(pat, minLeaf)
+                && Constraint.satisfyMinNode(pat, minNode) )
+            return true;
+        else
+            return false;
+    }
+
+
     /**
      * calculate the support of a pattern = number of files
      * @param projected

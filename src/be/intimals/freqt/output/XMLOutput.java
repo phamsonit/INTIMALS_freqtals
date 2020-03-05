@@ -85,8 +85,11 @@ public class XMLOutput extends AOutputFormatter {
 
 
             String[] sup = supports.split(",");
+            //out.write("<subtree id=\"" + nbPattern + "\" support=\"" + sup[0] +
+            //        "\" wsupport=\"" + sup[1] + "\" size=\"" + sup[2] + "\">\n");
+
             out.write("<subtree id=\"" + nbPattern + "\" support=\"" + sup[0] +
-                    "\" wsupport=\"" + sup[1] + "\" size=\"" + sup[2] + "\">\n");
+                    "\" score=\"" + sup[1] + "\" size=\"" + sup[2] + "\">\n");
 
             //print pattern
             int n = 0;

@@ -66,4 +66,19 @@ public class Projected {
         if(!found)
             this.locations.add(l);
     }
+
+    //new procedure for 2-class data
+    public void addProjectLocation(int classID, int id, int pos, Location occurrences) {
+        //check if this location doesn't exist in the locations
+        Location l = new Location(occurrences,classID,id,pos);
+        boolean found = false;
+        for(Location location: this.locations){
+            if(l.getLocationId() == location.getLocationId()
+                    && l.getRoot() == location.getRoot()
+                    && l.getLocationPos() == location.getLocationPos()  )
+                found = true;
+        }
+        if(!found)
+            this.locations.add(l);
+    }
 }

@@ -28,18 +28,23 @@ package be.intimals.freqt;
 import be.intimals.freqt.config.Config;
 import be.intimals.freqt.core.FreqT_Int;
 import be.intimals.freqt.core.FreqT_common;
+import be.intimals.freqt.core.Freqt_Int_2class;
 
 import java.io.*;
 import java.nio.file.Files;
 import java.nio.file.Paths;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 import java.util.Properties;
 
 public class Main {
 
     static public void main(String[] args) throws IOException {
         Main m = new Main();
+
+        String[] agg = {"conf/java/config.properties", "3", "sample_data", "class"};
+        args = agg;
 
         if (args.length==0) {
             System.out.println("Single-run Freq-T usage:\n" +
@@ -54,40 +59,69 @@ public class Main {
                 m.singleRun(args);
             }
         }
-        System.exit(2);
-
+        System.exit(1);
     }
 
     private void singleRun(String[] args) {
         try{
-            //load basic configuration
+
+            String memory = null; //args[4]
+            String classData = args[3];
+            String finalConfig = parseArgs(args);
+
+            //load final configuration as new configuration;
+            Config config = new Config(finalConfig);
+
+            if(classData.equals("class")){
+                Freqt_Int_2class freqt_int_2class = new Freqt_Int_2class(config);
+                freqt_int_2class.run();
+                //System.exit(2);
+                runForestMatcher(memory, config);
+
+                findCommonPattern(config, freqt_int_2class.getGrammar(), freqt_int_2class.getXmlCharacters());
+
+                cleanUp(config);
+
+            }else{
+                //run Freqt to find maximal patterns
+                FreqT_Int freqt = new FreqT_Int(config);
+                freqt.run();
+
+                runForestMatcher(memory, config);
+
+                findCommonPattern(config, freqt.getGrammar(), freqt.getXmlCharacters());
+
+                cleanUp(config);
+            }
+
+            System.out.println("Finished ...");
+
+        }
+        catch (Exception e){
+            System.out.println("!!! Error: main "+e);
+            e.printStackTrace();
+        }
+    }
+
+    private String parseArgs(String[] args){
+        String finalConfig = "";
+        try{
+
             String configPathBasic = args[0];
             Config configBasic = new Config(configPathBasic);
             String inputMinSup = args[1];
             String inputFold = args[2];
-            String memory = null;
-            if(args.length == 4) //memory flag or debug is set
-            	if(args[3].contains("file")) { //debug file
-            		PrintStream o = new PrintStream(new File(inputFold+"-debug-log.txt")); 
-                    // Assign o to output stream to redirect to file
-                    System.setOut(o);
-                    System.setErr(o);
-            	}else //memory value
-            		memory = "-Xmx" + args[3];
-            if(args.length == 5) { //memory and debug file
-            	memory = args[3];
-            	PrintStream o = new PrintStream(new File(inputFold+"-debug-log.txt")); 
-            	// Assign o to output stream to redirect to file
-            	System.setOut(o);
-                System.setErr(o);
-            }
-            String sep = "/";
+            String classData = args[3];
 
+            String sep = "/";
             //create final configuration as used by FreqT
             Properties prop = configBasic.getProp();
             //input data
             String inputPath = configBasic.getInputFiles().replace("\"", "") + sep + inputFold;
             System.out.println("Reading input from: " + inputPath);
+
+            String inputPath1 = inputPath+"/"+configBasic.getInputFiles1();
+            String inputPath2 = inputPath+"/"+configBasic.getInputFiles2();
 
             File outputDir = new File(configBasic.getOutputFile());
             if(!outputDir.exists()) outputDir.mkdir();
@@ -100,7 +134,7 @@ public class Main {
             Files.deleteIfExists(Paths.get(outputPatterns));
 
             //final configuration as used by FreqT
-            String finalConfig =  outputPrefix + "-config.properties";
+            finalConfig =  outputPrefix + "-config.properties";
             Files.deleteIfExists(Paths.get(finalConfig));
 
             //create parameters for forest matcher
@@ -126,99 +160,83 @@ public class Main {
             Files.deleteIfExists(Paths.get(outputCommonClustersMatches));
 
             //update properties
-            //prop.replace("minSupport", inputMinSup);
             prop.setProperty("minSupport",inputMinSup);
             prop.replace("inputPath", inputPath);
+            prop.replace("inputPath1", inputPath1);
+            prop.replace("inputPath2", inputPath2);
             prop.replace("outputPath", outputPatterns);
             prop.remove("minSupportList");
             prop.remove("inFilesList");
+
+            prop.setProperty("outputMatches", outputMatches);
+            prop.setProperty("outputClusters", outputClusters);
+            prop.setProperty("outputClustersTemp", outputClustersTemp);
+            prop.setProperty("outputCommonPatterns", outputCommonPatterns);
+            prop.setProperty("outputCommonMatches", outputCommonMatches);
+            prop.setProperty("outputCommonClusters", outputCommonClusters);
+
+            prop.setProperty("outputClustersTemp", outputClustersTemp);
+            prop.setProperty("outputCommonPatterns", outputCommonPatterns);
+            prop.setProperty("outputCommonMatches", outputCommonMatches);
+            prop.setProperty("outputCommonClusters", outputCommonClusters);
 
             //save new properties in the final configuration
             OutputStream output = new FileOutputStream(finalConfig);
             prop.store(output, null);
             output.close();
 
-            //load final configuration as new configuration;
-            Config config = new Config(finalConfig);
-            //run Freqt to find maximal patterns
-            FreqT_Int freqt = new FreqT_Int(config);
-            //FreqT freqt = new FreqT(config);
-            freqt.run();
+        }catch (Exception e){
+            System.out.println("parse args error: "+e);
+        }
+        return finalConfig;
+    }
 
-            //run forestmatcher to create matches.xml and clusters.xml
-            System.out.println("Running forestmatcher ...");
-            String command = "";
-            if(memory != null)
-            	command = "java -jar " + memory + " forestmatcher.jar " +
-                        inputPath + " " + outputPatterns +" " + outputMatches + " " + outputClusters;
-            else
-            	command = "java -jar forestmatcher.jar " +
-                    inputPath + " " + outputPatterns +" " + outputMatches + " " + outputClusters;
+    private void runForestMatcher(String memory, Config config)
+            throws IOException, InterruptedException {
+        //run forestmatcher to create matches.xml and clusters.xml
+        System.out.println("Running forestmatcher ...");
+        String command = "";
+        if(memory != null)
+            command = "java -jar " + memory + " forestmatcher.jar " +
+                    config.getInputFiles() + " " + config.getOutputFile() +" "
+                    + config.getOutputMatches() + " " + config.getOutputClusters();
+        else
+            command = "java -jar forestmatcher.jar " +
+                    config.getInputFiles() + " " + config.getOutputFile() +" " +
+                    config.getOutputMatches() + " " + config.getOutputClusters();
+
+        System.out.println("With command: "+command);
+        Process proc = Runtime.getRuntime().exec(command);
+        proc.waitFor();
+    }
+
+    private void findCommonPattern(Config config, Map<String, ArrayList<String>> grammar, Map<String, String> xmlCharacters)
+                                throws IOException, InterruptedException {
+        String command;
+        File pattern = new File(config.getOutputClustersTemp());
+        if(pattern.exists()){
+            //find common patterns in each cluster
+            System.out.println("Mining common patterns in clusters ...");
+            String outputPatternsTemp = config.getOutputFile()+".txt";
+            FreqT_common common = new FreqT_common(config, grammar, xmlCharacters);
+            common.run(outputPatternsTemp, config.getOutputClustersTemp(), config.getOutputCommonPatterns());
+
+            //find matches for common_patterns
+            command = "java -jar forestmatcher.jar " +
+                   config.getInputFiles() + " " + config.getOutputCommonPatterns()+" " +
+                   config.getOutputCommonMatches() + " " + config.getOutputCommonClusters();
             System.out.println("With command: "+command);
             Process proc = Runtime.getRuntime().exec(command);
-            //Get output of forestMatcher
-            BufferedReader stdInput = new BufferedReader(new InputStreamReader(proc.getInputStream()));
-            BufferedReader stdError = new BufferedReader(new InputStreamReader(proc.getErrorStream()));
-
-            // Read the output from the command
-            System.out.println("Here is the standard output of the command:\n");
-            String s = null;
-            while ((s = stdInput.readLine()) != null) {
-                System.out.println(s);
-            }
-            // Read any errors from the attempted command
-            System.out.println("Here is the standard error of the command (if any):\n");
-            while ((s = stdError.readLine()) != null) {
-                System.out.println(s);
-            }
             proc.waitFor();
-
-            File pattern = new File(outputClustersTemp);
-            if(pattern.exists()){
-                //find common patterns in each cluster
-                System.out.println("Mining common patterns in clusters ...");
-                String outputPatternsTemp = outputPatterns+".txt";
-                FreqT_common inCluster = new FreqT_common(config,freqt.getGrammar(),freqt.getXmlCharacters());
-                inCluster.run(outputPatternsTemp, outputClustersTemp, outputCommonPatterns);
-
-                //find matches of common_patterns
-                command = "java -jar forestmatcher.jar " +
-                        inputPath + " " + outputCommonPatterns +" " + outputCommonMatches + " " + outputCommonClusters;
-                System.out.println("With command: "+command);
-                 proc = Runtime.getRuntime().exec(command);
-                //Get output of forestMatcher
-                stdInput = new BufferedReader(new InputStreamReader(proc.getInputStream()));
-                stdError = new BufferedReader(new InputStreamReader(proc.getErrorStream()));
-
-                // Read the output from the command
-                System.out.println("Here is the standard output of the command:\n");
-                s = null;
-                while ((s = stdInput.readLine()) != null) {
-                    System.out.println(s);
-                }
-                // Read any errors from the attempted command
-                System.out.println("Here is the standard error of the command (if any):\n");
-                while ((s = stdError.readLine()) != null) {
-                    System.out.println(s);
-                }
-                proc.waitFor();
-                System.out.println("Cleaning up ...");
-                Files.deleteIfExists(Paths.get(outputPatternsTemp));
-                Files.deleteIfExists(Paths.get(outputCommonPatterns+".txt"));
-            }
-
-            System.out.println("Finished ...");
-
-            //System.out.println("===========================================================");
-            //return;
-        }
-        catch (Exception e){
-            System.out.println("!!! Error: main "+e);
-            e.printStackTrace();
         }
     }
 
-    //
+    private void cleanUp(Config config) throws IOException {
+        System.out.println("Cleaning up ...");
+        Files.deleteIfExists(Paths.get(config.getOutputFile()+".txt"));
+        Files.deleteIfExists(Paths.get(config.getOutputCommonPatterns()+".txt"));
+    }
+
     private class MultiRunConfig{
         public Integer minSupport;
         public String inFolder;
