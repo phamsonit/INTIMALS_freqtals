@@ -20,7 +20,11 @@ public class Config {
         input.close();
     }
 
+    public boolean get2Class(){return Boolean.valueOf(prop.getProperty("2Class"));}
+
     public double getDSScore(){return Double.valueOf(prop.getProperty("minDSScore"));}
+
+    public boolean keepHighestScore(){return Boolean.valueOf(prop.getProperty("keepHighestScore"));}
 
     public int getNumPatterns(){return Integer.valueOf(prop.getProperty("numPatterns"));}
 
@@ -42,6 +46,13 @@ public class Config {
 
     public String getOutputCommonClusters() {return prop.getProperty("outputCommonClusters");}
 
+    public String getOutputMatches1() {return prop.getProperty("outputMatches1");}
+
+    public String getOutputClusters1() {return prop.getProperty("outputClusters1");}
+
+    public String getOutputMatches2() {return prop.getProperty("outputMatches2");}
+
+    public String getOutputClusters2() {return prop.getProperty("outputClusters2");}
 
 
     ///////////////

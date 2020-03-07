@@ -26,9 +26,7 @@
 package be.intimals.freqt;
 
 import be.intimals.freqt.config.Config;
-import be.intimals.freqt.core.FreqT_Int;
-import be.intimals.freqt.core.FreqT_common;
-import be.intimals.freqt.core.Freqt_Int_2class;
+import be.intimals.freqt.core.*;
 
 import java.io.*;
 import java.nio.file.Files;
@@ -43,8 +41,8 @@ public class Main {
     static public void main(String[] args) throws IOException {
         Main m = new Main();
 
-        //String[] agg = {"-multi", "conf/java/config.properties", "--class"};
-        //args = agg;
+        String[] agg = {"conf/java/config.properties","3", "sample_data1"};
+        args = agg;
 
         if (args.length==0) {
             System.out.println("Single-run Freq-T usage:\n" +
@@ -66,15 +64,12 @@ public class Main {
         try{
             String memory = null; //args[4]
             String debugFile = null; //args[5]
-            String classData = null;
             String finalConfig = null;
 
             finalConfig = parseConfig(args);
             if(args.length > 3){
                 finalConfig = parseConfig(args);
                 for(int i=3; i<args.length; ++i) {
-                    if (args[i].equals("--class"))
-                        classData = "--class";
                     if (args[i].equals("--memory")) {
                         memory = "-Xmx" + args[i + 1];
                         i++;
@@ -83,26 +78,22 @@ public class Main {
                         debugFile = args[i];
                 }
             }
-
             //load final configuration as new configuration;
             Config config = new Config(finalConfig);
-            if(classData != null && classData.equals("--class")){
-                Freqt_Int_2class freqt_int_2class = new Freqt_Int_2class(config);
+            if(config.get2Class()){
+                FreqT freqt_int_2class = new FreqT_2class(config);
                 freqt_int_2class.run();
                 runForestMatcher(config, memory);
-                findCommonPattern(config, freqt_int_2class.getGrammar(), freqt_int_2class.getXmlCharacters());
+                //findCommonPattern(config, freqt_int_2class.getGrammar(), freqt_int_2class.getXmlCharacters());
                 cleanUp(config);
             }else{
-                //run Freqt to find maximal patterns
-                FreqT_Int freqt = new FreqT_Int(config);
+                FreqT freqt = new FreqT_1class(config);
                 freqt.run();
                 runForestMatcher(config, memory);
                 findCommonPattern(config, freqt.getGrammar(), freqt.getXmlCharacters());
                 cleanUp(config);
             }
-
             System.out.println("Finished ...");
-
         }
         catch (Exception e){
             System.out.println("!!! Error: main "+e);
@@ -133,36 +124,48 @@ public class Main {
             if(!outputDir.exists()) outputDir.mkdir();
 
             String outputPrefix = configBasic.getOutputFile().replace("\"", "") +
-                    sep + inputFold.replaceAll(sep, "-") + "-" + inputMinSup;
+                    sep + inputFold.replaceAll(sep, "_") + "_" + inputMinSup;
 
             //output patterns
-            String outputPatterns = outputPrefix + "-patterns.xml";
+            String outputPatterns = outputPrefix + "_patterns.xml";
             Files.deleteIfExists(Paths.get(outputPatterns));
 
             //final configuration as used by FreqT
-            finalConfig =  outputPrefix + "-config.properties";
+            finalConfig =  outputPrefix + "_config.properties";
             Files.deleteIfExists(Paths.get(finalConfig));
 
             //create parameters for forest matcher
-            String outputMatches = outputPrefix + "-matches.xml";
+            String outputMatches = outputPrefix + "_matches.xml";
             Files.deleteIfExists(Paths.get(outputPrefix));
 
-            String outputClusters = outputPrefix + "-clusters.xml";
+            String outputClusters = outputPrefix + "_clusters.xml";
             Files.deleteIfExists(Paths.get(outputClusters));
 
-            String outputClustersTemp = outputPrefix + "-matches_clusters.xml";
+            String outputMatches1 = outputPrefix + "_matches_1.xml";
+            Files.deleteIfExists(Paths.get(outputPrefix));
+
+            String outputClusters1 = outputPrefix + "_clusters_1.xml";
+            Files.deleteIfExists(Paths.get(outputClusters));
+
+            String outputMatches2 = outputPrefix + "_matches_2.xml";
+            Files.deleteIfExists(Paths.get(outputPrefix));
+
+            String outputClusters2 = outputPrefix + "_clusters_2.xml";
+            Files.deleteIfExists(Paths.get(outputClusters));
+
+            String outputClustersTemp = outputPrefix + "_matches_clusters.xml";
             Files.deleteIfExists(Paths.get(outputClustersTemp));
 
-            String outputCommonPatterns = outputPrefix + "-patterns_common.xml";
+            String outputCommonPatterns = outputPrefix + "_patterns_common.xml";
             Files.deleteIfExists(Paths.get(outputCommonPatterns));
 
-            String outputCommonMatches = outputPrefix + "-matches_common.xml";
+            String outputCommonMatches = outputPrefix + "_matches_common.xml";
             Files.deleteIfExists(Paths.get(outputCommonMatches));
 
-            String outputCommonClusters = outputPrefix + "-common_clusters.xml";
+            String outputCommonClusters = outputPrefix + "_common_clusters.xml";
             Files.deleteIfExists(Paths.get(outputCommonClusters));
 
-            String outputCommonClustersMatches = outputPrefix + "-matches_common_clusters.xml";
+            String outputCommonClustersMatches = outputPrefix + "_matches_common_clusters.xml";
             Files.deleteIfExists(Paths.get(outputCommonClustersMatches));
 
             //update properties
@@ -176,6 +179,13 @@ public class Main {
 
             prop.setProperty("outputMatches", outputMatches);
             prop.setProperty("outputClusters", outputClusters);
+
+            prop.setProperty("outputMatches1", outputMatches1);
+            prop.setProperty("outputClusters1", outputClusters1);
+
+            prop.setProperty("outputMatches2", outputMatches2);
+            prop.setProperty("outputClusters2", outputClusters2);
+
             prop.setProperty("outputClustersTemp", outputClustersTemp);
             prop.setProperty("outputCommonPatterns", outputCommonPatterns);
             prop.setProperty("outputCommonMatches", outputCommonMatches);
@@ -201,19 +211,34 @@ public class Main {
             throws IOException, InterruptedException {
         //run forestmatcher to create matches.xml and clusters.xml
         System.out.println("Running forestmatcher ...");
-        String command = "";
-        if(memory != null)
-            command = "java -jar " + memory + " forestmatcher.jar " +
-                    config.getInputFiles() + " " + config.getOutputFile() +" "
-                    + config.getOutputMatches() + " " + config.getOutputClusters();
-        else
-            command = "java -jar forestmatcher.jar " +
-                    config.getInputFiles() + " " + config.getOutputFile() +" " +
-                    config.getOutputMatches() + " " + config.getOutputClusters();
 
-        System.out.println("With command: "+command);
-        Process proc = Runtime.getRuntime().exec(command);
-        proc.waitFor();
+        if(config.get2Class()){
+            String command1 = "java -jar forestmatcher.jar " +
+                    config.getInputFiles1() + " " + config.getOutputFile() +" " +
+                    config.getOutputMatches1() + " " + config.getOutputClusters1();
+            Process proc1 = Runtime.getRuntime().exec(command1);
+            proc1.waitFor();
+
+            String command2 = "java -jar forestmatcher.jar " +
+                    config.getInputFiles2() + " " + config.getOutputFile() +" " +
+                    config.getOutputMatches2() + " " + config.getOutputClusters2();
+            Process proc2 = Runtime.getRuntime().exec(command2);
+            proc2.waitFor();
+        }else{
+            String command = "";
+            if(memory != null)
+                command = "java -jar " + memory + " forestmatcher.jar " +
+                        config.getInputFiles() + " " + config.getOutputFile() +" "
+                        + config.getOutputMatches() + " " + config.getOutputClusters();
+            else
+                command = "java -jar forestmatcher.jar " +
+                        config.getInputFiles() + " " + config.getOutputFile() +" " +
+                        config.getOutputMatches() + " " + config.getOutputClusters();
+
+            System.out.println("With command: "+command);
+            Process proc = Runtime.getRuntime().exec(command);
+            proc.waitFor();
+        }
     }
 
     private void findCommonPattern(Config config, Map<String, ArrayList<String>> grammar, Map<String, String> xmlCharacters)
@@ -246,21 +271,17 @@ public class Main {
     private class MultiRunConfig{
         public Integer minSupport;
         public String inFolder;
-        public String classData = null;
         public String memory = null;
         public String debugFile = null;
     }
 
     private void multiRun(String[] args) throws IOException {
         String configPathBasic = args[1];
-        String classData = null;
         String memory = null;
         String debug = null;
 
         if(args.length>2)
             for(int i=2; i<args.length; ++i) {
-                if (args[i].equals("--class"))
-                    classData = "--class";
                 if (args[i].equals("--memory"))
                     memory = "-Xmx"+args[i+1];
                 if (args[i].equals("--debug-file"))
@@ -278,8 +299,6 @@ public class Main {
                 MultiRunConfig run = new MultiRunConfig();
                 run.minSupport = minSupport;
                 run.inFolder = folder;
-                if(classData != null)
-                    run.classData = classData;
                 if(memory != null)
                 	run.memory = memory;
                 if(debug != null)
@@ -295,8 +314,6 @@ public class Main {
             runArgs.add(args[1]);
             runArgs.add(run.minSupport.toString());
             runArgs.add(run.inFolder);
-            if(run.classData != null)
-                runArgs.add(run.classData);
             if(run.memory != null)
             	runArgs.add(run.memory);
             if(run.debugFile != null)

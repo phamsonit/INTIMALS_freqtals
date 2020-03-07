@@ -17,21 +17,18 @@ import static be.intimals.freqt.util.Util.log;
     extended FREQT + without using max size constraints
  */
 
-public class FreqT_Int_ext_serial extends FreqT_Int {
+public class FreqT_1class_ext extends FreqT_1class {
 
-    private Map<FTArray, String> MFP = new HashMap<>();
     private Map<String, FTArray> interruptedRootID = new HashMap<>();
 
-    private long timeout;
     private long timeStart2nd;
     private long timeSpent;
     private long timePerGroup;
     private long timeStartGroup;
-    private boolean finished;
 
     ////////////////////////////////////////////////////////////////////////////////
 
-    public FreqT_Int_ext_serial(Config _config,
+    public FreqT_1class_ext(Config _config,
                                 Map<String,ArrayList<String>> _grammar,
                                 Map<Integer,ArrayList<String>> _grammarInt,
                                 Map<Integer,ArrayList<Integer>> _blackLabelsInt,
@@ -96,6 +93,19 @@ public class FreqT_Int_ext_serial extends FreqT_Int {
         }catch (Exception e){}
     }
 
+    private void buildPatternForFirstRound(Map.Entry<String, FTArray> entry, FTArray largestPattern, Projected projected) {
+        //add label to the largestPattern
+        largestPattern.addAll(entry.getValue());
+        //set depth of the largestPattern
+        projected.setProjectedDepth(0);
+        //extract the positions for the largestPattern
+        String[] temp = entry.getKey().split(";");
+        for(int i=0; i<temp.length; ++i){
+            String[] pos = temp[i].split("-");
+            projected.setProjectLocation(Integer.parseInt(pos[0]),Integer.parseInt(pos[1]),Integer.parseInt(pos[2]));
+        }
+    }
+
     private void buildPatternForRoundN(Map.Entry<String, FTArray> entry, FTArray largestPattern, Projected projected) {
         //add the pattern
         largestPattern.addAll(entry.getValue());
@@ -107,20 +117,8 @@ public class FreqT_Int_ext_serial extends FreqT_Int {
         for(int i=0; i<rightmostTemp.length; ++i) {
             String[] pos = rightmostTemp[i].split("-");
             Location initLocation = new Location();// {Integer.valueOf(pos[1])};
-            projected.addProjectLocation(Integer.parseInt(pos[0]), Integer.parseInt(pos[2]), initLocation);
-        }
-    }
-
-    private void buildPatternForFirstRound(Map.Entry<String, FTArray> entry, FTArray largestPattern, Projected projected) {
-        //add label to the largestPattern
-        largestPattern.addAll(entry.getValue());
-        //set depth of the largestPattern
-        projected.setProjectedDepth(0);
-        //extract the positions for the largestPattern
-        String[] temp = entry.getKey().split(";");
-        for(int i=0; i<temp.length; ++i){
-            String[] pos = temp[i].split("-");
-            projected.setProjectLocation(Integer.parseInt(pos[0]),Integer.parseInt(pos[1]));
+            projected.addProjectLocation(Integer.parseInt(pos[0]),Integer.parseInt(pos[1]),
+                    Integer.parseInt(pos[3]), initLocation);
         }
     }
 
@@ -131,7 +129,7 @@ public class FreqT_Int_ext_serial extends FreqT_Int {
 
             //check running for the current group
             if( isGroupTimeout() ) {
-                storeInterruptedRootID(largestPattern, projected);
+                storeInterruptedRootID(largestPattern, projected, interruptedRootID);
                 return;
             }
 
@@ -187,7 +185,8 @@ public class FreqT_Int_ext_serial extends FreqT_Int {
         }
     }
 
-    private void storeInterruptedRootID(FTArray largestPattern, Projected projected) {
+    private void storeInterruptedRootID(FTArray largestPattern, Projected projected,
+                                        Map<String, FTArray> _interruptedRootID) {
         //store depth and root locations
         String depth = String.valueOf(projected.getProjectedDepth());
         //store locations
@@ -195,12 +194,13 @@ public class FreqT_Int_ext_serial extends FreqT_Int {
         //keep root occurrences and right-most occurrences
         for (int i = 0; i < projected.getProjectLocationSize(); ++i) {
             locations = locations +
+                    projected.getProjectLocation(i).getClassID() + ("-") +
                     projected.getProjectLocation(i).getLocationId() + ("-") +
                     projected.getProjectLocation(i).getRoot() + ("-") +
                     projected.getProjectLocation(i).getLocationPos() + ";";
         }
         //store the pattern for the next round
-        interruptedRootID.put(depth+"\t"+locations, largestPattern);
+        _interruptedRootID.put(depth+"\t"+locations, largestPattern);
     }
 
     private void reportResult(FileWriter _report) throws IOException {

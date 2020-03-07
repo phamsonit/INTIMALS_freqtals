@@ -48,20 +48,17 @@ public class Constraint {
     public static double chiSquare(Projected projected, int sizeClass1, int sizeClass2){
         int[]ac = get2ClassSupport(projected);
 
-        int a = ac[0]; //occurrences1
-        int c = ac[1]; //occurrences2
-        int b = sizeClass1 - a; //absence1
-        int d = sizeClass2 - c; //absence2
+        int a = ac[0]; //occurrences in the first class data
+        int c = ac[1]; //occurrences in the second class data
 
-        int X = a+b;
-        int Y = c+d;
+        System.out.println(sizeClass1 +" "+sizeClass2+" "+a +" "+c);
 
-        double yaminxb = Y*a - X*c;
-        double one = yaminxb / ((a+c)*(X+Y-a-c));
+        double yaminxb = sizeClass2 * a - sizeClass1 * c;
+        double one = yaminxb / ((a+c) * (sizeClass1 + sizeClass2 - a - c));
         //if (isnan(one)) return 0; // possible division by 0, return 0
-        double two = yaminxb / (X*Y);
+        double two = yaminxb / (sizeClass1 * sizeClass2);
 
-        return one*two*(X+Y);
+        return one * two * (sizeClass1 + sizeClass2);
     }
 
 

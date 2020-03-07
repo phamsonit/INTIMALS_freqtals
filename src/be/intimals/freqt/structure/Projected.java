@@ -81,4 +81,12 @@ public class Projected {
         if(!found)
             this.locations.add(l);
     }
+
+    public void setProjectLocation(int classID, int i, int j) {
+        Location l = new Location();
+        l.setLocationId(classID);
+        l.setLocationId(i);
+        l.addLocationPos(j);
+        this.locations.add(l);
+    }
 }

@@ -1,18 +1,21 @@
 package be.intimals.freqt.core;
 
-import be.intimals.freqt.config.Config;
 import be.intimals.freqt.constraint.Constraint;
 import be.intimals.freqt.input.ReadFile_Int;
-import be.intimals.freqt.structure.*;
 import be.intimals.freqt.structure.FTArray;
+import be.intimals.freqt.structure.NodeFreqT;
+import be.intimals.freqt.structure.Projected;
 
-import java.util.*;
+import java.util.Iterator;
+import java.util.LinkedHashMap;
+import java.util.Map;
+import java.util.Vector;
 
 /*
     check subtree relationship of 2 input patterns
  */
 
-public class FreqT_Int_subtree extends FreqT_Int {
+public class FreqT_subtree {
 
     private FTArray maximalPattern;
     private Vector<Vector<NodeFreqT> > newTransaction = new Vector<>();
@@ -24,9 +27,7 @@ public class FreqT_Int_subtree extends FreqT_Int {
 
     ////////////////////////////////////////////////////////////////////////////////
 
-    public FreqT_Int_subtree(Config config){
-        super(config);
-    }
+    public FreqT_subtree(){ }
 
 
     public String getOutputPattern(){return  this.outputPattern;}

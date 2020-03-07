@@ -22,7 +22,7 @@ public class CheckSubtree {
         //check subset of labels before check maximality
         //       if (checkSubsetLabel(pat1, pat2)) {
         //maximality check
-        FreqT_Int_subtree fr = new FreqT_Int_subtree(config);
+        FreqT_subtree fr = new FreqT_subtree();
         int pat1Size = pat1.size();
         int pat2Size = pat2.size();
         if(pat1Size < pat2Size)

@@ -121,7 +121,7 @@ public class Util {
 
     //create a report
     public static FileWriter initReport(Config _config, int dataSize) throws IOException {
-        String reportFile = _config.getOutputFile().replaceAll("\"","") +"-report.txt";
+        String reportFile = _config.getOutputFile().replaceAll("\"","") +"_report.txt";
         FileWriter report = new FileWriter(reportFile);
         log(report,"INPUT");
         log(report,"===================");
