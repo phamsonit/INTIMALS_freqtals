@@ -17,8 +17,6 @@ public class Constraint {
         int c = 0; //# occurrences in class 2
         int old = 0xffffffff;
         for(int i=0; i<projected.getProjectLocationSize(); ++i){
-            //System.out.println(projected.getProjectLocation(i).getClassID());
-            //System.out.println(projected.getProjectLocation(i).getLocationId());
             if( (projected.getProjectLocation(i).getClassID() == 1) &&
                     projected.getProjectLocation(i).getLocationId() != old) {
                 ++a;
@@ -51,8 +49,6 @@ public class Constraint {
         int a = ac[0]; //occurrences in the first class data
         int c = ac[1]; //occurrences in the second class data
 
-        System.out.println(sizeClass1 +" "+sizeClass2+" "+a +" "+c);
-
         double yaminxb = sizeClass2 * a - sizeClass1 * c;
         double one = yaminxb / ((a+c) * (sizeClass1 + sizeClass2 - a - c));
         //if (isnan(one)) return 0; // possible division by 0, return 0
@@ -73,7 +69,6 @@ public class Constraint {
         if(occurrences2 > 0){
             double supportInClass1 = (double)occurrences1/sizeClass1;
             double supportInClass2 = (double)occurrences2/sizeClass2;
-
             //return Math.log(supportInClass1/supportInClass2);
             return supportInClass1/supportInClass2;
         }
@@ -305,7 +300,8 @@ public class Constraint {
                 }
             }
         }catch (Exception e){
-            System.out.println("checkObligatoryChildren error "+e);
+            System.out.println("check left Obligatory Children error "+e);
+            e.printStackTrace();
         }
         return missMandatoryChild;
     }
@@ -374,7 +370,7 @@ public class Constraint {
                 }
             }
         }catch (Exception e){
-            System.out.println("checkRightObligatoryChildren error : "+e);
+            System.out.println("check Right Obligatory Children error : "+e);
         }
         return missMandatoryChild;
     }

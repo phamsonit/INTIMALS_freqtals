@@ -41,8 +41,9 @@ public class Main {
     static public void main(String[] args) throws IOException {
         Main m = new Main();
 
-        String[] agg = {"conf/java/config.properties","3", "sample_data1"};
-        args = agg;
+        //String[] agg = {"conf/java/config.properties","10", "jhotdraw-6-7-mer"};
+        //String[] agg = {"conf/java/config-sample.properties","3", "sample_data1"};
+        //args = agg;
 
         if (args.length==0) {
             System.out.println("Single-run Freq-T usage:\n" +
@@ -80,19 +81,13 @@ public class Main {
             }
             //load final configuration as new configuration;
             Config config = new Config(finalConfig);
-            if(config.get2Class()){
-                FreqT freqt_int_2class = new FreqT_2class(config);
-                freqt_int_2class.run();
-                runForestMatcher(config, memory);
-                //findCommonPattern(config, freqt_int_2class.getGrammar(), freqt_int_2class.getXmlCharacters());
-                cleanUp(config);
-            }else{
-                FreqT freqt = new FreqT_1class(config);
-                freqt.run();
-                runForestMatcher(config, memory);
-                findCommonPattern(config, freqt.getGrammar(), freqt.getXmlCharacters());
-                cleanUp(config);
-            }
+
+            FreqT freqt_int_2class = new FreqT(config);
+            freqt_int_2class.run();
+            runForestMatcher(config, memory);
+            //findCommonPattern(config, freqt_int_2class.getGrammar(), freqt_int_2class.getXmlCharacters());
+            cleanUp(config);
+
             System.out.println("Finished ...");
         }
         catch (Exception e){

@@ -7,7 +7,7 @@ package be.intimals.freqt.structure;
  */
 public class Location extends FTArray {
     //new variable for 2-class data
-    int classID = -1;
+    int classID = 0;
     int locationId = 0;
 
     public int getLocationId() { return locationId; }
@@ -32,6 +32,12 @@ public class Location extends FTArray {
         add(pos);
     }
 
+    //new procedure for 2-class data
+    public Location(int classId, int id, int pos){
+        classID = classId;
+        locationId = id;
+        add(pos);
+    }
     //new procedure for 2-class data
     public Location(Location other, int classId, int id, int pos){
         super(other);

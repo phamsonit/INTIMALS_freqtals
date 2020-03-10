@@ -1,17 +1,10 @@
 package be.intimals.freqt.util;
 
-import be.intimals.freqt.structure.FTArray;
 import be.intimals.freqt.config.Config;
 import be.intimals.freqt.core.CheckSubtree;
-import be.intimals.freqt.output.AOutputFormatter;
-import be.intimals.freqt.output.XMLOutput;
-import be.intimals.freqt.structure.Pattern;
-import be.intimals.freqt.structure.Pattern_Int;
+import be.intimals.freqt.structure.FTArray;
 import be.intimals.freqt.structure.Projected;
 
-import java.io.FileWriter;
-import java.io.IOException;
-import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.Map;
@@ -56,88 +49,9 @@ public class Util {
         }catch (Exception e){System.out.println("Error: Filter maximal pattern");}
         return _MFP;
     }
-    /**
-     * print patterns found in the first step
-     * @param report
-     * @param start
-     * @throws IOException
-     */
-    public static void printPatternInTheFirstStep(Map<FTArray, String> MFP,
-                                            Config config,
-                                            Map<String, ArrayList<String>> grammar,
-                                            Map<Integer, String> labelIndex,
-                                            Map<String, String> xmlCharacters,
-                                            FileWriter report,
-                                            long start,
-                                            boolean finished) throws IOException {
-        log(report,"OUTPUT");
-        log(report,"===================");
-        if(finished)
-            log(report,"finished search");
-        else
-            log(report,"timeout");
 
-        String outFile = config.getOutputFile();
-        int nbMFP;
-        //if filtering maximal pattern in the mining process then print patterns
-        nbMFP = MFP.size();
 
-        outputPatterns(MFP, outFile, config, grammar, labelIndex, xmlCharacters);
 
-        long end1 = System.currentTimeMillis( );
-        long diff1 = end1 - start;
-        log(report,"+ Maximal patterns = "+ nbMFP);
-        log(report,"+ Running times = "+ diff1/1000 +" s");
-        report.close();
-    }
-
-    //print maximal patterns to XML file
-    private static void outputPatterns(Map<FTArray, String> MFP, String outFile,
-                                Config config, Map<String, ArrayList <String> > grammar,
-                                Map<Integer, String> labelIndex,
-                                Map<String, String> xmlCharacters){
-        try{
-            //create output file to store patterns for mining common patterns
-            FileWriter outputCommonPatterns = new FileWriter(outFile+".txt");
-            //output maximal patterns
-            AOutputFormatter outputMaximalPatterns =  new XMLOutput(outFile, config, grammar, xmlCharacters);
-            Iterator< Map.Entry<FTArray,String> > iter1 = MFP.entrySet().iterator();
-            while(iter1.hasNext()){
-                Map.Entry<FTArray,String> entry = iter1.next();
-                ArrayList <String> pat = Pattern_Int.getPatternStr(entry.getKey(),labelIndex);
-                String supports = entry.getValue();
-                ((XMLOutput) outputMaximalPatterns).report_Int(pat,supports);
-                //System.out.println(pat);
-                outputCommonPatterns.write(Pattern.getPatternString1(pat)+"\n");
-            }
-            outputMaximalPatterns.close();
-
-            outputCommonPatterns.flush();
-            outputCommonPatterns.close();
-
-        }
-        catch(Exception e){System.out.println("error print maximal patterns");}
-    }
-
-    //create a report
-    public static FileWriter initReport(Config _config, int dataSize) throws IOException {
-        String reportFile = _config.getOutputFile().replaceAll("\"","") +"_report.txt";
-        FileWriter report = new FileWriter(reportFile);
-        log(report,"INPUT");
-        log(report,"===================");
-        log(report,"- data sources : " + _config.getInputFiles());
-        log(report,"- input files : " +  dataSize);
-        log(report,"- minSupport : " + _config.getMinSupport());
-        report.flush();
-        return report;
-    }
-
-    //write a string to report
-    public static void log(FileWriter report, String msg) throws IOException {
-        //System.out.println(msg);
-        report.write(msg + "\n");
-        report.flush();
-    }
 
     //print list of candidates: need for debugging
     public static void printCandidates(Map<FTArray, Projected> fp, Map<Integer, String> labelIndex){
@@ -147,22 +61,18 @@ public class Util {
             FTArray pat = entry.getKey();
             Projected projected = entry.getValue();
 
-            System.out.print("\ndepth:" + projected.getProjectedDepth()+", ");
 
+            System.out.print("candidate: ");
             for(int i=0; i<pat.size(); ++i){
                 String label = labelIndex.get(pat.get(i));
                 if(label == null){
                     System.out.print(pat.get(i)+" ");
                 }else
-                    System.out.print(label +" : ");
+                    System.out.print(label);
             }
-
-            System.out.println();
-            for(int i = 0 ; i<projected.getProjectLocationSize(); ++i){
-                System.out.print(projected.getProjectLocation(i).getLocationId() +" ");
-                printFTArray(projected.getProjectLocation(i));
-            }
-
+            System.out.println("\ndepth:" + projected.getProjectedDepth());
+            System.out.println("locations: ");
+            printProjected(entry.getValue());
         }
     }
 
@@ -171,5 +81,44 @@ public class Util {
         for(int i=0; i< ft.size(); ++i)
             System.out.print(ft.get(i)+",");
         System.out.println();
+    }
+
+    //print a pattern in FTArray format
+    public static void printFTArray(FTArray ft, Map<Integer, String> labelIndex){
+        for(int i=0; i< ft.size(); ++i)
+            if(ft.get(i)==-1)
+                System.out.print("),");
+            else
+                System.out.print(labelIndex.get(ft.get(i))+",");
+        System.out.println();
+    }
+
+    //print details of a projected
+    public static void printProjected(Projected projected){
+        for(int i = 0; i< projected.getProjectLocationSize(); ++i) {
+            int classID = projected.getProjectLocation(i).getClassID();
+            int locationID = projected.getProjectLocation(i).getLocationId();
+            int rootID = projected.getProjectLocation(i).getRoot();
+            int locationPos = projected.getProjectLocation(i).getLocationPos();
+            System.out.print(classID+"-"+locationID+"-"+rootID+"-"+locationPos);
+            if(i<projected.getProjectLocationSize()-1)
+                System.out.print(";");
+        }
+
+    }
+
+    //get root occurrences of a pattern
+    public static String getStringRootOccurrence(Projected projected) {
+        String rootOccurrences = "";
+        for(int i=0; i<projected.getProjectLocationSize(); ++i){
+            rootOccurrences = rootOccurrences +
+                    projected.getProjectLocation(i).getClassID() + ("-") +
+                    projected.getProjectLocation(i).getLocationId() + ("-") +
+                    projected.getProjectLocation(i).getRoot() + ("-") +
+                    projected.getProjectLocation(i).getLocationPos();
+            if(i < projected.getProjectLocationSize()-1)
+                rootOccurrences = rootOccurrences + ";";
+        }
+        return rootOccurrences;
     }
 }
