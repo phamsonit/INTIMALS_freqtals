@@ -50,9 +50,6 @@ public class Util {
         return _MFP;
     }
 
-
-
-
     //print list of candidates: need for debugging
     public static void printCandidates(Map<FTArray, Projected> fp, Map<Integer, String> labelIndex){
 
@@ -114,8 +111,7 @@ public class Util {
             rootOccurrences = rootOccurrences +
                     projected.getProjectLocation(i).getClassID() + ("-") +
                     projected.getProjectLocation(i).getLocationId() + ("-") +
-                    projected.getProjectLocation(i).getRoot() + ("-") +
-                    projected.getProjectLocation(i).getLocationPos();
+                    projected.getProjectLocation(i).getRoot();
             if(i < projected.getProjectLocationSize()-1)
                 rootOccurrences = rootOccurrences + ";";
         }

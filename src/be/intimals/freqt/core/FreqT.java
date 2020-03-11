@@ -20,20 +20,19 @@ public class FreqT {
     protected Config config;
 
     protected ArrayList <ArrayList<NodeFreqT>> transaction = new ArrayList <>();
-    protected Map<String, ArrayList <String> > grammar    = new LinkedHashMap<>();
-    protected Map<String, String> xmlCharacters  = new LinkedHashMap<>();
+    protected Map<String, ArrayList <String> > grammar    = new HashMap<>();
+    protected Map<String, String> xmlCharacters  = new HashMap<>();
 
     //new variables for Integer
     protected Map<Integer, String> labelIndex = new HashMap<>();
-    protected Map<Integer, ArrayList<String> > grammarInt    = new LinkedHashMap<>();
-    protected Map<Integer, ArrayList<Integer> > blackLabelsInt = new LinkedHashMap<>();
-    protected Map<Integer, ArrayList<Integer> > whiteLabelsInt = new LinkedHashMap<>();
+    protected Map<Integer, ArrayList<String> > grammarInt    = new HashMap<>();
+    protected Map<Integer, ArrayList<Integer> > blackLabelsInt = new HashMap<>();
+    protected Map<Integer, ArrayList<Integer> > whiteLabelsInt = new HashMap<>();
 
     //store root labels
     public Set<String> rootLabels  = new HashSet<>();
     //store root occurrences of patterns
-    public Map<String, FTArray>  rootIDs = new HashMap<>();
-    public Map<Projected, FTArray>  rootIDsNew = new HashMap<>();
+    public Map<Projected, FTArray>  rootIDs = new HashMap<>();
     //store file ids of patterns
     public Map<String, String>  fileIDs = new HashMap<>();
     //int nbInputFiles;
@@ -56,9 +55,8 @@ public class FreqT {
         config = _config;
     }
 
-    /**
-     * run Freqt with file config.properties on 2-class dataset
-     */
+
+    //run Freqt with file config.properties
     public void run() {
         try{
             //read input data
@@ -75,10 +73,9 @@ public class FreqT {
             //expand FP1 to find maximal patterns
             expandFP1(FP1);
             if(config.getTwoStep())
-                expandPatternFromRootIDs(rootIDsNew, report);
+                expandPatternFromRootIDs(rootIDs, report);
             else
-                outputPatternInTheFirstStep(MFP, config, grammar, labelIndex, xmlCharacters,
-                        report, timeStart, finished);
+                outputPatternInTheFirstStep(MFP, config, grammar, labelIndex, xmlCharacters,report);
         }
         catch (Exception e) {
             System.out.println("Error: running Freqt_Int");
@@ -119,7 +116,7 @@ public class FreqT {
         }
     }
 
-    //
+    //execute the 2nd step to find maximal patterns from groups of root occurrences
     private void expandPatternFromRootIDs(Map<Projected, FTArray>  _rootIDs, FileWriter report){
         try{
             System.out.println("Mining maximal frequent subtrees ...");
@@ -152,7 +149,6 @@ public class FreqT {
         }
 
     }
-
 
     //build subtrees of size 1 based on root labels
     private Map<FTArray, Projected> buildFP1(ArrayList  < ArrayList <NodeFreqT> > trans, Set<String> _rootLabels,
@@ -187,7 +183,6 @@ public class FreqT {
         return freq1;
     }
 
-
     // expand FP1 to find frequent subtrees based on input constraints
     private void expandFP1(Map <FTArray, Projected > freq1){
         //init a pattern
@@ -202,7 +197,6 @@ public class FreqT {
             pattern = new FTArray();
         }
     }
-
 
     //expand pattern in 2-class data
     private void expandPattern(FTArray pattern, Projected projected) {
@@ -255,7 +249,6 @@ public class FreqT {
         }
     }
 
-
     //generate candidates for a pattern
     public Map<FTArray, Projected> generateCandidates(Projected projected, ArrayList<ArrayList <NodeFreqT> > _transaction) {
         //use LinkedHashMap to keep the order of the candidates
@@ -301,7 +294,6 @@ public class FreqT {
         return candidates;
     }
 
-
     //update candidate locations for two-class data
     private void updateCandidates(Map<FTArray, Projected> freq1, int candidate, int classID, int id, int rightmostPos,
                                   int depth, FTArray prefixInt, Location initLocations) {
@@ -327,7 +319,6 @@ public class FreqT {
         }
     }
 
-
     //add the tree to the root IDs or the MFP
     private void addTree(FTArray pat, Projected projected){
         //remove the right part of the pattern that misses leafs
@@ -351,24 +342,25 @@ public class FreqT {
     }
 
     //add root occurrences of pattern to rootIDs
-    private void addRootIDs(FTArray pat, Projected projected, Map<String, FTArray> _rootIDs){
+    private void addRootIDs(FTArray pat, Projected projected, Map<Projected, FTArray> _rootIDs){
         try {
             if(config.get2Class()){
                 double score = Constraint.chiSquare(projected, sizeClass1, sizeClass2);
                 if (score < config.getDSScore()) return;
             }
 
-            //find root occurrences (id-pos) of pattern
+            //find root occurrences of current pattern
             String rootOccurrences = getStringRootOccurrence(projected);
 
-            //check the current root occurrences
+            //check the current root occurrences existing in the rootID or not
             boolean isAdded = true;
             Collection<String> l1 = Arrays.asList(rootOccurrences.split(";"));
 
-            Iterator<Map.Entry<String, FTArray>> iter = _rootIDs.entrySet().iterator();
+            Iterator<Map.Entry<Projected, FTArray>> iter = _rootIDs.entrySet().iterator();
             while (iter.hasNext()){
-                Map.Entry<String, FTArray> entry = iter.next();
-                Collection<String> l2 = Arrays.asList(entry.getKey().split(";"));
+                Map.Entry<Projected, FTArray> entry = iter.next();
+                String rootOccurrence1 = getStringRootOccurrence(entry.getKey());
+                Collection<String> l2 = Arrays.asList(rootOccurrence1.split(";"));
                 //if l1 is super set of l2 then we don't need to add l1 to rootIDs
                 if(l1.containsAll(l2)){
                     isAdded = false;
@@ -381,11 +373,9 @@ public class FreqT {
                 }
             }
             if(isAdded){
-                //keep only the root occurrences and root label
+                //store root occurrences and root label
                 FTArray rootLabel_int = pat.subList(0,1);
-                _rootIDs.put(rootOccurrences, rootLabel_int);
-
-                rootIDsNew.put(projected, rootLabel_int);
+                _rootIDs.put(projected, rootLabel_int);
             }
         }catch (Exception e){System.out.println("Error: adding rootIDs "+e);}
     }
@@ -520,20 +510,13 @@ public class FreqT {
     //return input grammar
     public Map <String,ArrayList <String>> getGrammar(){return this.grammar;}
 
-    /**
-     * print patterns found in the first step
-     * @param report
-     * @param start
-     * @throws IOException
-     */
+    //print patterns found in the first step
     private void outputPatternInTheFirstStep(Map<FTArray, String> MFP,
                                                   Config config,
                                                   Map<String, ArrayList<String>> grammar,
                                                   Map<Integer, String> labelIndex,
                                                   Map<String, String> xmlCharacters,
-                                                  FileWriter report,
-                                                  long start,
-                                                  boolean finished) throws IOException {
+                                                  FileWriter report) throws IOException {
         log(report,"OUTPUT");
         log(report,"===================");
         if(finished)
@@ -545,7 +528,7 @@ public class FreqT {
         outputPatterns(MFP, config, grammar, labelIndex, xmlCharacters);
 
         long end1 = System.currentTimeMillis( );
-        long diff1 = end1 - start;
+        long diff1 = end1 - timeStart;
         log(report,"+ Maximal patterns = "+ MFP.size());
         log(report,"+ Running times = "+ diff1/1000 +" s");
         report.close();

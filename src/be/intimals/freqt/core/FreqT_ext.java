@@ -8,7 +8,6 @@ import java.io.FileWriter;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.LinkedHashMap;
 import java.util.Map;
 
 /*
@@ -17,14 +16,16 @@ import java.util.Map;
 
 public class FreqT_ext extends FreqT {
 
-    private Map<String, FTArray> interruptedRootID = new HashMap<>();
-
-    private Map<Projected, FTArray> interruptedRootIDNew = new HashMap<>();
+    private Map<Projected, FTArray> interruptedRootIDs;// = new HashMap<>();
 
     private long timeStart2nd;
     private long timeSpent;
     private long timePerGroup;
     private long timeStartGroup;
+
+    private boolean finishedGroup;
+    private FTArray interrupted_pattern;
+    private Projected interrupted_projected;
 
 
     ////////////////////////////////////////////////////////////////////////////////
@@ -58,41 +59,43 @@ public class FreqT_ext extends FreqT {
             //set the number of round
             int roundCount = 1;
             while(! _rootIDs.isEmpty() && finished){
-                System.out.println("Round: "+roundCount);
+                //System.out.println("\nRound: "+roundCount);
+                //System.out.println("#groups: "+_rootIDs.size());
                 //to store pattern of the group which run over timePerGroup
-                interruptedRootIDNew = new LinkedHashMap<>();
+                interruptedRootIDs = new HashMap<>();
                 //calculate running time for each group in the current round
                 timePerGroup = (timeout - timeSpent) / _rootIDs.size() ;
-                //short explanation: each group of rootID has a running time budget "timePerGroup"
-                //if a group of rootID cannot finish in the given time
-                //patterns are not explored will be stored in the "interruptedRootID"
-                //after pass over all rootIDs, if still having time budget the algorithm will
-                //recalculate the running time and explore patterns stored in interruptedRootID
-                for(Map.Entry<Projected, FTArray> entry : _rootIDs.entrySet()){
-                    //start to expand a group of rootID
+                //each group of rootID has a running time budget "timePerGroup"
+                //if a group cannot finish search in the given time
+                //this group will be stored in the "interruptedRootID"
+                //after passing over all groups in rootIDs, if still having time budget
+                //the algorithm will continue exploring patterns from groups stored in interruptedRootID
+                for(Map.Entry<Projected, FTArray> group : _rootIDs.entrySet()){
+                    //start expanding a group of rootID
                     timeStartGroup = System.currentTimeMillis( );
-                    if(roundCount==1) {
-                        //build location for the pattern
-                        Projected projected = new Projected();
-                        projected.setProjectedDepth(0);
-                        for(int i=0; i<entry.getKey().getProjectLocationSize(); i++){
-                            //entry.getKey().getProjectLocation(i).shrink(3);
-                            int classID = entry.getKey().getProjectLocation(i).getClassID();
-                            int locationID = entry.getKey().getProjectLocation(i).getLocationId();
-                            int rootID = entry.getKey().getProjectLocation(i).getRoot();
-                            //System.out.println("\n"+classID+" "+locationID+" "+rootID);
-                            Location temp = new Location();
-                            projected.addProjectLocation(classID,locationID,rootID, temp);
-                        }
-                        expandLargestPattern(entry.getValue(), projected);
-                    }else
-                        expandLargestPattern(entry.getValue(), entry.getKey());
-
+                    finishedGroup = true;
+                    //create location for the current pattern
+                    Projected projected = new Projected();
+                    projected.setProjectedDepth(0);
+                    for(int i=0; i<group.getKey().getProjectLocationSize(); i++){
+                        int classID = group.getKey().getProjectLocation(i).getClassID();
+                        int locationID = group.getKey().getProjectLocation(i).getLocationId();
+                        int rootID = group.getKey().getProjectLocation(i).getRoot();
+                        //System.out.println("\n"+classID+" "+locationID+" "+rootID);
+                        Location temp = new Location();
+                        projected.addProjectLocation(classID,locationID,rootID, temp);
+                    }
+                    //keep current pattern and location if this group cannot finish
+                    interrupted_pattern = group.getValue().subList(0,1);
+                    interrupted_projected = group.getKey();
+                    //expand the current root occurrences to find maximal patterns
+                    expandLargestPattern(group.getValue(), projected);
                 }
                 //update running time
                 timeSpent = (System.currentTimeMillis() - timeStart2nd);
                 //update lists of root occurrences for next round
-                _rootIDs = interruptedRootIDNew;
+                _rootIDs = interruptedRootIDs;
+                //increase number of round
                 roundCount++;
             }
             //print the largest patterns
@@ -110,12 +113,21 @@ public class FreqT_ext extends FreqT {
 
     private void expandLargestPattern(FTArray largestPattern, Projected projected) {
         try{
-            //check total running time
-            if (is2ndStepTimeout()) return;
+            if(!finishedGroup || !finished) return;
+
+            //check running time of the 2nd step
+            if (is2ndStepTimeout()) {
+                //System.out.println("2nd step timeout");
+                finished = false;
+                return;
+            }
 
             //check running for the current group
             if( isGroupTimeout() ) {
-                storeInterruptedRootID(largestPattern, projected, interruptedRootID);
+                //System.out.println("group timeout");
+                //storeInterruptedRootID(largestPattern, projected);
+                interruptedRootIDs.put(interrupted_projected, interrupted_pattern);
+                finishedGroup = false;
                 return;
             }
 
@@ -127,12 +139,13 @@ public class FreqT_ext extends FreqT {
 
             //if there is no candidate then report pattern --> stop
             if( candidates.isEmpty() ){
-                addPattern(largestPattern, projected, MFP);
+                addPattern(largestPattern, projected);
                 return;
             }
 
             //expand the current pattern with each candidate
             for(Map.Entry<FTArray, Projected> entry : candidates.entrySet()){
+
                 int oldSize = largestPattern.size();
                 largestPattern.addAll(entry.getKey());
 
@@ -145,7 +158,7 @@ public class FreqT_ext extends FreqT {
                 }else{
                     if( Constraint.satisfyFullLeaf(largestPattern) ){
                         //store the pattern
-                        addPattern(largestPattern, entry.getValue(), MFP);
+                        addPattern(largestPattern, entry.getValue());
                     }else{
                         //continue expanding pattern
                         expandLargestPattern(largestPattern, entry.getValue());
@@ -160,7 +173,7 @@ public class FreqT_ext extends FreqT {
         }
     }
 
-    private void addPattern(FTArray largestPattern, Projected projected, Map<FTArray,String> _MFP){
+    private void addPattern(FTArray largestPattern, Projected projected){
         //remove the part of the pattern that misses leaf
         FTArray patTemp = Pattern_Int.removeMissingLeaf(largestPattern);
         //check output constraints and right mandatory children before storing pattern
@@ -176,32 +189,6 @@ public class FreqT_ext extends FreqT {
         }
     }
 
-    private void storeInterruptedRootID(FTArray largestPattern, Projected projected,
-                                        Map<String, FTArray> _interruptedRootID) {
-        try{
-            //store depth and root locations
-            String depth = String.valueOf(projected.getProjectedDepth());
-            //store locations
-            String locations="";
-            //keep root occurrences and right-most occurrences
-            for (int i = 0; i < projected.getProjectLocationSize(); ++i) {
-                locations = locations +
-                        projected.getProjectLocation(i).getClassID() + ("-") +
-                        projected.getProjectLocation(i).getLocationId() + ("-") +
-                        projected.getProjectLocation(i).getRoot() + ("-") +
-                        projected.getProjectLocation(i).getLocationPos() + ";";
-            }
-            //store the pattern for the next round
-            _interruptedRootID.put(depth+"\t"+locations, largestPattern);
-
-            interruptedRootIDNew.put(projected, largestPattern);
-
-        }catch (Exception e){
-            System.out.println("store interrupted pattern error "+e);
-        }
-
-    }
-
     private void reportResult(FileWriter _report) throws IOException {
         if(finished)
             log(_report,"\t + search finished");
@@ -211,7 +198,6 @@ public class FreqT_ext extends FreqT {
         log(_report,"\t + maximal patterns: "+ MFP.size());
         long currentTimeSpent = (System.currentTimeMillis( ) - timeStart2nd);
         log(_report, "\t + running time: ..."+currentTimeSpent/1000+"s");
-        //log(_report,"- total running time "+(System.currentTimeMillis( )-start1st)/1000+"s");
         _report.flush();
         _report.close();
     }
@@ -224,15 +210,11 @@ public class FreqT_ext extends FreqT {
     }
 
     private boolean is2ndStepTimeout() {
-        if(System.currentTimeMillis() - timeStart2nd > timeout){ //long timeRemaining = timeFor2nd - timeSpent;
-            finished = false;
-            return true;
-        }
-        return false;
+        return ( (System.currentTimeMillis() - timeStart2nd) > timeout) ;
     }
 
     private boolean isGroupTimeout() {
-        return (System.currentTimeMillis( ) - timeStartGroup) > timePerGroup;
+        return ((System.currentTimeMillis( ) - timeStartGroup) > timePerGroup );
     }
 
 }
