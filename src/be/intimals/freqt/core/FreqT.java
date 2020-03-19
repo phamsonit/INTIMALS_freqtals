@@ -55,7 +55,6 @@ public class FreqT {
         config = _config;
     }
 
-
     //run Freqt with file config.properties
     public void run() {
         try{

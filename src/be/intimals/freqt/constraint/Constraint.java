@@ -242,7 +242,7 @@ public class Constraint {
      * @return
      */
     public static boolean satisfyMaxLeaf(FTArray pattern, int maxLeaf) {
-        return Pattern_Int.countLeafNode(pattern) > maxLeaf;
+        return Pattern_Int.countLeafNode(pattern) >= maxLeaf;
     }
 
 

@@ -61,30 +61,21 @@ public class FreqT_ext extends FreqT {
             while(! _rootIDs.isEmpty() && finished){
                 //System.out.println("\nRound: "+roundCount);
                 //System.out.println("#groups: "+_rootIDs.size());
-                //to store pattern of the group which run over timePerGroup
-                interruptedRootIDs = new HashMap<>();
-                //calculate running time for each group in the current round
-                timePerGroup = (timeout - timeSpent) / _rootIDs.size() ;
                 //each group of rootID has a running time budget "timePerGroup"
                 //if a group cannot finish search in the given time
                 //this group will be stored in the "interruptedRootID"
                 //after passing over all groups in rootIDs, if still having time budget
                 //the algorithm will continue exploring patterns from groups stored in interruptedRootID
+                interruptedRootIDs = new HashMap<>();
+                //calculate running time for each group in the current round
+                timePerGroup = (timeout - timeSpent) / _rootIDs.size() ;
                 for(Map.Entry<Projected, FTArray> group : _rootIDs.entrySet()){
                     //start expanding a group of rootID
                     timeStartGroup = System.currentTimeMillis( );
                     finishedGroup = true;
-                    //create location for the current pattern
-                    Projected projected = new Projected();
-                    projected.setProjectedDepth(0);
-                    for(int i=0; i<group.getKey().getProjectLocationSize(); i++){
-                        int classID = group.getKey().getProjectLocation(i).getClassID();
-                        int locationID = group.getKey().getProjectLocation(i).getLocationId();
-                        int rootID = group.getKey().getProjectLocation(i).getRoot();
-                        //System.out.println("\n"+classID+" "+locationID+" "+rootID);
-                        Location temp = new Location();
-                        projected.addProjectLocation(classID,locationID,rootID, temp);
-                    }
+
+                    Projected projected = getProjected(group.getKey());
+
                     //keep current pattern and location if this group cannot finish
                     interrupted_pattern = group.getValue().subList(0,1);
                     interrupted_projected = group.getKey();
@@ -111,6 +102,23 @@ public class FreqT_ext extends FreqT {
         }
     }
 
+    //get initial locations of a projected
+    private Projected getProjected(Projected projected) {
+        //create location for the current pattern
+        Projected ouputProjected = new Projected();
+        projected.setProjectedDepth(0);
+        for(int i=0; i<projected.getProjectLocationSize(); i++){
+            int classID = projected.getProjectLocation(i).getClassID();
+            int locationID = projected.getProjectLocation(i).getLocationId();
+            int rootID = projected.getProjectLocation(i).getRoot();
+            //System.out.println("\n"+classID+" "+locationID+" "+rootID);
+            Location temp = new Location();
+            ouputProjected.addProjectLocation(classID,locationID,rootID, temp);
+        }
+        return ouputProjected;
+    }
+
+    //expand pattern to find maximal patterns
     private void expandLargestPattern(FTArray largestPattern, Projected projected) {
         try{
             if(!finishedGroup || !finished) return;

@@ -3,8 +3,10 @@ package be.intimals.freqt.util;
 import be.intimals.freqt.config.Config;
 import be.intimals.freqt.core.CheckSubtree;
 import be.intimals.freqt.structure.FTArray;
+import be.intimals.freqt.structure.NodeFreqT;
 import be.intimals.freqt.structure.Projected;
 
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.Map;
@@ -48,6 +50,15 @@ public class Util {
             }
         }catch (Exception e){System.out.println("Error: Filter maximal pattern");}
         return _MFP;
+    }
+
+    //print input trees
+    public static void printTransaction(ArrayList <ArrayList<NodeFreqT>> trans){
+        for(int i=0; i<trans.size(); ++i){
+            for(int j=0; j<trans.get(i).size(); ++j)
+                System.out.print((trans.get(i).get(j).getNodeLabel())+"-"+trans.get(i).get(j).getNode_label_int()+" , ");
+            System.out.println();
+        }
     }
 
     //print list of candidates: need for debugging

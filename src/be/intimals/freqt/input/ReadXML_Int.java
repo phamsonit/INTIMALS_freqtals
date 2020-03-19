@@ -238,7 +238,7 @@ public class ReadXML_Int {
         Collections.sort(files);
         //ArrayList<File> files = new ArrayList<File>();
         //populateFileList(rootDirectory,files);
-        System.out.print("Reading " + files.size() +" files ");
+        //System.out.print("Reading " + files.size() +" files ");
         XmlFormatter formatter = new XmlFormatter();
         DocumentBuilderFactory dbFactory = DocumentBuilderFactory.newInstance();
         try {
@@ -279,9 +279,9 @@ public class ReadXML_Int {
                 database.add(trans);
                 //delete temporary input file
                 //Files.deleteIfExists(Paths.get(inFileTemp));
-                System.out.print(".");
+                //System.out.print(".");
             }
-            System.out.println(" reading ended.");
+            //System.out.println(" reading ended.");
         } catch (Exception e) {
             System.out.println(" read error.");
             e.printStackTrace();
@@ -337,7 +337,7 @@ public class ReadXML_Int {
                 database.add(trans);
                 //delete temporary input file
                 Files.deleteIfExists(Paths.get(inFileTemp));
-                System.out.print(".");
+                //System.out.print(".");
             }
             System.out.println(" reading ended.");
         } catch (Exception e) {
@@ -366,12 +366,6 @@ public class ReadXML_Int {
         for (File dir : directories) populateFileListNew(dir,list);
     }
 
-    public static void printTransaction(ArrayList < ArrayList<NodeFreqT> > trans){
-        for(int i=0; i<trans.size(); ++i){
-            for(int j=0; j<trans.get(i).size(); ++j)
-                System.out.print((trans.get(i).get(j).getNodeLabel())+"-"+trans.get(i).get(j).getNode_label_int()+" , ");
-            System.out.println();
-        }
-    }
+
 
 }

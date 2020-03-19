@@ -41,8 +41,9 @@ public class Main {
     static public void main(String[] args) throws IOException {
         Main m = new Main();
 
-        //String[] agg = {"conf/java/config.properties","7", "jhotdraw-6-7-mer"};
+        //String[] agg = {"conf/java/config.properties","7", "jhotdraw7"};
         //String[] agg = {"conf/java/config-sample.properties","3", "sample_data1"};
+        //String[] agg = {"conf/java/config.properties", "10", "checkstyle-8.20-8.25"};
         //args = agg;
 
         if (args.length==0) {
@@ -82,11 +83,11 @@ public class Main {
             //load final configuration as new configuration;
             Config config = new Config(finalConfig);
 
-            FreqT freqt_int_2class = new FreqT(config);
-            freqt_int_2class.run();
+            FreqT freqt = new FreqT(config);
+            freqt.run();
             runForestMatcher(config, memory);
-            //findCommonPattern(config, freqt_int_2class.getGrammar(), freqt_int_2class.getXmlCharacters());
-            cleanUp(config);
+            //findCommonPattern(config, freqt.getGrammar(), freqt.getXmlCharacters());
+            //cleanUp(config);
 
             System.out.println("Finished ...");
         }
@@ -230,7 +231,7 @@ public class Main {
                         config.getInputFiles() + " " + config.getOutputFile() +" " +
                         config.getOutputMatches() + " " + config.getOutputClusters();
 
-            System.out.println("With command: "+command);
+            //System.out.println("With command: "+command);
             Process proc = Runtime.getRuntime().exec(command);
             proc.waitFor();
         }
