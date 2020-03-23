@@ -87,17 +87,30 @@ public class FreqT {
         try{
             ReadXML_Int readXML_int = new ReadXML_Int();
 
+//            if(config.get2Class()){
+//                readXML_int.readDatabase(transaction,1, config.getAbstractLeafs(),
+//                        new File(config.getInputFiles1()), labelIndex, transactionClassID);
+//                readXML_int.readDatabase(transaction,0, config.getAbstractLeafs(),
+//                        new File(config.getInputFiles2()), labelIndex, transactionClassID);
+//                sizeClass1 = transactionClassID.stream().mapToInt(Integer::intValue).sum();
+//                sizeClass2 = transactionClassID.size() - sizeClass1;
+//            }else{
+//                readXML_int.readDatabase(transaction,1, config.getAbstractLeafs(),
+//                        new File(config.getInputFiles()), labelIndex, transactionClassID);
+//            }
+            //remove black labels before mining patterns
             if(config.get2Class()){
-                readXML_int.readDatabase(transaction,1, config.getAbstractLeafs(),
-                        new File(config.getInputFiles1()), labelIndex, transactionClassID);
-                readXML_int.readDatabase(transaction,0, config.getAbstractLeafs(),
-                        new File(config.getInputFiles2()), labelIndex, transactionClassID);
+                readXML_int.readDatabase(transaction,1,
+                        new File(config.getInputFiles1()), labelIndex, transactionClassID, config.getWhiteLabelFile());
+                readXML_int.readDatabase(transaction,0,
+                        new File(config.getInputFiles2()), labelIndex, transactionClassID, config.getWhiteLabelFile());
                 sizeClass1 = transactionClassID.stream().mapToInt(Integer::intValue).sum();
                 sizeClass2 = transactionClassID.size() - sizeClass1;
             }else{
-                readXML_int.readDatabase(transaction,1, config.getAbstractLeafs(),
-                        new File(config.getInputFiles()), labelIndex, transactionClassID);
+                readXML_int.readDatabase(transaction,1,
+                        new File(config.getInputFiles()), labelIndex, transactionClassID, config.getWhiteLabelFile());
             }
+
 
             //create grammar (labels are strings) which is used to print patterns
             Initial_Int.initGrammar(config.getInputFiles(),grammar, config.buildGrammar());
@@ -207,7 +220,8 @@ public class FreqT {
             Map<FTArray, Projected> candidates = generateCandidates(projected, transaction);
             //printCandidates(candidates, labelIndex);
             //prune the candidates on minimum support (total support of the pattern in two classes) and list of black labels
-            Constraint.pruneSupportAndBlacklist(candidates, config.getMinSupport(), pattern, blackLabelsInt);
+            //Constraint.pruneSupportAndBlacklist(candidates, config.getMinSupport(), pattern, blackLabelsInt);
+            Constraint.prune(candidates, config.getMinSupport());
             //if there is no candidate then report the pattern and then stop
             if( candidates.isEmpty()){
                 //addTree(pattern, projected);

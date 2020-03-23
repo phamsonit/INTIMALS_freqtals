@@ -106,7 +106,7 @@ public class FreqT_ext extends FreqT {
     private Projected getProjected(Projected projected) {
         //create location for the current pattern
         Projected ouputProjected = new Projected();
-        projected.setProjectedDepth(0);
+        ouputProjected.setProjectedDepth(0);
         for(int i=0; i<projected.getProjectLocationSize(); i++){
             int classID = projected.getProjectLocation(i).getClassID();
             int locationID = projected.getProjectLocation(i).getLocationId();
@@ -143,7 +143,9 @@ public class FreqT_ext extends FreqT {
             Map<FTArray, Projected> candidates = generateCandidates(projected, transaction);
 
             //prune on minimum support and list of black labels
-            Constraint.pruneSupportAndBlacklist(candidates, config.getMinSupport(), largestPattern, blackLabelsInt);
+            //Constraint.pruneSupportAndBlacklist(candidates, config.getMinSupport(), largestPattern, blackLabelsInt);
+
+            Constraint.prune(candidates, config.getMinSupport());
 
             //if there is no candidate then report pattern --> stop
             if( candidates.isEmpty() ){
