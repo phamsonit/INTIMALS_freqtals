@@ -3,6 +3,7 @@ package be.intimals.freqt.core;
 import be.intimals.freqt.config.Config;
 import be.intimals.freqt.constraint.Constraint;
 import be.intimals.freqt.structure.*;
+import be.intimals.freqt.util.Util;
 
 import java.io.FileWriter;
 import java.io.IOException;
@@ -26,7 +27,6 @@ public class FreqT_ext extends FreqT {
     private boolean finishedGroup;
     private FTArray interrupted_pattern;
     private Projected interrupted_projected;
-
 
     ////////////////////////////////////////////////////////////////////////////////
 
@@ -90,9 +90,11 @@ public class FreqT_ext extends FreqT {
                 roundCount++;
             }
             //print the largest patterns
-            if(!MFP.isEmpty())
+            if(!MFP.isEmpty()) {
                 //printLargestPattern();
+                //Map<FTArray, String> MFPFilter = filterLeafPattern(MFP, MFPLeaf);
                 outputPatterns(MFP, config, grammar, labelIndex, xmlCharacters);
+            }
 
             //report result
             reportResult(_report);
@@ -100,22 +102,6 @@ public class FreqT_ext extends FreqT {
         }catch (Exception e){
             System.out.println("expand maximal pattern error "+e);
         }
-    }
-
-    //get initial locations of a projected
-    private Projected getProjected(Projected projected) {
-        //create location for the current pattern
-        Projected ouputProjected = new Projected();
-        ouputProjected.setProjectedDepth(0);
-        for(int i=0; i<projected.getProjectLocationSize(); i++){
-            int classID = projected.getProjectLocation(i).getClassID();
-            int locationID = projected.getProjectLocation(i).getLocationId();
-            int rootID = projected.getProjectLocation(i).getRoot();
-            //System.out.println("\n"+classID+" "+locationID+" "+rootID);
-            Location temp = new Location();
-            ouputProjected.addProjectLocation(classID,locationID,rootID, temp);
-        }
-        return ouputProjected;
     }
 
     //expand pattern to find maximal patterns
@@ -129,7 +115,6 @@ public class FreqT_ext extends FreqT {
                 finished = false;
                 return;
             }
-
             //check running for the current group
             if( isGroupTimeout() ) {
                 //System.out.println("group timeout");
@@ -149,7 +134,10 @@ public class FreqT_ext extends FreqT {
 
             //if there is no candidate then report pattern --> stop
             if( candidates.isEmpty() ){
-                addPattern(largestPattern, projected);
+                if(leafPattern.size() > 0) {
+                    //store pattern
+                    addPattern(leafPattern, leafProjected);
+                }
                 return;
             }
 
@@ -159,6 +147,12 @@ public class FreqT_ext extends FreqT {
                 int oldSize = largestPattern.size();
                 largestPattern.addAll(entry.getKey());
 
+                if(largestPattern.getLast() < -1 )
+                    keepLeafPattern(largestPattern, entry.getValue());
+
+                FTArray oldLeafPattern = leafPattern;
+                Projected oldLeafProjected = leafProjected;
+
                 //check section and paragraphs in COBOL
                 Constraint.checkCobolConstraints(largestPattern, entry, entry.getKey(), labelIndex, transaction);
 
@@ -167,14 +161,17 @@ public class FreqT_ext extends FreqT {
                     //do nothing = don't store pattern to MFP
                 }else{
                     if( Constraint.satisfyFullLeaf(largestPattern) ){
-                        //store the pattern
-                        addPattern(largestPattern, entry.getValue());
+                        if(leafPattern.size() > 0) {
+                            //store the pattern
+                            addPattern(leafPattern, leafProjected);
+                        }
                     }else{
                         //continue expanding pattern
                         expandLargestPattern(largestPattern, entry.getValue());
                     }
                 }
                 largestPattern = largestPattern.subList(0, oldSize); //keep elements 0 to oldSize
+                keepLeafPattern(oldLeafPattern, oldLeafProjected);
                 //largestPattern.shrink(oldSize);
             }
         }catch (Exception e){
@@ -183,20 +180,36 @@ public class FreqT_ext extends FreqT {
         }
     }
 
-    private void addPattern(FTArray largestPattern, Projected projected){
-        //remove the part of the pattern that misses leaf
-        FTArray patTemp = Pattern_Int.removeMissingLeaf(largestPattern);
+    //add pattern to maximal pattern list
+    private void addPattern(FTArray pat, Projected projected){
         //check output constraints and right mandatory children before storing pattern
-        if(Constraint.checkOutput(patTemp, config.getMinLeaf(), config.getMinNode())
-                && ! Constraint.checkRightObligatoryChild(patTemp, grammarInt, blackLabelsInt)){
+        if(Constraint.checkOutput(pat, config.getMinLeaf(), config.getMinNode())
+                && ! Constraint.checkRightObligatoryChild(pat, grammarInt, blackLabelsInt)){
 
-            if(config.get2Class()){
-                add2ClassPattern(patTemp, projected, MFP);
+            if(config.get2Class()) {
+                //check chi-square score
+                if (Constraint.satisfyChiSquare(projected, sizeClass1, sizeClass2, config.getDSScore()))
+                    addMaximalPattern(pat, projected, MFP);
             }else{
-                //add1ClassPattern(patTemp,projected, MFP);
-                addMaximalPattern(patTemp, projected, MFP, config, 0);
+                addMaximalPattern(pat, projected, MFP);
             }
         }
+    }
+
+    //get initial locations of a projected
+    private Projected getProjected(Projected projected) {
+        //create location for the current pattern
+        Projected ouputProjected = new Projected();
+        ouputProjected.setProjectedDepth(0);
+        for(int i=0; i<projected.getProjectLocationSize(); i++){
+            int classID = projected.getProjectLocation(i).getClassID();
+            int locationID = projected.getProjectLocation(i).getLocationId();
+            int rootID = projected.getProjectLocation(i).getRoot();
+            //System.out.println("\n"+classID+" "+locationID+" "+rootID);
+            Location temp = new Location();
+            ouputProjected.addProjectLocation(classID,locationID,rootID, temp);
+        }
+        return ouputProjected;
     }
 
     private void reportResult(FileWriter _report) throws IOException {

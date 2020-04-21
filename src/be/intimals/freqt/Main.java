@@ -41,9 +41,8 @@ public class Main {
     static public void main(String[] args) throws IOException {
         Main m = new Main();
 
-        //String[] agg = {"conf/java/config.properties","7", "jhotdraw7"};
-        //String[] agg = {"conf/java/config-sample.properties","3", "sample_data1"};
-        //String[] agg = {"conf/java/config.properties", "10", "checkstyle-8.20-8.25"};
+        //String[] agg = {"conf/java/config.properties","5", "jhotdraw"};
+        //String[] agg = {"test/class_data_conf/config.properties", "3", "class_data"};
         //args = agg;
 
         if (args.length==0) {

@@ -11,6 +11,14 @@ import java.util.*;
 
 public class Constraint {
 
+    public static boolean satisfyChiSquare(Projected projected, int sizeClass1, int sizeClass2, double chiSquare){
+        double score = chiSquare(projected, sizeClass1, sizeClass2);
+        if(score >= chiSquare )
+            return true;
+        else
+            return false;
+    }
+
     //return number of occurrences of a pattern in two classes
     public static int[] get2ClassSupport(Projected projected){
         int a = 0; //# occurrences in class 1

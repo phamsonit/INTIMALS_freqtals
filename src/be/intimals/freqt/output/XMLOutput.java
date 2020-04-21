@@ -3,6 +3,7 @@ package be.intimals.freqt.output;
 import be.intimals.freqt.config.Config;
 import be.intimals.freqt.structure.Pattern;
 import be.intimals.freqt.structure.Projected;
+import be.intimals.freqt.util.Util;
 
 import java.io.IOException;
 import java.util.ArrayList;
@@ -79,6 +80,8 @@ public class XMLOutput extends AOutputFormatter {
             //System.out.print(pat);
             ++nbPattern;
 
+            //pat = Pattern.removeMissingLeaf(pat);
+
             //keep meta-variables in pattern
             Map<String,Integer> metaVariable = new HashMap<>();
             //print support, wsupport, size
@@ -88,8 +91,12 @@ public class XMLOutput extends AOutputFormatter {
             //out.write("<subtree id=\"" + nbPattern + "\" support=\"" + sup[0] +
             //        "\" wsupport=\"" + sup[1] + "\" size=\"" + sup[2] + "\">\n");
 
-            out.write("<subtree id=\"" + nbPattern + "\" support=\"" + sup[0] +
-                    "\" score=\"" + sup[1] + "\" size=\"" + sup[2] + "\">\n");
+            if(config.get2Class()) {
+                out.write("<subtree id=\"" + nbPattern + "\" support=\"" + sup[0] +
+                        "\" score=\"" + sup[1] + "\" size=\"" + sup[2] + "\">\n");
+            }else
+                out.write("<subtree id=\"" + nbPattern + "\" support=\"" + sup[0] +
+                        "\" wsupport=\"" + sup[1] + "\" size=\"" + sup[2] + "\">\n");
 
             //print pattern
             int n = 0;
@@ -134,7 +141,8 @@ public class XMLOutput extends AOutputFormatter {
                                 if(pat.get(i).equals("TheBlocks")&& pat.get(i-1).equals("SectionStatementBlock"))
                                     out.write("<match-succession/>");
                                 else
-                                    out.write("<match-set/>");
+                                    out.write("<match-sequence/>");
+                                    //out.write("<match-set/>");
 
                                 //out.write("<match-set/>");
                                 out.write("</__directives>\n");
@@ -299,7 +307,8 @@ public class XMLOutput extends AOutputFormatter {
                                 if(pat.get(i).equals("TheBlocks")&& pat.get(i-1).equals("SectionStatementBlock"))
                                     out.write("<match-succession/>");
                                 else
-                                    out.write("<match-set/>");
+                                    //out.write("<match-set/>");
+                                    out.write("<match-sequence/>");
 
 
                                 //out.write("<match-set/>");
@@ -443,7 +452,8 @@ public class XMLOutput extends AOutputFormatter {
                     if(pat.get(i).equals("TheBlocks") && pat.get(i-1).equals("SectionStatementBlock"))
                         out.write("<match-succession/>");
                     else
-                        out.write("<match-set/>");
+                        //out.write("<match-set/>");
+                        out.write("<match-sequence/>");
 
                     out.write("</__directives>\n");
                     out.write("</" + pat.get(i)+">\n");
