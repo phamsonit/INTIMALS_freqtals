@@ -19,6 +19,7 @@ public class CheckSubtree {
         int fastResult = CheckSubtree.fastCheckSubTree(pat1,pat2);
         if (fastResult != -1) return fastResult;
 
+
         //check subset of labels before check maximality
         //       if (checkSubsetLabel(pat1, pat2)) {
         //maximality check

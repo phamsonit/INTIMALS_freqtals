@@ -20,6 +20,8 @@ public class Config {
         input.close();
     }
 
+
+
     public boolean get2Class(){return Boolean.valueOf(prop.getProperty("2Class"));}
 
     public double getDSScore(){return Double.valueOf(prop.getProperty("minDSScore"));}
@@ -53,6 +55,8 @@ public class Config {
     public String getOutputMatches2() {return prop.getProperty("outputMatches2");}
 
     public String getOutputClusters2() {return prop.getProperty("outputClusters2");}
+
+    public boolean getWeighted(){return Boolean.valueOf(prop.getProperty("weighted"));}
 
 
     ///////////////

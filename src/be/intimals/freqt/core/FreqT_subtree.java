@@ -5,6 +5,7 @@ import be.intimals.freqt.input.ReadFile_Int;
 import be.intimals.freqt.structure.FTArray;
 import be.intimals.freqt.structure.NodeFreqT;
 import be.intimals.freqt.structure.Projected;
+import be.intimals.freqt.util.Util;
 
 import java.util.Iterator;
 import java.util.LinkedHashMap;
@@ -43,7 +44,7 @@ public class FreqT_subtree {
             //find all candidates of the current subtree
             Map<FTArray, Projected> candidate = generateCandidates(projected);
 
-            Constraint.prune(candidate,2);
+            Constraint.prune(candidate,2, false);
 
             if(candidate.isEmpty()){
                 //System.out.println("in find subtree "+maximalPattern+" - "+inputPattern);
@@ -70,6 +71,21 @@ public class FreqT_subtree {
         }
     }
 
+    private void prune (Map<FTArray, Projected > candidates, int minSup){
+        Iterator< Map.Entry<FTArray,Projected> > iter = candidates.entrySet().iterator();
+        while (iter.hasNext()) {
+            Map.Entry<FTArray,Projected> entry = iter.next();
+            int sup = Constraint.getSupport(entry.getValue());
+            int wsup = Constraint.getRootSupport(entry.getValue());
+            if(sup < minSup){
+                iter.remove();
+            }
+            else {
+                entry.getValue().setProjectedSupport(sup);
+                entry.getValue().setProjectedRootSupport(wsup);
+            }
+        }
+    }
     private Map<FTArray, Projected> generateCandidates(Projected projected) {
         int depth = projected.getProjectedDepth();
         Map <FTArray, Projected > candidate = new LinkedHashMap<>();

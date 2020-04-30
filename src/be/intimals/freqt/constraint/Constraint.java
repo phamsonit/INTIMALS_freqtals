@@ -11,18 +11,35 @@ import java.util.*;
 
 public class Constraint {
 
-    public static boolean satisfyChiSquare(Projected projected, int sizeClass1, int sizeClass2, double chiSquare){
-        double score = chiSquare(projected, sizeClass1, sizeClass2);
-        if(score >= chiSquare )
+    public static boolean satisfyChiSquare(Projected projected, int sizeClass1, int sizeClass2,
+                                           double chiSquareThreshold, boolean weighted){
+        double score = chiSquare(projected, sizeClass1, sizeClass2, weighted);
+
+        if(score >= chiSquareThreshold )
             return true;
         else
             return false;
     }
 
     //return number of occurrences of a pattern in two classes
-    public static int[] get2ClassSupport(Projected projected){
-        int a = 0; //# occurrences in class 1
-        int c = 0; //# occurrences in class 2
+    public static int[] get2ClassSupport(Projected projected, boolean weighted){
+        int a = 0;
+        int c = 0;
+        if(weighted){
+            //count support by occurrences
+            a = getRootSupportClass1(projected);
+            c = getRootSupport(projected) - a;
+        }else{
+            //count support by files
+            a = getSupportClass1(projected);
+            c = getSupport(projected) - a;
+        }
+        return new int[]{a,c};
+    }
+
+    //count support of pattern in the class 1
+    private static int getSupportClass1(Projected projected) {
+        int a=0;
         int old = 0xffffffff;
         for(int i=0; i<projected.getProjectLocationSize(); ++i){
             if( (projected.getProjectLocation(i).getClassID() == 1) &&
@@ -31,28 +48,31 @@ public class Constraint {
                 old = projected.getProjectLocation(i).getLocationId();
             }
         }
-        c = getSupport(projected) - a;
-
-        int[] result = {a,c};
-        return  result;
+        return a;
     }
 
-    public static double f1(Projected projected, int sizeClass1, int sizeClass2){
-        int[] ac = get2ClassSupport(projected);
-        int tp = ac[0];
-        int tn = ac[1];
-        int fn = sizeClass1 - tp;
-        int fp = sizeClass2 - tn;
-
-        double pre = (double)tp/(tp+fp);
-        double rec = (double)tp/(tp+fn);
-
-        return 2*(pre*rec)/(pre+rec);
+    //count root support of pattern in the class 1
+    private static int getRootSupportClass1(Projected projected) {
+        int rootSup = 0;
+        int oldLocationID = 0xffffffff;
+        int oldRootID = 0xffffffff;
+        for(int i=0; i< projected.getProjectLocationSize();++i) {
+            int classID1 = projected.getProjectLocation(i).getClassID();
+            int locationID1 = projected.getProjectLocation(i).getLocationId();
+            int rootID1 = projected.getProjectLocation(i).getRoot();
+            if(classID1 == 1){
+                if(locationID1 == oldLocationID && rootID1 != oldRootID || locationID1 != oldLocationID)
+                    ++rootSup;
+                oldLocationID = locationID1;
+                oldRootID = rootID1;
+            }
+        }
+        return rootSup;
     }
 
     // return chiSquare value of a pattern in two classes
-    public static double chiSquare(Projected projected, int sizeClass1, int sizeClass2){
-        int[]ac = get2ClassSupport(projected);
+    public static double chiSquare(Projected projected, int sizeClass1, int sizeClass2, boolean weighted){
+        int[]ac = get2ClassSupport(projected, weighted);
 
         int a = ac[0]; //occurrences in the first class data
         int c = ac[1]; //occurrences in the second class data
@@ -65,11 +85,23 @@ public class Constraint {
         return one * two * (sizeClass1 + sizeClass2);
     }
 
+    public static double f1(Projected projected, int sizeClass1, int sizeClass2, boolean weighted){
+        int[] ac = get2ClassSupport(projected, weighted);
+        int tp = ac[0];
+        int tn = ac[1];
+        int fn = sizeClass1 - tp;
+        int fp = sizeClass2 - tn;
+
+        double pre = (double)tp/(tp+fp);
+        double rec = (double)tp/(tp+fn);
+
+        return 2*(pre*rec)/(pre+rec);
+    }
 
     // return ratio of supports of the pattern in two classes
-    public static double oddSup(Projected projected, int sizeClass1, int sizeClass2){
+    public static double oddSup(Projected projected, int sizeClass1, int sizeClass2, boolean weighted){
 
-        int[]ac = get2ClassSupport(projected);
+        int[]ac = get2ClassSupport(projected, weighted);
 
         int occurrences1 = ac[0];
         int occurrences2 = ac[1];
@@ -92,8 +124,7 @@ public class Constraint {
      * @return
      */
     public static boolean checkOutput(FTArray pat, int minLeaf, int minNode){
-        if(    Constraint.satisfyMinLeaf(pat, minLeaf)
-                && Constraint.satisfyMinNode(pat, minNode) )
+        if( Constraint.satisfyMinLeaf(pat, minLeaf) && Constraint.satisfyMinNode(pat, minNode) )
             return true;
         else
             return false;
@@ -106,7 +137,6 @@ public class Constraint {
      * @return
      */
     public static int getSupport(Projected projected){
-        //if(weighted) return projected.getProjectLocationSize();
         int old = 0xffffffff;
         int sup = 0;
         for(int i=0; i<projected.getProjectLocationSize(); ++i) {
@@ -118,37 +148,39 @@ public class Constraint {
     }
 
     /**
-     * calculate the root support of a pattern = number of root occurrences
+     * calculate the root support of a pattern = number of occurrences
      * @param projected
      * @return
      */
     public static int getRootSupport(Projected projected){
-        int rootSup = 1;
-        for(int i=0; i< projected.getProjectLocationSize()-1;++i) {
-            Location location1 = projected.getProjectLocation(i);
-            Location location2 = projected.getProjectLocation(i+1);
-
-            if( (location1.getLocationId() == location2.getLocationId() &&
-                    location1.getRoot() != location2.getRoot()) ||
-                    location1.getLocationId() != location2.getLocationId()
-                    )
+        int rootSup = 0;
+        int oldLocationID = 0xffffffff;
+        int oldRootID = 0xffffffff;
+        for(int i=0; i< projected.getProjectLocationSize(); ++i) {
+            int locationID1 = projected.getProjectLocation(i).getLocationId();
+            int rootID1 = projected.getProjectLocation(i).getRoot();
+            if( locationID1 == oldLocationID && rootID1 != oldRootID || locationID1 != oldLocationID )
                 ++rootSup;
+            oldLocationID = locationID1;
+            oldRootID = rootID1;
         }
         return rootSup;
     }
+
 
     /**
      * prune candidates based on minimal support
      * @param candidates
      * @param minSup
      */
-    public static void prune (Map<FTArray, Projected > candidates, int minSup){
+    public static void prune (Map<FTArray, Projected > candidates, int minSup, boolean weighted){
         Iterator< Map.Entry<FTArray,Projected> > iter = candidates.entrySet().iterator();
         while (iter.hasNext()) {
             Map.Entry<FTArray,Projected> entry = iter.next();
             int sup = getSupport(entry.getValue());
             int wsup = getRootSupport(entry.getValue());
-            if(sup < minSup){
+            int limit = weighted ? wsup : sup;
+            if(limit < minSup){
                 iter.remove();
             }
             else {

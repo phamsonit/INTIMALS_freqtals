@@ -129,8 +129,7 @@ public class FreqT_ext extends FreqT {
 
             //prune on minimum support and list of black labels
             //Constraint.pruneSupportAndBlacklist(candidates, config.getMinSupport(), largestPattern, blackLabelsInt);
-
-            Constraint.prune(candidates, config.getMinSupport());
+            Constraint.prune(candidates, config.getMinSupport(), config.getWeighted());
 
             //if there is no candidate then report pattern --> stop
             if( candidates.isEmpty() ){
@@ -188,7 +187,7 @@ public class FreqT_ext extends FreqT {
 
             if(config.get2Class()) {
                 //check chi-square score
-                if (Constraint.satisfyChiSquare(projected, sizeClass1, sizeClass2, config.getDSScore()))
+                if (Constraint.satisfyChiSquare(projected, sizeClass1, sizeClass2, config.getDSScore(), config.getWeighted()))
                     addMaximalPattern(pat, projected, MFP);
             }else{
                 addMaximalPattern(pat, projected, MFP);

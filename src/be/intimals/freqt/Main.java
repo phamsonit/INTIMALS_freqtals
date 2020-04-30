@@ -27,6 +27,7 @@ package be.intimals.freqt;
 
 import be.intimals.freqt.config.Config;
 import be.intimals.freqt.core.*;
+import be.intimals.freqt.structure.FTArray;
 
 import java.io.*;
 import java.nio.file.Files;

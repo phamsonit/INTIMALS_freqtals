@@ -59,6 +59,7 @@ public class FreqT {
     FTArray leafPattern = new FTArray();
     Projected leafProjected = new Projected();
 
+
     ////////////////////////////////////////////////////////////
 
     public FreqT(Config _config){
@@ -77,8 +78,15 @@ public class FreqT {
             System.out.println("Mining frequent subtrees ...");
             //build FP1: all labels are frequent
             Map <FTArray, Projected> FP1 = buildFP1(transaction, rootLabels, transactionClassID);
+
+            //remove node SourceFile which is not a AST node
+            FTArray notASTNode = new FTArray();
+            notASTNode.add(0);
+            FP1.remove(notASTNode);
+
             //prune FP1 on minimum support
-            Constraint.prune(FP1, config.getMinSupport() );
+            Constraint.prune(FP1, config.getMinSupport(), config.getWeighted());
+
             //expand FP1 to find maximal patterns
             expandFP1(FP1);
             if(config.getTwoStep()) {
@@ -191,7 +199,9 @@ public class FreqT {
                     if (_rootLabels.contains(node_label) || _rootLabels.isEmpty()) {
                         //System.out.println(lineNr+"  "+lineNrs.elementAt(i));
                         //if(Integer.valueOf(lineNr) > lineNrs.elementAt(i)){ //using only for Cobol data
-                        if (node_label != null) {
+                        //check a label : is not a leaf and is not an AST node
+                        if (node_label != null && node_label.charAt(0) != '*' &&
+                                Character.isUpperCase(node_label.charAt(0)) ) {
                             //update the locations
                             FTArray prefix = new FTArray();
                             Location initLocation = new Location();
@@ -232,7 +242,8 @@ public class FreqT {
             //printCandidates(candidates, labelIndex);
             //prune the candidates on minimum support (total support of the pattern in two classes) and list of black labels
             //Constraint.pruneSupportAndBlacklist(candidates, config.getMinSupport(), pattern, blackLabelsInt);
-            Constraint.prune(candidates, config.getMinSupport());
+            Constraint.prune(candidates, config.getMinSupport(), config.getWeighted());
+
             //if there is no candidate then report the pattern and then stop
             if( candidates.isEmpty()){
                 if(leafPattern.size() > 0)
@@ -376,7 +387,7 @@ public class FreqT {
                 && ! Constraint.checkRightObligatoryChild(pat, grammarInt, blackLabelsInt)){
             if(config.get2Class()){
                 //check chi-square score
-                if(Constraint.satisfyChiSquare(projected, sizeClass1, sizeClass2, config.getDSScore())){
+                if(Constraint.satisfyChiSquare(projected, sizeClass1, sizeClass2, config.getDSScore(), config.getWeighted())){
                     if(config.getTwoStep()){
                         //add pattern to the list of 1000-highest chi-square score patterns
                         addHighScorePattern(pat, projected, HSP);
@@ -431,22 +442,25 @@ public class FreqT {
         }catch (Exception e){System.out.println("Error: adding rootIDs "+e);}
     }
 
+    public Map<FTArray, String> notMFP = new HashMap<>();
     //add maximal patterns
     public void addMaximalPattern(FTArray pat, Projected projected, Map<FTArray, String> _MFP) {
+
         if(! _MFP.isEmpty()){
-            if(_MFP.containsKey(pat)){
-                return;
-            }
+            //if pattern is in the list of patterns which are not maximal or
+            //pattern already exists in _MFP then return
+            if(notMFP.containsKey(pat) || _MFP.containsKey(pat)) return;
+
             //check maximal pattern
             Iterator< Map.Entry<FTArray,String> > p = _MFP.entrySet().iterator();
             while(p.hasNext()){
                 Map.Entry<FTArray, String> entry = p.next();
                 switch (CheckSubtree.checkSubTree(pat, entry.getKey(), config)){
                     case 1: //pat is a subtree of entry.getKey
+                        notMFP.put(pat, getSupportString(pat, projected));
                         return;
                     case 2: //entry.getKey is a subtree of pat
                         p.remove();
-                        //keep the old patternSupport
                         break;
                 }
             }
@@ -464,8 +478,8 @@ public class FreqT {
     public String getSupportString(FTArray pat, Projected projected){
         String result;
         if(config.get2Class()){
-            double score = Constraint.chiSquare(projected, sizeClass1, sizeClass2);
-            int[] ac = Constraint.get2ClassSupport(projected);
+            double score = Constraint.chiSquare(projected, sizeClass1, sizeClass2, config.getWeighted());
+            int[] ac = Constraint.get2ClassSupport(projected, config.getWeighted());
             String support = String.valueOf(ac[0]) +"-"+String.valueOf(ac[1]);
             int size = Pattern_Int.countNode(pat);
             result = support + "," + score + "," + String.valueOf(size);
@@ -491,7 +505,7 @@ public class FreqT {
 
     //add pattern to the list of 1000-highest chi-square score patterns
     private void addHighScorePattern(FTArray pat, Projected projected, Map<FTArray,Projected> _HSP){
-        double score = Constraint.chiSquare(projected, sizeClass1, sizeClass2);
+        double score = Constraint.chiSquare(projected, sizeClass1, sizeClass2, config.getWeighted());
         if(_HSP.size() >= config.getNumPatterns()) {
             double minScore = getMinScore(_HSP);
             if (score > minScore) {
@@ -512,7 +526,7 @@ public class FreqT {
     private double getMinScore(Map<FTArray,Projected> _HSP){
         double score = 1000.0;
         for(Map.Entry<FTArray, Projected> entry : _HSP.entrySet()){
-            double scoreTmp = Constraint.chiSquare(entry.getValue(), sizeClass1, sizeClass2);
+            double scoreTmp = Constraint.chiSquare(entry.getValue(), sizeClass1, sizeClass2, config.getWeighted());
             if(score > scoreTmp)
                 score = scoreTmp;
         }
@@ -524,7 +538,7 @@ public class FreqT {
         double score = 1000.0;
         FTArray minScorerPattern = new FTArray();
         for(Map.Entry<FTArray, Projected> entry : _HSP.entrySet()){
-            double scoreTmp = Constraint.chiSquare(entry.getValue(), sizeClass1, sizeClass2);
+            double scoreTmp = Constraint.chiSquare(entry.getValue(), sizeClass1, sizeClass2, config.getWeighted());
             if(score > scoreTmp) {
                 score = scoreTmp;
                 minScorerPattern = new FTArray(entry.getKey());
