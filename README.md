@@ -1,67 +1,75 @@
 # FREQTALS #
-FREQTALS is a constraint-based algorithm for discovering
-maximal frequent subtree patterns from source code.
+FREQTALS, an extension of FREQT tree mining algorithm, is designed to discover patterns in software source code. It can discover either patterns in individual systems or patterns that occur with different frequences in two versions of a system.
 
-## Get FREQTALS ##
-FREQTALS was compiled into a standalone jar file `freqtals.jar`.
-This execution file and additional sample data such as configuration,
-input ASTs, etc, can be found in this repository.
+## Getting FREQTALS ##
+FREQTALS is implemented in Java. The software is built as a standalone jar file `freqtals.jar`. Thus user can execute it in any flatform.
 
-Note that: to have matches and clusters of patterns after running freqtats,  `forestmatcher.jar` was integrated into the freqtals. Thus we need to have the forsmatcher.jar in the same directory with freqtats.jar.
+## External libraries ##
+
+FREQTALS uses `forestmatcher.jar` (https://gitlab.soft.vub.ac.be/intimals/forest-matcher) to match patterns in source code. Thus, please make sure that the forsmatcher.jar file is stored in the same directory with freqtats.jar.
 
 ## Using FREQTALS ##
 
 ### Syntax ###
-FREQTALS supports two options:
+FREQTALS supports two running options:
 1. single run: execute FREQTALS on a single dataset and a minimum support threshold.
-`java -jar freqtals.jar CONFIG_FILE MIN_SUPPORT INPUT_FOLDER`
-2. parallel run: execute FREQTALS on multiple datasets and multiple minimum
-support thresholds.
+`java -jar freqtals.jar CONFIG_FILE MIN_SUPPORT INPUT_DIR`
+2. parallel run: execute FREQTALS on multiple datasets and multiple minimum support thresholds.
 `java -jar freqtals.jar -multi CONFIG_FILE`
 
 where 
 - `CONFIG_FILE`: a file containing configurations,
-- `MIN_SUPPORT`: minimum support threshold,
-- `INPUT_FOLDER`: a folder containing ASTs data. Note that this folder is a subfolder of `inputPath` in the CONFIG_FILE.
+- `MIN_SUPPORT`: a minimum support threshold,
+- `INPUT_DIR`: a directory containing XML files. Note that this directory is a sub-directory of directory that is indicated in the CONFIG_FILE.
 
+### CONFIG_FILE ###
+A `config.properties` contains different attributes which are described as follows:
 
+- `twoClass=[true/false]`: `true`-running algorithm on two versions of a system; `false`-running the algorithm on one system.
+- `inputPath=[path]`: a main directory that contains `INPUT_DIR`
+- `outputPath=[path]`: a directory contains output
+- `timeout=[int]`: running time
+- `minLeaf=[int]`: minimum number of leafs of pattern
+- `maxLeaf=[int]`: maximum number of leafs of pattern
+- `minNode=[int]`: minimum number of nodes of pattern
+- `twoStep=[true/false]`: an option to run FREQTALS in one step or two step: `twoStep=true` running the software in two steps(step 1: find frequent patterns with size constraints; step 2: find maximal patterns without maximal size constraint from root occurrences of patterns found in the first step). `twoStep=false` - find maximal patterns with maximal size constraint.
+- `weighted=[true/false]`: `true`-counting support based on number of occurrences; `false`-counting support based on number of files
 
-### Input ###
-The input is a set of XML files. Each XML file corresponds to an AST.
-These files must be stored in a subfolder of `inputPath`.
+- **Configurations used together with twoClass=true**
+- `inputPath1=[dir]`: directory contains files of old version
+- `inputPath2=[dir]`: directory contains files of new version
+- `minDSScore=[double]`: minimum chi-square score
+- `numPatterns=[int]`: number of patterns, that have highest chi-square score, to be kept in the first step.
 
-### Output ###
-The output includes the following files:
--`INPUT_FOLDER-MIN_SUPPORT-patterns.xml`: list of patterns
--`INPUT_FOLDER-MIN_SUPPORT-matches.xml`: list of matches of patterns in source code
--`INPUT_FOLDER-MIN_SUPPORT-clusters.xml`: list of clusters of patterns
--`INPUT_FOLDER-MIN_SUPPORT-patterns_common.xml`: list of common patterns of patterns in each cluster
--`INPUT_FOLDER-MIN_SUPPORT-matches_common.xml`: list of matches of common patterns in source code
--`INPUT_FOLDER-MIN_SUPPORT-config.properties`: used configurations
--`INPUT_FOLDER-MIN_SUPPORT-patterns-report.txt`: result statistics
+- **Configurations for additional file**
+- `buildGrammar=[true/false]`: `true`-create grammar from input data; `false`- read grammar from file.
+- `rootLabelFile=[path]`: file contains a list of root labels
+- `whiteLabelFile=[path]`: file contains a list of labels that only allows in patterns
+- `xmlCharacterFile=[path]`: file contains a list of xml characters
 
+- **Configurations for the parallel run**
+- `minSupportList=...`: list of minimum support thresholds.
+- `inFilesList=...`: list of directories (each directory corresponds to one dataset).
 
-### Configurations ###
-The `CONFIG_FILE` contains the configurations which are described as follows:
-- `inputPath`: directory contains data
-- `outputPath`: directory contains output patterns and other files
-- `timeout`: budget time to run one dataset
-- `minLeaf`: minimum number of leafs of pattern
-- `maxLeaf`: maximum number of leafs of pattern
-- `minNode`: minimum number of nodes of pattern
-- `twoStep`: options to choose mining maximal patterns methods. `true`  - using 2 steps to mine maximal patterns (step 1: find frequent patterns with size constraints; step 2: grown frequent pattern to find maximal patterns without maximal size constraint). `false` - find maximal patterns in 1 step with maximal size constraint.
-- `filter`: method to filter maximal patterns. filter = true  - directly filter maximal patterns in the mining process; filter = false - filter maximality after having a list of frequent patterns
-- `buildGrammar`: method to build grammar. buildGrammar = true - build grammar from input data; buldGrammar = false - read grammar from given file
-- `rootLabelFile`: file contains a list of root labels
-- `whiteLabelFile`: file contains a list of labels that only allows in patterns
-- `xmlCharacterFile`: file contains a list of xml characters
-- Configurations for the parallel run: 
--`minSupportList`: list of minimum support thresholds.
--`inFilesList`: list of directories (each directory corresponds to one dataset).
 FREQTALS will run all combinations of minSupportList and inFilesList.
 For example, given minSupportList = 4,5,6 and inFilesList = fold1, fold2, fold3
 FREQTALS will run 9 executions. 3 times for each fold with 3 minimum support thresholds.
 *Please refer the `conf/java/config.properties` for more details.*
+
+### Input ###
+The input data is a set of XML files. Each XML file corresponds to an AST. These files must be stored in the `INPUT_DIR`.
+
+### Output ###
+The output of the software includes the following files:
+-`INPUT_DIR_MIN_SUPPORT_patterns.xml`: list of patterns
+-`INPUT_DIR_MIN_SUPPORT_matches.xml`: list of matches of patterns in source code
+-`INPUT_DIR_MIN_SUPPORT_clusters.xml`: list of clusters of patterns
+-`INPUT_DIR_MIN_SUPPORT_patterns_common.xml`: list of common patterns of patterns in each cluster
+-`INPUT_DIR_MIN_SUPPORT_matches_common.xml`: list of matches of common patterns in source code
+-`INPUT_DIR_MIN_SUPPORT_config.properties`: used configurations
+-`INPUT_DIR_MIN_SUPPORT_patterns-report.txt`: result statistics
+
+In case of running FREQTALS on two versions of a system, the matches files will be `INPUT_DIR_MIN_SUPPORT_matches_1.xml` and `INPUT_DIR_MIN_SUPPORT_matches_2.xml` which are the matches of patterns in old version and new version, respectively.
 
 ### supporting files ###
 - `listRootLabel.txt`: set of labels allowed to occur in the root of patterns.

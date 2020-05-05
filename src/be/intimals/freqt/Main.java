@@ -80,14 +80,21 @@ public class Main {
                         debugFile = args[i];
                 }
             }
-            //load final configuration as new configuration;
+            //load final configuration;
             Config config = new Config(finalConfig);
 
             FreqT freqt = new FreqT(config);
             freqt.run();
+
+            //run forestmatcher to find matches of patterns in source code
             runForestMatcher(config, memory);
-            //findCommonPattern(config, freqt.getGrammar(), freqt.getXmlCharacters());
-            //cleanUp(config);
+
+            if(! config.get2Class()) {
+                //find common patterns in each cluster
+                findCommonPattern(config, freqt.getGrammar(), freqt.getXmlCharacters());
+                //clean up files
+                cleanUp(config);
+            }
 
             System.out.println("Finished ...");
         }
