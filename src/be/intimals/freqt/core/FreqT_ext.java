@@ -156,10 +156,10 @@ public class FreqT_ext extends FreqT {
                 Constraint.checkCobolConstraints(largestPattern, entry, entry.getKey(), labelIndex, transaction);
 
                 //check constraints
-                if(Constraint.checkLeftObligatoryChild(largestPattern, entry.getKey(), grammarInt, blackLabelsInt)){
+                if(Constraint.missingLeftObligatoryChild(largestPattern, entry.getKey(), grammarInt)){
                     //do nothing = don't store pattern to MFP
                 }else{
-                    if( Constraint.satisfyFullLeaf(largestPattern) ){
+                    if( Constraint.isNotFullLeaf(largestPattern) ){
                         if(leafPattern.size() > 0) {
                             //store the pattern
                             addPattern(leafPattern, leafProjected);
@@ -183,8 +183,7 @@ public class FreqT_ext extends FreqT {
     private void addPattern(FTArray pat, Projected projected){
         //check output constraints and right mandatory children before storing pattern
         if(Constraint.checkOutput(pat, config.getMinLeaf(), config.getMinNode())
-                && ! Constraint.checkRightObligatoryChild(pat, grammarInt, blackLabelsInt)){
-
+                && ! Constraint.missingRightObligatoryChild(pat, grammarInt)){
             if(config.get2Class()) {
                 //check chi-square score
                 if (Constraint.satisfyChiSquare(projected, sizeClass1, sizeClass2, config.getDSScore(), config.getWeighted()))

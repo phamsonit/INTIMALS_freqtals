@@ -5,6 +5,7 @@ import be.intimals.freqt.structure.Location;
 import be.intimals.freqt.structure.NodeFreqT;
 import be.intimals.freqt.structure.Pattern_Int;
 import be.intimals.freqt.structure.Projected;
+import be.intimals.freqt.util.Util;
 import be.intimals.freqt.util.Variables;
 
 import java.util.*;
@@ -14,7 +15,6 @@ public class Constraint {
     public static boolean satisfyChiSquare(Projected projected, int sizeClass1, int sizeClass2,
                                            double chiSquareThreshold, boolean weighted){
         double score = chiSquare(projected, sizeClass1, sizeClass2, weighted);
-
         if(score >= chiSquareThreshold )
             return true;
         else
@@ -268,15 +268,6 @@ public class Constraint {
     }
 
     /**
-     * return true if the pattern misses leaf
-     * @param pattern
-     * @return
-     */
-    public static boolean satisfyFullLeaf(FTArray pattern) {
-        return Pattern_Int.checkMissingLeaf(pattern);
-    }
-
-    /**
      * return true if the number of leafs of the pattern is larger than maxLeaf
      * @param pattern
      * @return
@@ -285,39 +276,32 @@ public class Constraint {
         return Pattern_Int.countLeafNode(pattern) >= maxLeaf;
     }
 
+    /**
+     * return true if the pattern misses leaf
+     * @param pattern
+     * @return
+     */
+    public static boolean isNotFullLeaf(FTArray pattern) {
+        return Pattern_Int.checkMissingLeaf(pattern);
+    }
 
     //return true if pattern misses obligatory child at the left side of the current node
-    public static boolean checkLeftObligatoryChild(FTArray pat,
+    public static boolean missingLeftObligatoryChild(FTArray pat,
                                             FTArray candidate,
-                                            Map <Integer,ArrayList <String> > _grammarInt,
-                                            Map <Integer,ArrayList<Integer> > _blackLabelsInt){
+                                            Map <Integer,ArrayList <String> > _grammarInt){
 
         boolean missMandatoryChild = false;
         try{
-            //1. find all siblings of candidate
-            //System.out.println("pattern: "+pat);
-            //System.out.println("candidate: "+candidate);
-
-            //parent position of candidate in the patterns
-            int parentPos = Pattern_Int.findParentPosition(pat,candidate);
-            //String parentLabel = labelIndex.get(pat.get(parentPos));
-            //System.out.println("parent pos: "+ parentPos+" label "+parentLabel);
+            //find parent's position of candidate in the patterns
+            int parentPos = Pattern_Int.findParentPosition(pat, candidate);
 
             //find all children of patternLabel in grammar
             ArrayList <String> childrenG = _grammarInt.get(pat.get(parentPos));
-            //System.out.println("children in grammar: "+childrenG);
 
             if(childrenG.get(0).equals("ordered") && !childrenG.get(1).equals("1")){
-                //System.out.println("must check obligatory children");
-                //get all children of parentPos in pattern
+                //find all children of parentPos in pattern
                 FTArray childrenP = Pattern_Int.findChildrenPosition(pat,parentPos);
-
-                ArrayList<Integer> blackLabelChildren = new ArrayList<Integer>();
-                if(_blackLabelsInt.containsKey(pat.get(parentPos)))
-                    blackLabelChildren = _blackLabelsInt.get(pat.get(parentPos));
-                //System.out.println("blackLabel "+blackLabelChildren);
-
-                //compare ...
+                //compare children in pattern and children in grammar
                 int i=0;
                 int j=2;
                 while(i<childrenP.size() && j<childrenG.size() && !missMandatoryChild) {
@@ -326,16 +310,14 @@ public class Constraint {
                     if(pat.get(childrenP.get(i)) == label_int) {
                         ++i;
                         ++j;
-                    }
-                    else {
-                        //if this child is a mandatory and it is not in the blacklist
-                        if ( (childGrammarTemp[1].equals("true") && blackLabelChildren.contains(label_int)) ||
-                                (childGrammarTemp[1].equals("false")) )
+                    }else {
+                        //if this child is optional
+                        if (childGrammarTemp[1].equals("false") )
                             j++;
                         else
-                        if( (childGrammarTemp[1].equals("true") && !blackLabelChildren.contains(label_int)) )
-                            missMandatoryChild = true;
-                        //return true;
+                            if( childGrammarTemp[1].equals("true") )
+                                missMandatoryChild = true;
+                                //return true;
                     }
                 }
             }
@@ -351,14 +333,12 @@ public class Constraint {
     //1. find children of the current node in the pattern
     //2. find children of the current node in the grammar
     //3. compare two set of children to determine the pattern missing mandatory child or not
-    public static boolean checkRightObligatoryChild(FTArray pat,
-                                             Map <Integer,ArrayList <String> > _grammarInt,
-                                             Map <Integer,ArrayList<Integer> > _blackLabelsInt){
-
+    public static boolean missingRightObligatoryChild(FTArray pat,
+                                             Map <Integer,ArrayList <String> > _grammarInt){
         boolean missMandatoryChild = false;
         try{
             //System.out.println(pat);
-            for(int pos = 0; pos < pat.size() && !missMandatoryChild; ++pos) {
+            for(int pos = 0; pos < pat.size(); ++pos) {
                 int currentLabel = pat.get(pos);
                 if(currentLabel >= 0 ){ //consider only internal label
                     //find all children of patternLabel in grammar
@@ -368,14 +348,14 @@ public class Constraint {
                         FTArray childrenP = Pattern_Int.findChildrenPosition(pat, pos);
                         if(childrenP.size() > 0){
                             //get black children
-                            ArrayList<Integer> blackLabelChildren = new ArrayList<Integer>();
-                            if (_blackLabelsInt.containsKey(currentLabel))
-                                blackLabelChildren = _blackLabelsInt.get(currentLabel);
-
+//                            ArrayList<Integer> blackLabelChildren = new ArrayList<Integer>();
+//                            if (_blackLabelsInt.containsKey(currentLabel))
+//                                blackLabelChildren = _blackLabelsInt.get(currentLabel);
+                            //check leaf children
                             //compare two sets of children to determine this pattern misses mandatory child or not
                             int i=0;
                             int j=2;
-                            while(i<childrenP.size() && j<childrenG.size()) {
+                            while(i<childrenP.size() && j<childrenG.size() && !missMandatoryChild) {
                                 String[] childGrammarTemp = childrenG.get(j).split(Variables.uniChar);
                                 int label_int = Integer.valueOf(childGrammarTemp[0]);
 
@@ -384,23 +364,24 @@ public class Constraint {
                                     ++j;
                                 }
                                 else {
-                                    //if this child is a mandatory and it is not in the blacklist
-                                    if ( (childGrammarTemp[1].equals("true") && blackLabelChildren.contains(label_int)) ||
-                                            (childGrammarTemp[1].equals("false")) )
+                                    if ( childGrammarTemp[1].equals("false") )
                                         ++j;
                                     else
-                                    if( (childGrammarTemp[1].equals("true") && !blackLabelChildren.contains(label_int)) ) {
+                                    if( childGrammarTemp[1].equals("true") ) {
                                         missMandatoryChild = true;
-                                        break;
+                                        //break;
+                                        //return true;
                                     }
                                 }
                             }
+                            //check right children
                             if(j < childrenG.size()){
-                                while(j < childrenG.size()){
+                                while(j < childrenG.size() && !missMandatoryChild){
                                     String[] childGrammarTemp = childrenG.get(j).split(Variables.uniChar);
-                                    if(childGrammarTemp[1].equals("true") && !blackLabelChildren.contains(Integer.valueOf(childGrammarTemp[0]))) {
+                                    if(childGrammarTemp[1].equals("true")) {
                                         missMandatoryChild = true;
-                                        break;
+                                        //break;
+                                        //return true;
                                     }
                                     ++j;
                                 }
@@ -415,7 +396,6 @@ public class Constraint {
         return missMandatoryChild;
     }
 
-
     /////////// specific functions for COBOL source code //////////////////
     public static void checkCobolConstraints(FTArray pattern, Map.Entry<FTArray, Projected> entry, FTArray key,
                                       Map<Integer, String> labelIndex, ArrayList <ArrayList <NodeFreqT> > transaction) {
@@ -429,6 +409,7 @@ public class Constraint {
         if(candidateLabel.equals("ParagraphStatementBlock"))
             Constraint.checkContinuousParagraph(pattern, entry, transaction);
     }
+
 
     public static void checkContinuousParagraph(FTArray pat,
                                          Map.Entry<FTArray, Projected> entry,

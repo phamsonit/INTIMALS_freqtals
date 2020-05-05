@@ -463,14 +463,12 @@ public class ReadXML_Int {
                         ///////////////
                     } else {//internal node
                         NodeList nodeList = node.getChildNodes();
-                        //only allow children labels which are in the white list
+                        //only read children labels which are in the white list
                         if(whiteLabels.containsKey(node.getNodeName())){
-                            //System.out.println(node.getNodeName());
                             Set<String> temp = whiteLabels.get(node.getNodeName());
                             for(int i=0; i<nodeList.getLength(); ++i)
                                 if(nodeList.item(i).getNodeType() == Node.ELEMENT_NODE) {
                                     if(temp.contains(nodeList.item(i).getNodeName())) {
-                                        //System.out.println(nodeList.item(i).getNodeName());
                                         readTreeDepthFirst(nodeList.item(i), trans, labelIndex, whiteLabels);
                                     }
                                 }
@@ -504,7 +502,7 @@ public class ReadXML_Int {
     }
 
     //read white labels from given file
-    private static Map<String,Set<String> > readWhiteLabel(String path){
+    public static Map<String,Set<String> > readWhiteLabel(String path){
         Map<String,Set<String> > _whiteLabels = new HashMap();
         try (BufferedReader br = new BufferedReader(new FileReader(path))) {
             String line;
