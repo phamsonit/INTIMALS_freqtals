@@ -42,8 +42,8 @@ public class Main {
     static public void main(String[] args) throws IOException {
         Main m = new Main();
 
-        //String[] agg = {"conf/java/antlr_test.properties","5", "antlr_test"};
-        //String[] agg = {"test/class_data_conf/config.properties", "3", "class_data"};
+        //String[] agg = {"conf/java/toy-data.properties","2", "toy-data"};
+        //String[] agg = {"python/conf/py.properties","2", "input"};
         //args = agg;
 
         if (args.length==0) {

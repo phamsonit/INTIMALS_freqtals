@@ -8,10 +8,9 @@ import be.intimals.freqt.output.XMLOutput;
 import be.intimals.freqt.structure.*;
 import be.intimals.freqt.util.Initial_Int;
 import be.intimals.freqt.util.Util;
+import be.intimals.freqt.util.XmlFormatter;
 
-import java.io.File;
-import java.io.FileWriter;
-import java.io.IOException;
+import java.io.*;
 import java.util.*;
 
 import static be.intimals.freqt.util.Util.*;
@@ -78,10 +77,12 @@ public class FreqT {
             System.out.println("Mining frequent subtrees ...");
             //build FP1: all labels are frequent
             Map <FTArray, Projected> FP1 = buildFP1(transaction, rootLabels, transactionClassID);
+
             //remove node SourceFile because it is not AST node
             FTArray notASTNode = new FTArray();
             notASTNode.add(0);
             FP1.remove(notASTNode);
+
             //prune FP1 on minimum support
             Constraint.prune(FP1, config.getMinSupport(), config.getWeighted());
             //expand FP1 to find maximal patterns
@@ -127,6 +128,11 @@ public class FreqT {
                 //create grammar (labels are integers) which is used in the mining process
                 Initial_Int.initGrammar_Int(grammarInt, grammar, labelIndex);
             }
+
+//            for(Map.Entry<String, ArrayList<String>> entry : grammar.entrySet())
+//                System.out.println(entry.getKey() +" "+ entry.getValue());
+//            System.exit(-1);
+
             //read white labels and black labels
             //Initial_Int.readWhiteLabel(config.getWhiteLabelFile(), grammarInt, whiteLabelsInt, blackLabelsInt, labelIndex);
             //read root labels (AST Nodes)
@@ -227,13 +233,14 @@ public class FreqT {
         try {
             //if it is timeout then stop expand the pattern;
             if (isTimeout()) return;
-            //System.out.print("pattern: ");printFTArray(pattern);System.out.println("Candidates:");
+            //System.out.print("pattern: ");printFTArray(pattern);//System.out.println("Candidates:");
             //find candidates of the current pattern
             Map<FTArray, Projected> candidates = generateCandidates(projected, transaction);
             //prune candidate based on minSup
             Constraint.prune(candidates, config.getMinSupport(), config.getWeighted());
             //if there is no candidate then report the pattern and then stop
             if( candidates.isEmpty()){
+                //addTree(pattern, projected);
                 if(leafPattern.size() > 0)
                     addTree(leafPattern, leafProjected);
                 return;
@@ -260,6 +267,7 @@ public class FreqT {
                     //check constraints on maximal number of leafs and real leaf
                     if( Constraint.satisfyMaxLeaf(pattern, config.getMaxLeaf()) || Constraint.isNotFullLeaf(pattern)){
                         //store the pattern
+                        //addTree(pattern, entry.getValue());
                         if(leafPattern.size() > 0)
                             addTree(leafPattern, leafProjected);
                     }else{
@@ -364,6 +372,8 @@ public class FreqT {
                     if(config.getTwoStep()){
                         //add pattern to the list of 1000-highest chi-square score patterns
                         addHighScorePattern(pat, projected, HSP);
+                        //keep root occurrences of pattern
+                        //addRootIDs(pat, projected, rootIDs);
                     }else{
                         //add pattern to maximal pattern list
                         addMaximalPattern(pat, projected, MFP);
@@ -563,6 +573,10 @@ public class FreqT {
             outputMaximalPatterns.close();
             outputCommonPatterns.flush();
             outputCommonPatterns.close();
+
+            //pretty xml format
+            XmlFormatter.format(config.getOutputFile(), config.getOutputFile());
+
         }
         catch(Exception e){System.out.println("Print maximal patterns error : " + e);}
     }

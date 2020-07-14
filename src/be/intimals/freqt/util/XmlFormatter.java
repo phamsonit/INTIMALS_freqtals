@@ -30,7 +30,7 @@ public class XmlFormatter {
     private static String sep = "/";//File.separator;
 
     //format one xml file
-    public void format(String inPath, String outPath){
+    public static void format(String inPath, String outPath){
         try{
             BufferedReader br = new BufferedReader(new FileReader(inPath));
             String fileContent = "";

@@ -108,7 +108,6 @@ public class FreqT_ext extends FreqT {
     private void expandLargestPattern(FTArray largestPattern, Projected projected) {
         try{
             if(!finishedGroup || !finished) return;
-
             //check running time of the 2nd step
             if (is2ndStepTimeout()) {
                 //System.out.println("2nd step timeout");
@@ -123,38 +122,30 @@ public class FreqT_ext extends FreqT {
                 finishedGroup = false;
                 return;
             }
-
             //find candidates for the current pattern
             Map<FTArray, Projected> candidates = generateCandidates(projected, transaction);
-
             //prune on minimum support and list of black labels
             //Constraint.pruneSupportAndBlacklist(candidates, config.getMinSupport(), largestPattern, blackLabelsInt);
             Constraint.prune(candidates, config.getMinSupport(), config.getWeighted());
-
             //if there is no candidate then report pattern --> stop
             if( candidates.isEmpty() ){
                 if(leafPattern.size() > 0) {
                     //store pattern
+                    //addPattern(largestPattern, projected);
                     addPattern(leafPattern, leafProjected);
                 }
                 return;
             }
-
             //expand the current pattern with each candidate
             for(Map.Entry<FTArray, Projected> entry : candidates.entrySet()){
-
                 int oldSize = largestPattern.size();
                 largestPattern.addAll(entry.getKey());
-
                 if(largestPattern.getLast() < -1 )
                     keepLeafPattern(largestPattern, entry.getValue());
-
                 FTArray oldLeafPattern = leafPattern;
                 Projected oldLeafProjected = leafProjected;
-
                 //check section and paragraphs in COBOL
                 Constraint.checkCobolConstraints(largestPattern, entry, entry.getKey(), labelIndex, transaction);
-
                 //check constraints
                 if(Constraint.missingLeftObligatoryChild(largestPattern, entry.getKey(), grammarInt)){
                     //do nothing = don't store pattern to MFP
