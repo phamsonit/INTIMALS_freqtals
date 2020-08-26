@@ -111,9 +111,9 @@ public class FreqT {
             ReadXML_Int readXML_int = new ReadXML_Int();
             //remove black labels when reading ASTs
             if(config.get2Class()){
-                readXML_int.readDatabase(transaction,1,
+                readXML_int.readDatabase(config.getAbstractLeafs(), transaction,1,
                         new File(config.getInputFiles1()), labelIndex, transactionClassID, config.getWhiteLabelFile());
-                readXML_int.readDatabase(transaction,0,
+                readXML_int.readDatabase(config.getAbstractLeafs(), transaction,0,
                         new File(config.getInputFiles2()), labelIndex, transactionClassID, config.getWhiteLabelFile());
                 sizeClass1 = transactionClassID.stream().mapToInt(Integer::intValue).sum();
                 sizeClass2 = transactionClassID.size() - sizeClass1;
@@ -121,7 +121,7 @@ public class FreqT {
                 Initial_Int.initGrammar_Str(config.getInputFiles2(), config.getWhiteLabelFile(), grammar, config.buildGrammar());
                 Initial_Int.initGrammar_Int(grammarInt, grammar, labelIndex);
             }else{
-                readXML_int.readDatabase(transaction,1,
+                readXML_int.readDatabase(config.getAbstractLeafs(), transaction,1,
                         new File(config.getInputFiles()), labelIndex, transactionClassID, config.getWhiteLabelFile());
                 //create grammar (labels are strings) which is used to print patterns
                 Initial_Int.initGrammar_Str(config.getInputFiles(), config.getWhiteLabelFile(), grammar, config.buildGrammar());
@@ -574,7 +574,7 @@ public class FreqT {
             outputCommonPatterns.flush();
             outputCommonPatterns.close();
 
-            //pretty xml format
+            //format pretty xml
             XmlFormatter.format(config.getOutputFile(), config.getOutputFile());
 
         }

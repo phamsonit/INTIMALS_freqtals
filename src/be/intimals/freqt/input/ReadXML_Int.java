@@ -1,5 +1,6 @@
 package be.intimals.freqt.input;
 
+import be.intimals.freqt.config.Config;
 import be.intimals.freqt.structure.NodeFreqT;
 import be.intimals.freqt.util.Variables;
 import be.intimals.freqt.util.XmlFormatter;
@@ -34,6 +35,7 @@ public class ReadXML_Int {
     private List<String> labels = new LinkedList<>();
     ArrayList<Integer> lineNrs = new ArrayList<>();
     int countSection;
+
     private boolean abstractLeafs = false;
 
     private String sep = "/";//File.separator;
@@ -41,7 +43,7 @@ public class ReadXML_Int {
     //////////////////////////////
 
     //read 2-class ASTs, and remove black labels
-    public void readDatabase(ArrayList <ArrayList<NodeFreqT>> database,  int classID, File rootDirectory,
+    public void readDatabase(Boolean _abstractLeaf, ArrayList <ArrayList<NodeFreqT>> database, int classID, File rootDirectory,
                              Map <Integer, String> labelIndex, ArrayList<Integer> classIndex, String whiteLabelPath) {
 
         ArrayList<String> files = new ArrayList<>();
@@ -50,13 +52,15 @@ public class ReadXML_Int {
         //read white labels from file
         Map<String,Set<String>> whiteLabels = readWhiteLabel(whiteLabelPath);
 
+        abstractLeafs = _abstractLeaf;
+
         //System.out.print("Reading " + files.size() +" files ");
         //XmlFormatter formatter = new XmlFormatter();
         DocumentBuilderFactory dbFactory = DocumentBuilderFactory.newInstance();
         try {
             //for (File fi : files) {
             for (String fi : files) {
-                countSection=0;
+                countSection = 0;
                 //store class label of transaction id
                 classIndex.add(classID);
 
@@ -70,10 +74,8 @@ public class ReadXML_Int {
                 DocumentBuilder dBuilder = dbFactory.newDocumentBuilder();
                 Document doc = dBuilder.parse(fXmlFile);
                 doc.getDocumentElement().normalize();
-
                 //get total number of nodes
                 int size = countNBNodes(doc.getDocumentElement())+1;
-
                 //initial tree parameters
                 id = 0;
                 top = 0;
@@ -88,7 +90,6 @@ public class ReadXML_Int {
                 }
                 //create tree
                 readTreeDepthFirst(doc.getDocumentElement(), trans, labelIndex, whiteLabels);
-
                 //add tree to database
                 database.add(trans);
                 //delete temporary input file
@@ -140,7 +141,7 @@ public class ReadXML_Int {
                 //only read children labels which are in the white list
                 if(whiteLabels.containsKey(node.getNodeName())){
                     Set<String> temp = whiteLabels.get(node.getNodeName());
-                    for(int i=0; i<nodeList.getLength(); ++i)
+                    for(int i = 0; i < nodeList.getLength(); ++i)
                         if(temp.contains(nodeList.item(i).getNodeName())) {
                             readTreeDepthFirst(nodeList.item(i), trans, labelIndex, whiteLabels);
                         }
@@ -154,29 +155,35 @@ public class ReadXML_Int {
             }
             else {//this is a leaf
                 if(node.getNodeType() == Node.TEXT_NODE && !node.getTextContent().trim().isEmpty()){
-                    //System.out.println(node.getTextContent().trim());
-                    String leafLabel;
-                    if(abstractLeafs)
-                        leafLabel = "**";
-                    else
-                        leafLabel = "*" + node.getTextContent().replace(",",Variables.uniChar).trim();
-                    //add leaf node label to trans
-                    trans.get(id).setNodeLabel(leafLabel);
-                    //update labelIndex for leaf labels
-                    if(!labels.contains(leafLabel)) {
-                        trans.get(id).setNode_label_int(labelIndex.size()*(-1));
-                        labelIndex.put(labelIndex.size()*(-1), leafLabel);
-                        labels.add(leafLabel);
-                    }else {
-                        trans.get(id).setNode_label_int(labels.indexOf(leafLabel)*(-1));
+                    //if a has sibling it is not a unique leaf
+                    Node a = node.getNextSibling();
+                    Node b = node.getPreviousSibling();
+
+                    if(a == null && b == null){
+                        //System.out.println("leaf node: "+node.getTextContent().trim());
+                        String leafLabel;
+                        if(abstractLeafs)
+                            leafLabel = "**";
+                        else
+                            leafLabel = "*" + node.getTextContent().replace(",",Variables.uniChar).trim();
+                        //add leaf node label to trans
+                        trans.get(id).setNodeLabel(leafLabel);
+                        //update labelIndex for leaf labels
+                        if(!labels.contains(leafLabel)) {
+                            trans.get(id).setNode_label_int(labelIndex.size()*(-1));
+                            labelIndex.put(labelIndex.size()*(-1), leafLabel);
+                            labels.add(leafLabel);
+                        }else {
+                            trans.get(id).setNode_label_int(labels.indexOf(leafLabel)*(-1));
+                        }
+                        //set line number of leaf node to -1
+                        trans.get(id).setLineNr("-1");
+                        //increase id
+                        sr.add(id);
+                        ++id;
+                        //calculate parent, child, sibling of this leaf node
+                        calculatePositions(trans);
                     }
-                    //set line number of leaf node to -1
-                    trans.get(id).setLineNr("-1");
-                    //increase id
-                    sr.add(id);
-                    ++id;
-                    //calculate parent, child, sibling of this leaf node
-                    calculatePositions(trans);
                 }
             }
         }catch (Exception e){
@@ -273,23 +280,23 @@ public class ReadXML_Int {
         return nbChildren;
     }
 
-    //count total number of nodes of a tree
-    public int countNBNodes(Node root) {
-        NodeList childrenNodes = root.getChildNodes();
-        int nbChildren = countNBChildren(root);
-        int c = nbChildren; //node.getChildNodes().getLength();
-        int result = c;
-
-        if(childrenNodes.getLength() > 1){
-            for (int i=0; i< childrenNodes.getLength(); i++) {
-                if (childrenNodes.item(i).getNodeType() != Node.TEXT_NODE) {
-                    result += countNBNodes(root.getChildNodes().item(i));
-                }
-            }
-        }else {
-            result++;
+    //count total number of nodes of a Python XML
+    private int countNBNodes(Node root) {
+        int count = 0;
+        if(root.getNodeType() == Node.ELEMENT_NODE) {
+            count++;
+            NodeList children = root.getChildNodes();
+            for(int i=0; i<children.getLength(); ++i)
+                count += countNBNodes(children.item(i));
         }
-        return result;
+        else
+            if (root.getNodeType() == Node.TEXT_NODE && !root.getTextContent().trim().isEmpty()) {
+                Node a = root.getNextSibling();
+                Node b = root.getPreviousSibling();
+                if(a == null && b== null)
+                    count++;
+            }
+        return count;
     }
 
     //return total number of reading files

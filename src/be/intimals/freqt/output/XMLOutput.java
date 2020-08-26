@@ -26,7 +26,6 @@ public class XMLOutput extends AOutputFormatter {
         patSupMap = _patSupMap;
     }
 
-
     @Override
     protected void openOutputFile() throws IOException {
         super.openOutputFile();
@@ -40,7 +39,6 @@ public class XMLOutput extends AOutputFormatter {
         out.flush();
         out.close();
     }
-
 
     @Override
     public void printPattern(String _pat){
@@ -63,7 +61,7 @@ public class XMLOutput extends AOutputFormatter {
             projected.setProjectedSupport(Integer.valueOf(supports[1]));
             projected.setProjectedRootSupport(Integer.valueOf(supports[2]));
 
-            report(pat,projected);
+            report_Str(pat,projected);
 
         }
         catch (Exception e){
@@ -73,24 +71,17 @@ public class XMLOutput extends AOutputFormatter {
         }
     }
 
-    //new report function to print pattern of Integer format
+    //new report function to print pattern in the form of Integer
     public void report_Int(ArrayList<String> pat, String supports){
         try{
-            //if( checkOutputConstraint(pat) ) return;
-            //System.out.print(pat);
+            //increase number of output pattern
             ++nbPattern;
-
-            //pat = Pattern.removeMissingLeaf(pat);
 
             //keep meta-variables in pattern
             Map<String,Integer> metaVariable = new HashMap<>();
+
             //print support, wsupport, size
-
-
             String[] sup = supports.split(",");
-            //out.write("<subtree id=\"" + nbPattern + "\" support=\"" + sup[0] +
-            //        "\" wsupport=\"" + sup[1] + "\" size=\"" + sup[2] + "\">\n");
-
             if(config.get2Class()) {
                 out.write("<subtree id=\"" + nbPattern + "\" support=\"" + sup[0] +
                         "\" score=\"" + sup[1] + "\" size=\"" + sup[2] + "\">\n");
@@ -112,7 +103,7 @@ public class XMLOutput extends AOutputFormatter {
 
                     if(nodeOrder.equals("unordered")){
                         switch (nodeDegree){
-                            case "1":
+                            case "1": //output leaf node
                                 switch (childrenList.size()){
                                     case 0:
                                         String metaLabel = getMetaLabel(pat, metaVariable, i);
@@ -150,15 +141,12 @@ public class XMLOutput extends AOutputFormatter {
 
                             default:
                                 out.write("<" + pat.get(i)+">\n");
-                                //out.write("<__directives>");
-                                //out.write("<match-set/>");
-                                //out.write("</__directives>\n");
                                 break;
                         }
                     }
                     else{
                         switch (nodeDegree){
-                            case "1":
+                            case "1": //output leaf node
                                 switch (childrenList.size()){
                                     case 0:
                                         String metaLabel = getMetaLabel(pat, metaVariable, i);
@@ -188,13 +176,11 @@ public class XMLOutput extends AOutputFormatter {
                         }
 
                     }
-
                     tmp.add(pat.get(i));
                     ++n;
                 }else {
                     //print leaf node of subtree
                     if (!pat.get(i).equals(")") && pat.get(i + 1).equals(")")) {
-                        //TODO: abstracting leafs of Cobol data
                         if (pat.get(i).charAt(0) == '*') {
                             outputLeaf(pat, i);
                         } else { //leaf of subtree is an internal node in the original tree
@@ -218,15 +204,12 @@ public class XMLOutput extends AOutputFormatter {
                 int i = pat.size() - 1;
                 outputNode(pat, metaVariable, i);
             }
-
             //close nodes
-            //System.out.println(tmp);
             for (int i = n - 1; i >= 0; --i)
                 out.write( "</" + tmp.get(i) + ">\n");
-
+            //close subtree
             out.write("</subtree>\n");
             out.write("\n");
-
         }
         catch (Exception e){
             System.out.println("report xml error : " + e);
@@ -235,13 +218,8 @@ public class XMLOutput extends AOutputFormatter {
         }
     }
 
-    /**
-     * Represent subtrees in XML format + Ekeko
-     * @param pat
-     * @param projected
-     */
-    //@Override
-    public void report(ArrayList<String> pat, Projected projected){
+    //print pattern
+    public void report_Str(ArrayList<String> pat, Projected projected){
         try{
             //if( checkOutputConstraint(pat) ) return;
             //System.out.print(pat);
@@ -405,7 +383,6 @@ public class XMLOutput extends AOutputFormatter {
     }
 
     private void outputLeaf(ArrayList<String> pat, int i) throws IOException{
-
         if (config.getAbstractLeafs() ){
             out.write("<Dummy>\n");
             out.write("<__directives>\n");
@@ -416,13 +393,14 @@ public class XMLOutput extends AOutputFormatter {
             out.write("</__directives>\n");
             out.write("</Dummy>\n");
         }else{
-            for(int t=1; t<pat.get(i).length(); ++t)
-              if (xmlCharacters.containsKey(String.valueOf(pat.get(i).charAt(t))))
-                  out.write(xmlCharacters.get(String.valueOf(pat.get(i).charAt(t))));
-              else out.write(pat.get(i).charAt(t));
+            for(int t=1; t<pat.get(i).length(); ++t) {
+                if (xmlCharacters.containsKey(String.valueOf(pat.get(i).charAt(t))))
+                    out.write(xmlCharacters.get(String.valueOf(pat.get(i).charAt(t))));
+                else
+                    out.write(pat.get(i).charAt(t));
                 out.write("\n");
-               }
-
+            }
+        }
     }
 
     private void outputNode(ArrayList<String> pat, Map<String, Integer> metaVariable, int i) throws IOException {
@@ -432,7 +410,6 @@ public class XMLOutput extends AOutputFormatter {
             switch (nodeDegree){
                 case "1":
                     String metaLabel = getMetaLabel(pat, metaVariable, i);
-
                     out.write("<" + pat.get(i) + ">\n");
                     out.write("<Dummy>\n");
                     out.write("<__directives>\n");
@@ -485,4 +462,60 @@ public class XMLOutput extends AOutputFormatter {
         }
         return metaLabel;
     }
+
+    //print Python pattern
+    public void report_Py(ArrayList<String> pat, String supports){
+        try{
+            //count number of output pattern
+            ++nbPattern;
+
+            //print support
+            String[] sup = supports.split(",");
+            if(config.get2Class()) {
+                out.write("<subtree id=\"" + nbPattern + "\" support=\"" + sup[0] +
+                        "\" score=\"" + sup[1] + "\" size=\"" + sup[2] + "\">\n");
+            }else
+                out.write("<subtree id=\"" + nbPattern + "\" support=\"" + sup[0] +
+                        "\" wsupport=\"" + sup[1] + "\" size=\"" + sup[2] + "\">\n");
+
+            //print pattern
+            int n = 0;
+            ArrayList < String > tmp = new ArrayList<>();
+            for ( int i = 0; i < pat.size () - 1; ++i) {
+                //open node
+                if (!pat.get(i).equals(")") && !pat.get(i + 1).equals(")") ) {
+                    out.write("<" + pat.get(i) + ">\n");
+                    tmp.add(pat.get(i));
+                    ++n;
+                }else {
+                    //print leaf node
+                    if (!pat.get(i).equals(")") && pat.get(i + 1).equals(")")) {
+                        out.write(pat.get(i).substring(1));
+                    } else {
+                        //close node
+                        if (pat.get(i).equals(")") && pat.get(i + 1).equals(")")) {
+                            out.write("</" + tmp.get(n - 1) + ">\n");
+                            tmp.remove(n-1);
+                            --n;
+                        }
+                    }
+                }
+            }
+            //print the last node of pattern
+            out.write(pat.get(pat.size() - 1).substring(1));
+
+            //close nodes
+            for (int i = n - 1; i >= 0; --i)
+                out.write( "</" + tmp.get(i) + ">\n");
+
+            //close subtree
+            out.write("</subtree>\n");
+            out.write("\n");
+        }
+        catch (Exception e){
+            System.out.println("report Python xml error : " + e);
+            System.out.println(pat);
+        }
+    }
+
 }

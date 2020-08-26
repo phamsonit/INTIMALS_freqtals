@@ -6,6 +6,7 @@ import be.intimals.freqt.structure.FTArray;
 import be.intimals.freqt.structure.NodeFreqT;
 import be.intimals.freqt.structure.Projected;
 
+import java.io.File;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Iterator;
@@ -128,4 +129,5 @@ public class Util {
         }
         return rootOccurrences;
     }
+
 }

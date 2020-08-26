@@ -29,6 +29,7 @@ import be.intimals.freqt.config.Config;
 import be.intimals.freqt.core.*;
 import be.intimals.freqt.structure.FTArray;
 
+
 import java.io.*;
 import java.nio.file.Files;
 import java.nio.file.Paths;
@@ -37,13 +38,14 @@ import java.util.List;
 import java.util.Map;
 import java.util.Properties;
 
+
 public class Main {
 
     static public void main(String[] args) throws IOException {
         Main m = new Main();
 
-        //String[] agg = {"conf/java/toy-data.properties","2", "toy-data"};
-        //String[] agg = {"python/conf/py.properties","2", "input"};
+        // String[] agg = {"conf/java/toy-data.properties","2", "toy-data"};
+        //String[] agg = {"python/conf/py.properties","2", "sample_input"};
         //args = agg;
 
         if (args.length==0) {
