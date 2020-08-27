@@ -139,7 +139,6 @@ public class FreqT {
             Initial_Int.readRootLabel(config.getRootLabelFile(), rootLabels);
             //read list of special XML characters
             Initial_Int.readXMLCharacter(config.getXmlCharacterFile(), xmlCharacters);
-
         }catch (Exception e){
             System.out.println("read data set error "+e);
         }

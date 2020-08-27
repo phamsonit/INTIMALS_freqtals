@@ -165,7 +165,7 @@ public class ReadXML_Int {
                         if(abstractLeafs)
                             leafLabel = "**";
                         else
-                            leafLabel = "*" + node.getTextContent().replace(",",Variables.uniChar).trim();
+                            leafLabel = "*" + node.getTextContent().replace(",", Variables.uniChar).trim();
                         //add leaf node label to trans
                         trans.get(id).setNodeLabel(leafLabel);
                         //update labelIndex for leaf labels

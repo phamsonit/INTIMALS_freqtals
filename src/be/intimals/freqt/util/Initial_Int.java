@@ -117,7 +117,7 @@ public class Initial_Int {
                     listCharacters.put(str_tmp[0],str_tmp[1]);
                 }
             }
-        }catch (IOException e) {System.out.println("Error: reading XMLCharater "+e);}
+        }catch (IOException e) {System.out.println("Error: reading XML character error "+e);}
     }
 
 

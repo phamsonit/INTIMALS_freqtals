@@ -398,7 +398,6 @@ public class XMLOutput extends AOutputFormatter {
                     out.write(xmlCharacters.get(String.valueOf(pat.get(i).charAt(t))));
                 else
                     out.write(pat.get(i).charAt(t));
-                out.write("\n");
             }
         }
     }
