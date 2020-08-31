@@ -1,5 +1,8 @@
 package be.intimals.freqt.core;
 
+import java.io.*;
+import java.util.*;
+
 import be.intimals.freqt.config.Config;
 import be.intimals.freqt.constraint.Constraint;
 import be.intimals.freqt.input.ReadXML_Int;
@@ -9,12 +12,7 @@ import be.intimals.freqt.structure.*;
 import be.intimals.freqt.util.Initial_Int;
 import be.intimals.freqt.util.Util;
 import be.intimals.freqt.util.XmlFormatter;
-
-import java.io.*;
-import java.util.*;
-
 import static be.intimals.freqt.util.Util.*;
-import static java.lang.StrictMath.round;
 
 public class FreqT {
 
@@ -58,6 +56,9 @@ public class FreqT {
     FTArray leafPattern = new FTArray();
     Projected leafProjected = new Projected();
     Set<FTArray> notF = new HashSet<>();
+
+    //list of labels that don't need to abstract
+    static Set<String> reservedLabels = new HashSet<>();
 
     ////////////////////////////////////////////////////////////
 
@@ -108,13 +109,19 @@ public class FreqT {
     //read input data
     private void initData(){
         try{
+            //TODO: read tagLabels from file
+            Set<String> tagLabels = new HashSet<>();
+            tagLabels.add("func");
+
             ReadXML_Int readXML_int = new ReadXML_Int();
-            //remove black labels when reading ASTs
+            //remove blocked labels when reading ASTs
             if(config.get2Class()){
                 readXML_int.readDatabase(config.getAbstractLeafs(), transaction,1,
-                        new File(config.getInputFiles1()), labelIndex, transactionClassID, config.getWhiteLabelFile());
+                        new File(config.getInputFiles1()), labelIndex, transactionClassID, config.getWhiteLabelFile(),
+                        reservedLabels, tagLabels);
                 readXML_int.readDatabase(config.getAbstractLeafs(), transaction,0,
-                        new File(config.getInputFiles2()), labelIndex, transactionClassID, config.getWhiteLabelFile());
+                        new File(config.getInputFiles2()), labelIndex, transactionClassID, config.getWhiteLabelFile(),
+                        reservedLabels, tagLabels);
                 sizeClass1 = transactionClassID.stream().mapToInt(Integer::intValue).sum();
                 sizeClass2 = transactionClassID.size() - sizeClass1;
                 Initial_Int.initGrammar_Str(config.getInputFiles1(), config.getWhiteLabelFile(), grammar, config.buildGrammar());
@@ -122,15 +129,18 @@ public class FreqT {
                 Initial_Int.initGrammar_Int(grammarInt, grammar, labelIndex);
             }else{
                 readXML_int.readDatabase(config.getAbstractLeafs(), transaction,1,
-                        new File(config.getInputFiles()), labelIndex, transactionClassID, config.getWhiteLabelFile());
+                        new File(config.getInputFiles()), labelIndex, transactionClassID, config.getWhiteLabelFile(),
+                        reservedLabels, tagLabels);
                 //create grammar (labels are strings) which is used to print patterns
                 Initial_Int.initGrammar_Str(config.getInputFiles(), config.getWhiteLabelFile(), grammar, config.buildGrammar());
                 //create grammar (labels are integers) which is used in the mining process
                 Initial_Int.initGrammar_Int(grammarInt, grammar, labelIndex);
             }
 
-//            for(Map.Entry<String, ArrayList<String>> entry : grammar.entrySet())
-//                System.out.println(entry.getKey() +" "+ entry.getValue());
+//              for(String val : reservedLabels)
+//                  System.out.println(val);
+////            for(Map.Entry<String, ArrayList<String>> entry : grammar.entrySet())
+////                System.out.println(entry.getKey() +" "+ entry.getValue());
 //            System.exit(-1);
 
             //read white labels and black labels
@@ -623,6 +633,10 @@ public class FreqT {
         //System.out.println(msg);
         report.write(msg + "\n");
         report.flush();
+    }
+
+    public static Set<String> getReservedLabels(){
+        return reservedLabels;
     }
 
 }

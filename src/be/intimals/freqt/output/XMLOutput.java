@@ -1,27 +1,29 @@
 package be.intimals.freqt.output;
 
 import be.intimals.freqt.config.Config;
+import be.intimals.freqt.core.FreqT;
 import be.intimals.freqt.structure.Pattern;
 import be.intimals.freqt.structure.Projected;
 import be.intimals.freqt.util.Util;
 
 import java.io.IOException;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.Map;
+import java.util.*;
 
 public class XMLOutput extends AOutputFormatter {
     private char uniChar = '\u00a5';
 
     //boolean abstractLeafs = false;
+    private Set<String> reservedLabels = new HashSet<>();
 
     /////////////////////////////
 
     public XMLOutput(String _file, Config _config, Map<String, ArrayList<String>> _grammar, Map<String,String> _xmlCharacters) throws IOException {
         super(_file,_config, _grammar, _xmlCharacters);
+        reservedLabels = FreqT.getReservedLabels();
     }
 
-    public XMLOutput(String _file, Config _config, Map<String, ArrayList<String>> _grammar, Map<String,String> _xmlCharacters, Map<String,String> _patSupMap) throws IOException {
+    public XMLOutput(String _file, Config _config, Map<String, ArrayList<String>> _grammar, Map<String,String> _xmlCharacters,
+                     Map<String,String> _patSupMap) throws IOException {
         super(_file,_config, _grammar, _xmlCharacters);
         patSupMap = _patSupMap;
     }
@@ -106,37 +108,17 @@ public class XMLOutput extends AOutputFormatter {
                             case "1": //output leaf node
                                 switch (childrenList.size()){
                                     case 0:
-                                        String metaLabel = getMetaLabel(pat, metaVariable, i);
                                         out.write("<" + pat.get(i) + ">\n");
-                                        out.write("<Dummy>\n");
-                                        out.write("<__directives>\n");
-                                        out.write("<optional />\n");
-                                        out.write("<meta-variable>\n");
-                                        out.write("<parameter key=\"name\" value=\"?"+metaLabel+"\"/>\n");
-                                        out.write("</meta-variable>\n");
-                                        out.write("</__directives>\n");
-                                        out.write("</Dummy>\n");
+                                        String metaLabel = getMetaLabel(pat, metaVariable, i);
+                                        writeMetaVariableLeaf(metaLabel);
                                         break;
-
                                     default:
                                         out.write("<" + pat.get(i) + ">\n");
                                         break;
                                 }
                                 break;
-
                             case "1..*":
-                                out.write("<" + pat.get(i)+">\n");
-                                out.write("<__directives>");
-
-                                //add new directive for nodes which have children directly follow each others
-                                if(pat.get(i).equals("TheBlocks")&& pat.get(i-1).equals("SectionStatementBlock"))
-                                    out.write("<match-succession/>");
-                                else
-                                    out.write("<match-sequence/>");
-                                    //out.write("<match-set/>");
-
-                                //out.write("<match-set/>");
-                                out.write("</__directives>\n");
+                                writeDirectivesNode(pat, i);
                                 break;
 
                             default:
@@ -149,16 +131,9 @@ public class XMLOutput extends AOutputFormatter {
                             case "1": //output leaf node
                                 switch (childrenList.size()){
                                     case 0:
-                                        String metaLabel = getMetaLabel(pat, metaVariable, i);
                                         out.write("<" + pat.get(i) + ">\n");
-                                        out.write("<Dummy>\n");
-                                        out.write("<__directives>\n");
-                                        out.write("<optional />\n");
-                                        out.write("<meta-variable>\n");
-                                        out.write("<parameter key=\"name\" value=\"?"+metaLabel+"\"/>\n");
-                                        out.write("</meta-variable>\n");
-                                        out.write("</__directives>\n");
-                                        out.write("</Dummy>\n");
+                                        String metaLabel = getMetaLabel(pat, metaVariable, i);
+                                        writeMetaVariableLeaf(metaLabel);
                                         break;
 
                                     default:
@@ -174,7 +149,6 @@ public class XMLOutput extends AOutputFormatter {
                                 out.write("</__directives>\n");
                                 break;
                         }
-
                     }
                     tmp.add(pat.get(i));
                     ++n;
@@ -214,11 +188,10 @@ public class XMLOutput extends AOutputFormatter {
         catch (Exception e){
             System.out.println("report xml error : " + e);
             System.out.println(pat);
-
         }
     }
 
-    //print pattern
+    //print pattern in form of string
     public void report_Str(ArrayList<String> pat, Projected projected){
         try{
             //if( checkOutputConstraint(pat) ) return;
@@ -259,16 +232,9 @@ public class XMLOutput extends AOutputFormatter {
                             case "1":
                                 switch (childrenList.size()){
                                     case 0:
-                                        String metaLabel = getMetaLabel(pat, metaVariable, i);
                                         out.write("<" + pat.get(i) + ">\n");
-                                        out.write("<Dummy>\n");
-                                        out.write("<__directives>\n");
-                                        out.write("<optional />\n");
-                                        out.write("<meta-variable>\n");
-                                        out.write("<parameter key=\"name\" value=\"?"+metaLabel+"\"/>\n");
-                                        out.write("</meta-variable>\n");
-                                        out.write("</__directives>\n");
-                                        out.write("</Dummy>\n");
+                                        String metaLabel = getMetaLabel(pat, metaVariable, i);
+                                        writeMetaVariableLeaf(metaLabel);
                                         break;
 
                                     default:
@@ -278,28 +244,12 @@ public class XMLOutput extends AOutputFormatter {
                                 break;
 
                             case "1..*":
-                                out.write("<" + pat.get(i)+">\n");
-                                out.write("<__directives>");
-
-                                //add new directive for nodes which have children directly follow each others
-                                if(pat.get(i).equals("TheBlocks")&& pat.get(i-1).equals("SectionStatementBlock"))
-                                    out.write("<match-succession/>");
-                                else
-                                    //out.write("<match-set/>");
-                                    out.write("<match-sequence/>");
-
-
-                                //out.write("<match-set/>");
-                                out.write("</__directives>\n");
+                                writeDirectivesNode(pat, i);
                                 break;
 
                             default:
                                 out.write("<" + pat.get(i)+">\n");
-                                //out.write("<__directives>");
-                                //out.write("<match-set/>");
-                                //out.write("</__directives>\n");
                                 break;
-
                         }
                     }
                     else{
@@ -307,35 +257,23 @@ public class XMLOutput extends AOutputFormatter {
                             case "1":
                                 switch (childrenList.size()){
                                     case 0:
-                                        String metaLabel = getMetaLabel(pat, metaVariable, i);
                                         out.write("<" + pat.get(i) + ">\n");
-                                        out.write("<Dummy>\n");
-                                        out.write("<__directives>\n");
-                                        out.write("<optional />\n");
-                                        out.write("<meta-variable>\n");
-                                        out.write("<parameter key=\"name\" value=\"?"+metaLabel+"\"/>\n");
-                                        out.write("</meta-variable>\n");
-                                        out.write("</__directives>\n");
-                                        out.write("</Dummy>\n");
+                                        String metaLabel = getMetaLabel(pat, metaVariable, i);
+                                        writeMetaVariableLeaf(metaLabel);
                                         break;
-
                                     default:
                                         out.write("<" + pat.get(i) + ">\n");
                                         break;
                                 }
                                 break;
-
                             default: //N children: if this node has full children
                                 out.write("<" + pat.get(i) + ">\n");
                                 out.write("<__directives>");
                                 out.write("<match-sequence/>");
                                 out.write("</__directives>\n");
                                 break;
-
                         }
-
                     }
-
                     tmp.add(pat.get(i));
                     ++n;
                 }else {
@@ -365,7 +303,6 @@ public class XMLOutput extends AOutputFormatter {
                 int i = pat.size() - 1;
                 outputNode(pat, metaVariable, i);
             }
-
             //close nodes
             //System.out.println(tmp);
             for (int i = n - 1; i >= 0; --i)
@@ -383,23 +320,31 @@ public class XMLOutput extends AOutputFormatter {
     }
 
     private void outputLeaf(ArrayList<String> pat, int i) throws IOException{
-        if (config.getAbstractLeafs() ){
-            out.write("<Dummy>\n");
-            out.write("<__directives>\n");
-            out.write("<optional />\n");
-            out.write("<meta-variable>\n");
-            out.write("<parameter key=\"name\" value=\"?"+pat.get(i-1)+"\"/>\n");
-            out.write("</meta-variable>\n");
-            out.write("</__directives>\n");
-            out.write("</Dummy>\n");
+        if (config.getAbstractLeafs() && !reservedLabels.contains(pat.get(i)) ){
+            writeMetaVariableLeaf(pat.get(i-1));
         }else{
-            for(int t=1; t<pat.get(i).length(); ++t) {
-                if (xmlCharacters.containsKey(String.valueOf(pat.get(i).charAt(t))))
-                    out.write(xmlCharacters.get(String.valueOf(pat.get(i).charAt(t))));
-                else
-                    out.write(pat.get(i).charAt(t));
-            }
+            writeLeafLabel(pat.get(i));
         }
+    }
+
+    private void writeLeafLabel(String leaf) throws IOException {
+        for(int t=1; t<leaf.length(); ++t) {
+            if (xmlCharacters.containsKey(String.valueOf(leaf.charAt(t))))
+                out.write(xmlCharacters.get(String.valueOf(leaf.charAt(t))));
+            else
+                out.write(leaf.charAt(t));
+        }
+    }
+
+    private void writeMetaVariableLeaf(String metaVariable) throws IOException {
+        out.write("<Dummy>\n");
+        out.write("<__directives>\n");
+        out.write("<optional />\n");
+        out.write("<meta-variable>\n");
+        out.write("<parameter key=\"name\" value=\"?"+metaVariable+"\"/>\n");
+        out.write("</meta-variable>\n");
+        out.write("</__directives>\n");
+        out.write("</Dummy>\n");
     }
 
     private void outputNode(ArrayList<String> pat, Map<String, Integer> metaVariable, int i) throws IOException {
@@ -408,31 +353,13 @@ public class XMLOutput extends AOutputFormatter {
         if(nodeOrder.equals("unordered")){
             switch (nodeDegree){
                 case "1":
-                    String metaLabel = getMetaLabel(pat, metaVariable, i);
                     out.write("<" + pat.get(i) + ">\n");
-                    out.write("<Dummy>\n");
-                    out.write("<__directives>\n");
-                    out.write("<optional />\n");
-                    out.write("<meta-variable>\n");
-                    out.write("<parameter key=\"name\" value=\"?"+metaLabel+"\"/>\n");
-                    out.write("</meta-variable>\n");
-                    out.write("</__directives>\n");
-                    out.write("</Dummy>\n");
+                    String metaLabel = getMetaLabel(pat, metaVariable, i);
+                    writeMetaVariableLeaf(metaLabel);
                     out.write("</" + pat.get(i) + ">\n");
                     break;
-
                 case "1..*":
-                    out.write("<" + pat.get(i)+">\n");
-                    out.write("<__directives>");
-
-                    if(pat.get(i).equals("TheBlocks") && pat.get(i-1).equals("SectionStatementBlock"))
-                        out.write("<match-succession/>");
-                    else
-                        //out.write("<match-set/>");
-                        out.write("<match-sequence/>");
-
-                    out.write("</__directives>\n");
-                    out.write("</" + pat.get(i)+">\n");
+                    writeDirectivesNode(pat, i);
                     break;
 
                 default:
@@ -442,12 +369,29 @@ public class XMLOutput extends AOutputFormatter {
             }
         }
         else{
-            out.write("<" + pat.get(i) + ">\n");
-            out.write("<__directives>");
-            out.write("<match-sequence/>");
-            out.write("</__directives>\n");
-            out.write("</" + pat.get(i) + ">\n");
+            writeCloseNode(pat.get(i));
         }
+    }
+
+    private void writeDirectivesNode(ArrayList<String> pat, int i) throws IOException {
+        out.write("<" + pat.get(i)+">\n");
+        out.write("<__directives>");
+
+        if(pat.get(i).equals("TheBlocks") && pat.get(i-1).equals("SectionStatementBlock"))
+            out.write("<match-succession/>");
+        else
+            //out.write("<match-set/>");
+            out.write("<match-sequence/>");
+
+        out.write("</__directives>\n");
+    }
+
+    private void writeCloseNode(String nodeName) throws IOException {
+        out.write("<" + nodeName + ">\n");
+        out.write("<__directives>");
+        out.write("<match-sequence/>");
+        out.write("</__directives>\n");
+        out.write("</" + nodeName + ">\n");
     }
 
     private String getMetaLabel(ArrayList<String> pat, Map<String, Integer> metaVariable, int i) {
@@ -460,61 +404,6 @@ public class XMLOutput extends AOutputFormatter {
             metaVariable.put(pat.get(i),1);
         }
         return metaLabel;
-    }
-
-    //print Python pattern
-    public void report_Py(ArrayList<String> pat, String supports){
-        try{
-            //count number of output pattern
-            ++nbPattern;
-
-            //print support
-            String[] sup = supports.split(",");
-            if(config.get2Class()) {
-                out.write("<subtree id=\"" + nbPattern + "\" support=\"" + sup[0] +
-                        "\" score=\"" + sup[1] + "\" size=\"" + sup[2] + "\">\n");
-            }else
-                out.write("<subtree id=\"" + nbPattern + "\" support=\"" + sup[0] +
-                        "\" wsupport=\"" + sup[1] + "\" size=\"" + sup[2] + "\">\n");
-
-            //print pattern
-            int n = 0;
-            ArrayList < String > tmp = new ArrayList<>();
-            for ( int i = 0; i < pat.size () - 1; ++i) {
-                //open node
-                if (!pat.get(i).equals(")") && !pat.get(i + 1).equals(")") ) {
-                    out.write("<" + pat.get(i) + ">\n");
-                    tmp.add(pat.get(i));
-                    ++n;
-                }else {
-                    //print leaf node
-                    if (!pat.get(i).equals(")") && pat.get(i + 1).equals(")")) {
-                        out.write(pat.get(i).substring(1));
-                    } else {
-                        //close node
-                        if (pat.get(i).equals(")") && pat.get(i + 1).equals(")")) {
-                            out.write("</" + tmp.get(n - 1) + ">\n");
-                            tmp.remove(n-1);
-                            --n;
-                        }
-                    }
-                }
-            }
-            //print the last node of pattern
-            out.write(pat.get(pat.size() - 1).substring(1));
-
-            //close nodes
-            for (int i = n - 1; i >= 0; --i)
-                out.write( "</" + tmp.get(i) + ">\n");
-
-            //close subtree
-            out.write("</subtree>\n");
-            out.write("\n");
-        }
-        catch (Exception e){
-            System.out.println("report Python xml error : " + e);
-            System.out.println(pat);
-        }
     }
 
 }

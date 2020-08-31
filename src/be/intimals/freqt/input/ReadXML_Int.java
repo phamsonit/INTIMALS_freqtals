@@ -1,9 +1,7 @@
 package be.intimals.freqt.input;
 
-import be.intimals.freqt.config.Config;
 import be.intimals.freqt.structure.NodeFreqT;
 import be.intimals.freqt.util.Variables;
-import be.intimals.freqt.util.XmlFormatter;
 import org.w3c.dom.Document;
 import org.w3c.dom.NamedNodeMap;
 import org.w3c.dom.Node;
@@ -11,12 +9,11 @@ import org.w3c.dom.NodeList;
 
 import javax.xml.parsers.DocumentBuilder;
 import javax.xml.parsers.DocumentBuilderFactory;
+import javax.xml.xpath.*;
 import java.io.BufferedReader;
 import java.io.File;
 import java.io.FileReader;
 import java.io.IOException;
-import java.nio.file.Files;
-import java.nio.file.Paths;
 import java.util.*;
 
 /*
@@ -37,14 +34,14 @@ public class ReadXML_Int {
     int countSection;
 
     private boolean abstractLeafs = false;
-
     private String sep = "/";//File.separator;
 
     //////////////////////////////
 
     //read 2-class ASTs, and remove black labels
-    public void readDatabase(Boolean _abstractLeaf, ArrayList <ArrayList<NodeFreqT>> database, int classID, File rootDirectory,
-                             Map <Integer, String> labelIndex, ArrayList<Integer> classIndex, String whiteLabelPath) {
+    public void readDatabase(Boolean _abstractLeaf, ArrayList <ArrayList<NodeFreqT>> database, int classID,
+                             File rootDirectory, Map <Integer, String> labelIndex, ArrayList<Integer> classIndex,
+                             String whiteLabelPath, Set<String> reservedLabels, Set<String> tagLabels) {
 
         ArrayList<String> files = new ArrayList<>();
         populateFileListNew(rootDirectory,files);
@@ -74,6 +71,7 @@ public class ReadXML_Int {
                 DocumentBuilder dBuilder = dbFactory.newDocumentBuilder();
                 Document doc = dBuilder.parse(fXmlFile);
                 doc.getDocumentElement().normalize();
+
                 //get total number of nodes
                 int size = countNBNodes(doc.getDocumentElement())+1;
                 //initial tree parameters
@@ -89,7 +87,7 @@ public class ReadXML_Int {
                     sibling.add(-1);
                 }
                 //create tree
-                readTreeDepthFirst(doc.getDocumentElement(), trans, labelIndex, whiteLabels);
+                readTreeDepthFirst(doc.getDocumentElement(), trans, labelIndex, whiteLabels, reservedLabels, tagLabels);
                 //add tree to database
                 database.add(trans);
                 //delete temporary input file
@@ -104,20 +102,10 @@ public class ReadXML_Int {
         }
     }
 
-    //collect full file names in a directory
-    private void populateFileListNew(File directory, ArrayList<String> list){
-        File[] files = directory.listFiles((dir, name) -> name.toLowerCase().endsWith(".xml"));
-        ArrayList<String> fullNames = new ArrayList<>();
-        for(int i=0; i<files.length; ++i)
-            fullNames.add(files[i].getAbsolutePath());
-        list.addAll(fullNames);
-        File[] directories = directory.listFiles(File::isDirectory);
-        for (File dir : directories) populateFileListNew(dir,list);
-    }
-
     //ignore black labels when reading tree by breadth first traversal,
     private void readTreeDepthFirst(Node node , ArrayList <NodeFreqT> trans, Map <Integer, String> labelIndex,
-                                    Map<String,Set<String>> whiteLabels) {
+                                    Map<String,Set<String>> whiteLabels,
+                                    Set<String> reservedLabels, Set<String> tagLabels) {
         try {
             //if this is an internal node
             if(node.getNodeType() == Node.ELEMENT_NODE) {
@@ -143,11 +131,11 @@ public class ReadXML_Int {
                     Set<String> temp = whiteLabels.get(node.getNodeName());
                     for(int i = 0; i < nodeList.getLength(); ++i)
                         if(temp.contains(nodeList.item(i).getNodeName())) {
-                            readTreeDepthFirst(nodeList.item(i), trans, labelIndex, whiteLabels);
+                            readTreeDepthFirst(nodeList.item(i), trans, labelIndex, whiteLabels, reservedLabels, tagLabels);
                         }
                 }else {
                     for (int i = 0; i < nodeList.getLength(); ++i) {
-                        readTreeDepthFirst(nodeList.item(i), trans, labelIndex, whiteLabels);
+                        readTreeDepthFirst(nodeList.item(i), trans, labelIndex, whiteLabels, reservedLabels, tagLabels);
                     }
                 }
                 //calculate parent, child, sibling of internal node
@@ -158,14 +146,16 @@ public class ReadXML_Int {
                     //if a has sibling it is not a unique leaf
                     Node a = node.getNextSibling();
                     Node b = node.getPreviousSibling();
-
                     if(a == null && b == null){
                         //System.out.println("leaf node: "+node.getTextContent().trim());
                         String leafLabel;
-                        if(abstractLeafs)
+                        if(abstractLeafs && ! isChildOfFuncCall(node, tagLabels)) { //leafLabel is not a child of node in tagLabels
                             leafLabel = "**";
-                        else
+                        }else {
                             leafLabel = "*" + node.getTextContent().replace(",", Variables.uniChar).trim();
+                            //store reserved labels
+                            reservedLabels.add(leafLabel);
+                        }
                         //add leaf node label to trans
                         trans.get(id).setNodeLabel(leafLabel);
                         //update labelIndex for leaf labels
@@ -190,6 +180,17 @@ public class ReadXML_Int {
             e.printStackTrace();
             System.exit(-1);
         }
+    }
+
+    //collect full file names in a directory
+    private void populateFileListNew(File directory, ArrayList<String> list){
+        File[] files = directory.listFiles((dir, name) -> name.toLowerCase().endsWith(".xml"));
+        ArrayList<String> fullNames = new ArrayList<>();
+        for(int i=0; i<files.length; ++i)
+            fullNames.add(files[i].getAbsolutePath());
+        list.addAll(fullNames);
+        File[] directories = directory.listFiles(File::isDirectory);
+        for (File dir : directories) populateFileListNew(dir,list);
     }
 
     private void calculatePositions(ArrayList<NodeFreqT> trans) {
@@ -302,4 +303,21 @@ public class ReadXML_Int {
     //return total number of reading files
     public ArrayList<Integer> getlineNrs(){return this.lineNrs;
     }
+
+    //return true if leaf node is a descendant of funcTagName
+    private Boolean isChildOfFuncCall(Node n, Set<String> funcTagName){
+        Node parent = n.getParentNode();
+        if(parent == null){
+            return false;
+        }else {
+            //System.out.println(parent.getNodeName());
+            if (funcTagName.contains(parent.getNodeName())) {
+                //System.out.println(parent.getNodeName());
+                return true;
+            } else {
+                return isChildOfFuncCall(n.getParentNode(), funcTagName);
+            }
+        }
+    }
+
 }

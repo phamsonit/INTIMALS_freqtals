@@ -45,7 +45,7 @@ public class Main {
         Main m = new Main();
 
         // String[] agg = {"conf/java/toy-data.properties","2", "toy-data"};
-        //String[] agg = {"python/conf/py.properties","5", "q1_out_test"};
+        //String[] agg = {"python/conf/py.properties","5", "q2_input"};
         //args = agg;
 
         if (args.length==0) {
