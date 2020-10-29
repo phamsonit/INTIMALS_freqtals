@@ -56,6 +56,8 @@ public class Config {
 
     public String getOutputClusters2() {return prop.getProperty("outputClusters2");}
 
+    public String getClusterConfig() {return prop.getProperty("clusterConfig");}
+
     public boolean getWeighted(){return Boolean.valueOf(prop.getProperty("weighted"));}
 
 
@@ -93,6 +95,11 @@ public class Config {
     public String getXmlCharacterFile() {
         return prop.getProperty("xmlCharacterFile");
     }
+
+    public String getReservedVariableNameFile() {
+        return prop.getProperty("reservedVariableNameFile");
+    }
+
 
     public String getInputFiles() {
         return prop.getProperty("inputPath");

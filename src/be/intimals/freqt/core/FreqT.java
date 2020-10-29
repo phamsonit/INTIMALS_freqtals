@@ -109,19 +109,19 @@ public class FreqT {
     //read input data
     private void initData(){
         try{
-            //TODO: read tagLabels from file
-            Set<String> tagLabels = new HashSet<>();
-            tagLabels.add("func");
+            Set<String> inputReservedLabels = new HashSet<>();
+            Initial_Int.readRootLabel(config.getReservedVariableNameFile(), inputReservedLabels);
+            //inputReservedLabels.add("func");
 
             ReadXML_Int readXML_int = new ReadXML_Int();
             //remove blocked labels when reading ASTs
             if(config.get2Class()){
                 readXML_int.readDatabase(config.getAbstractLeafs(), transaction,1,
                         new File(config.getInputFiles1()), labelIndex, transactionClassID, config.getWhiteLabelFile(),
-                        reservedLabels, tagLabels);
+                        reservedLabels, inputReservedLabels);
                 readXML_int.readDatabase(config.getAbstractLeafs(), transaction,0,
                         new File(config.getInputFiles2()), labelIndex, transactionClassID, config.getWhiteLabelFile(),
-                        reservedLabels, tagLabels);
+                        reservedLabels, inputReservedLabels);
                 sizeClass1 = transactionClassID.stream().mapToInt(Integer::intValue).sum();
                 sizeClass2 = transactionClassID.size() - sizeClass1;
                 Initial_Int.initGrammar_Str(config.getInputFiles1(), config.getWhiteLabelFile(), grammar, config.buildGrammar());
@@ -130,29 +130,36 @@ public class FreqT {
             }else{
                 readXML_int.readDatabase(config.getAbstractLeafs(), transaction,1,
                         new File(config.getInputFiles()), labelIndex, transactionClassID, config.getWhiteLabelFile(),
-                        reservedLabels, tagLabels);
+                        reservedLabels, inputReservedLabels);
                 //create grammar (labels are strings) which is used to print patterns
                 Initial_Int.initGrammar_Str(config.getInputFiles(), config.getWhiteLabelFile(), grammar, config.buildGrammar());
                 //create grammar (labels are integers) which is used in the mining process
                 Initial_Int.initGrammar_Int(grammarInt, grammar, labelIndex);
             }
 
-//              for(String val : reservedLabels)
-//                  System.out.println(val);
-////            for(Map.Entry<String, ArrayList<String>> entry : grammar.entrySet())
-////                System.out.println(entry.getKey() +" "+ entry.getValue());
-//            System.exit(-1);
-
+            //printMap(grammar);
             //read white labels and black labels
             //Initial_Int.readWhiteLabel(config.getWhiteLabelFile(), grammarInt, whiteLabelsInt, blackLabelsInt, labelIndex);
             //read root labels (AST Nodes)
+            System.out.println(config.getRootLabelFile());
+
             Initial_Int.readRootLabel(config.getRootLabelFile(), rootLabels);
             //read list of special XML characters
             Initial_Int.readXMLCharacter(config.getXmlCharacterFile(), xmlCharacters);
         }catch (Exception e){
             System.out.println("read data set error "+e);
+            e.printStackTrace();
         }
     }
+
+    //print a map, e.g, grammar
+    private void printMap(Map<String, ArrayList<String>> grammar){
+        for(Map.Entry<String, ArrayList<String>> entry : grammar.entrySet()){
+            System.out.println(entry.getKey()+" : "+entry.getValue());
+        }
+        System.exit(-1);
+    }
+
 
     //run the 2nd step to find maximal patterns from groups of root occurrences
     private void expandPatternFromRootIDs(Map<Projected, FTArray>  _rootIDs, FileWriter report){
@@ -309,11 +316,14 @@ public class FreqT {
                 int id = projected.getProjectLocation(i).getLocationId();
                 int root = projected.getProjectLocation(i).getRoot();
                 int pos = projected.getProjectLocation(i).getLocationPos();
-                //store all locations of the labels in the pattern: this uses more memory but need for checking continuous paragraphs
+                //store all locations of the labels in the pattern:
+                //this uses a lot of memory but it needs for checking continuous paragraphs
                 Location occurrences = projected.getProjectLocation(i);
-                //store only id and root
+
+                //store only node id and root node id
                 //Location occurrences = new Location(classID,id,root);
-                //keep lineNr to calculate distance of two nodes
+
+                //store lineNr to calculate distance of two nodes by line numbers
                 //List<Integer> lines = projected.getProjectLineNr(i);
                 FTArray prefixInt = new FTArray();
                 //find candidates from left to right
@@ -577,15 +587,15 @@ public class FreqT {
                 ArrayList <String> pat = Pattern_Int.getPatternStr(entry.getKey(),labelIndex);
                 String supports = entry.getValue();
                 ((XMLOutput) outputMaximalPatterns).report_Int(pat,supports);
+                //write string pattern to file
                 outputCommonPatterns.write(Pattern.getPatternString1(pat)+"\n");
             }
+            //close files
             outputMaximalPatterns.close();
             outputCommonPatterns.flush();
             outputCommonPatterns.close();
-
             //format pretty xml
             XmlFormatter.format(config.getOutputFile(), config.getOutputFile());
-
         }
         catch(Exception e){System.out.println("Print maximal patterns error : " + e);}
     }

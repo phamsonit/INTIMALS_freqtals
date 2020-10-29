@@ -101,7 +101,10 @@ public class Initial_Int {
                     rootLabels.add(str_tmp[0]);
                 }
             }
-        }catch (IOException e) {System.out.println("Error: reading listRootLabel "+e);}
+        }catch (IOException e) {
+            System.out.println("Error: reading listRootLabel "+e);
+            e.printStackTrace();
+        }
     }
 
     /**

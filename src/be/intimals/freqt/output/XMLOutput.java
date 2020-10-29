@@ -118,15 +118,14 @@ public class XMLOutput extends AOutputFormatter {
                                 }
                                 break;
                             case "1..*":
-                                writeDirectivesNode(pat, i);
+                                writeMatchSetDirectivesNode(pat, i);
                                 break;
 
                             default:
                                 out.write("<" + pat.get(i)+">\n");
                                 break;
                         }
-                    }
-                    else{
+                    }else{
                         switch (nodeDegree){
                             case "1": //output leaf node
                                 switch (childrenList.size()){
@@ -135,7 +134,6 @@ public class XMLOutput extends AOutputFormatter {
                                         String metaLabel = getMetaLabel(pat, metaVariable, i);
                                         writeMetaVariableLeaf(metaLabel);
                                         break;
-
                                     default:
                                         out.write("<" + pat.get(i) + ">\n");
                                         break;
@@ -143,10 +141,7 @@ public class XMLOutput extends AOutputFormatter {
                                 break;
 
                             default: //N children: if this node has full children
-                                out.write("<" + pat.get(i) + ">\n");
-                                out.write("<__directives>");
-                                out.write("<match-sequence/>");
-                                out.write("</__directives>\n");
+                                writeInternalNode(pat, i);
                                 break;
                         }
                     }
@@ -173,8 +168,7 @@ public class XMLOutput extends AOutputFormatter {
             //print the last node of pattern
             if(pat.get(pat.size() - 1).charAt(0) == '*')  {
                 outputLeaf(pat,pat.size() - 1);
-            }
-            else {
+            }else {
                 int i = pat.size() - 1;
                 outputNode(pat, metaVariable, i);
             }
@@ -244,7 +238,7 @@ public class XMLOutput extends AOutputFormatter {
                                 break;
 
                             case "1..*":
-                                writeDirectivesNode(pat, i);
+                                writeMatchSetDirectivesNode(pat, i);
                                 break;
 
                             default:
@@ -267,10 +261,7 @@ public class XMLOutput extends AOutputFormatter {
                                 }
                                 break;
                             default: //N children: if this node has full children
-                                out.write("<" + pat.get(i) + ">\n");
-                                out.write("<__directives>");
-                                out.write("<match-sequence/>");
-                                out.write("</__directives>\n");
+                                writeInternalNode(pat, i);
                                 break;
                         }
                     }
@@ -319,6 +310,7 @@ public class XMLOutput extends AOutputFormatter {
         }
     }
 
+    // write a leaf node
     private void outputLeaf(ArrayList<String> pat, int i) throws IOException{
         if (config.getAbstractLeafs() && !reservedLabels.contains(pat.get(i)) ){
             writeMetaVariableLeaf(pat.get(i-1));
@@ -327,6 +319,7 @@ public class XMLOutput extends AOutputFormatter {
         }
     }
 
+    // write a real leaf node
     private void writeLeafLabel(String leaf) throws IOException {
         for(int t=1; t<leaf.length(); ++t) {
             if (xmlCharacters.containsKey(String.valueOf(leaf.charAt(t))))
@@ -336,6 +329,7 @@ public class XMLOutput extends AOutputFormatter {
         }
     }
 
+    // write a meta variable node
     private void writeMetaVariableLeaf(String metaVariable) throws IOException {
         out.write("<Dummy>\n");
         out.write("<__directives>\n");
@@ -347,6 +341,7 @@ public class XMLOutput extends AOutputFormatter {
         out.write("</Dummy>\n");
     }
 
+    // write an internal node
     private void outputNode(ArrayList<String> pat, Map<String, Integer> metaVariable, int i) throws IOException {
         String nodeOrder = grammar.get(pat.get(i)).get(0);
         String nodeDegree = grammar.get(pat.get(i)).get(1);
@@ -359,7 +354,7 @@ public class XMLOutput extends AOutputFormatter {
                     out.write("</" + pat.get(i) + ">\n");
                     break;
                 case "1..*":
-                    writeDirectivesNode(pat, i);
+                    writeMatchSetDirectivesNode(pat, i);
                     break;
 
                 default:
@@ -373,7 +368,16 @@ public class XMLOutput extends AOutputFormatter {
         }
     }
 
-    private void writeDirectivesNode(ArrayList<String> pat, int i) throws IOException {
+    // write an internal node which has n ordered children
+    private void writeInternalNode(ArrayList<String> pat, int i) throws IOException {
+        out.write("<" + pat.get(i) + ">\n");
+        out.write("<__directives>");
+        out.write("<match-sequence/>");
+        out.write("</__directives>\n");
+    }
+
+    // write an internal node which has n unordered children
+    private void writeMatchSetDirectivesNode(ArrayList<String> pat, int i) throws IOException {
         out.write("<" + pat.get(i)+">\n");
         out.write("<__directives>");
 
@@ -386,6 +390,7 @@ public class XMLOutput extends AOutputFormatter {
         out.write("</__directives>\n");
     }
 
+    // write an closed internal node which has n ordered children
     private void writeCloseNode(String nodeName) throws IOException {
         out.write("<" + nodeName + ">\n");
         out.write("<__directives>");

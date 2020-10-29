@@ -44,10 +44,6 @@ public class Main {
     static public void main(String[] args) throws IOException {
         Main m = new Main();
 
-        // String[] agg = {"conf/java/toy-data.properties","2", "toy-data"};
-        //String[] agg = {"python/conf/py.properties","5", "q2_input"};
-        //args = agg;
-
         if (args.length==0) {
             System.out.println("Single-run Freq-T usage:\n" +
                     "java -jar freqt_java.jar CONFIG_FILE [MIN_SUPPORT] [INPUT_FOLDER] (--class) (--memory [VALUE]) (--debug-file)\n" +
@@ -88,8 +84,9 @@ public class Main {
             FreqT freqt = new FreqT(config);
             freqt.run();
 
-            //run forestmatcher to find matches of patterns in source code
+            //run ForestMatcher to find matches of patterns in source code
             runForestMatcher(config, memory);
+
 
             if(! config.get2Class()) {
                 //find common patterns in each cluster
@@ -149,13 +146,13 @@ public class Main {
             String outputMatches1 = outputPrefix + "_matches_1.xml";
             Files.deleteIfExists(Paths.get(outputPrefix));
 
-            String outputClusters1 = outputPrefix + "_clusters_1.xml";
+            String outputClusters1 = outputPrefix + "_clusters.xml";
             Files.deleteIfExists(Paths.get(outputClusters));
 
             String outputMatches2 = outputPrefix + "_matches_2.xml";
             Files.deleteIfExists(Paths.get(outputPrefix));
 
-            String outputClusters2 = outputPrefix + "_clusters_2.xml";
+            String outputClusters2 = outputPrefix + "_clusters.xml";
             Files.deleteIfExists(Paths.get(outputClusters));
 
             String outputClustersTemp = outputPrefix + "_matches_clusters.xml";
@@ -214,31 +211,36 @@ public class Main {
 
     private void runForestMatcher(Config config, String memory )
             throws IOException, InterruptedException {
-        //run forestmatcher to create matches.xml and clusters.xml
+        //run forestMatcher to create matches.xml and clusters.xml
         System.out.println("Running forestmatcher ...");
 
+        String clusterConfig = "";
+        if(config.getClusterConfig() != null){
+            clusterConfig = " "+config.getClusterConfig();
+        }
+
         if(config.get2Class()){
-            String command1 = "java -jar forestmatcher.jar " +
+            String command1 = "java -jar forestMatcher.jar " +
                     config.getInputFiles1() + " " + config.getOutputFile() +" " +
-                    config.getOutputMatches1() + " " + config.getOutputClusters1();
+                    config.getOutputMatches1() + clusterConfig; //config.getOutputClusters1();
             Process proc1 = Runtime.getRuntime().exec(command1);
             proc1.waitFor();
 
-            String command2 = "java -jar forestmatcher.jar " +
+            String command2 = "java -jar forestMatcher.jar " +
                     config.getInputFiles2() + " " + config.getOutputFile() +" " +
-                    config.getOutputMatches2() + " " + config.getOutputClusters2();
+                    config.getOutputMatches2() + clusterConfig; //config.getOutputClusters2();
             Process proc2 = Runtime.getRuntime().exec(command2);
             proc2.waitFor();
         }else{
-            String command = "";
+            String command;
             if(memory != null)
-                command = "java -jar " + memory + " forestmatcher.jar " +
+                command = "java -jar " + memory + " forestMatcher.jar " +
                         config.getInputFiles() + " " + config.getOutputFile() +" "
-                        + config.getOutputMatches() + " " + config.getOutputClusters();
+                        + config.getOutputMatches() + clusterConfig; //config.getOutputClusters();
             else
-                command = "java -jar forestmatcher.jar " +
+                command = "java -jar forestMatcher.jar " +
                         config.getInputFiles() + " " + config.getOutputFile() +" " +
-                        config.getOutputMatches() + " " + config.getOutputClusters();
+                        config.getOutputMatches() + clusterConfig; //config.getOutputClusters();
 
             //System.out.println("With command: "+command);
             Process proc = Runtime.getRuntime().exec(command);
@@ -328,6 +330,4 @@ public class Main {
             System.out.println("Finished run " + runDescr);
         });
     }
-
-
 }

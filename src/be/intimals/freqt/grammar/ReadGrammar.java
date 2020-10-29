@@ -550,7 +550,6 @@ public class ReadGrammar extends ReadXML_Int {
     //create grammar from file
     public void readGrammarOld(String path, Map < String, ArrayList<String> > grammar) {
         try {
-
             //for each file in folder create one tree
             File fXmlFile = new File(path);
             DocumentBuilderFactory dbFactory = DocumentBuilderFactory.newInstance();

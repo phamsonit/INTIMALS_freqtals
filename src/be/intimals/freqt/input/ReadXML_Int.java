@@ -30,8 +30,8 @@ public class ReadXML_Int {
     private ArrayList<Integer> sibling;
 
     private List<String> labels = new LinkedList<>();
-    ArrayList<Integer> lineNrs = new ArrayList<>();
-    int countSection;
+    private ArrayList<Integer> lineNrs = new ArrayList<>();
+    private int countSection;
 
     private boolean abstractLeafs = false;
     private String sep = "/";//File.separator;
@@ -217,16 +217,12 @@ public class ReadXML_Int {
             }
     }
 
+    //return lineNr of an XML node
     private String findLineNr(Node node) {
-        String lineNbTemp = "0";
-        if (node.hasAttributes()) {
-            // get attributes names and values
-            NamedNodeMap nodeMap = node.getAttributes();
-            for(int i=0; i<nodeMap.getLength(); ++i)
-                if(nodeMap.item(i).getNodeName().equals("LineNr"))
-                    lineNbTemp = nodeMap.getNamedItem("LineNr").getNodeValue();
-        }
-        return lineNbTemp;
+        return node.hasAttributes() ?
+                node.getAttributes().getNamedItem("LineNr") != null ?
+                        node.getAttributes().getNamedItem("LineNr").getNodeValue() : "0"
+                : "0";
     }
 
     private void updateLabelIndex(String nodeLabel, ArrayList<NodeFreqT> trans, Map<Integer, String> labelIndex) {
@@ -298,10 +294,6 @@ public class ReadXML_Int {
                     count++;
             }
         return count;
-    }
-
-    //return total number of reading files
-    public ArrayList<Integer> getlineNrs(){return this.lineNrs;
     }
 
     //return true if leaf node is a descendant of funcTagName
