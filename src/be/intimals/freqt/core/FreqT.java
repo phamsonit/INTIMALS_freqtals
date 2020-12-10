@@ -141,8 +141,6 @@ public class FreqT {
             //read white labels and black labels
             //Initial_Int.readWhiteLabel(config.getWhiteLabelFile(), grammarInt, whiteLabelsInt, blackLabelsInt, labelIndex);
             //read root labels (AST Nodes)
-            System.out.println(config.getRootLabelFile());
-
             Initial_Int.readRootLabel(config.getRootLabelFile(), rootLabels);
             //read list of special XML characters
             Initial_Int.readXMLCharacter(config.getXmlCharacterFile(), xmlCharacters);

@@ -1,0 +1,103 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<SourceFile ColNr="0" EndColNr="1" EndLineNr="6" FullName="/Users/user/Working/INTIMALS/softs-gitlab/tree-miner/sample_data/src/visitor/ShoppingCartVisitor.java" ID="1" Language="Java" LineNr="1">
+  <CompilationUnit ColNr="0" EndColNr="1" EndLineNr="6" ID="1" LineNr="1">
+    <package ColNr="0" EndColNr="1" EndLineNr="6" ID="2" LineNr="1">
+      <PackageDeclaration ColNr="0" EndColNr="15" EndLineNr="1" ID="6" LineNr="1">
+        <name ColNr="0" EndColNr="15" EndLineNr="1" ID="9" LineNr="1">
+          <SimpleName ColNr="8" EndColNr="14" EndLineNr="1" ID="19" LineNr="1">
+            <identifier ColNr="8" EndColNr="14" EndLineNr="1" ID="20" LineNr="1">visitor</identifier>
+            <var ColNr="8" EndColNr="14" EndLineNr="1" ID="21" LineNr="1">false</var>
+          </SimpleName>
+        </name>
+      </PackageDeclaration>
+    </package>
+    <types ColNr="0" EndColNr="1" EndLineNr="6" ID="4" LineNr="1">
+      <TypeDeclaration ColNr="0" EndColNr="0" EndLineNr="6" ID="10" LineNr="3">
+        <modifiers ColNr="0" EndColNr="0" EndLineNr="6" ID="12" LineNr="3">
+          <Modifier ColNr="0" EndColNr="5" EndLineNr="3" ID="22" LineNr="3">
+            <keyword ColNr="0" EndColNr="5" EndLineNr="3" ID="23" LineNr="3">public</keyword>
+          </Modifier>
+        </modifiers>
+        <interface ColNr="0" EndColNr="0" EndLineNr="6" ID="13" LineNr="3">true</interface>
+        <name ColNr="0" EndColNr="0" EndLineNr="6" ID="14" LineNr="3">
+          <SimpleName ColNr="17" EndColNr="35" EndLineNr="3" ID="24" LineNr="3">
+            <identifier ColNr="17" EndColNr="35" EndLineNr="3" ID="25" LineNr="3">ShoppingCartVisitor</identifier>
+            <var ColNr="17" EndColNr="35" EndLineNr="3" ID="26" LineNr="3">false</var>
+          </SimpleName>
+        </name>
+        <bodyDeclarations ColNr="0" EndColNr="0" EndLineNr="6" ID="18" LineNr="3">
+          <MethodDeclaration ColNr="4" EndColNr="24" EndLineNr="4" ID="27" LineNr="4">
+            <constructor ColNr="4" EndColNr="24" EndLineNr="4" ID="30" LineNr="4">false</constructor>
+            <returnType2 ColNr="4" EndColNr="24" EndLineNr="4" ID="32" LineNr="4">
+              <PrimitiveType ColNr="4" EndColNr="6" EndLineNr="4" ID="53" LineNr="4">
+                <primitiveTypeCode ColNr="4" EndColNr="6" EndLineNr="4" ID="55" LineNr="4">int</primitiveTypeCode>
+              </PrimitiveType>
+            </returnType2>
+            <name ColNr="4" EndColNr="24" EndLineNr="4" ID="33" LineNr="4">
+              <SimpleName ColNr="8" EndColNr="12" EndLineNr="4" ID="56" LineNr="4">
+                <identifier ColNr="8" EndColNr="12" EndLineNr="4" ID="57" LineNr="4">visit</identifier>
+                <var ColNr="8" EndColNr="12" EndLineNr="4" ID="58" LineNr="4">false</var>
+              </SimpleName>
+            </name>
+            <parameters ColNr="4" EndColNr="24" EndLineNr="4" ID="36" LineNr="4">
+              <SingleVariableDeclaration ColNr="14" EndColNr="22" EndLineNr="4" ID="59" LineNr="4">
+                <type ColNr="14" EndColNr="22" EndLineNr="4" ID="61" LineNr="4">
+                  <SimpleType ColNr="14" EndColNr="17" EndLineNr="4" ID="81" LineNr="4">
+                    <name ColNr="14" EndColNr="17" EndLineNr="4" ID="83" LineNr="4">
+                      <SimpleName ColNr="14" EndColNr="17" EndLineNr="4" ID="93" LineNr="4">
+                        <identifier ColNr="14" EndColNr="17" EndLineNr="4" ID="94" LineNr="4">Book</identifier>
+                        <var ColNr="14" EndColNr="17" EndLineNr="4" ID="95" LineNr="4">false</var>
+                      </SimpleName>
+                    </name>
+                  </SimpleType>
+                </type>
+                <varargs ColNr="14" EndColNr="22" EndLineNr="4" ID="63" LineNr="4">false</varargs>
+                <name ColNr="14" EndColNr="22" EndLineNr="4" ID="64" LineNr="4">
+                  <SimpleName ColNr="19" EndColNr="22" EndLineNr="4" ID="84" LineNr="4">
+                    <identifier ColNr="19" EndColNr="22" EndLineNr="4" ID="85" LineNr="4">book</identifier>
+                    <var ColNr="19" EndColNr="22" EndLineNr="4" ID="86" LineNr="4">false</var>
+                  </SimpleName>
+                </name>
+              </SingleVariableDeclaration>
+            </parameters>
+          </MethodDeclaration>
+          <MethodDeclaration ColNr="4" EndColNr="26" EndLineNr="5" ID="40" LineNr="5">
+            <constructor ColNr="4" EndColNr="26" EndLineNr="5" ID="43" LineNr="5">false</constructor>
+            <returnType2 ColNr="4" EndColNr="26" EndLineNr="5" ID="45" LineNr="5">
+              <PrimitiveType ColNr="4" EndColNr="6" EndLineNr="5" ID="67" LineNr="5">
+                <primitiveTypeCode ColNr="4" EndColNr="6" EndLineNr="5" ID="69" LineNr="5">int</primitiveTypeCode>
+              </PrimitiveType>
+            </returnType2>
+            <name ColNr="4" EndColNr="26" EndLineNr="5" ID="46" LineNr="5">
+              <SimpleName ColNr="8" EndColNr="12" EndLineNr="5" ID="70" LineNr="5">
+                <identifier ColNr="8" EndColNr="12" EndLineNr="5" ID="71" LineNr="5">visit</identifier>
+                <var ColNr="8" EndColNr="12" EndLineNr="5" ID="72" LineNr="5">false</var>
+              </SimpleName>
+            </name>
+            <parameters ColNr="4" EndColNr="26" EndLineNr="5" ID="49" LineNr="5">
+              <SingleVariableDeclaration ColNr="14" EndColNr="24" EndLineNr="5" ID="73" LineNr="5">
+                <type ColNr="14" EndColNr="24" EndLineNr="5" ID="75" LineNr="5">
+                  <SimpleType ColNr="14" EndColNr="18" EndLineNr="5" ID="87" LineNr="5">
+                    <name ColNr="14" EndColNr="18" EndLineNr="5" ID="89" LineNr="5">
+                      <SimpleName ColNr="14" EndColNr="18" EndLineNr="5" ID="96" LineNr="5">
+                        <identifier ColNr="14" EndColNr="18" EndLineNr="5" ID="97" LineNr="5">Fruit</identifier>
+                        <var ColNr="14" EndColNr="18" EndLineNr="5" ID="98" LineNr="5">false</var>
+                      </SimpleName>
+                    </name>
+                  </SimpleType>
+                </type>
+                <varargs ColNr="14" EndColNr="24" EndLineNr="5" ID="77" LineNr="5">false</varargs>
+                <name ColNr="14" EndColNr="24" EndLineNr="5" ID="78" LineNr="5">
+                  <SimpleName ColNr="20" EndColNr="24" EndLineNr="5" ID="90" LineNr="5">
+                    <identifier ColNr="20" EndColNr="24" EndLineNr="5" ID="91" LineNr="5">fruit</identifier>
+                    <var ColNr="20" EndColNr="24" EndLineNr="5" ID="92" LineNr="5">false</var>
+                  </SimpleName>
+                </name>
+              </SingleVariableDeclaration>
+            </parameters>
+          </MethodDeclaration>
+        </bodyDeclarations>
+      </TypeDeclaration>
+    </types>
+  </CompilationUnit>
+</SourceFile>
