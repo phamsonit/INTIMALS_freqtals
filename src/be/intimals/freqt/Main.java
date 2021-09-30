@@ -112,15 +112,16 @@ public class Main {
             String inputMinSup = args[1];
             String inputFold = args[2];
 
-            String sep = "/";
+//            String sep = "/";
+            String sep = File.separator;
             //create final configuration as used by FreqT
             Properties prop = configBasic.getProp();
             //input data
             String inputPath = configBasic.getInputFiles().replace("\"", "") + sep + inputFold;
             System.out.println("Reading input from: " + inputPath);
 
-            String inputPath1 = inputPath+"/"+configBasic.getInputFiles1();
-            String inputPath2 = inputPath+"/"+configBasic.getInputFiles2();
+            String inputPath1 = inputPath + sep + configBasic.getInputFiles1();
+            String inputPath2 = inputPath + sep + configBasic.getInputFiles2();
 
             File outputDir = new File(configBasic.getOutputFile());
             if(!outputDir.exists()) outputDir.mkdir();
